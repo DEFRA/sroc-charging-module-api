@@ -1,0 +1,44 @@
+dist: xenial
+os: linux
+
+addons:
+  postgresql: "10"
+  sonarcloud:
+    organization: "defra"
+
+env:
+  global:
+    - ADMIN_CLIENT_ID=shortvaluefullofnumbersandlettersinlowercase
+    - PORT=3000
+    - PGUSER=charge
+    - PGPASSWORD=pinafore
+    - PGHOST=localhost
+    - PGPORT=5432
+    - PGDATABASE=sroc_charge_test
+    - ENVIRONMENT=dev
+
+# We don't specify a version because we have an .nvmrc file
+# https://docs.travis-ci.com/user/languages/javascript-with-nodejs/#specifying-nodejs-versions-using-nvmrc
+language: node_js
+
+before_install:
+  - export TZ=UTC
+
+before_script:
+  # Travis creates a postgres user with no password by default. However, our
+  # joi config check requires a password that is not null else the app refuses
+  # to start. So we need to create a new user with a password. Then we need to
+  # create a database that user owns so it can run the migrations which includes
+  # adding the pgcrypto extension (hence superuser is needed)
+  - psql -d template1 -U postgres -c "CREATE ROLE charge WITH PASSWORD 'pinafore' SUPERUSER LOGIN CREATEDB;"
+  - psql -d template1 -U postgres -c "CREATE DATABASE sroc_charge_test WITH OWNER charge ENCODING 'UTF8';"
+  - npm run migratedbtest
+
+script:
+  # Run linting first. No point running the tests if there is a linting issue
+  - npm run lint
+  # Run unit tests. This will also generate an lcov.info needed to report test
+  # coverage to Sonarcloud
+  - npm run unit-test
+  # Run sonar-scanner which includes uploading the results to SonarCloud
+  - sonar-scanner
