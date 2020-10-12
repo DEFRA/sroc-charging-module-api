@@ -1,0 +1,43 @@
+{
+  "name": "charging-module-explore",
+  "version": "1.0.0",
+  "description": "Project that allows us to explore alternative patterns for the Charging Module API",
+  "homepage": "https://https://gitlab-dev.aws-int.defra.cloud/sroc/charging-module-explore",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "watch": "./node_modules/nodemon/bin/nodemon.js --watch ./app --watch server.js -x node server.js",
+    "lint": "standard",
+    "test": "npm run lint && npm run migratedbtest && npm run unit-test",
+    "createdb": "PGDATABASE=sroc_charge node db/create_database.js",
+    "createdbtest": "PGDATABASE=sroc_charge_test node db/create_database.js",
+    "migratedb": "PGDATABASE=sroc_charge knex migrate:latest",
+    "migratedbtest": "PGDATABASE=sroc_charge_test knex migrate:latest",
+    "unit-test": "PGDATABASE=sroc_charge_test lab"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://https://gitlab-dev.aws-int.defra.cloud/sroc/charging-module-explore"
+  },
+  "author": "SRoC service team",
+  "license": "OGL-UK-3.0",
+  "dependencies": {
+    "@hapi/hapi": "^20.0.1",
+    "@now-ims/hapi-now-auth": "^2.0.2",
+    "blipp": "^4.0.1",
+    "dotenv": "^8.2.0",
+    "jwk-to-pem": "^2.0.4",
+    "knex": "^0.21.6",
+    "objection": "^2.2.3",
+    "pg": "^8.4.0",
+    "pg-hstore": "^2.3.3"
+  },
+  "devDependencies": {
+    "@hapi/code": "^8.0.2",
+    "@hapi/lab": "^24.0.0",
+    "hpal": "^2.6.0",
+    "hpal-debug": "^1.5.0",
+    "nodemon": "^2.0.4",
+    "standard": "^14.3.4"
+  }
+}
