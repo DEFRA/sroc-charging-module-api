@@ -22,12 +22,12 @@ const airbrakeNotifier = new Airbrake.Notifier({
   performanceStats: false
 })
 
-const notificationLogged = (notice) => {
+const notificationLogged = notice => {
   if (!notice.id) {
     console.log('Airbrake notification failed', notice.error)
   }
 }
-const notificationDropped = (error) => {
+const notificationDropped = error => {
   console.log('Airbrake notification failed', error)
 }
 
