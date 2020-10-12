@@ -14,7 +14,7 @@ env:
     - PGPASSWORD=pinafore
     - PGHOST=localhost
     - PGPORT=5432
-    - PGDATABASE=sroc_chargedb_test
+    - PGDATABASE=sroc_charge_test
 
 # We don't specify a version because we have an .nvmrc file
 # https://docs.travis-ci.com/user/languages/javascript-with-nodejs/#specifying-nodejs-versions-using-nvmrc
@@ -30,7 +30,7 @@ before_script:
   # create a database that user owns so it can run the migrations which includes
   # adding the pgcrypto extension (hence superuser is needed)
   - psql -d template1 -U postgres -c "CREATE ROLE charge WITH PASSWORD 'pinafore' SUPERUSER LOGIN CREATEDB;"
-  - psql -d template1 -U postgres -c "CREATE DATABASE sroc_chargedb_test WITH OWNER charge ENCODING 'UTF8';"
+  - psql -d template1 -U postgres -c "CREATE DATABASE sroc_charge_test WITH OWNER charge ENCODING 'UTF8';"
   - npm run migratedbtest
 
 script:
