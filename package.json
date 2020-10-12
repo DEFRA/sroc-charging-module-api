@@ -22,6 +22,7 @@
   "author": "SRoC service team",
   "license": "OGL-UK-3.0",
   "dependencies": {
+    "@airbrake/node": "^1.4.1",
     "@hapi/hapi": "^20.0.1",
     "@now-ims/hapi-now-auth": "^2.0.2",
     "blipp": "^4.0.1",
