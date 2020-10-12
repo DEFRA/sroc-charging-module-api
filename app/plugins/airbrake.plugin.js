@@ -37,15 +37,15 @@ const airbrake = {
     // When Hapi emits a request event with an error we capture the details and
     // use Airbrake to send a request to our Errbit instance
     server.events.on({ name: 'request', channels: 'error' }, (req, event, tags) => {
-      const promise = airbrakeNotifier.notify({
-        error: event.error,
-        session: {
-          route: req.route.path,
-          method: req.method,
-          url: req.url.href
-        }
-      })
-      promise
+      airbrakeNotifier
+        .notify({
+          error: event.error,
+          session: {
+            route: req.route.path,
+            method: req.method,
+            url: req.url.href
+          }
+        })
         .then(notice => notificationLogged(notice))
         .catch(err => notificationDropped(err))
     })
@@ -55,11 +55,11 @@ const airbrake = {
     //
     // https://hapi.dev/api/?v=20.0.0#-servermethods
     server.method('notify', (error, session) => {
-      const promise = airbrakeNotifier.notify({
-        error: error,
-        session: session
-      })
-      promise
+      airbrakeNotifier
+        .notify({
+          error: error,
+          session: session
+        })
         .then(notice => notificationLogged(notice))
         .catch(err => notificationDropped(err))
     })
