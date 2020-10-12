@@ -22,6 +22,15 @@ const airbrakeNotifier = new Airbrake.Notifier({
   performanceStats: false
 })
 
+const notificationLogged = (notice) => {
+  if (!notice.id) {
+    console.log('Airbrake notification failed', notice.error)
+  }
+}
+const notificationDropped = (error) => {
+  console.log('Airbrake notification failed', error)
+}
+
 const airbrake = {
   name: 'airbrake',
   register: (server, options) => {
@@ -37,14 +46,8 @@ const airbrake = {
         }
       })
       promise
-        .then(notice => {
-          if (!notice.id) {
-            console.log('Airbrake notification failed', notice.error)
-          }
-        })
-        .catch(error => {
-          console.log('Airbrake notification failed', error)
-        })
+        .then(notice => notificationLogged(notice))
+        .catch(err => notificationDropped(err))
     })
 
     // To enable us to send notifications via Airbrake to Errbit manually we
@@ -57,14 +60,8 @@ const airbrake = {
         session: session
       })
       promise
-        .then(notice => {
-          if (!notice.id) {
-            console.log('Airbrake notification failed', notice.error)
-          }
-        })
-        .catch(error => {
-          console.log('Airbrake notification failed', error)
-        })
+        .then(notice => notificationLogged(notice))
+        .catch(err => notificationDropped(err))
     })
   }
 }
