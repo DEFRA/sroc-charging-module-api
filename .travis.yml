@@ -15,6 +15,7 @@ env:
     - PGHOST=localhost
     - PGPORT=5432
     - PGDATABASE=sroc_charge_test
+    - ENVIRONMENT=dev
 
 # We don't specify a version because we have an .nvmrc file
 # https://docs.travis-ci.com/user/languages/javascript-with-nodejs/#specifying-nodejs-versions-using-nvmrc
