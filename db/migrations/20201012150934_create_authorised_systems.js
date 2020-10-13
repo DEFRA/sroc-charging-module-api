@@ -10,6 +10,7 @@ exports.up = async function (knex) {
       // Data
       table.string('name').notNullable()
       table.string('status').notNullable().defaultTo('active')
+      table.boolean('admin').defaultTo(false)
 
       // Automatic timestamps
       table.timestamps(false, true)

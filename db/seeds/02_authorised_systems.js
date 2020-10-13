@@ -1,3 +1,5 @@
+const config = require('../../config/authentication.config')
+
 exports.seed = function (knex) {
   // Deletes ALL existing entries
   return knex('authorised_systems').del()
@@ -5,8 +7,9 @@ exports.seed = function (knex) {
       // Inserts seed entries
       return knex('authorised_systems').insert([
         {
-          id: '77oc8j0o19qc3ohcf82sq41s4a',
-          name: 'wrls',
+          id: config.adminClientId,
+          name: 'admin',
+          admin: true,
           status: 'active'
         }
       ])

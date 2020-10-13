@@ -1,5 +1,6 @@
 const AuthenticationConfig = require('../../config/authentication.config')
 const CognitoJwtToPemService = require('../services/cognito_jwt_to_pem.service')
+const AuthorisedSystemModel = require('../models/authorised_system.model')
 
 const authOptions = {
   verifyJWT: true,
@@ -19,14 +20,17 @@ const authOptions = {
 
     const { client_id: clientId } = token.decodedJWT
 
-    const scope = ['system']
-    const isAdmin = AuthenticationConfig.adminClientId === clientId
+    const authorisedSystem = await AuthorisedSystemModel
+      .query()
+      .findById(clientId)
 
-    if (isAdmin) {
+    const scope = ['system']
+
+    if (authorisedSystem.admin) {
       scope.push('admin')
     }
 
-    const credentials = { clientId, scope, isAdmin }
+    const credentials = { clientId, scope, user: authorisedSystem }
 
     /**
      * return the decodedJWT to take advantage of hapi's
