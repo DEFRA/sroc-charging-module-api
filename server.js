@@ -5,14 +5,17 @@ exports.deployment = async (start) => {
   // Create the hapi server
   const server = Hapi.server(ServerConfig)
 
+  // Register our auth plugin and then the strategies (needs to be done in this
+  // order)
   await server.register(require('./app/plugins/hapi_now_auth.plugin'))
   server.auth.strategy('jwt-strategy', 'hapi-now-auth', require('./app/auth/jwt_strategy.auth'))
   server.auth.default('jwt-strategy')
 
-  // Register the plugins
+  // Register the remaining plugins
   await server.register(require('./app/plugins/router.plugin'))
   await server.register(require('./app/plugins/blipp.plugin'))
   await server.register(require('./app/plugins/hpal_debug.plugin'))
+  await server.register(require('./app/plugins/disinfect.plugin'))
 
   server.ext('onRequest', require('./app/hooks/on_request.hook'))
   server.ext('onCredentials', require('./app/hooks/on_credentials.hook'))
