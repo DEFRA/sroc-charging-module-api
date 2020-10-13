@@ -9,9 +9,7 @@ const authOptions = {
     algorithms: ['RS256'],
     ignoreExpiration: true
   },
-  validate: async (request, token, h) => {
-    let isValid = false
-
+  validate: async (req, token, h) => {
     /**
      * we asked the plugin to verify the JWT
      * we will get back the decodedJWT as token.decodedJWT
@@ -37,8 +35,8 @@ const authOptions = {
      * route authentication options
      * https://hapijs.com/api#authentication-options
      */
-    isValid = true
-    return { isValid, credentials }
+
+    return { isValid: true, credentials }
   }
 }
 

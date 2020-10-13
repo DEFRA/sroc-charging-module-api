@@ -1,8 +1,8 @@
 const Boom = require('@hapi/boom')
 
-const onCredentials = (request, h) => {
-  const { user } = request.auth.credentials
-  const { regimeId } = request.params
+const onCredentials = (req, h) => {
+  const { user } = req.auth.credentials
+  const { regimeId } = req.params
 
   // admin is always authorised to access regimes
   if (user.admin) {
