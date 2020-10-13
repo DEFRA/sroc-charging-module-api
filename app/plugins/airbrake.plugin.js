@@ -33,10 +33,10 @@ const notificationDropped = error => {
 
 const airbrake = {
   name: 'airbrake',
-  register: (server, options) => {
+  register: (server, _options) => {
     // When Hapi emits a request event with an error we capture the details and
     // use Airbrake to send a request to our Errbit instance
-    server.events.on({ name: 'request', channels: 'error' }, (req, event, tags) => {
+    server.events.on({ name: 'request', channels: 'error' }, (req, event, _tags) => {
       airbrakeNotifier
         .notify({
           error: event.error,

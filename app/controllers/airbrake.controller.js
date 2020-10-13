@@ -1,9 +1,9 @@
 class AirbrakeController {
-  static async auto (req, h) {
+  static async auto (_req, _h) {
     throw new Error('Airbrake test error - automatic')
   }
 
-  static async manual (req, h) {
+  static async manual (req, _h) {
     req.server.methods.notify(
       new Error('Airbrake test error - manual'),
       { message: 'Use me to log other events' }
