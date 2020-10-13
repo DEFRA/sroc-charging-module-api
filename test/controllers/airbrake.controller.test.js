@@ -14,6 +14,7 @@ const AuthorisationHelper = require('../support/helpers/authorisation.helper')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
+const Airbrake = require('@airbrake/node')
 
 describe('Airbrake controller: GET /status/airbrake', () => {
   let server
@@ -39,5 +40,24 @@ describe('Airbrake controller: GET /status/airbrake', () => {
 
     const response = await server.inject(options)
     expect(response.statusCode).to.equal(500)
+  })
+
+  it('causes Airbrake to send a notification', async () => {
+    const options = {
+      method: 'GET',
+      url: '/status/airbrake',
+      headers: { authorization: `Bearer ${authToken}` }
+    }
+
+    // We stub Airbrake in the test as currently this is the only test using it
+    const airbrakeStub = Sinon
+      .stub(Airbrake.Notifier.prototype, 'notify')
+      .resolves({ id: 1 })
+
+    await server.inject(options)
+
+    expect(airbrakeStub.called).to.equal(true)
+
+    airbrakeStub.restore()
   })
 })
