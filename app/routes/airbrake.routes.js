@@ -3,19 +3,11 @@ const AirbrakeController = require('../controllers/airbrake.controller')
 const routes = [
   {
     method: 'GET',
-    path: '/airbrake/auto',
-    handler: AirbrakeController.auto,
+    path: '/status/airbrake',
+    handler: AirbrakeController.index,
     options: {
-      auth: {
-        scope: ['admin']
-      }
-    }
-  },
-  {
-    method: 'GET',
-    path: '/airbrake/manual',
-    handler: AirbrakeController.manual,
-    options: {
+      description: 'Used by the delivery team to confirm error logging is working correctly in an environment. ' +
+        'NOTE. We expect this endpoint to return a 500',
       auth: {
         scope: ['admin']
       }
