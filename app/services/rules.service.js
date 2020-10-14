@@ -3,6 +3,9 @@ const Got = require('got')
 const RulesServiceConfig = require('../../config/rules_service.config')
 
 class RulesService {
+  // Regime is the regime in lowe case text, eg. wrls
+  // financialYear is the 4-digit year, eg. 2020
+  // chargeParams is an object containing the parameters to be passed to the rules service
   static call (regime, financialYear, chargeParams) {
     const { url, username, password } = RulesServiceConfig
     const path = this._makeRulesPath(regime, financialYear)
