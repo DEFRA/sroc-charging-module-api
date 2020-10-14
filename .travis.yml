@@ -9,6 +9,8 @@ addons:
 env:
   global:
     - ADMIN_CLIENT_ID=shortvaluefullofnumbersandlettersinlowercase
+    - AIRBRAKE_HOST=https://my-errbit-instance.com
+    - AIRBRAKE_KEY=longvaluefullofnumbersandlettersinlowercase
     - PORT=3000
     - PGUSER=charge
     - PGPASSWORD=pinafore
