@@ -22,6 +22,7 @@
   "author": "SRoC service team",
   "license": "OGL-UK-3.0",
   "dependencies": {
+    "@airbrake/node": "^1.4.1",
     "@hapi/hapi": "^20.0.1",
     "@now-ims/hapi-now-auth": "^2.0.2",
     "blipp": "^4.0.1",
@@ -31,7 +32,8 @@
     "knex": "^0.21.6",
     "objection": "^2.2.3",
     "pg": "^8.4.0",
-    "pg-hstore": "^2.3.3"
+    "pg-hstore": "^2.3.3",
+    "sinon": "^9.2.0"
   },
   "devDependencies": {
     "@hapi/code": "^8.0.2",

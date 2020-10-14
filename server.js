@@ -16,6 +16,7 @@ exports.deployment = async (start) => {
   await server.register(require('./app/plugins/blipp.plugin'))
   await server.register(require('./app/plugins/hpal_debug.plugin'))
   await server.register(require('./app/plugins/disinfect.plugin'))
+  await server.register(require('./app/plugins/airbrake.plugin'))
 
   server.ext('onRequest', require('./app/hooks/on_request.hook'))
   server.ext('onCredentials', require('./app/hooks/on_credentials.hook'))
