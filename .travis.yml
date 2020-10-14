@@ -16,6 +16,19 @@ env:
     - PGPORT=5432
     - PGDATABASE=sroc_charge_test
     - ENVIRONMENT=dev
+    - RULES_SERVICE_URL=http://example.com
+    - RULES_SERVICE_USER=admin
+    - RULES_SERVICE_PASSWORD=password
+    - CFD_APP=cfd_RuleApp
+    - CFD_RULESET=cfd_RuleSet
+    - WML_APP=wml_RuleApp
+    - WML_RULESET=wml_RuleSet
+    - PAS_APP=pas_RuleApp
+    - PAS_RULESET=pas_RuleSet
+    - WRLS_APP=wrls_RuleApp
+    - WRLS_RULESET=wrls_RuleSet
+    - WRLS_SROC_APP=wrls_sroc_RuleApp
+    - WRLS_SROC_RULESET=wrls_RuleSet
 
 # We don't specify a version because we have an .nvmrc file
 # https://docs.travis-ci.com/user/languages/javascript-with-nodejs/#specifying-nodejs-versions-using-nvmrc
