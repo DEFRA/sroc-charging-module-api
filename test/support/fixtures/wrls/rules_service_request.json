@@ -1,0 +1,18 @@
+{
+  "WRLSChargingRequest": {
+    "billableDays": 214,
+    "abstractableDays": 214,
+    "volume": 3.5865,
+    "source": "Supported",
+    "season": "Summer",
+    "loss": "Low",
+    "secondPartCharge": false,
+    "compensationCharge": false,
+    "eiucSource": "Tidal",
+    "waterUndertaker": false,
+    "region": "Midlands",
+    "abatementAdjustment": 1,
+    "s127Agreement": false,
+    "s130Agreement": false
+  }
+}

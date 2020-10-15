@@ -9,7 +9,7 @@ const RulesServiceHelper = require('../support/helpers/rules.service.helper')
 
 describe('Rules service', () => {
   it('calls the service', async () => {
-    const { WRLS } = RulesServiceHelper
+    const WRLS = RulesServiceHelper.allRulesData('wrls')
 
     nock(RulesServiceHelper.url, { encodedQueryParams: true })
       .post(`/${WRLS.application}/${WRLS.ruleset}_2020_21`, WRLS.request)
