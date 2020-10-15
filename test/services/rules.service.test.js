@@ -15,7 +15,7 @@ describe('Rules service', () => {
   it('calls the rules service API', async () => {
     const wrls = RulesServiceHelper.allRulesData('wrls')
 
-    Nock(RulesServiceHelper.url, { encodedQueryParams: true })
+    Nock(RulesServiceHelper.url)
       .post(`/${wrls.application}/${wrls.ruleset}_2020_21`, wrls.request)
       .reply(200, wrls.response)
 
@@ -27,7 +27,7 @@ describe('Rules service', () => {
   describe('calls different endpoints', () => {
     beforeEach(async () => {
       // Intercept all requests in this test suite as we just want to capture the urls
-      Nock(RulesServiceHelper.url, { encodedQueryParams: true })
+      Nock(RulesServiceHelper.url)
         .post(() => true)
         .reply(200)
         .persist()
