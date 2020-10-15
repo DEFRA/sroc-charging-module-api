@@ -9,15 +9,7 @@ class RulesService {
   static call (regime, financialYear, chargeParams) {
     const { url, username, password } = RulesServiceConfig
     const path = this._makeRulesPath(regime, financialYear)
-
-    const options = {
-      prefixUrl: url,
-      json: chargeParams,
-      responseType: 'json',
-      timeout: 1500,
-      username,
-      password
-    }
+    const options = this._requestOptions(url, chargeParams, username, password)
 
     // TODO: Set options.proxy if a proxy is required
 
@@ -36,6 +28,17 @@ class RulesService {
   static _yearSuffix (year) {
     const nextYearDigits = (year + 1).toString().slice(2)
     return `_${year}_${nextYearDigits}`
+  }
+
+  static _requestOptions (url, chargeParams, username, password) {
+    return {
+      prefixUrl: url,
+      json: chargeParams,
+      responseType: 'json',
+      timeout: 1500,
+      username,
+      password
+    }
   }
 }
 
