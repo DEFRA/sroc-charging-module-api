@@ -7,6 +7,9 @@ const Nock = require('nock')
 const RulesService = require('../../app/services/rules.service')
 const RulesServiceHelper = require('../support/helpers/rules.service.helper')
 
+// Wraps regime, financial year and charge params in a dummy translator object for passing to rules service
+const dummyTranslator = (regime, financialYear, chargeParams = {}) => ({ regime, financialYear, chargeParams })
+
 describe('Rules service', () => {
   afterEach(async () => {
     Nock.cleanAll()
@@ -14,12 +17,12 @@ describe('Rules service', () => {
 
   it('calls the rules service API', async () => {
     const wrls = RulesServiceHelper.allRulesData('wrls')
-
     Nock(RulesServiceHelper.url)
       .post(`/${wrls.application}/${wrls.ruleset}_2020_21`, wrls.request)
       .reply(200, wrls.response)
+    const translator = dummyTranslator('wrls', 2020, wrls.request)
 
-    const result = await RulesService.call('wrls', 2020, wrls.request)
+    const result = await RulesService.call(translator)
 
     expect(result.body).to.equal(wrls.response)
   })
@@ -34,15 +37,21 @@ describe('Rules service', () => {
     })
 
     it('for different regimes', async () => {
-      const { requestUrl: requestUrlWrls } = await RulesService.call('wrls', 2020, {})
-      const { requestUrl: requestUrlCfd } = await RulesService.call('cfd', 2020, {})
+      const translatorWrls = dummyTranslator('wrls', 2020)
+      const translatorCfd = dummyTranslator('cfd', 2020)
+
+      const { requestUrl: requestUrlWrls } = await RulesService.call(translatorWrls)
+      const { requestUrl: requestUrlCfd } = await RulesService.call(translatorCfd)
 
       expect(requestUrlWrls).to.not.equal(requestUrlCfd)
     })
 
     it('for different years', async () => {
-      const { requestUrl: requestUrl2019 } = await RulesService.call('wrls', 2019, {})
-      const { requestUrl: requestUrl2020 } = await RulesService.call('wrls', 2020, {})
+      const translator2019 = dummyTranslator('wrls', 2019)
+      const translator2020 = dummyTranslator('wrls', 2020)
+
+      const { requestUrl: requestUrl2019 } = await RulesService.call(translator2019)
+      const { requestUrl: requestUrl2020 } = await RulesService.call(translator2020)
 
       expect(requestUrl2019).to.not.equal(requestUrl2020)
     })
