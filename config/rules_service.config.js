@@ -22,8 +22,8 @@ const config = {
       ruleset: process.env.WRLS_RULESET
     },
     srocWrls: {
-      application: process.env.SROC_WRLS_APP,
-      ruleset: process.env.SROC_WRLS_RULESET
+      application: process.env.WRLS_SROC_APP,
+      ruleset: process.env.WRLS_SROC_RULESET
     }
   }
 }
