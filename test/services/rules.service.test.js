@@ -1,11 +1,16 @@
+// Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
-const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
 const Nock = require('nock')
 
+const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
+
+// Test helpers
+const { RulesServiceHelper } = require('../support/helpers')
+
+// Thing under test
 const RulesService = require('../../app/services/rules.service')
-const RulesServiceHelper = require('../support/helpers/rules.service.helper')
 
 // Wraps regime, financial year and charge params in a dummy translator object for passing to rules service
 const dummyTranslator = (regime, financialYear, chargeParams = {}) => ({ regime, financialYear, chargeParams })
