@@ -1,15 +1,20 @@
+// Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
+
 const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
-const Charge = require('../../app/models/charge.model')
-const { ValidationError } = require('@hapi/joi')
 
+// Test helpers
 const testData = require('../support/fixtures/charge.json')
+
+// Thing under test
+const { ChargeModel } = require('../../app/models')
+const { ValidationError } = require('@hapi/joi')
 
 describe('Charge model', () => {
   it('can be created with valid data', async () => {
-    const charge = new Charge(testData)
+    const charge = new ChargeModel(testData)
 
     // Cast date strings to date values for ease of testing
     const testDataToCheckAgainst = {
@@ -30,6 +35,6 @@ describe('Charge model', () => {
       charge_credit: 'INVALID_DATA'
     }
 
-    expect(() => new Charge(invalidData)).to.throw(ValidationError)
+    expect(() => new ChargeModel(invalidData)).to.throw(ValidationError)
   })
 })
