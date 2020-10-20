@@ -3,24 +3,24 @@ const BaseTranslator = require('./base.translator')
 class ChargeTranslator extends BaseTranslator {
   get _translations () {
     return {
-      periodStart: 'charge_period_start',
-      periodEnd: 'charge_period_end',
-      credit: 'charge_credit',
-      billableDays: 'regime_value_4',
-      authorisedDays: 'regime_value_5',
-      volume: 'line_attr_5',
-      source: 'regime_value_6',
-      season: 'regime_value_7',
-      loss: 'regime_value_8',
-      section130Agreement: 'regime_value_9',
-      section126Agreement: 'regime_value_10',
-      section126Factor: 'regime_value_11',
-      section127Agreement: 'regime_value_12',
-      eiucSource: 'regime_value_13',
-      waterUndertaker: 'regime_value_14',
-      regionalChargingArea: 'regime_value_15',
-      twoPartTariff: 'regime_value_16',
-      compensationCharge: 'regime_value_17'
+      periodStart: 'chargePeriodStart',
+      periodEnd: 'chargePeriodEnd',
+      credit: 'chargeCredit',
+      billableDays: 'regimeValue4',
+      authorisedDays: 'regimeValue5',
+      volume: 'lineAttr_5',
+      source: 'regimeValue6',
+      season: 'regimeValue7',
+      loss: 'regimeValue8',
+      section130Agreement: 'regimeValue9',
+      section126Agreement: 'regimeValue10',
+      section126Factor: 'regimeValue11',
+      section127Agreement: 'regimeValue12',
+      eiucSource: 'regimeValue13',
+      waterUndertaker: 'regimeValue14',
+      regionalChargingArea: 'regimeValue15',
+      twoPartTariff: 'regimeValue16',
+      compensationCharge: 'regimeValue17'
     }
   }
 }
