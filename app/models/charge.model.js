@@ -27,13 +27,14 @@ class Charge {
       regime_value_7: Joi.string().trim().required(), // validated in rules service
       regime_value_8: Joi.string().trim().required(), // validated in rules service
       regime_value_9: Joi.boolean().required(),
+      regime_value_10: Joi.boolean(),
       regime_value_11: Joi.number().allow(null).empty(null).default(1.0),
       regime_value_12: Joi.boolean().required(),
-      regime_value_16: Joi.boolean().required(),
-      regime_value_17: Joi.boolean().required(),
       regime_value_13: Joi.string().trim().when('regime_value_17', { is: Joi.valid(true), then: Joi.required() }), // validated in the rules service
       regime_value_14: Joi.boolean().required(),
-      regime_value_15: Joi.string().trim().required() // validated in the rules service
+      regime_value_15: Joi.string().trim().required(), // validated in the rules service
+      regime_value_16: Joi.boolean().required(),
+      regime_value_17: Joi.boolean().required()
     }
   }
 }
