@@ -16,7 +16,7 @@ class BaseTranslator {
   }
 }
 
-const createStandardGetter = (object, dataName, getterName) => {
+function createStandardGetter (object, dataName, getterName) {
   Object.defineProperty(object, getterName, {
     get () {
       return object._data[dataName]
