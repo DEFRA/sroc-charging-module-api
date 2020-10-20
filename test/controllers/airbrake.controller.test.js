@@ -3,14 +3,14 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, after } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
 const { deployment } = require('../../server')
 
 // Test helpers
-const AuthorisationHelper = require('../support/helpers/authorisation.helper')
+const { AuthorisationHelper, DatabaseHelper } = require('../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -25,6 +25,11 @@ describe('Airbrake controller: GET /status/airbrake', () => {
     Sinon
       .stub(JsonWebToken, 'verify')
       .returns(AuthorisationHelper.decodeToken(authToken))
+  })
+
+  beforeEach(async () => {
+    await DatabaseHelper.clean()
+    await DatabaseHelper.addAdminUser()
   })
 
   after(async () => {

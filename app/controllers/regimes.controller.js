@@ -1,4 +1,4 @@
-const RegimeModel = require('../models/regime.model')
+const { RegimeModel } = require('../models')
 
 class RegimesController {
   static async index (req, h) {
