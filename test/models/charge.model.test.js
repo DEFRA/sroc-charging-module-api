@@ -19,8 +19,8 @@ describe('Charge model', () => {
     // Cast date strings to date values for ease of testing
     const testDataToCheckAgainst = {
       ...testData,
-      charge_period_start: new Date(testData.charge_period_start),
-      charge_period_end: new Date(testData.charge_period_end)
+      chargePeriodStart: new Date(testData.chargePeriodStart),
+      chargePeriodEnd: new Date(testData.chargePeriodEnd)
     }
 
     // Check that the value of each key in the charge object matches the original value
@@ -32,7 +32,7 @@ describe('Charge model', () => {
   it('throws a validation error for invalid data', async () => {
     const invalidData = {
       ...testData,
-      charge_credit: 'INVALID_DATA'
+      chargeCredit: 'INVALID_DATA'
     }
 
     expect(() => new ChargeModel(invalidData)).to.throw(ValidationError)
