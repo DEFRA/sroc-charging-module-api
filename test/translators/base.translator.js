@@ -16,7 +16,7 @@ describe('Base translator', () => {
 
   it('translates and exposes data', async () => {
     // Stub _translations to simulate a child class with translations
-    Sinon.stub(BaseTranslator.prototype, '_translations').get(() => { return { before: 'after' } })
+    Sinon.stub(BaseTranslator.prototype, '_translations').returns({ before: 'after' })
     const testData = { before: true }
 
     const testTranslator = new BaseTranslator(testData)

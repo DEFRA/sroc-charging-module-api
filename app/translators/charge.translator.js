@@ -1,7 +1,7 @@
 const BaseTranslator = require('./base.translator')
 
 class ChargeTranslator extends BaseTranslator {
-  get _translations () {
+  _translations () {
     return {
       periodStart: 'chargePeriodStart',
       periodEnd: 'chargePeriodEnd',
