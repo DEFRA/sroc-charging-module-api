@@ -9,24 +9,28 @@ const { expect } = Code
 // Thing under test
 const BasePresenter = require('../../app/presenters/base.presenter')
 
-describe('Base translator', () => {
+describe('Base presenter', () => {
   afterEach(async () => {
     Sinon.restore()
   })
 
-  it.only('presents data', async () => {
+  it('presents data', async () => {
     // Stub _presentations to simulate a child class with presentation properties
-    Sinon.stub(BasePresenter.prototype, '_presentations').returns({ before: 'after' })
-    const testData = { before: true }
+    Sinon.stub(BasePresenter.prototype, '_presentations').callsFake((data) => {
+      return { after: data.before }
+    })
 
+    const testData = { before: true }
     const testPresenter = new BasePresenter(testData)
-    console.log(testPresenter)
-    expect(testPresenter.after).to.equal(true)
+    const presentation = testPresenter.call()
+
+    expect(presentation.after).to.equal(true)
   })
 
   it('throws an error if translations are not specified', async () => {
     const testData = { before: true }
+    const testPresenter = new BasePresenter(testData)
 
-    expect(() => new BasePresenter(testData)).to.throw()
+    expect(() => testPresenter.call()).to.throw('You need to specify _presentations in the child presenter')
   })
 })

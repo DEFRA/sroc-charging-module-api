@@ -1,10 +1,10 @@
 class BasePresenter {
   constructor (data) {
-    const presentations = this._presentations()
-    // Create each property defined in _presentations
-    for (const property in presentations) {
-      this._createStandardProperty(this, data[property], presentations[property])
-    }
+    this._data = data
+  }
+
+  call () {
+    return this._presentations(this._data)
   }
 
   _presentations () {
