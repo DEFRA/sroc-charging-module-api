@@ -10,7 +10,7 @@ const { expect } = Code
 const { deployment } = require('../../../../server')
 
 // Test helpers
-const { AuthorisationHelper, DatabaseHelper } = require('../../../support/helpers')
+const { AuthorisationHelper, ClientHelper, DatabaseHelper } = require('../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -29,7 +29,7 @@ describe('Airbrake controller: GET /status/airbrake', () => {
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
-    await DatabaseHelper.addAdminUser()
+    await ClientHelper.addAdminClient()
   })
 
   after(async () => {
