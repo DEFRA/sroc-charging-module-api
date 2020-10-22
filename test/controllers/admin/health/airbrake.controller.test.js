@@ -7,10 +7,10 @@ const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../server')
+const { deployment } = require('../../../../server')
 
 // Test helpers
-const { AuthorisationHelper, DatabaseHelper } = require('../support/helpers')
+const { AuthorisationHelper, DatabaseHelper } = require('../../../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -39,7 +39,7 @@ describe('Airbrake controller: GET /status/airbrake', () => {
   it('returns a 500 error', async () => {
     const options = {
       method: 'GET',
-      url: '/status/airbrake',
+      url: '/admin/health/airbrake',
       headers: { authorization: `Bearer ${authToken}` }
     }
 
@@ -50,7 +50,7 @@ describe('Airbrake controller: GET /status/airbrake', () => {
   it('causes Airbrake to send a notification', async () => {
     const options = {
       method: 'GET',
-      url: '/status/airbrake',
+      url: '/admin/health/airbrake',
       headers: { authorization: `Bearer ${authToken}` }
     }
 

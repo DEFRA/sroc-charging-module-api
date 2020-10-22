@@ -1,9 +1,9 @@
-const AirbrakeController = require('../controllers/airbrake.controller')
+const AirbrakeController = require('../controllers/admin/health/airbrake.controller')
 
 const routes = [
   {
     method: 'GET',
-    path: '/status/airbrake',
+    path: '/admin/health/airbrake',
     handler: AirbrakeController.index,
     options: {
       description: 'Used by the delivery team to confirm error logging is working correctly in an environment. ' +
