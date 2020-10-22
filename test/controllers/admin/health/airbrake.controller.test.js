@@ -10,7 +10,7 @@ const { expect } = Code
 const { deployment } = require('../../../../server')
 
 // Test helpers
-const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper } = require('../support/helpers')
+const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper } = require('../../../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
