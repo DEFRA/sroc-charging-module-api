@@ -15,8 +15,8 @@ describe('Base presenter', () => {
   })
 
   it('presents data', async () => {
-    // Stub _presentations to simulate a child class with presentation properties
-    Sinon.stub(BasePresenter.prototype, '_presentations').callsFake((data) => {
+    // Stub _presentation to simulate a child class with presentation properties
+    Sinon.stub(BasePresenter.prototype, '_presentation').callsFake((data) => {
       return { after: data.before }
     })
 
@@ -27,10 +27,10 @@ describe('Base presenter', () => {
     expect(presentation.after).to.equal(true)
   })
 
-  it('throws an error if translations are not specified', async () => {
+  it('throws an error if _presentation is not specified', async () => {
     const testData = { before: true }
     const testPresenter = new BasePresenter(testData)
 
-    expect(() => testPresenter.call()).to.throw('You need to specify _presentations in the child presenter')
+    expect(() => testPresenter.call()).to.throw('You need to specify _presentation in the child presenter')
   })
 })

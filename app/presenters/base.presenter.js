@@ -4,15 +4,11 @@ class BasePresenter {
   }
 
   call () {
-    return this._presentations(this._data)
+    return this._presentation(this._data)
   }
 
-  _presentations () {
-    throw new Error('You need to specify _presentations in the child presenter')
-  }
-
-  _createStandardProperty (object, value, propertyName) {
-    object[propertyName] = value
+  _presentation () {
+    throw new Error('You need to specify _presentation in the child presenter')
   }
 }
 

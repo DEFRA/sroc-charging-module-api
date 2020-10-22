@@ -1,7 +1,7 @@
 const BasePresenter = require('./base.presenter')
 
 class RulesServicePresenter extends BasePresenter {
-  _presentations (data) {
+  _presentation (data) {
     return {
       regime: data.regime,
       financialYear: data.financialYear,
