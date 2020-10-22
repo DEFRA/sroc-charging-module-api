@@ -10,7 +10,7 @@ const { expect } = Code
 const { deployment } = require('../../server')
 
 // Test helpers
-const { AuthorisationHelper, ClientHelper, DatabaseHelper, RouteHelper } = require('../support/helpers')
+const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper, RouteHelper } = require('../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -23,8 +23,8 @@ describe('Authorisation with the API', () => {
   describe('When accessing an /admin only route', () => {
     before(async () => {
       await DatabaseHelper.clean()
-      await ClientHelper.addAdminClient()
-      await ClientHelper.addClient(nonAdminClientId, 'wrls')
+      await AuthorisedSystemHelper.addAdminSystem()
+      await AuthorisedSystemHelper.addSystem(nonAdminClientId, 'wrls')
 
       server = await deployment()
       RouteHelper.addAdminRoute(server)
