@@ -1,12 +1,12 @@
 'use strict'
 
-const RegimeController = require('../controllers/regimes.controller')
+const { RegimesController } = require('../controllers')
 
 const routes = [
   {
     method: 'GET',
     path: '/regimes',
-    handler: RegimeController.index,
+    handler: RegimesController.index,
     options: {
       auth: {
         scope: ['admin']
@@ -16,7 +16,7 @@ const routes = [
   {
     method: 'GET',
     path: '/regimes/{id}',
-    handler: RegimeController.show,
+    handler: RegimesController.show,
     options: {
       auth: {
         scope: ['admin']

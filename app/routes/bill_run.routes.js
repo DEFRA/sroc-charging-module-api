@@ -1,17 +1,17 @@
 'use strict'
 
-const PresrocBilRunsController = require('../controllers/presroc/bill_runs.controller')
+const { PresrocBillRunsController } = require('../controllers')
 
 const routes = [
   {
     method: 'GET',
     path: '/v1/{regimeId}/billruns',
-    handler: PresrocBilRunsController.index
+    handler: PresrocBillRunsController.index
   },
   {
     method: 'GET',
     path: '/v2/{regimeId}/billruns',
-    handler: PresrocBilRunsController.index
+    handler: PresrocBillRunsController.index
   }
 ]
 

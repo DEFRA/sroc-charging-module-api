@@ -1,18 +1,17 @@
 'use strict'
 
-const PresrocTransactionController = require('../controllers/presroc/transactions.controller')
-const SrocTransactionController = require('../controllers/sroc/transactions.controller')
+const { PresrocTransactionsController, SrocTransactionsController } = require('../controllers')
 
 const routes = [
   {
     method: 'GET',
     path: '/v1/transactions',
-    handler: PresrocTransactionController.index
+    handler: PresrocTransactionsController.index
   },
   {
     method: 'GET',
     path: '/v2/transactions',
-    handler: SrocTransactionController.index
+    handler: SrocTransactionsController.index
   }
 ]
 
