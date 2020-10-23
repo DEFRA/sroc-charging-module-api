@@ -2,6 +2,7 @@
 
 const Hapi = require('@hapi/hapi')
 const ServerConfig = require('./config/server.config')
+const { JwtStrategyAuth } = require('./app/auth')
 
 exports.deployment = async (start) => {
   // Create the hapi server
@@ -10,7 +11,7 @@ exports.deployment = async (start) => {
   // Register our auth plugin and then the strategies (needs to be done in this
   // order)
   await server.register(require('./app/plugins/hapi_now_auth.plugin'))
-  server.auth.strategy('jwt-strategy', 'hapi-now-auth', require('./app/auth/jwt_strategy.auth'))
+  server.auth.strategy('jwt-strategy', 'hapi-now-auth', JwtStrategyAuth)
   server.auth.default('jwt-strategy')
 
   // Register the remaining plugins
