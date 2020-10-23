@@ -1,25 +1,24 @@
-const authConfig = require('../../../config/authentication.config')
 const { db, dbConfig } = require('../../../db')
-const { AuthorisedSystemModel } = require('../../../app/models')
 
+/**
+ * Use to help with cleaning the database between tests
+ *
+ * It's good practise to ensure the database is in a 'clean' state between tests to avoid any side effects caused by
+ * data from one test being present in another.
+ */
 class DatabaseHelper {
+  /**
+   * Call to clean the database of all data
+   *
+   * It works by identifying all the tables in the public schema (which we use). It then works out what the migration
+   * tables are called because those we should not be touching.
+   *
+   * Once it has that info it creates a query that tells PostgreSQL to TRUNCATE all the tables and restart their
+   * identity columns. For example, if a table relies on an incrementing ID the query will reset that to 1.
+   */
   static async clean () {
     const tables = await this._tableNames()
     return await db.raw(`TRUNCATE TABLE "${tables.join('","')}" RESTART IDENTITY`)
-  }
-
-  static async addAdminUser (id) {
-    const systemId = id || authConfig.adminClientId
-
-    await AuthorisedSystemModel
-      .query()
-      .insert({
-        id: systemId,
-        name: 'admin',
-        admin: true,
-        status: 'active'
-      })
-      .returning('*')
   }
 
   static _migrationTables () {

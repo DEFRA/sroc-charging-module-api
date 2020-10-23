@@ -7,7 +7,7 @@ const authOptions = {
   keychain: CognitoJwtToPemService.call(AuthenticationConfig.environment),
   verifyOptions: {
     algorithms: ['RS256'],
-    ignoreExpiration: true
+    ignoreExpiration: AuthenticationConfig.ignoreJwtExpiration
   },
   validate: async (req, token, h) => {
     /**
@@ -15,7 +15,6 @@ const authOptions = {
      * we will get back the decodedJWT as token.decodedJWT
      * and we will get the JWT as token.token
      */
-
     const { client_id: clientId } = token.decodedJWT
 
     const authorisedSystem = await AuthorisedSystemModel
