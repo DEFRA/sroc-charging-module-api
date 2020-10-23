@@ -13,7 +13,7 @@ const {
 } = require('./app/plugins')
 const { OnCredentialsHook, OnRequestHook } = require('./app/hooks')
 
-exports.deployment = async (start) => {
+exports.deployment = async start => {
   // Create the hapi server
   const server = Hapi.server(ServerConfig)
 
@@ -53,7 +53,7 @@ exports.deployment = async (start) => {
 if (require.main === module) {
   exports.deployment(true)
 
-  process.on('unhandledRejection', (err) => {
+  process.on('unhandledRejection', err => {
     throw err
   })
 }
