@@ -1,3 +1,5 @@
+'use strict'
+
 /*
   We use Airbrake to capture errors thrown within the service and send them to
   an instance of Errbit we maintain in Defra.

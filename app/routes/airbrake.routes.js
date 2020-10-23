@@ -1,3 +1,5 @@
+'use strict'
+
 const AirbrakeController = require('../controllers/admin/health/airbrake.controller')
 
 const routes = [

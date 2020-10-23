@@ -1,3 +1,5 @@
+'use strict'
+
 const authConfig = require('../../../config/authentication.config')
 const { AuthorisedSystemModel } = require('../../../app/models')
 

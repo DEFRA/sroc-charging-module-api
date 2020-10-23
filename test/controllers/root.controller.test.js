@@ -1,3 +1,5 @@
+'use strict'
+
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const { describe, it, before } = exports.lab = Lab.script()

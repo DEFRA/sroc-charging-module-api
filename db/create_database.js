@@ -1,3 +1,5 @@
+'use strict'
+
 const DatabaseConfig = require('../config/database.config')
 
 // If the script has been run using the package.json scripts the database name

@@ -1,3 +1,5 @@
+'use strict'
+
 const BaseTranslator = require('./base.translator')
 
 class ChargeTranslator extends BaseTranslator {

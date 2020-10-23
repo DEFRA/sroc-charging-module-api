@@ -1,3 +1,5 @@
+'use strict'
+
 const JsonWebToken = require('jsonwebtoken')
 const AuthorisationConfig = require('../../../config/authentication.config')
 

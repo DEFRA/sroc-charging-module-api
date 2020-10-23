@@ -1,3 +1,5 @@
+'use strict'
+
 const { RegimeModel } = require('../models')
 
 class RegimesController {

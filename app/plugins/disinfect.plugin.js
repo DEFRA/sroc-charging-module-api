@@ -1,3 +1,5 @@
+'use strict'
+
 /*
   This plugin applies Google's Caja HTML Sanitizer on route query, payload, and
   params. It was added specifically to protect us from issues such as XSS.

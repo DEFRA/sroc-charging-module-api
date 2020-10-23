@@ -1,3 +1,5 @@
+'use strict'
+
 const AuthorisationHelper = require('./authorisation.helper')
 const AuthorisedSystemHelper = require('./authorised_system.helper')
 const DatabaseHelper = require('./database.helper')

@@ -1,3 +1,5 @@
+'use strict'
+
 const BaseBillRunsController = require('../base_bill_runs.controller')
 
 class BillRunsController extends BaseBillRunsController {

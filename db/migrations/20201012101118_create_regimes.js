@@ -1,3 +1,5 @@
+'use strict'
+
 const tableName = 'regimes'
 
 exports.up = async function (knex) {

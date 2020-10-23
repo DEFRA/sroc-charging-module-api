@@ -1,3 +1,5 @@
+'use strict'
+
 const Got = require('got')
 
 const RulesServiceConfig = require('../../config/rules_service.config')

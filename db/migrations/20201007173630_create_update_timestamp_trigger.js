@@ -1,3 +1,5 @@
+'use strict'
+
 // https://dev.to/morz/knex-psql-updating-timestamps-like-a-pro-2fg6
 exports.up = function (knex) {
   return knex.raw(`

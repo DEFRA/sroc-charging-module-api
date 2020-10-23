@@ -1,3 +1,5 @@
+'use strict'
+
 /*
   Our router plugin which pulls in the various routes we have defined ready
   to be registered with the Hapi server (app/index.js).

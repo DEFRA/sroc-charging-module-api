@@ -1,3 +1,5 @@
+'use strict'
+
 const BaseTransactionsController = require('../base_transactions.controller')
 
 class TransactionsController extends BaseTransactionsController {

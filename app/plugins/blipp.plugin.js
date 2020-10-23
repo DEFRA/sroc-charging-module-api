@@ -1,3 +1,5 @@
+'use strict'
+
 /*
   Plugin to display the routes table to console at startup. It organizes the
   display per connection so if you have multiple connections you can easily

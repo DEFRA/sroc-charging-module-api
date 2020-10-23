@@ -1,3 +1,5 @@
+'use strict'
+
 const presroc = require('../controllers/presroc/bill_runs.controller')
 
 const routes = [

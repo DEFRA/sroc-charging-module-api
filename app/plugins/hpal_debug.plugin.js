@@ -1,3 +1,5 @@
+'use strict'
+
 /*
   hapijs debugging tools for the hpal CLI
 
