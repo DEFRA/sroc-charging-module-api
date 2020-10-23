@@ -11,7 +11,7 @@ const authOptions = {
     algorithms: ['RS256'],
     ignoreExpiration: AuthenticationConfig.ignoreJwtExpiration
   },
-  validate: async (req, token, h) => {
+  validate: async (_req, token, _h) => {
     // We asked the plugin to verify the JWT. So we get back the decodedJWT as `token.decodedJWT` and the original JWT
     // bearer token as `token.token`
     const { client_id: clientId } = token.decodedJWT
