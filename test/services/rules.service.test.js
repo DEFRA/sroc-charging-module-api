@@ -12,7 +12,7 @@ const { expect } = Code
 const { RulesServiceHelper } = require('../support/helpers')
 
 // Thing under test
-const RulesService = require('../../app/services/rules.service')
+const { RulesService } = require('../../app/services')
 
 // Wraps regime, financial year and charge params in a dummy translator object for passing to rules service
 const dummyTranslator = (regime, financialYear, chargeParams = {}) => ({ regime, financialYear, chargeParams })

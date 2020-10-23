@@ -6,8 +6,7 @@ const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 const Sinon = require('sinon')
 
-const CalculateChargeService = require('../../app/services/calculate_charge.service')
-const RulesService = require('../../app/services/rules.service')
+const { CalculateChargeService, RulesService } = require('../../app/services')
 
 class Presenter {
   constructor (response) {
