@@ -15,14 +15,14 @@ const RootRoutes = require('../routes/root.routes')
 const AirbrakeRoutes = require('../routes/airbrake.routes')
 const BillRunRoutes = require('../routes/bill_run.routes')
 const TransactionRoutes = require('../routes/transaction.routes')
-const RegimesRoutes = require('../routes/regimes.routes')
+const RegimeRoutes = require('../routes/regime.routes')
 
 const routes = [
   ...RootRoutes,
   ...AirbrakeRoutes,
   ...BillRunRoutes,
   ...TransactionRoutes,
-  ...RegimesRoutes
+  ...RegimeRoutes
 ]
 
 const router = {
