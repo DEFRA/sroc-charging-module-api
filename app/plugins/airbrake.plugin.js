@@ -1,18 +1,19 @@
 'use strict'
 
-/*
-  We use Airbrake to capture errors thrown within the service and send them to
-  an instance of Errbit we maintain in Defra.
-
-  https://hapi.dev/api/?v=20.0.0#-request-event
-
-  Airbrake doesn't provide a specific Hapi plugin. We've avoided others as they
-  are very out of date. So instead we roll our own plugin using the following
-  as references
-
-  https://github.com/DEFRA/node-hapi-airbrake/blob/master/lib/index.js
-  https://github.com/DEFRA/charging-module-api/blob/master/app/plugins/airbrake.js
-*/
+/**
+ * We use Airbrake to capture errors thrown within the service and send them tovan instance of Errbit we maintain in
+ * Defra.
+ *
+ * {@link https://hapi.dev/api/?v=20.0.0#-request-event}
+ *
+ * Airbrake doesn't provide a specific Hapi plugin. We've avoided others as they are very out of date. So instead we
+ * roll our own plugin using the following as references.
+ *
+ * {@link https://github.com/DEFRA/node-hapi-airbrake/blob/master/lib/index.js}
+ * {@link https://github.com/DEFRA/charging-module-api/blob/master/app/plugins/airbrake.js}
+ *
+ * @module AirbrakePlugin
+ */
 const Airbrake = require('@airbrake/node')
 const { AirbrakeConfig } = require('../../config')
 
@@ -33,7 +34,7 @@ const notificationDropped = error => {
   console.log('Airbrake notification failed', error)
 }
 
-const airbrake = {
+const AirbrakePlugin = {
   name: 'airbrake',
   register: (server, _options) => {
     // When Hapi emits a request event with an error we capture the details and
@@ -68,4 +69,4 @@ const airbrake = {
   }
 }
 
-module.exports = airbrake
+module.exports = AirbrakePlugin
