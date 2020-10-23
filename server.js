@@ -3,6 +3,7 @@
 const Hapi = require('@hapi/hapi')
 const ServerConfig = require('./config/server.config')
 const { JwtStrategyAuth } = require('./app/auth')
+const { OnCredentialsHook, OnRequestHook } = require('./app/hooks')
 
 exports.deployment = async (start) => {
   // Create the hapi server
@@ -21,8 +22,8 @@ exports.deployment = async (start) => {
   await server.register(require('./app/plugins/disinfect.plugin'))
   await server.register(require('./app/plugins/airbrake.plugin'))
 
-  server.ext('onRequest', require('./app/hooks/on_request.hook'))
-  server.ext('onCredentials', require('./app/hooks/on_credentials.hook'))
+  server.ext('onRequest', OnRequestHook)
+  server.ext('onCredentials', OnCredentialsHook)
 
   await server.initialize()
 
