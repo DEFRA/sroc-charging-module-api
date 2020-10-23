@@ -1,7 +1,13 @@
+'use strict'
+
+// Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
+
 const { describe, it, before } = exports.lab = Lab.script()
 const { expect } = Code
+
+// For running our service
 const { deployment } = require('../../server')
 
 describe('Root controller: GET /', () => {

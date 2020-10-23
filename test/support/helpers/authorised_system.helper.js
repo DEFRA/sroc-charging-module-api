@@ -1,4 +1,6 @@
-const authConfig = require('../../../config/authentication.config')
+'use strict'
+
+const { AuthenticationConfig } = require('../../../config')
 const { AuthorisedSystemModel } = require('../../../app/models')
 
 /**
@@ -18,7 +20,7 @@ class AuthorisedSystemHelper {
    * @returns {Object} The result of the db insertion for your reference
    */
   static async addAdminSystem (id) {
-    const systemId = id || authConfig.adminClientId
+    const systemId = id || AuthenticationConfig.adminClientId
 
     return this._insertSystem(systemId, 'admin', true, 'active')
   }

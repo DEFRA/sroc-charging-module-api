@@ -1,11 +1,18 @@
-/*
-  Plugin to implement authentication. This plugin handles bearer tokens and
-  decoding the JWT
-*/
+'use strict'
+
+/**
+ * Plugin to implement authentication. This plugin handles bearer tokens and decoding the JWT
+ *
+ * {@link https://github.com/now-ims/hapi-now-auth}
+ * {@link https://jwt.io/}
+ *
+ * @module HapiNowAuthPlugin
+ */
+
 const HapiNowAuth = require('@now-ims/hapi-now-auth')
 
-const hapiNowAuth = {
+const HapiNowAuthPlugin = {
   plugin: HapiNowAuth
 }
 
-module.exports = hapiNowAuth
+module.exports = HapiNowAuthPlugin

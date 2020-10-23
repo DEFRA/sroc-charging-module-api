@@ -1,3 +1,5 @@
+'use strict'
+
 const BasePresenter = require('./base.presenter')
 
 class RulesServicePresenter extends BasePresenter {

@@ -1,3 +1,5 @@
+'use strict'
+
 const Boom = require('@hapi/boom')
 
 const onRequest = (req, h) => {

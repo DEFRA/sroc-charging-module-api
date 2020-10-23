@@ -1,5 +1,7 @@
+'use strict'
+
 class BaseBillRunsController {
-  static async index (req, h) {
+  static async index (_req, _h) {
     return 'hello, base billruns'
   }
 }

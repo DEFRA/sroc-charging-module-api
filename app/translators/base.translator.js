@@ -1,3 +1,5 @@
+'use strict'
+
 class BaseTranslator {
   constructor (data) {
     Object.assign(this, { _data: data })

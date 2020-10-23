@@ -1,25 +1,37 @@
+'use strict'
+
 const Hapi = require('@hapi/hapi')
 const ServerConfig = require('./config/server.config')
+const { JwtStrategyAuth } = require('./app/auth')
+const {
+  AirbrakePlugin,
+  BlippPlugin,
+  DisinfectPlugin,
+  HapiNowAuthPlugin,
+  HpalDebugPlugin,
+  RouterPlugin
+} = require('./app/plugins')
+const { OnCredentialsHook, OnRequestHook } = require('./app/hooks')
 
-exports.deployment = async (start) => {
+exports.deployment = async start => {
   // Create the hapi server
   const server = Hapi.server(ServerConfig)
 
   // Register our auth plugin and then the strategies (needs to be done in this
   // order)
-  await server.register(require('./app/plugins/hapi_now_auth.plugin'))
-  server.auth.strategy('jwt-strategy', 'hapi-now-auth', require('./app/auth/jwt_strategy.auth'))
+  await server.register(HapiNowAuthPlugin)
+  server.auth.strategy('jwt-strategy', 'hapi-now-auth', JwtStrategyAuth)
   server.auth.default('jwt-strategy')
 
   // Register the remaining plugins
-  await server.register(require('./app/plugins/router.plugin'))
-  await server.register(require('./app/plugins/blipp.plugin'))
-  await server.register(require('./app/plugins/hpal_debug.plugin'))
-  await server.register(require('./app/plugins/disinfect.plugin'))
-  await server.register(require('./app/plugins/airbrake.plugin'))
+  await server.register(RouterPlugin)
+  await server.register(DisinfectPlugin)
+  await server.register(AirbrakePlugin)
+  await server.register(BlippPlugin)
+  await server.register(HpalDebugPlugin)
 
-  server.ext('onRequest', require('./app/hooks/on_request.hook'))
-  server.ext('onCredentials', require('./app/hooks/on_credentials.hook'))
+  server.ext('onRequest', OnRequestHook)
+  server.ext('onCredentials', OnCredentialsHook)
 
   await server.initialize()
 
@@ -41,7 +53,7 @@ exports.deployment = async (start) => {
 if (require.main === module) {
   exports.deployment(true)
 
-  process.on('unhandledRejection', (err) => {
+  process.on('unhandledRejection', err => {
     throw err
   })
 }

@@ -1,7 +1,9 @@
+'use strict'
+
 const { RegimeModel } = require('../models')
 
 class RegimesController {
-  static async index (req, h) {
+  static async index (_req, _h) {
     const regimes = await RegimeModel
       .query()
 

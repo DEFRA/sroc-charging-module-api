@@ -1,3 +1,5 @@
+'use strict'
+
 class BasePresenter {
   constructor (data) {
     this._data = data

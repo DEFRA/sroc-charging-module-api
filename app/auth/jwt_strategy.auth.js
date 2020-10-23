@@ -1,6 +1,8 @@
-const AuthenticationConfig = require('../../config/authentication.config')
-const CognitoJwtToPemService = require('../services/cognito_jwt_to_pem.service')
-const AuthorisedSystemModel = require('../models/authorised_system.model')
+'use strict'
+
+const { AuthenticationConfig } = require('../../config')
+const { CognitoJwtToPemService } = require('../services')
+const { AuthorisedSystemModel } = require('../models')
 
 const authOptions = {
   verifyJWT: true,
@@ -10,31 +12,29 @@ const authOptions = {
     ignoreExpiration: AuthenticationConfig.ignoreJwtExpiration
   },
   validate: async (req, token, h) => {
-    /**
-     * we asked the plugin to verify the JWT
-     * we will get back the decodedJWT as token.decodedJWT
-     * and we will get the JWT as token.token
-     */
+    // We asked the plugin to verify the JWT. So we get back the decodedJWT as `token.decodedJWT` and the original JWT
+    // bearer token as `token.token`
     const { client_id: clientId } = token.decodedJWT
 
+    // Find the authorised system with a matching client ID
     const authorisedSystem = await AuthorisedSystemModel
       .query()
       .findById(clientId)
 
+    // We use the `options.auth.scope` property on our routes to manage authorisation and what endpoints a client can
+    // access. Public endpoints have a scope of `system`. Admin can access these as well as those with only a scope of
+    // `admin`.
     const scope = ['system']
 
     if (authorisedSystem.admin) {
       scope.push('admin')
     }
 
+    // Create our credentials object which will hold the client ID scopes this client can access, and the instance of
+    // AuthorisedSystem (user). These will then be available via the request object (`req.auth.credentials`)
     const credentials = { clientId, scope, user: authorisedSystem }
 
-    /**
-     * return the decodedJWT to take advantage of hapi's
-     * route authentication options
-     * https://hapijs.com/api#authentication-options
-     */
-
+    // We have to return an object with these named properties else the HapiNowAuth plugin errors
     return { isValid: true, credentials }
   }
 }

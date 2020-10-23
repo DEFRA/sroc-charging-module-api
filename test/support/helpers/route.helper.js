@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * A helper that provides test routes.
  *

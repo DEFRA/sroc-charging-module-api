@@ -1,13 +1,18 @@
-/*
-  This plugin applies Google's Caja HTML Sanitizer on route query, payload, and
-  params. It was added specifically to protect us from issues such as XSS.
+'use strict'
 
-  https://github.com/google/caja
-  https://github.com/genediazjr/disinfect
-*/
+/**
+ * This plugin applies Google's Caja HTML Sanitizer on route query, payload, and params. It was added specifically to
+ * protect us from issues such as XSS.
+ *
+ * {@link https://github.com/google/caja}
+ * {@link https://github.com/genediazjr/disinfect}
+ *
+ * @module DisinfectPlugin
+ */
+
 const Disinfect = require('disinfect')
 
-const disinfect = {
+const DisinfectPlugin = {
   plugin: Disinfect,
   options: {
     disinfectQuery: true,
@@ -16,4 +21,4 @@ const disinfect = {
   }
 }
 
-module.exports = disinfect
+module.exports = DisinfectPlugin

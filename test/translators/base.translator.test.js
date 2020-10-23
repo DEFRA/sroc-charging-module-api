@@ -1,3 +1,5 @@
+'use strict'
+
 // Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
@@ -7,7 +9,7 @@ const { describe, it, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const BaseTranslator = require('../../app/translators/base.translator')
+const { BaseTranslator } = require('../../app/translators')
 
 describe('Base translator', () => {
   afterEach(async () => {

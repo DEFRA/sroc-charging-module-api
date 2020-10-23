@@ -1,3 +1,5 @@
+'use strict'
+
 const JwkToPem = require('jwk-to-pem')
 
 class CognitoJwtToPemService {

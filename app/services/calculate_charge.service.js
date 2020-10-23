@@ -1,3 +1,5 @@
+'use strict'
+
 const RulesService = require('./rules.service')
 
 // This service passes a translator object to the rules service

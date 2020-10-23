@@ -1,3 +1,5 @@
+'use strict'
+
 class AirbrakeController {
   static async index (req, _h) {
     req.server.methods.notify(

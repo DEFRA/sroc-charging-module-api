@@ -1,3 +1,5 @@
+'use strict'
+
 const Boom = require('@hapi/boom')
 
 const onCredentials = (req, h) => {
