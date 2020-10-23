@@ -1,11 +1,13 @@
 'use strict'
-
+// Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
-const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
 const Sinon = require('sinon')
 
+const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
+
+// Thing under test
 const { CalculateChargeService, RulesService } = require('../../app/services')
 
 class Presenter {
