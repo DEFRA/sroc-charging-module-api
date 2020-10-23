@@ -9,9 +9,9 @@ const { describe, it, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const BasePresenter = require('../../app/presenters/base.presenter')
+const { BasePresenter } = require('../../app/presenters')
 
-describe('Base presenter', () => {
+describe.only('Base presenter', () => {
   afterEach(async () => {
     Sinon.restore()
   })
