@@ -1,6 +1,6 @@
 'use strict'
 
-const BasePresenter = require('./base.presenter')
+const { BasePresenter } = require('./')
 
 class RulesServicePresenter extends BasePresenter {
   _presentation (data) {
