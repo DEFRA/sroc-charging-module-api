@@ -3,6 +3,14 @@
 const Hapi = require('@hapi/hapi')
 const ServerConfig = require('./config/server.config')
 const { JwtStrategyAuth } = require('./app/auth')
+const {
+  AirbrakePlugin,
+  BlippPlugin,
+  DisinfectPlugin,
+  HapiNowAuthPlugin,
+  HpalDebugPlugin,
+  RouterPlugin
+} = require('./app/plugins')
 const { OnCredentialsHook, OnRequestHook } = require('./app/hooks')
 
 exports.deployment = async (start) => {
@@ -11,16 +19,16 @@ exports.deployment = async (start) => {
 
   // Register our auth plugin and then the strategies (needs to be done in this
   // order)
-  await server.register(require('./app/plugins/hapi_now_auth.plugin'))
+  await server.register(HapiNowAuthPlugin)
   server.auth.strategy('jwt-strategy', 'hapi-now-auth', JwtStrategyAuth)
   server.auth.default('jwt-strategy')
 
   // Register the remaining plugins
-  await server.register(require('./app/plugins/router.plugin'))
-  await server.register(require('./app/plugins/blipp.plugin'))
-  await server.register(require('./app/plugins/hpal_debug.plugin'))
-  await server.register(require('./app/plugins/disinfect.plugin'))
-  await server.register(require('./app/plugins/airbrake.plugin'))
+  await server.register(RouterPlugin)
+  await server.register(DisinfectPlugin)
+  await server.register(AirbrakePlugin)
+  await server.register(BlippPlugin)
+  await server.register(HpalDebugPlugin)
 
   server.ext('onRequest', OnRequestHook)
   server.ext('onCredentials', OnCredentialsHook)
