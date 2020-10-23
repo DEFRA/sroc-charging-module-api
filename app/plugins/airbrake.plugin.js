@@ -14,7 +14,7 @@
   https://github.com/DEFRA/charging-module-api/blob/master/app/plugins/airbrake.js
 */
 const Airbrake = require('@airbrake/node')
-const AirbrakeConfig = require('../../config/airbrake.config')
+const { AirbrakeConfig } = require('../../config')
 
 const airbrakeNotifier = new Airbrake.Notifier({
   host: AirbrakeConfig.host,

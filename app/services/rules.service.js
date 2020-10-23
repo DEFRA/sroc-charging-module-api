@@ -2,7 +2,7 @@
 
 const Got = require('got')
 
-const RulesServiceConfig = require('../../config/rules_service.config')
+const { RulesServiceConfig } = require('../../config')
 
 class RulesService {
   // The following properties are taken from the passed-in translator object:

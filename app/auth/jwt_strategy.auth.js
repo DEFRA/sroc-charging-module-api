@@ -1,6 +1,6 @@
 'use strict'
 
-const AuthenticationConfig = require('../../config/authentication.config')
+const { AuthenticationConfig } = require('../../config')
 const { CognitoJwtToPemService } = require('../services')
 const { AuthorisedSystemModel } = require('../models')
 

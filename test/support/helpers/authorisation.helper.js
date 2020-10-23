@@ -1,7 +1,7 @@
 'use strict'
 
 const JsonWebToken = require('jsonwebtoken')
-const AuthorisationConfig = require('../../../config/authentication.config')
+const { AuthenticationConfig } = require('../../../config')
 
 /**
  * Use to help with authentication in tests
@@ -18,7 +18,7 @@ class AuthorisationHelper {
    * @returns {string} A String that represents an encoded JWT
    */
   static adminToken () {
-    return this._createToken(AuthorisationConfig.adminClientId)
+    return this._createToken(AuthenticationConfig.adminClientId)
   }
 
   /**
