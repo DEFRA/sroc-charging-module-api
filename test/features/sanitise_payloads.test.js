@@ -34,7 +34,7 @@ describe('Sanitizing requests to the API', () => {
     it('allows the original values to get through unescaped', async () => {
       const requestPayload = {
         reference: 'BESESAME001',
-        customerName: 'Bert & Ernie >< Ltd'
+        customerName: 'Bert & Ernie <> Ltd'
       }
 
       const response = await server.inject(options(requestPayload))
