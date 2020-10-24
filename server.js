@@ -30,7 +30,9 @@ exports.deployment = async start => {
   await server.register(BlippPlugin)
   await server.register(HpalDebugPlugin)
 
-  server.ext('onRequest', OnRequestHook)
+  // TODO: Move hooks to plugins and deal with OnRequestHook being incorrectly
+  // named
+  server.ext('onCredentials', OnRequestHook)
   server.ext('onCredentials', OnCredentialsHook)
 
   await server.initialize()
