@@ -36,7 +36,9 @@ class Charge {
       regimeValue14: Joi.boolean().required(),
       regimeValue15: Joi.string().trim().required(), // validated in the rules service
       regimeValue16: Joi.boolean().required(),
-      regimeValue17: Joi.boolean().required()
+      regimeValue17: Joi.boolean().required(),
+      lineAttr3: Joi.string().length(7).required(),
+      chargeFinancialYear: Joi.number().required()
     }
   }
 }
