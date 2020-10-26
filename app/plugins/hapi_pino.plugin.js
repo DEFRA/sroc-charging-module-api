@@ -1,7 +1,5 @@
 'use strict'
 
-const { TestConfig } = require('../../config')
-
 /**
  * Plugin that handles logging for the application
  *
@@ -26,8 +24,8 @@ const HapiPino = require('hapi-pino')
  * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax|spread operator} on
  * the returned value will allow it to be incorporated with our default hapi-pino options.
  */
-const testOptions = () => {
-  if (TestConfig.logInTest) {
+const testOptions = (logInTest) => {
+  if (logInTest) {
     return []
   }
 
@@ -39,18 +37,20 @@ const testOptions = () => {
   }
 }
 
-const HapiPinoPlugin = {
-  plugin: HapiPino,
-  options: {
-    // Include our test configuration
-    ...testOptions(),
-    // When not in the production environment we want a 'pretty' version of the JSON to make it easier to grok what has
-    // happened
-    prettyPrint: process.env.NODE_ENV !== 'production',
-    // Redact Authorization headers, see https://getpino.io/#/docs/redaction
-    redact: ['req.headers.authorization'],
-    // We don't want logs outputting for our 'health' routes
-    ignorePaths: ['/', '/status']
+const HapiPinoPlugin = (logInTest) => {
+  return {
+    plugin: HapiPino,
+    options: {
+      // Include our test configuration
+      ...testOptions(logInTest),
+      // When not in the production environment we want a 'pretty' version of the JSON to make it easier to grok what has
+      // happened
+      prettyPrint: process.env.NODE_ENV !== 'production',
+      // Redact Authorization headers, see https://getpino.io/#/docs/redaction
+      redact: ['req.headers.authorization'],
+      // We don't want logs outputting for our 'health' routes
+      ignorePaths: ['/', '/status']
+    }
   }
 }
 
