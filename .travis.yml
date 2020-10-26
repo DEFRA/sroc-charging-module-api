@@ -31,7 +31,7 @@ env:
     - WRLS_RULESET=wrls_RuleSet
     - WRLS_SROC_APP=TEST_WRLS_SRoC_RuleApp
     - WRLS_SROC_RULESET=WRLS_SRoC_RuleSet
-    
+
 # We don't specify a version because we have an .nvmrc file
 # https://docs.travis-ci.com/user/languages/javascript-with-nodejs/#specifying-nodejs-versions-using-nvmrc
 language: node_js
@@ -40,6 +40,9 @@ before_install:
   - export TZ=UTC
 
 before_script:
+  # Before we do anything, check we haven't accidentally left any
+  # `describe.only()` or `it.only(` statements in the tests
+  - if grep -q -R 'describe.only(\|it.only(' test; then travis_terminate 1; fi;
   # Travis creates a postgres user with no password by default. However, our
   # joi config check requires a password that is not null else the app refuses
   # to start. So we need to create a new user with a password. Then we need to
