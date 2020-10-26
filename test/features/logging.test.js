@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, after } = exports.lab = Lab.script()
+const { describe, it, before, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
@@ -16,13 +16,8 @@ const { TestConfig } = require('../../config')
 
 describe('Only output the log when running unit tests if configured to', () => {
   let server
-  let configStub
 
-  before(async () => {
-    configStub = Sinon.stub(TestConfig, 'logInTest')
-  })
-
-  after(async () => {
+  afterEach(async () => {
     Sinon.restore()
   })
 
@@ -30,7 +25,7 @@ describe('Only output the log when running unit tests if configured to', () => {
   // very first test run.
   describe.skip('When logging in test is enabled', () => {
     before(async () => {
-      configStub.value(true)
+      Sinon.replace(TestConfig, 'logInTest', true)
       server = await deployment()
     })
 
@@ -48,7 +43,7 @@ describe('Only output the log when running unit tests if configured to', () => {
 
   describe('When logging in test is disabled', () => {
     before(async () => {
-      configStub.value(false)
+      Sinon.replace(TestConfig, 'logInTest', false)
       server = await deployment()
     })
 
