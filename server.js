@@ -7,8 +7,9 @@ const {
   AirbrakePlugin,
   BlippPlugin,
   DisinfectPlugin,
-  HapiNowAuthPlugin,
   HpalDebugPlugin,
+  HapiNowAuthPlugin,
+  HapiPinoPlugin,
   RouterPlugin,
   UnescapePlugin
 } = require('./app/plugins')
@@ -29,6 +30,7 @@ exports.deployment = async start => {
   await server.register(AirbrakePlugin)
   await server.register(DisinfectPlugin)
   await server.register(UnescapePlugin)
+  await server.register(HapiPinoPlugin)
   await server.register(BlippPlugin)
   await server.register(HpalDebugPlugin)
 
@@ -41,7 +43,6 @@ exports.deployment = async start => {
 
   if (start) {
     await server.start()
-    console.log(`Server started at ${server.info.uri}`)
   }
 
   return server
