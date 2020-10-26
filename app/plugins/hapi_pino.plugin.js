@@ -31,7 +31,12 @@ const testOptions = () => {
     return []
   }
 
-  return { logEvents: false }
+  return {
+    // Don't log requests etc
+    logEvents: false,
+    // Don't log anything tagged with DEBUG or info, for example, req.log(['INFO'], 'User is an admin')
+    ignoredEventTags: { log: ['DEBUG', 'INFO'], request: ['DEBUG', 'INFO'] }
+  }
 }
 
 const HapiPinoPlugin = {
