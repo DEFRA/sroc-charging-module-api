@@ -9,7 +9,8 @@ const {
   DisinfectPlugin,
   HapiNowAuthPlugin,
   HpalDebugPlugin,
-  RouterPlugin
+  RouterPlugin,
+  UnescapePlugin
 } = require('./app/plugins')
 const { OnCredentialsHook, OnRequestHook } = require('./app/hooks')
 
@@ -25,12 +26,15 @@ exports.deployment = async start => {
 
   // Register the remaining plugins
   await server.register(RouterPlugin)
-  await server.register(DisinfectPlugin)
   await server.register(AirbrakePlugin)
+  await server.register(DisinfectPlugin)
+  await server.register(UnescapePlugin)
   await server.register(BlippPlugin)
   await server.register(HpalDebugPlugin)
 
-  server.ext('onRequest', OnRequestHook)
+  // TODO: Move hooks to plugins and deal with OnRequestHook being incorrectly
+  // named
+  server.ext('onCredentials', OnRequestHook)
   server.ext('onCredentials', OnCredentialsHook)
 
   await server.initialize()
