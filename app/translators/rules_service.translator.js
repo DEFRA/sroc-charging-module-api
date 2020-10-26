@@ -2,7 +2,7 @@
 
 const BaseTranslator = require('./base.translator')
 
-class ChargeTranslator extends BaseTranslator {
+class RulesServiceTranslator extends BaseTranslator {
   _translations () {
     return {
       periodStart: 'chargePeriodStart',
@@ -27,4 +27,4 @@ class ChargeTranslator extends BaseTranslator {
   }
 }
 
-module.exports = ChargeTranslator
+module.exports = RulesServiceTranslator

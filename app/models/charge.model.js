@@ -24,7 +24,7 @@ class Charge {
       chargeCredit: Joi.boolean().required(),
       regimeValue4: Joi.number().integer().min(0).max(366).required(),
       regimeValue5: Joi.number().integer().min(0).max(366).required(),
-      lineAttr_5: Joi.number().min(0).required(),
+      lineAttr5: Joi.number().min(0).required(),
       regimeValue6: Joi.string().trim().required(), // validated in rules service
       regimeValue7: Joi.string().trim().required(), // validated in rules service
       regimeValue8: Joi.string().trim().required(), // validated in rules service
