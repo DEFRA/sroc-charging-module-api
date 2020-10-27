@@ -8,13 +8,13 @@ const onCredentials = (req, h) => {
 
   // admin is always authorised to access regimes
   if (user.admin) {
-    console.log('ADMIN')
+    req.log(['INFO'], 'User is an admin')
     return h.continue
   }
 
   // No specific authorisation is needed if the endpoint doesn't contain a regime
   if (!regimeId) {
-    console.log('No authorisation needed for this endpoint')
+    req.log(['INFO'], 'No authorisation needed for this endpoint')
     return h.continue
   }
 
