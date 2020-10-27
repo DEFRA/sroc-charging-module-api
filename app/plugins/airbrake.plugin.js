@@ -25,13 +25,13 @@ const airbrakeNotifier = new Airbrake.Notifier({
   performanceStats: false
 })
 
-const notificationLogged = notice => {
+const notificationLogged = (server, notice) => {
   if (!notice.id) {
-    console.log('Airbrake notification failed', notice.error)
+    server.log(['ERROR'], `Airbrake notification failed: ${notice.error}`)
   }
 }
-const notificationDropped = error => {
-  console.log('Airbrake notification failed', error)
+const notificationDropped = (server, error) => {
+  server.log(['ERROR'], `Airbrake notification failed: ${error}`)
 }
 
 const AirbrakePlugin = {
@@ -49,8 +49,8 @@ const AirbrakePlugin = {
             url: req.url.href
           }
         })
-        .then(notice => notificationLogged(notice))
-        .catch(err => notificationDropped(err))
+        .then(notice => notificationLogged(server, notice))
+        .catch(err => notificationDropped(server, err))
     })
 
     // To enable us to send notifications via Airbrake to Errbit manually we
@@ -63,8 +63,8 @@ const AirbrakePlugin = {
           error: error,
           session: session
         })
-        .then(notice => notificationLogged(notice))
-        .catch(err => notificationDropped(err))
+        .then(notice => notificationLogged(server, notice))
+        .catch(err => notificationDropped(server, err))
     })
   }
 }
