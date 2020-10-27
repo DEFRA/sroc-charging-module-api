@@ -24,9 +24,9 @@ const HapiPino = require('hapi-pino')
  * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax|spread operator} on
  * the returned value will allow it to be incorporated with our default hapi-pino options.
  */
-const testOptions = (logInTest) => {
-  if (logInTest) {
-    return []
+const testOptions = logInTest => {
+  if (process.env.NODE_ENV !== 'test' || logInTest) {
+    return {}
   }
 
   return {
@@ -37,7 +37,7 @@ const testOptions = (logInTest) => {
   }
 }
 
-const HapiPinoPlugin = (logInTest) => {
+const HapiPinoPlugin = logInTest => {
   return {
     plugin: HapiPino,
     options: {
