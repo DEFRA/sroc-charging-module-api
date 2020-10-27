@@ -7,15 +7,23 @@ class RulesServiceTranslator extends BaseTranslator {
     // The rules service returns the data we need in a WRLSChargingResponse object within the response object
     super(data.WRLSChargingResponse)
 
-    // Getter for baselineCharge which the rules service returns in the WRLSChargingResponse.decisionPoints object
+    // Getter for baselineCharge which we convert to pence
     Object.defineProperty(this, 'baselineCharge', {
       get () {
-        return this._data.decisionPoints.baselineCharge
+        return this._baselineCharge()
       },
       enumerable: true
     })
 
-    // // Getter for charge element agreement
+    // Getter for chargeValue which we convert to pence
+    Object.defineProperty(this, 'chargeValue', {
+      get () {
+        return this._chargeValue()
+      },
+      enumerable: true
+    })
+
+    // Getter for charge element agreement which is determined based on rules service response
     Object.defineProperty(this, 'lineAttr10', {
       get () {
         return this._chargeElementAgreement()
@@ -26,9 +34,26 @@ class RulesServiceTranslator extends BaseTranslator {
 
   _translations () {
     return {
-      chargeValue: 'chargeValue',
       s130Agreement: 'lineAttr9'
     }
+  }
+
+  _baselineCharge () {
+    return this._convertToPence(this._data.decisionPoints.baselineCharge)
+  }
+
+  _chargeValue () {
+    return this._convertToPence(this._data.chargeValue)
+  }
+
+  _convertToPence (value) {
+    const floatValue = parseFloat(value)
+
+    if (isNaN(floatValue)) {
+      return null
+    }
+
+    return Math.round(floatValue * 100)
   }
 
   // The data used for the charge element agreement depends on what the rules service returns

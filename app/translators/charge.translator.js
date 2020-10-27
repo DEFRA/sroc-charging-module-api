@@ -57,7 +57,7 @@ class ChargeTranslator extends BaseTranslator {
     const month = chargePeriodStartDate.getMonth()
     const year = chargePeriodStartDate.getFullYear()
 
-    return (month < 3 ? year - 1 : year)
+    return (month <= 2 ? year - 1 : year)
   }
 
   // Return a number as a string, padded to 3 digits with leading zeroes

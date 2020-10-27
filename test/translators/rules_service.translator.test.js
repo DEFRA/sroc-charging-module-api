@@ -10,18 +10,30 @@ const { expect } = Code
 // Thing under test
 const { RulesServiceTranslator } = require('../../app/translators')
 
-describe.only('Rules Service translator', () => {
+describe('Rules Service translator', () => {
   describe('baselineCharge', () => {
     it('is correctly returned', async () => {
       const testData = {
         decisionPoints: {
-          baselineCharge: 12345
+          baselineCharge: 123.45
         }
       }
 
       const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
 
       expect(testTranslator.baselineCharge).to.equal(12345)
+    })
+  })
+
+  describe('chargeValue', () => {
+    it('is correctly returned', async () => {
+      const testData = {
+        chargeValue: 123.45
+      }
+
+      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
+
+      expect(testTranslator.chargeValue).to.equal(12345)
     })
   })
 
