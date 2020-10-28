@@ -39,9 +39,9 @@ class Charge {
       regimeValue17: Joi.boolean().required(),
       lineAttr3: Joi.string().length(7).required(),
       chargeFinancialYear: Joi.number().required(),
-      chargeValue: Joi.number(),
+      chargeValue: Joi.number().integer(),
       lineAttr9: Joi.string(),
-      baselineCharge: Joi.number(),
+      baselineCharge: Joi.number().integer(),
       lineAttr10: Joi.string()
     }
   }
