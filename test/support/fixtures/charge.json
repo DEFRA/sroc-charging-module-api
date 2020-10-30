@@ -1,4 +1,5 @@
 {
+  "chargeCategoryCode": "S123",
   "chargePeriodStart": "01-APR-2014",
   "chargePeriodEnd": "31-MAR-2015",
   "chargeCredit": true,

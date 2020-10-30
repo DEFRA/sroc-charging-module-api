@@ -1,0 +1,14 @@
+{
+  "chargeCategoryCode": "S15",
+  "periodStart": "01-APR-2020",
+  "periodEnd": "31-MAR-2021",
+  "section126Factor": 0.8,
+  "section127Agreement": false,
+  "section130Agreement": false,
+  "source": "Supported",
+  "billableDays": 214,
+  "authorisedDays": 365,
+  "credit": true,
+  "compensationCharge": false,
+  "twoPartTariff": false
+}

@@ -1,0 +1,14 @@
+{
+  "chargeCategoryCode": "S181",
+  "periodStart": "01-APR-2020",
+  "periodEnd": "31-OCT-2020",
+  "section126Factor": null,
+  "section127Agreement": true,
+  "section130Agreement": true,
+  "source": "Supported",
+  "billableDays": 214,
+  "authorisedDays": 214,
+  "credit": false,
+  "compensationCharge": false,
+  "twoPartTariff": false
+}
