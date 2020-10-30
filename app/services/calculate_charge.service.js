@@ -22,7 +22,7 @@ class CalculateChargeService {
    */
   static async call (presenter, Translator) {
     const response = await RulesService.call(presenter)
-    return new Translator(response)
+    return new Translator(response.body)
   }
 }
 

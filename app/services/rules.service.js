@@ -9,9 +9,9 @@ class RulesService {
   // * Regime is the regime in lower case text, eg. wrls
   // * financialYear is the 4-digit year, eg. 2020
   // * chargeParams is an object containing the parameters to be passed to the rules service
-  static call (translator) {
+  static call (presenter) {
     const { url, username, password } = RulesServiceConfig
-    const { regime, financialYear, chargeParams } = translator
+    const { regime, financialYear, chargeParams } = presenter
     const path = this._makeRulesPath(regime, financialYear)
     const options = this._requestOptions(url, chargeParams, username, password)
 
