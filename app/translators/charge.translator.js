@@ -25,6 +25,7 @@ class ChargeTranslator extends BaseTranslator {
 
   _translations () {
     return {
+      chargeCategoryCode: 'chargeCategoryCode',
       periodStart: 'chargePeriodStart',
       periodEnd: 'chargePeriodEnd',
       credit: 'chargeCredit',
