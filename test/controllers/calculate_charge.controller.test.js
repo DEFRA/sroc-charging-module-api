@@ -21,6 +21,8 @@ const JsonWebToken = require('jsonwebtoken')
 const requestFixture = require('../support/fixtures/wrls/calculate_charge_request_1.json')
 const responseFixture = require('../support/fixtures/wrls/calculate_charge_response_1.json')
 
+// TODO: Mock call to rules service
+
 describe('Calculate charge controller: POST /v2/{regime}/calculate_charge', () => {
   let server
 
