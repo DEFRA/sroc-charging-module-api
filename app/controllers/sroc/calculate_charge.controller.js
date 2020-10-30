@@ -9,20 +9,26 @@ const { ChargePresenter, RulesServicePresenter } = require('../../presenters')
 
 class CalculateChargeController extends BaseCalculateChargeController {
   static async calculate (req, _h) {
-    const { regime } = req.params
-    const translatedRequest = new ChargeTranslator(req.payload)
-    const charge = new ChargeModel(translatedRequest)
-    const requestPresenter = new RulesServicePresenter({ ...charge, regime })
-    const rulesServiceResponse = await CalculateChargeService.call(requestPresenter.call(), RulesServiceTranslator)
-
+    const charge = _createCharge(req.payload)
+    const rulesServiceResponse = await _presentRequest(charge, req.params.regime)
     Object.assign(charge, rulesServiceResponse)
-    const responsePresenter = new ChargePresenter(charge)
-    return responsePresenter.call()
+    return _presentResponse(charge)
   }
+}
 
-  _sendRequest (req) {
+function _createCharge (payload) {
+  const translatedRequest = new ChargeTranslator(payload)
+  return new ChargeModel(translatedRequest)
+}
 
-  }
+async function _presentRequest (charge, regime) {
+  const requestPresenter = new RulesServicePresenter({ ...charge, regime })
+  return CalculateChargeService.call(requestPresenter.call(), RulesServiceTranslator)
+}
+
+function _presentResponse (charge) {
+  const responsePresenter = new ChargePresenter(charge)
+  return responsePresenter.call()
 }
 
 module.exports = CalculateChargeController
