@@ -1,7 +1,7 @@
 'use strict'
 
 const Boom = require('@hapi/boom')
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 
 class Charge {
   constructor (data) {
@@ -14,14 +14,14 @@ class Charge {
   }
 
   static validate (data) {
-    return Joi.validate(data, this.schema, { abortEarly: false })
+    return this.schema.validate(data, { abortEarly: false })
   }
 
   static get schema () {
-    return {
+    return Joi.object({
       chargeCategoryCode: Joi.string().trim().required(),
       chargePeriodStart: Joi.date().less(Joi.ref('chargePeriodEnd')).min('01-APR-2021').required(),
-      chargePeriodEnd: Joi.date().greater(Joi.ref('chargePeriodStart')).max('31-MAR-2031').required(),
+      chargePeriodEnd: Joi.date().max('31-MAR-2031').required(),
       chargeCredit: Joi.boolean().required(),
       regimeValue4: Joi.number().integer().min(0).max(366).required(),
       regimeValue5: Joi.number().integer().min(0).max(366).required(),
@@ -40,11 +40,12 @@ class Charge {
       regimeValue17: Joi.boolean().required(),
       lineAttr3: Joi.string().length(7).required(),
       chargeFinancialYear: Joi.number().required(),
+      chargePeriodEndFinancialYear: Joi.number().equal(Joi.ref('chargeFinancialYear')).strip(),
       chargeValue: Joi.number().integer(),
       lineAttr9: Joi.string(),
       baselineCharge: Joi.number().integer(),
       lineAttr10: Joi.string()
-    }
+    })
   }
 }
 

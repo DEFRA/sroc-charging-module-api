@@ -14,10 +14,19 @@ class ChargeTranslator extends BaseTranslator {
       enumerable: true
     })
 
-    // Getter for financial year
+    // Getter for financial year based on chargePeriodStart
     Object.defineProperty(this, 'chargeFinancialYear', {
       get () {
-        return this._financialYear()
+        return this._financialYear(this.chargePeriodStart)
+      },
+      enumerable: true
+    })
+
+    // Getter for financial year based on chargePeriodEnd
+    // Used only for validating that the dates are in the same financial year
+    Object.defineProperty(this, 'chargePeriodEndFinancialYear', {
+      get () {
+        return this._financialYear(this.chargePeriodEnd)
       },
       enumerable: true
     })
@@ -53,10 +62,10 @@ class ChargeTranslator extends BaseTranslator {
 
   // If the charge period start date is January to March then the financial year is the previous year
   // Otherwise, the financial year is the current year
-  _financialYear () {
-    const chargePeriodStartDate = new Date(this.chargePeriodStart)
-    const month = chargePeriodStartDate.getMonth()
-    const year = chargePeriodStartDate.getFullYear()
+  _financialYear (date) {
+    const chargePeriodDate = new Date(date)
+    const month = chargePeriodDate.getMonth()
+    const year = chargePeriodDate.getFullYear()
 
     return (month <= 2 ? year - 1 : year)
   }
