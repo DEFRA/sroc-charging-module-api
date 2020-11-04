@@ -20,8 +20,8 @@ class Charge {
   static get schema () {
     return {
       chargeCategoryCode: Joi.string().trim().required(),
-      chargePeriodStart: Joi.date().less(Joi.ref('chargePeriodEnd')).min('01-APR-2014').required(),
-      chargePeriodEnd: Joi.date().greater(Joi.ref('chargePeriodStart')).max('31-MAR-2021').required(),
+      chargePeriodStart: Joi.date().less(Joi.ref('chargePeriodEnd')).min('01-APR-2021').required(),
+      chargePeriodEnd: Joi.date().greater(Joi.ref('chargePeriodStart')).max('31-MAR-2031').required(),
       chargeCredit: Joi.boolean().required(),
       regimeValue4: Joi.number().integer().min(0).max(366).required(),
       regimeValue5: Joi.number().integer().min(0).max(366).required(),

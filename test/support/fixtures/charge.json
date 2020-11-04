@@ -1,7 +1,7 @@
 {
   "chargeCategoryCode": "S123",
-  "chargePeriodStart": "01-APR-2014",
-  "chargePeriodEnd": "31-MAR-2015",
+  "chargePeriodStart": "01-APR-2021",
+  "chargePeriodEnd": "31-MAR-2022",
   "chargeCredit": true,
   "regimeValue4": 365,
   "regimeValue5": 365,
@@ -18,5 +18,5 @@
   "regimeValue14": true,
   "regimeValue15": "test",
   "lineAttr3": "365/365",
-  "chargeFinancialYear": 2014
+  "chargeFinancialYear": 2021
 }
