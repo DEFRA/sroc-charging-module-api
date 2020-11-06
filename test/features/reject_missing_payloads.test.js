@@ -21,7 +21,7 @@ const options = payload => {
   }
 }
 
-describe('Reject POST requests with empty payloads', () => {
+describe('Reject POST requests with missing payloads', () => {
   let server
 
   // Create server before each test
