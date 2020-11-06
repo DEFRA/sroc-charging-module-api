@@ -45,9 +45,22 @@ describe('Reject POST requests with empty payloads', () => {
 
   describe('When a POST request has an empty payload', () => {
     it('rejects the request with the appropriate error message', async () => {
-      const requestPayload = null
+      const requestPayload = ''
 
       const response = await server.inject(options(requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(400)
+      expect(responsePayload.message).to.equal('The request is invalid because it does not contain a payload.')
+    })
+  })
+
+  describe('When a POST request has no payload', () => {
+    it('rejects the request with the appropriate error message', async () => {
+      const response = await server.inject({
+        method: 'POST',
+        url: '/test/post'
+      })
       const responsePayload = JSON.parse(response.payload)
 
       expect(response.statusCode).to.equal(400)
