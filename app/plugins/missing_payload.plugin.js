@@ -2,6 +2,13 @@
 
 const Boom = require('@hapi/boom')
 
+/**
+ * Check payloads of POST requests and return 400 response if missing
+ *
+ * When any POST request is made it's because it will be a request to create a record or update one based on the data
+ * held in the request payload. To avoid having to put checks into all our POST controller endpoints to test for missing
+ * payloads we instead have this plugin.
+ */
 const MissingPayloadPlugin = {
   name: 'missing_payload',
   register: (server, _options) => {
