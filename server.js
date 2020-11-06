@@ -38,7 +38,7 @@ exports.deployment = async start => {
 
   // TODO: Move hooks to plugins and deal with OnRequestHook being incorrectly
   // named
-  server.ext('onCredentials', OnRequestHook)
+  server.ext('onPostAuth', OnRequestHook)
   server.ext('onCredentials', OnCredentialsHook)
 
   await server.initialize()
