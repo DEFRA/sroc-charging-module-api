@@ -42,15 +42,10 @@ class ChargeTranslator extends BaseTranslator {
       authorisedDays: 'regimeValue5',
       volume: 'lineAttr5',
       source: 'regimeValue6',
-      season: 'regimeValue7',
-      loss: 'regimeValue8',
       section130Agreement: 'regimeValue9',
       section126Agreement: 'regimeValue10',
       section126Factor: 'regimeValue11',
       section127Agreement: 'regimeValue12',
-      eiucSource: 'regimeValue13',
-      waterUndertaker: 'regimeValue14',
-      regionalChargingArea: 'regimeValue15',
       twoPartTariff: 'regimeValue16',
       compensationCharge: 'regimeValue17'
     }

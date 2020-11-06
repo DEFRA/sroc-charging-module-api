@@ -22,7 +22,8 @@ describe('Charge model', () => {
     const testDataToCheckAgainst = {
       ...testData,
       chargePeriodStart: new Date(testData.chargePeriodStart),
-      chargePeriodEnd: new Date(testData.chargePeriodEnd)
+      chargePeriodEnd: new Date(testData.chargePeriodEnd),
+      chargeCredit: true
     }
 
     // Check that the value of each key in the charge object matches the original value

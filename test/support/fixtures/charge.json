@@ -7,16 +7,12 @@
   "regimeValue5": 365,
   "lineAttr5": 1,
   "regimeValue6": "test",
-  "regimeValue7": "test",
-  "regimeValue8": "test",
   "regimeValue9": true,
   "regimeValue11": 2,
   "regimeValue12": true,
   "regimeValue16": true,
   "regimeValue17": true,
-  "regimeValue13": "test",
-  "regimeValue14": true,
-  "regimeValue15": "test",
   "lineAttr3": "365/365",
-  "chargeFinancialYear": 2021
+  "chargeFinancialYear": 2021,
+  "chargePeriodEndFinancialYear": 2021
 }

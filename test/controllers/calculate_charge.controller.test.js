@@ -43,8 +43,6 @@ const calculateChargeResponseFixtures = [
   require('../support/fixtures/wrls/calculate_charge/calculate_charge_response_3.json')
 ]
 
-// TODO: Mock call to rules service
-
 describe('Calculate charge controller: POST /v2/{regime}/calculate_charge', () => {
   let server
 
