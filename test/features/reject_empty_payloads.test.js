@@ -51,7 +51,7 @@ describe('Reject POST requests with empty payloads', () => {
       const responsePayload = JSON.parse(response.payload)
 
       expect(response.statusCode).to.equal(400)
-      expect(responsePayload.message).to.equal('No payload')
+      expect(responsePayload.message).to.equal('The request is invalid because it does not contain a payload.')
     })
   })
 })
