@@ -1,6 +1,7 @@
 'use strict'
 
 const BaseTranslator = require('./base.translator')
+const Joi = require('joi')
 
 class RulesServiceTranslator extends BaseTranslator {
   constructor (data) {
@@ -30,6 +31,18 @@ class RulesServiceTranslator extends BaseTranslator {
       },
       enumerable: true
     })
+  }
+
+  get _schema () {
+    return Joi.object({
+      chargeValue: Joi.number().required(),
+      s127Agreement: Joi.string().allow(null),
+      s130Agreement: Joi.string().allow(null),
+      abatementAdjustment: Joi.string().required(),
+      decisionPoints: Joi.object({
+        baselineCharge: Joi.number().integer().required()
+      })
+    }).options({ stripUnknown: true })
   }
 
   _translations () {

@@ -1,6 +1,9 @@
 'use strict'
+// TODO: Change periodStart back to 20201
 
 const BaseTranslator = require('./base.translator')
+const Joi = require('joi')
+const Boom = require('@hapi/boom')
 
 class ChargeTranslator extends BaseTranslator {
   constructor (data) {
@@ -29,6 +32,44 @@ class ChargeTranslator extends BaseTranslator {
         return this._financialYear(this.chargePeriodEnd)
       },
       enumerable: true
+    })
+
+    // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year
+    this._validateFinancialYear()
+  }
+
+  _validateFinancialYear () {
+    const schema = Joi.object({
+      chargePeriodEndFinancialYear: Joi.number().equal(this.chargeFinancialYear)
+    })
+
+    const data = {
+      chargePeriodEndFinancialYear: this._financialYear(this.chargePeriodEnd)
+    }
+
+    const { error } = schema.validate(data, { abortEarly: false })
+
+    if (error) {
+      throw Boom.badData(error)
+    }
+  }
+
+  get _schema () {
+    return Joi.object({
+      chargeCategoryCode: Joi.string().trim().required(),
+      periodStart: Joi.date().less(Joi.ref('periodEnd')).min('01-APR-2020').required(),
+      periodEnd: Joi.date().required(),
+      credit: Joi.boolean().required(),
+      billableDays: Joi.number().integer().min(0).max(366).required(),
+      authorisedDays: Joi.number().integer().min(0).max(366).required(),
+      volume: Joi.number().min(0),
+      source: Joi.string().trim().required(), // validated in rules service
+      section130Agreement: Joi.boolean().required(),
+      section126Agreement: Joi.boolean(),
+      section126Factor: Joi.number().allow(null).empty(null).default(1.0),
+      section127Agreement: Joi.boolean().required(),
+      twoPartTariff: Joi.boolean().required(),
+      compensationCharge: Joi.boolean().required()
     })
   }
 
