@@ -15,7 +15,7 @@ class BaseTranslator {
     Object.defineProperty(this, '_data', { enumerable: false })
 
     // Create each getter in _translations. We do this within the constructor to keep Joi happy
-    // TODO: Rework this now that we validate first
+    // TODO: We may not need to do this here now that validation is done on the presenter
     const translations = this._translations()
     for (const translator in translations) {
       this._createStandardGetter(this, translator, translations[translator])
