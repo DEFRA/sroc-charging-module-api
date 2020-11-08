@@ -24,15 +24,6 @@ class ChargeTranslator extends BaseTranslator {
       enumerable: true
     })
 
-    // Getter for financial year based on chargePeriodEnd
-    // Used only for validating that the dates are in the same financial year
-    Object.defineProperty(this, 'chargePeriodEndFinancialYear', {
-      get () {
-        return this._financialYear(this.chargePeriodEnd)
-      },
-      enumerable: true
-    })
-
     // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year
     this._validateFinancialYear()
   }
