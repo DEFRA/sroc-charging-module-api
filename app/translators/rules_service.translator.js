@@ -33,14 +33,14 @@ class RulesServiceTranslator extends BaseTranslator {
     })
   }
 
-  get _schema () {
+  _schema () {
     return Joi.object({
       chargeValue: Joi.number().required(),
       s127Agreement: Joi.string().allow(null),
       s130Agreement: Joi.string().allow(null),
       abatementAdjustment: Joi.string().required(),
       decisionPoints: Joi.object({
-        baselineCharge: Joi.number().integer().required()
+        baselineCharge: Joi.number().required()
       })
     }).options({ stripUnknown: true })
   }

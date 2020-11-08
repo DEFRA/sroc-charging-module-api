@@ -1,5 +1,4 @@
 'use strict'
-// TODO: Change periodStart back to 20201
 
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
@@ -54,10 +53,10 @@ class ChargeTranslator extends BaseTranslator {
     }
   }
 
-  get _schema () {
+  _schema () {
     return Joi.object({
       chargeCategoryCode: Joi.string().trim().required(),
-      periodStart: Joi.date().less(Joi.ref('periodEnd')).min('01-APR-2020').required(),
+      periodStart: Joi.date().less(Joi.ref('periodEnd')).min('01-APR-2021').required(),
       periodEnd: Joi.date().required(),
       credit: Joi.boolean().required(),
       billableDays: Joi.number().integer().min(0).max(366).required(),
