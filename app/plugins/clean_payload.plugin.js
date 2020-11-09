@@ -60,13 +60,11 @@ const cleanObj = obj =>
   Object.fromEntries(
     Object.entries(obj)
       .filter(([_key, val]) => filter(val))
-      .map(([key, val]) => {
-        return cleanProperty(key, val)
-      })
+      .map(([key, val]) => cleanProperty(key, val))
       .filter(([_key, val]) => filter(val))
   )
 
-const filter = (value) => {
+const filter = value => {
   if (value && value !== '') {
     return true
   }
