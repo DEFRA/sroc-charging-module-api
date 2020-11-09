@@ -6,15 +6,14 @@ const Code = require('@hapi/code')
 const Sinon = require('sinon')
 const Nock = require('nock')
 
-const { describe, it, before, afterEach } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
 const { deployment } = require('../../server')
 
 // Test helpers
-const { AuthorisationHelper } = require('../support/helpers')
-const { RulesServiceHelper } = require('../support/helpers')
+const { AuthorisationHelper, AuthorisedSystemHelper, RulesServiceHelper, DatabaseHelper } = require('../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -47,20 +46,15 @@ describe('Calculate charge controller: POST /v2/{regime}/calculate_charge', () =
   let server
 
   // Create auth token for stubbing authorisation
-
-  /**
-   * TODO: This only works with a non-admin token if the preceding Airbrake tests are skipped; I suspect something
-   * needs to be done to tear them down properly. This will be looked at in a separate PR; for the time being this
-   * test uses an admin token so it doesn't error.
-   */
   const nonAdminClientId = 'k7ehotrs1fqer7hoaslv7ilmr'
-  const authToken = AuthorisationHelper.adminToken(nonAdminClientId)
+  const authToken = AuthorisationHelper.nonAdminToken(nonAdminClientId)
 
-  before(async () => {
+  beforeEach(async () => {
     // Create server before each test
     server = await deployment()
 
     // Stub authorisation
+    await AuthorisedSystemHelper.addSystem(nonAdminClientId, 'wrls')
     Sinon
       .stub(JsonWebToken, 'verify')
       .returns(AuthorisationHelper.decodeToken(authToken))
@@ -68,6 +62,11 @@ describe('Calculate charge controller: POST /v2/{regime}/calculate_charge', () =
 
   afterEach(async () => {
     Nock.cleanAll()
+    Sinon.restore()
+  })
+
+  afterEach(async () => {
+    await DatabaseHelper.clean()
   })
 
   it('handles example 1 (simple case)', async () => {
