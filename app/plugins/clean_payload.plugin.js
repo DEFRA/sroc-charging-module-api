@@ -76,10 +76,10 @@ const filter = (value) => {
 }
 
 const cleanProperty = (key, value) => {
-  if (value && typeof value === 'object') {
+  if (typeof value === 'object') {
     // The property is another object so use recursion and pass it back into this function
     return [key, cleanObj(value)]
-  } else if (value && typeof value === 'string') {
+  } else if (typeof value === 'string') {
     // The property is a string so call trim() on it and return the result
     return [key, value.trim()]
   }
