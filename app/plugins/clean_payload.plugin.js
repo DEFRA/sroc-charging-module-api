@@ -44,9 +44,8 @@
  * action is to filter out any where the value is `''` or `null`.
  *
  * We then use `map()` to apply `cleanProperty()` to each property that remains. If the property type is another object
- * `cleanProperty()` will use recursion and call `cleanObj()` again passing in the object.
- *
- * When the property is not an object, but is a string it will call `trim()` on it and return the trimmed value.
+ * `cleanProperty()` will use recursion and call `cleanObj()` again passing in the object. Else it will call `trim()` on
+ * it and return the trimmed value.
  *
  * Once this has been applied to all the properties of an object (and its nested objects) we again filter out any empty
  * properties before passing the result to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries|Object.fromEntries()}
@@ -79,13 +78,10 @@ const cleanProperty = (key, value) => {
   if (typeof value === 'object') {
     // The property is another object so use recursion and pass it back into this function
     return [key, cleanObj(value)]
-  } else if (typeof value === 'string') {
-    // The property is a string so call trim() on it and return the result
-    return [key, value.trim()]
   }
 
-  // Not a property type we are interested in so return as is
-  return [key, value]
+  // Call trim() on it and return the result
+  return [key, value.trim()]
 }
 
 const CleanPayloadPlugin = {
