@@ -21,7 +21,7 @@ const options = payload => {
   }
 }
 
-describe.only('Cleaning data in requests', () => {
+describe('Cleaning data in requests', () => {
   let server
 
   // Create server before each test
@@ -92,7 +92,7 @@ describe.only('Cleaning data in requests', () => {
     })
   })
 
-  describe.skip('When a POST request contains properties containing extra whitespace', () => {
+  describe('When a POST request contains properties containing extra whitespace', () => {
     it('removes it', async () => {
       const requestPayload = {
         reference: 'BESESAME001 ',
@@ -105,6 +105,22 @@ describe.only('Cleaning data in requests', () => {
       expect(response.statusCode).to.equal(200)
       expect(responsePayload.reference).to.equal('BESESAME001')
       expect(responsePayload.customerName).to.equal('Bert & Ernie Ltd')
+    })
+
+    it('removes it from nested objects', async () => {
+      const requestPayload = {
+        reference: 'BESESAME001',
+        details: {
+          firstName: 'Bert',
+          lastName: ' Ernie '
+        }
+      }
+
+      const response = await server.inject(options(requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(200)
+      expect(responsePayload.details.lastName).to.equal('Ernie')
     })
   })
 })
