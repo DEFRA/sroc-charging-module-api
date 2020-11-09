@@ -31,7 +31,7 @@ describe.only('Cleaning data in requests', () => {
   })
 
   describe('When a POST request contains properties that are only whitespace', () => {
-    it('removes it', async () => {
+    it('removes them', async () => {
       const requestPayload = {
         reference: 'BESESAME001',
         customerName: ' '
@@ -43,10 +43,26 @@ describe.only('Cleaning data in requests', () => {
       expect(response.statusCode).to.equal(200)
       expect(responsePayload).to.not.contain('customerName')
     })
+
+    it('removes them from nested objects', async () => {
+      const requestPayload = {
+        reference: 'BESESAME001',
+        details: {
+          firstName: 'Bert',
+          lastName: ' '
+        }
+      }
+
+      const response = await server.inject(options(requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(200)
+      expect(responsePayload.details).to.not.contain('lastName')
+    })
   })
 
   describe('When a POST request contains properties that are empty', () => {
-    it('removes it', async () => {
+    it('removes them', async () => {
       const requestPayload = {
         reference: 'BESESAME001',
         customerName: ''
@@ -57,6 +73,22 @@ describe.only('Cleaning data in requests', () => {
 
       expect(response.statusCode).to.equal(200)
       expect(responsePayload).to.not.contain('customerName')
+    })
+
+    it('removes them from nested objects', async () => {
+      const requestPayload = {
+        reference: 'BESESAME001',
+        details: {
+          firstName: 'Bert',
+          lastName: ''
+        }
+      }
+
+      const response = await server.inject(options(requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(200)
+      expect(responsePayload.details).to.not.contain('lastName')
     })
   })
 

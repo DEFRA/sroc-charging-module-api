@@ -17,9 +17,7 @@ const DisinfectPlugin = {
   options: {
     disinfectQuery: true,
     disinfectParams: true,
-    disinfectPayload: true,
-    deleteWhitespace: true,
-    deleteEmpty: true
+    disinfectPayload: true
   }
 }
 
