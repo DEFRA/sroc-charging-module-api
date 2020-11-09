@@ -33,7 +33,7 @@ describe('Base translator', () => {
       expect(() => new BaseTranslator(testData)).to.not.throw()
     })
 
-    it('throws an errror if data is valid', async () => {
+    it('throws an errror if data is invalid', async () => {
       const testData = { before: 'INVALID_DATA' }
 
       expect(() => new BaseTranslator(testData)).to.throw(Joi.ValidationError)
