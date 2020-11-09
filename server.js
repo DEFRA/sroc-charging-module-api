@@ -10,6 +10,7 @@ const {
   HpalDebugPlugin,
   HapiNowAuthPlugin,
   HapiPinoPlugin,
+  InvalidCharactersPlugin,
   RouterPlugin,
   UnescapePlugin
 } = require('./app/plugins')
@@ -28,6 +29,7 @@ exports.deployment = async start => {
   // Register the remaining plugins
   await server.register(RouterPlugin)
   await server.register(AirbrakePlugin)
+  await server.register(InvalidCharactersPlugin)
   await server.register(DisinfectPlugin)
   await server.register(UnescapePlugin)
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
