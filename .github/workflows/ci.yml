@@ -42,7 +42,7 @@ jobs:
         env:
           POSTGRES_USER: charge
           POSTGRES_PASSWORD: pinafore
-          POSTGRES_DB: chargedb_test
+          POSTGRES_DB: sroc_charge_test
         # Maps tcp port 5432 on service container to the host
         ports:
           - 5432:5432
