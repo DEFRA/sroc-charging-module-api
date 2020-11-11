@@ -17,8 +17,6 @@ class RulesService {
     const requestOptions = this._requestOptions(url, chargeParams, username, password)
     const proxyOptions = this._proxyOptions(httpProxy)
 
-    console.log({ ...requestOptions, ...proxyOptions })
-
     return Got.post(path, { ...requestOptions, ...proxyOptions })
   }
 

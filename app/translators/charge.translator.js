@@ -8,21 +8,11 @@ class ChargeTranslator extends BaseTranslator {
   constructor (data) {
     super(data)
 
-    // Getter for prorata days
-    Object.defineProperty(this, 'lineAttr3', {
-      get () {
-        return this._prorataDays()
-      },
-      enumerable: true
-    })
+    // Prorata days string is generated from other properties
+    this.lineAttr3 = this._prorataDays()
 
-    // Getter for financial year based on chargePeriodStart
-    Object.defineProperty(this, 'chargeFinancialYear', {
-      get () {
-        return this._financialYear(this.chargePeriodStart)
-      },
-      enumerable: true
-    })
+    // Financial year is calculated based on chargePeriodStart
+    this.chargeFinancialYear = this._financialYear(this.chargePeriodStart)
 
     // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year
     this._validateFinancialYear()

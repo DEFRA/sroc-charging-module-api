@@ -8,29 +8,12 @@ class RulesServiceTranslator extends BaseTranslator {
     // The rules service returns the data we need in a WRLSChargingResponse object within the response object
     super(data.WRLSChargingResponse)
 
-    // Getter for baselineCharge which we convert to pence
-    Object.defineProperty(this, 'baselineCharge', {
-      get () {
-        return this._baselineCharge()
-      },
-      enumerable: true
-    })
+    // baselineCharge and chargeValue are converted to pence
+    this.baselineCharge = this._baselineCharge()
+    this.chargeValue = this._chargeValue()
 
-    // Getter for chargeValue which we convert to pence
-    Object.defineProperty(this, 'chargeValue', {
-      get () {
-        return this._chargeValue()
-      },
-      enumerable: true
-    })
-
-    // Getter for charge element agreement which is determined based on rules service response
-    Object.defineProperty(this, 'lineAttr10', {
-      get () {
-        return this._chargeElementAgreement()
-      },
-      enumerable: true
-    })
+    // Charge element agreement is determined based on rules service response
+    this.lineAttr10 = this._chargeElementAgreement()
   }
 
   _schema () {
