@@ -37,14 +37,14 @@ class ChargeTranslator extends BaseTranslator {
 
   _schema () {
     return Joi.object({
-      chargeCategoryCode: Joi.string().trim().required(),
+      chargeCategoryCode: Joi.string().required(),
       periodStart: Joi.date().less(Joi.ref('periodEnd')).min(RulesServiceConfig.srocMinDate).required(),
       periodEnd: Joi.date().required(),
       credit: Joi.boolean().required(),
       billableDays: Joi.number().integer().min(0).max(366).required(),
       authorisedDays: Joi.number().integer().min(0).max(366).required(),
       volume: Joi.number().min(0),
-      source: Joi.string().trim().required(), // validated in rules service
+      source: Joi.string().required(), // validated in rules service
       section130Agreement: Joi.boolean().required(),
       section126Agreement: Joi.boolean(),
       section126Factor: Joi.number().allow(null).empty(null).default(1.0),
