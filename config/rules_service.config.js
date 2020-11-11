@@ -6,6 +6,7 @@ const config = {
   url: process.env.RULES_SERVICE_URL,
   username: process.env.RULES_SERVICE_USER,
   password: process.env.RULES_SERVICE_PASSWORD,
+  httpProxy: process.env.RULES_SERVICE_PROXY,
   endpoints: {
     cfd: {
       application: process.env.CFD_APP,
