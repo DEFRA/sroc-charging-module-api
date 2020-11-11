@@ -5,6 +5,7 @@ const { ServerConfig, TestConfig } = require('./config')
 const { JwtStrategyAuth } = require('./app/auth')
 const {
   AirbrakePlugin,
+  AuthorisationPlugin,
   BlippPlugin,
   DisinfectPlugin,
   HpalDebugPlugin,
@@ -15,7 +16,6 @@ const {
   RouterPlugin,
   UnescapePlugin
 } = require('./app/plugins')
-const { OnCredentialsHook } = require('./app/hooks')
 
 exports.deployment = async start => {
   // Create the hapi server
@@ -28,6 +28,7 @@ exports.deployment = async start => {
   server.auth.default('jwt-strategy')
 
   // Register the remaining plugins
+  await server.register(AuthorisationPlugin)
   await server.register(RouterPlugin)
   await server.register(AirbrakePlugin)
   await server.register(MissingPayloadPlugin)
@@ -37,9 +38,6 @@ exports.deployment = async start => {
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
   await server.register(BlippPlugin)
   await server.register(HpalDebugPlugin)
-
-  // TODO: Move hook to plugins
-  server.ext('onCredentials', OnCredentialsHook)
 
   await server.initialize()
 
