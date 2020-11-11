@@ -37,7 +37,7 @@ class ChargeTranslator extends BaseTranslator {
       chargePeriodEndFinancialYear: this._financialYear(this.chargePeriodEnd)
     }
 
-    const { error } = schema.validate(data, { abortEarly: false })
+    const { error } = schema.validate(data)
 
     if (error) {
       throw Boom.badData(error)
@@ -47,7 +47,7 @@ class ChargeTranslator extends BaseTranslator {
   _schema () {
     return Joi.object({
       chargeCategoryCode: Joi.string().trim().required(),
-      periodStart: Joi.date().less(Joi.ref('periodEnd')).min('01-APR-2020').required(),
+      periodStart: Joi.date().less(Joi.ref('periodEnd')).min('01-APR-2020').required(), // TODO: CHANGE THIS BACK TO 2021
       periodEnd: Joi.date().required(),
       credit: Joi.boolean().required(),
       billableDays: Joi.number().integer().min(0).max(366).required(),
