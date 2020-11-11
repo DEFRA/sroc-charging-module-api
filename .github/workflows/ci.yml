@@ -57,6 +57,14 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of sonarcloud analysis
 
+      # Before we do anything, check we haven't accidentally left any `describe.only()` or `it.only(` statements in the
+      # tests
+      #
+      # Reworking of https://stackoverflow.com/a/21788642/6117745
+      - name: Temporary tag check
+        run: |
+          ! grep -R 'describe.only(\|it.only(' test
+
       # Our projects use .nvmrc files to specify the node version to use. We can read and then output it as the result
       # this step. Subsequent steps can then access the value
       - name: Read Node version
