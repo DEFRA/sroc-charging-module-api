@@ -7,6 +7,7 @@ const {
   AirbrakePlugin,
   AuthorisationPlugin,
   BlippPlugin,
+  CleanPayload,
   DisinfectPlugin,
   HpalDebugPlugin,
   HapiNowAuthPlugin,
@@ -35,6 +36,7 @@ exports.deployment = async start => {
   await server.register(InvalidCharactersPlugin)
   await server.register(DisinfectPlugin)
   await server.register(UnescapePlugin)
+  await server.register(CleanPayload)
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
   await server.register(BlippPlugin)
   await server.register(HpalDebugPlugin)

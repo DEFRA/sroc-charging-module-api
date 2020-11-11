@@ -74,7 +74,7 @@ describe('Sanitizing requests to the API', () => {
       const responsePayload = JSON.parse(response.payload)
 
       expect(response.statusCode).to.equal(200)
-      expect(responsePayload.customerName).to.equal('')
+      expect(responsePayload).to.not.contain('customerName')
     })
   })
 })
