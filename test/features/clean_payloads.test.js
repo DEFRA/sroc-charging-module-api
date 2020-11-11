@@ -124,7 +124,7 @@ describe('Cleaning data in requests', () => {
     })
   })
 
-  describe.only('When a POST request contains boolean properties that are false', () => {
+  describe('When a POST request contains boolean properties that are false', () => {
     it('keeps them', async () => {
       const requestPayload = {
         reference: 'BESESAME001',
