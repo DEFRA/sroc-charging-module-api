@@ -123,4 +123,37 @@ describe('Cleaning data in requests', () => {
       expect(responsePayload.details.lastName).to.equal('Ernie')
     })
   })
+
+  describe.only('When a POST request contains boolean properties that are false', () => {
+    it('keeps them', async () => {
+      const requestPayload = {
+        reference: 'BESESAME001',
+        customerName: 'Bert & Ernie Ltd',
+        newCustomer: false
+      }
+
+      const response = await server.inject(options(requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(200)
+      expect(responsePayload).to.contain('newCustomer')
+    })
+
+    it('keeps them in nested objects', async () => {
+      const requestPayload = {
+        reference: 'BESESAME001',
+        details: {
+          firstName: 'Bert',
+          lastName: 'Ernie',
+          newCustomer: false
+        }
+      }
+
+      const response = await server.inject(options(requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(200)
+      expect(responsePayload.details).to.contain('newCustomer')
+    })
+  })
 })
