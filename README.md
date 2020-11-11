@@ -1,6 +1,6 @@
 # SROC Charging Module API
 
-[![Build Status](https://travis-ci.com/DEFRA/sroc-charging-module-api.svg?branch=main)](https://travis-ci.com/DEFRA/sroc-charging-module-api)
+![Build Status](https://github.com/DEFRA/sroc-charging-module-api/workflows/CI/badge.svg?branch=main)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DEFRA_sroc-charging-module-api&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DEFRA_sroc-charging-module-api)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=DEFRA_sroc-charging-module-api&metric=coverage)](https://sonarcloud.io/dashboard?id=DEFRA_sroc-charging-module-api)
 [![Known Vulnerabilities](https://snyk.io/test/github/DEFRA/sroc-charging-module-api/badge.svg)](https://snyk.io/test/github/DEFRA/sroc-charging-module-api)

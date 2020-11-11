@@ -10,10 +10,12 @@ const {
   HpalDebugPlugin,
   HapiNowAuthPlugin,
   HapiPinoPlugin,
+  InvalidCharactersPlugin,
+  MissingPayloadPlugin,
   RouterPlugin,
   UnescapePlugin
 } = require('./app/plugins')
-const { OnCredentialsHook, OnRequestHook } = require('./app/hooks')
+const { OnCredentialsHook } = require('./app/hooks')
 
 exports.deployment = async start => {
   // Create the hapi server
@@ -28,15 +30,15 @@ exports.deployment = async start => {
   // Register the remaining plugins
   await server.register(RouterPlugin)
   await server.register(AirbrakePlugin)
+  await server.register(MissingPayloadPlugin)
+  await server.register(InvalidCharactersPlugin)
   await server.register(DisinfectPlugin)
   await server.register(UnescapePlugin)
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
   await server.register(BlippPlugin)
   await server.register(HpalDebugPlugin)
 
-  // TODO: Move hooks to plugins and deal with OnRequestHook being incorrectly
-  // named
-  server.ext('onCredentials', OnRequestHook)
+  // TODO: Move hook to plugins
   server.ext('onCredentials', OnCredentialsHook)
 
   await server.initialize()
