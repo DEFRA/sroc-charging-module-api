@@ -6,7 +6,7 @@ const config = {
   url: process.env.RULES_SERVICE_URL,
   username: process.env.RULES_SERVICE_USER,
   password: process.env.RULES_SERVICE_PASSWORD,
-  httpProxy: process.env.RULES_SERVICE_PROXY,
+  httpProxy: process.env.HTTP_PROXY,
   srocMinDate: process.env.SROC_MINIMUM_DATE ? process.env.SROC_MINIMUM_DATE : '01-APR-2021',
   endpoints: {
     cfd: {

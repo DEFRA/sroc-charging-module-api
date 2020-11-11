@@ -15,7 +15,7 @@ class RulesService {
     const { regime, financialYear, chargeParams } = presenter
     const path = this._makeRulesPath(regime, financialYear)
     const requestOptions = this._requestOptions(url, chargeParams, username, password)
-    const proxyOptions = this._proxyOptions(httpProxy)
+    const proxyOptions = httpProxy ? this._proxyOptions(httpProxy) : ''
 
     return Got.post(path, { ...requestOptions, ...proxyOptions })
   }
@@ -46,10 +46,6 @@ class RulesService {
   }
 
   static _proxyOptions (httpProxy) {
-    if (!httpProxy) {
-      return
-    }
-
     return {
       agent: {
         https: Tunnel.httpsOverHttp({
