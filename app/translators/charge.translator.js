@@ -3,6 +3,7 @@
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
 const Boom = require('@hapi/boom')
+const { RulesServiceConfig } = require('../../config')
 
 class ChargeTranslator extends BaseTranslator {
   constructor (data) {
@@ -37,7 +38,7 @@ class ChargeTranslator extends BaseTranslator {
   _schema () {
     return Joi.object({
       chargeCategoryCode: Joi.string().trim().required(),
-      periodStart: Joi.date().less(Joi.ref('periodEnd')).min('01-APR-2020').required(), // TODO: CHANGE THIS BACK TO 2021
+      periodStart: Joi.date().less(Joi.ref('periodEnd')).min(RulesServiceConfig.srocMinDate).required(),
       periodEnd: Joi.date().required(),
       credit: Joi.boolean().required(),
       billableDays: Joi.number().integer().min(0).max(366).required(),
