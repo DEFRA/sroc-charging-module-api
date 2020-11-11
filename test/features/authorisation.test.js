@@ -22,16 +22,18 @@ describe('Authorisation with the API', () => {
   let authToken
   const nonAdminClientId = 'k7ehotrs1fqer7hoaslv7ilmr'
 
+  before(async () => {
+    await DatabaseHelper.clean()
+    await AuthorisedSystemHelper.addAdminSystem()
+    await AuthorisedSystemHelper.addSystem(nonAdminClientId, 'wrls')
+
+    server = await deployment()
+    RouteHelper.addAdminRoute(server)
+    RouteHelper.addSystemGetRoute(server)
+    RouteHelper.addPublicRoute(server)
+  })
+
   describe('When accessing an /admin only route', () => {
-    before(async () => {
-      await DatabaseHelper.clean()
-      await AuthorisedSystemHelper.addAdminSystem()
-      await AuthorisedSystemHelper.addSystem(nonAdminClientId, 'wrls')
-
-      server = await deployment()
-      RouteHelper.addAdminRoute(server)
-    })
-
     afterEach(async () => {
       Sinon.restore()
     })
@@ -77,6 +79,119 @@ describe('Authorisation with the API', () => {
         const response = await server.inject(options)
 
         expect(response.statusCode).to.equal(403)
+      })
+    })
+  })
+
+  describe('When accessing a /{regimeId}/action (system) route', () => {
+    afterEach(async () => {
+      Sinon.restore()
+    })
+
+    describe('and I am an admin client', () => {
+      before(async () => {
+        authToken = AuthorisationHelper.adminToken()
+
+        Sinon
+          .stub(JsonWebToken, 'verify')
+          .returns(AuthorisationHelper.decodeToken(authToken))
+      })
+
+      it('returns a success response', async () => {
+        const options = {
+          method: 'GET',
+          url: '/test/wrls/system',
+          headers: { authorization: `Bearer ${authToken}` }
+        }
+
+        const response = await server.inject(options)
+
+        expect(response.statusCode).to.equal(200)
+      })
+    })
+
+    describe('and I am a system client', () => {
+      before(async () => {
+        authToken = AuthorisationHelper.nonAdminToken(nonAdminClientId)
+
+        Sinon
+          .stub(JsonWebToken, 'verify')
+          .returns(AuthorisationHelper.decodeToken(authToken))
+      })
+
+      it('returns a success response', async () => {
+        const options = {
+          method: 'GET',
+          url: '/test/wrls/system',
+          headers: { authorization: `Bearer ${authToken}` }
+        }
+
+        const response = await server.inject(options)
+
+        expect(response.statusCode).to.equal(200)
+      })
+    })
+  })
+
+  describe('When accessing a public route', () => {
+    afterEach(async () => {
+      Sinon.restore()
+    })
+
+    describe('and I am an admin client', () => {
+      before(async () => {
+        authToken = AuthorisationHelper.adminToken()
+
+        Sinon
+          .stub(JsonWebToken, 'verify')
+          .returns(AuthorisationHelper.decodeToken(authToken))
+      })
+
+      it('returns a success response', async () => {
+        const options = {
+          method: 'GET',
+          url: '/test/public',
+          headers: { authorization: `Bearer ${authToken}` }
+        }
+
+        const response = await server.inject(options)
+
+        expect(response.statusCode).to.equal(200)
+      })
+    })
+
+    describe('and I am a system client', () => {
+      before(async () => {
+        authToken = AuthorisationHelper.nonAdminToken(nonAdminClientId)
+
+        Sinon
+          .stub(JsonWebToken, 'verify')
+          .returns(AuthorisationHelper.decodeToken(authToken))
+      })
+
+      it('returns a success response', async () => {
+        const options = {
+          method: 'GET',
+          url: '/test/public',
+          headers: { authorization: `Bearer ${authToken}` }
+        }
+
+        const response = await server.inject(options)
+
+        expect(response.statusCode).to.equal(200)
+      })
+    })
+
+    describe('and I am neither an admin or system client', () => {
+      it('returns a success response', async () => {
+        const options = {
+          method: 'GET',
+          url: '/test/public'
+        }
+
+        const response = await server.inject(options)
+
+        expect(response.statusCode).to.equal(200)
       })
     })
   })

@@ -70,6 +70,28 @@ class RouteHelper {
       }
     })
   }
+
+  /**
+   * Adds a route to a Hapi server instance which can only accessed by authorised systems and the admin.
+   *
+   * Intended to mimic routes such as `/v1/{regimeId}/billruns`.
+   *
+   * @param {Object} server A Hapi server instance
+   */
+  static addSystemGetRoute (server) {
+    server.route({
+      method: 'GET',
+      path: '/test/{regimeId}/system',
+      handler: (_request, _h) => {
+        return { type: 'wrls' }
+      },
+      options: {
+        auth: {
+          scope: ['system']
+        }
+      }
+    })
+  }
 }
 
 module.exports = RouteHelper
