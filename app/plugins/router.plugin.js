@@ -16,7 +16,8 @@ const {
   BillRunRoutes,
   RegimeRoutes,
   RootRoutes,
-  TransactionRoutes
+  TransactionRoutes,
+  CalculateChargeRoutes
 } = require('../routes')
 
 const routes = [
@@ -24,7 +25,8 @@ const routes = [
   ...AirbrakeRoutes,
   ...BillRunRoutes,
   ...TransactionRoutes,
-  ...RegimeRoutes
+  ...RegimeRoutes,
+  ...CalculateChargeRoutes
 ]
 
 const router = {

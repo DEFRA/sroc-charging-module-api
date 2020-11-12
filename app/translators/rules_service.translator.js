@@ -1,35 +1,31 @@
 'use strict'
 
 const BaseTranslator = require('./base.translator')
+const Joi = require('joi')
 
 class RulesServiceTranslator extends BaseTranslator {
   constructor (data) {
     // The rules service returns the data we need in a WRLSChargingResponse object within the response object
     super(data.WRLSChargingResponse)
 
-    // Getter for baselineCharge which we convert to pence
-    Object.defineProperty(this, 'baselineCharge', {
-      get () {
-        return this._baselineCharge()
-      },
-      enumerable: true
-    })
+    // baselineCharge and chargeValue are converted to pence
+    this.baselineCharge = this._baselineCharge()
+    this.chargeValue = this._chargeValue()
 
-    // Getter for chargeValue which we convert to pence
-    Object.defineProperty(this, 'chargeValue', {
-      get () {
-        return this._chargeValue()
-      },
-      enumerable: true
-    })
+    // Charge element agreement is determined based on rules service response
+    this.lineAttr10 = this._chargeElementAgreement()
+  }
 
-    // Getter for charge element agreement which is determined based on rules service response
-    Object.defineProperty(this, 'lineAttr10', {
-      get () {
-        return this._chargeElementAgreement()
-      },
-      enumerable: true
-    })
+  _schema () {
+    return Joi.object({
+      chargeValue: Joi.number().required(),
+      s127Agreement: Joi.string().allow(null),
+      s130Agreement: Joi.string().allow(null),
+      abatementAdjustment: Joi.string().required(),
+      decisionPoints: Joi.object({
+        baselineCharge: Joi.number().required()
+      })
+    }).options({ stripUnknown: true })
   }
 
   _translations () {
