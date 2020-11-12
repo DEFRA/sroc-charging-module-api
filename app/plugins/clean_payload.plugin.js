@@ -65,7 +65,7 @@ const cleanObj = obj =>
   )
 
 const filter = value => {
-  if (value && value !== '') {
+  if (value !== null && value !== '') {
     return true
   }
 
@@ -76,10 +76,13 @@ const cleanProperty = (key, value) => {
   if (typeof value === 'object') {
     // The property is another object so use recursion and pass it back into this function
     return [key, cleanObj(value)]
+  } else if (typeof value === 'string') {
+    // Call trim() on it and return the result
+    return [key, value.trim()]
   }
 
-  // Call trim() on it and return the result
-  return [key, value.trim()]
+  // Return the value as is
+  return [key, value]
 }
 
 const CleanPayloadPlugin = {
