@@ -20,7 +20,7 @@ describe('Charge service', () => {
   let rulesStub
 
   beforeEach(async () => {
-    rulesStub = Sinon.stub(RulesService, 'call').callsFake(async (data) => data)
+    rulesStub = Sinon.stub(RulesService, 'call').callsFake(async (data) => { return { body: data } })
   })
 
   afterEach(async () => {

@@ -1,11 +1,11 @@
 {
   "WRLSChargingRequest": {
-    "chargeCategory": "S42",
-    "abatementAdjustment": 1,
+    "chargeCategory": "S15",
+    "abatementAdjustment": 0.8,
     "s127Agreement": false,
     "s130Agreement": false,
-    "source": "Unsupported",
-    "billableDays": 365,
+    "source": "Supported",
+    "billableDays": 214,
     "abstractableDays": 365,
     "compensationCharge": false,
     "secondPartCharge": false

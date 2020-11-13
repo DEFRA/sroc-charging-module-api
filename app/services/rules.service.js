@@ -1,6 +1,7 @@
 'use strict'
 
 const Got = require('got')
+const Tunnel = require('tunnel')
 
 const { RulesServiceConfig } = require('../../config')
 
@@ -9,15 +10,14 @@ class RulesService {
   // * Regime is the regime in lower case text, eg. wrls
   // * financialYear is the 4-digit year, eg. 2020
   // * chargeParams is an object containing the parameters to be passed to the rules service
-  static call (translator) {
-    const { url, username, password } = RulesServiceConfig
-    const { regime, financialYear, chargeParams } = translator
+  static call (presenter) {
+    const { url, username, password, httpProxy } = RulesServiceConfig
+    const { regime, financialYear, chargeParams } = presenter
     const path = this._makeRulesPath(regime, financialYear)
-    const options = this._requestOptions(url, chargeParams, username, password)
+    const requestOptions = this._requestOptions(url, chargeParams, username, password)
+    const proxyOptions = httpProxy ? this._proxyOptions(httpProxy) : ''
 
-    // TODO: Set options.proxy if a proxy is required
-
-    return Got.post(path, options)
+    return Got.post(path, { ...requestOptions, ...proxyOptions })
   }
 
   // generate the path for the specified regime, year and ruleset
@@ -39,9 +39,21 @@ class RulesService {
       prefixUrl: url,
       json: chargeParams,
       responseType: 'json',
-      timeout: 1500,
+      timeout: 5000,
       username,
       password
+    }
+  }
+
+  static _proxyOptions (httpProxy) {
+    return {
+      agent: {
+        https: Tunnel.httpsOverHttp({
+          proxy: {
+            host: httpProxy
+          }
+        })
+      }
     }
   }
 }

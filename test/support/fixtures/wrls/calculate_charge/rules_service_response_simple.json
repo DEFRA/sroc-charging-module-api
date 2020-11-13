@@ -1,0 +1,31 @@
+{
+  "__DecisionID__": "323d2d5d-947e-4246-b018-1b1b6e243d630",
+  "WRLSChargingResponse": {
+    "chargeValue": 4200,
+    "abatementAdjustment": "S126 x 1.0",
+    "s127Agreement": null,
+    "s130Agreement": null,
+    "decisionPoints": {
+      "baselineCharge": 4200,
+      "secondPartCharge": false,
+      "compensationCharge": false,
+      "abatementAdjustment": 4200,
+      "s127Agreement": 4200,
+      "s130Agreement": 4200,
+      "sourceFactor": 0,
+      "seasonFactor": 0,
+      "lossFactor": 0,
+      "volumeFactor": 0,
+      "waterUndertaker": false,
+      "eiucFactor": 0,
+      "eiucSourceFactor": 0
+    },
+    "messages": [],
+    "volumeFactor": 0,
+    "sourceFactor": 0,
+    "seasonFactor": 0,
+    "lossFactor": 0,
+    "eiucSourceFactor": 0,
+    "eiucFactor": 0
+  }
+}

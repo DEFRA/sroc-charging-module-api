@@ -5,15 +5,18 @@ const { ServerConfig, TestConfig } = require('./config')
 const { JwtStrategyAuth } = require('./app/auth')
 const {
   AirbrakePlugin,
+  AuthorisationPlugin,
   BlippPlugin,
+  CleanPayload,
   DisinfectPlugin,
   HpalDebugPlugin,
   HapiNowAuthPlugin,
   HapiPinoPlugin,
+  InvalidCharactersPlugin,
+  MissingPayloadPlugin,
   RouterPlugin,
   UnescapePlugin
 } = require('./app/plugins')
-const { OnCredentialsHook, OnRequestHook } = require('./app/hooks')
 
 exports.deployment = async start => {
   // Create the hapi server
@@ -26,18 +29,17 @@ exports.deployment = async start => {
   server.auth.default('jwt-strategy')
 
   // Register the remaining plugins
+  await server.register(AuthorisationPlugin)
   await server.register(RouterPlugin)
   await server.register(AirbrakePlugin)
+  await server.register(MissingPayloadPlugin)
+  await server.register(InvalidCharactersPlugin)
   await server.register(DisinfectPlugin)
   await server.register(UnescapePlugin)
+  await server.register(CleanPayload)
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
   await server.register(BlippPlugin)
   await server.register(HpalDebugPlugin)
-
-  // TODO: Move hooks to plugins and deal with OnRequestHook being incorrectly
-  // named
-  server.ext('onCredentials', OnRequestHook)
-  server.ext('onCredentials', OnCredentialsHook)
 
   await server.initialize()
 
