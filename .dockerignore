@@ -1,0 +1,10 @@
+# ignore everything - except the dirs/files we want to include
+*
+!app
+!config
+!db
+!keys
+!knexfile.js
+!package-lock.json
+!package.json
+!server.js
