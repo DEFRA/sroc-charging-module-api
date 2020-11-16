@@ -12,6 +12,7 @@ class RegimesController {
     return RegimeModel
       .query()
       .findById(req.params.id)
+      .withGraphFetched('authorisedSystems')
   }
 }
 
