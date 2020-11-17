@@ -7,9 +7,10 @@ exports.up = async function (knex) {
     .schema
     .createTable(tableName, table => {
       // Primary Key
-      table.string('id').primary()
+      table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'))
 
       // Data
+      table.string('client_id').notNullable()
       table.string('name').notNullable()
       table.string('status').notNullable().defaultTo('active')
       table.boolean('admin').defaultTo(false)

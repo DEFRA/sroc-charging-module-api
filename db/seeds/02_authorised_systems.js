@@ -9,7 +9,7 @@ exports.seed = function (knex) {
       // Inserts seed entries
       return knex('authorised_systems').insert([
         {
-          id: config.adminClientId,
+          client_id: config.adminClientId,
           name: 'admin',
           admin: true,
           status: 'active'
