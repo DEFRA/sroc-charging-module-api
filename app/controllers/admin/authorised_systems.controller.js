@@ -2,6 +2,7 @@
 
 const Boom = require('@hapi/boom')
 const { AuthorisedSystemModel, RegimeModel } = require('../../models')
+const { AuthorisedSystemTranslator } = require('../../translators')
 
 class AuthorisedSystemController {
   static async index (_req, _h) {
@@ -17,11 +18,11 @@ class AuthorisedSystemController {
   }
 
   static async create (req, _h) {
-    const payload = req.payload
+    const translator = new AuthorisedSystemTranslator(req.payload)
 
     const regimes = await RegimeModel.query()
       .select('id')
-      .where('slug', 'in', payload.authorisations)
+      .where('slug', 'in', translator.authorisations)
 
     let results
     try {
@@ -29,10 +30,10 @@ class AuthorisedSystemController {
         const newRecords = await AuthorisedSystemModel.query().insertGraphAndFetch(
           [
             {
-              client_id: payload.clientId,
-              name: payload.name,
+              client_id: translator.clientId,
+              name: translator.name,
               admin: false,
-              status: payload.status,
+              status: translator.status,
               regimes: regimes
             }
           ],
