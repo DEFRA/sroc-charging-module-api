@@ -16,11 +16,11 @@ class AuthorisedSystemHelper {
   /**
    * Create the admin system record
    *
-   * @param {string} [id] If not set will default to the configured admin client ID.
+   * @param {string} [clientId] If not set will default to the configured admin client ID.
    * @returns {Object} The result of the db insertion for your reference
    */
-  static async addAdminSystem (id) {
-    const systemId = id || AuthenticationConfig.adminClientId
+  static async addAdminSystem (clientId) {
+    const systemId = clientId || AuthenticationConfig.adminClientId
 
     return this._insertSystem(systemId, 'admin', true, 'active')
   }
@@ -28,19 +28,19 @@ class AuthorisedSystemHelper {
   /**
    * Create non-admin system record
    *
-   * @param {string} id ID you want set for the system
+   * @param {string} clientId Client ID you want set for the system
    * @param {name} name Name you want to set for the system
    * @returns {Object} The result of the db insertion for your reference
    */
-  static async addSystem (id, name) {
-    return this._insertSystem(id, name, false, 'active')
+  static async addSystem (clientId, name) {
+    return this._insertSystem(clientId, name, false, 'active')
   }
 
-  static async _insertSystem (id, name, isAdmin, status) {
+  static async _insertSystem (clientId, name, isAdmin, status) {
     return await AuthorisedSystemModel
       .query()
       .insert({
-        id: id,
+        client_id: clientId,
         name: name,
         admin: isAdmin,
         status: status
