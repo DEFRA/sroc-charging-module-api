@@ -43,23 +43,38 @@ describe('Sanitizing requests to the API', () => {
       expect(response.statusCode).to.equal(200)
       expect(responsePayload).to.equal(requestPayload)
     })
-  })
 
-  describe('When a payload has sub-properties including characters like &, <, and >', () => {
-    it('allows the original values to get through unescaped', async () => {
-      const requestPayload = {
-        reference: 'BESESAME001',
-        details: {
-          customerName: 'Bert & Ernie <> Ltd',
-          location: 'Bristol'
+    describe('and those characters are in sub-properties', () => {
+      it('allows the original values to get through unescaped', async () => {
+        const requestPayload = {
+          reference: 'BESESAME001',
+          details: {
+            customerName: 'Bert & Ernie <> Ltd',
+            location: 'Bristol'
+          }
         }
-      }
 
-      const response = await server.inject(options(requestPayload))
-      const responsePayload = JSON.parse(response.payload)
+        const response = await server.inject(options(requestPayload))
+        const responsePayload = JSON.parse(response.payload)
 
-      expect(response.statusCode).to.equal(200)
-      expect(responsePayload).to.equal(requestPayload)
+        expect(response.statusCode).to.equal(200)
+        expect(responsePayload).to.equal(requestPayload)
+      })
+    })
+
+    describe('and those characters are in arrays', () => {
+      it('allows the original values to get through unescaped', async () => {
+        const requestPayload = {
+          reference: 'BESESAME001',
+          codes: ['whoop', 'there<', '>it', 'is']
+        }
+
+        const response = await server.inject(options(requestPayload))
+        const responsePayload = JSON.parse(response.payload)
+
+        expect(response.statusCode).to.equal(200)
+        expect(responsePayload).to.equal(requestPayload)
+      })
     })
   })
 
