@@ -96,19 +96,18 @@ class ObjectCleaningService {
       return null
     }
 
-    const keys = Object.keys(obj)
     const cleanedObj = {}
 
-    for (const key of keys) {
+    for (const [key, value] of Object.entries(obj)) {
       let result
-      if (typeof obj[key] === 'object') {
-        if (Array.isArray(obj[key])) {
-          result = this._cleanArray(obj[key])
+      if (typeof value === 'object') {
+        if (Array.isArray(value)) {
+          result = this._cleanArray(value)
         } else {
-          result = this._cleanObject(obj[key])
+          result = this._cleanObject(value)
         }
       } else {
-        result = this._cleanValue(obj[key])
+        result = this._cleanValue(value)
       }
 
       if (this._keepValue(result)) {
