@@ -59,6 +59,40 @@ describe('Cleaning data in requests', () => {
       expect(response.statusCode).to.equal(200)
       expect(responsePayload.details).to.not.contain('lastName')
     })
+
+    it('removes them from arrays', async () => {
+      const requestPayload = {
+        reference: 'BESESAME001',
+        codes: ['whoop', '  ', '  ', 'is']
+      }
+
+      const response = await server.inject(options(requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(200)
+      expect(responsePayload.codes.length).to.equal(2)
+      expect(responsePayload.codes[0]).to.equal('whoop')
+      expect(responsePayload.codes[1]).to.equal('is')
+    })
+
+    it('removes them from the objects in arrays', async () => {
+      const requestPayload = {
+        reference: 'BESESAME001',
+        customers: [
+          { name: 'Big bird' },
+          { name: '  ' },
+          { name: 'Elmo' }
+        ]
+      }
+
+      const response = await server.inject(options(requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(200)
+      expect(responsePayload.customers.length).to.equal(2)
+      expect(responsePayload.customers[0].name).to.equal('Big bird')
+      expect(responsePayload.customers[1].name).to.equal('Elmo')
+    })
   })
 
   describe('When a POST request contains properties that are empty', () => {
@@ -89,6 +123,21 @@ describe('Cleaning data in requests', () => {
 
       expect(response.statusCode).to.equal(200)
       expect(responsePayload.details).to.not.contain('lastName')
+    })
+
+    it('removes them from arrays', async () => {
+      const requestPayload = {
+        reference: 'BESESAME001',
+        codes: ['whoop', '', '', 'is']
+      }
+
+      const response = await server.inject(options(requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(200)
+      expect(responsePayload.codes.length).to.equal(2)
+      expect(responsePayload.codes[0]).to.equal('whoop')
+      expect(responsePayload.codes[1]).to.equal('is')
     })
   })
 
@@ -122,6 +171,20 @@ describe('Cleaning data in requests', () => {
       expect(response.statusCode).to.equal(200)
       expect(responsePayload.details.lastName).to.equal('Ernie')
     })
+
+    it('removes it from arrays', async () => {
+      const requestPayload = {
+        reference: 'BESESAME001',
+        codes: ['whoop', 'there ', ' it', 'is']
+      }
+
+      const response = await server.inject(options(requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(200)
+      expect(responsePayload.codes[1]).to.equal('there')
+      expect(responsePayload.codes[2]).to.equal('it')
+    })
   })
 
   describe('When a POST request contains boolean properties that are false', () => {
@@ -154,6 +217,19 @@ describe('Cleaning data in requests', () => {
 
       expect(response.statusCode).to.equal(200)
       expect(responsePayload.details).to.contain('newCustomer')
+    })
+
+    it('keeps them in arrays', async () => {
+      const requestPayload = {
+        reference: 'BESESAME001',
+        preferences: [true, false, true]
+      }
+
+      const response = await server.inject(options(requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(200)
+      expect(responsePayload).to.equal(requestPayload)
     })
   })
 })
