@@ -22,18 +22,25 @@ class AuthorisedSystemController {
       .select('id')
       .where('slug', 'in', payload.authorisations)
 
-    const newSystem = await AuthorisedSystemModel.query()
-      .insert({
-        client_id: payload.clientId,
-        name: payload.name,
-        admin: false,
-        status: payload.status
-      })
-      .returning('*')
+    // Perform creating the authorised system record and regime join records in
+    // one go with insertGraph()
+    // https://vincit.github.io/objection.js/guide/query-examples.html#graph-inserts
+    const graph = await AuthorisedSystemModel.query().insertGraph(
+      [
+        {
+          client_id: payload.clientId,
+          name: payload.name,
+          admin: false,
+          status: payload.status,
+          regimes: regimes
+        }
+      ],
+      {
+        relate: true
+      }
+    )
 
-    await newSystem.$relatedQuery('regimes').relate(regimes)
-
-    return newSystem
+    return graph
   }
 }
 
