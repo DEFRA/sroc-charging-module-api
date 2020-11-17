@@ -1,5 +1,6 @@
 'use strict'
 
+const Boom = require('@hapi/boom')
 const { AuthorisedSystemModel, RegimeModel } = require('../../models')
 
 class AuthorisedSystemController {
@@ -22,23 +23,28 @@ class AuthorisedSystemController {
       .select('id')
       .where('slug', 'in', payload.authorisations)
 
-    // Perform creating the authorised system record and regime join records in
-    // one go with insertGraph()
-    // https://vincit.github.io/objection.js/guide/query-examples.html#graph-inserts
-    const results = await AuthorisedSystemModel.query().insertGraphAndFetch(
-      [
-        {
-          client_id: payload.clientId,
-          name: payload.name,
-          admin: false,
-          status: payload.status,
-          regimes: regimes
-        }
-      ],
-      {
-        relate: true
-      }
-    )
+    let results
+    try {
+      results = await AuthorisedSystemModel.transaction(async trx => {
+        const newRecords = await AuthorisedSystemModel.query().insertGraphAndFetch(
+          [
+            {
+              client_id: payload.clientId,
+              name: payload.name,
+              admin: false,
+              status: payload.status,
+              regimes: regimes
+            }
+          ],
+          {
+            relate: true
+          }
+        )
+        return newRecords
+      })
+    } catch (error) {
+      throw Boom.internal("There was an error when we tried to create the authorised system. We'll assume it was our fault not yours.")
+    }
 
     return results[0]
   }
