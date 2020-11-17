@@ -25,7 +25,7 @@ class AuthorisedSystemController {
     // Perform creating the authorised system record and regime join records in
     // one go with insertGraph()
     // https://vincit.github.io/objection.js/guide/query-examples.html#graph-inserts
-    const graph = await AuthorisedSystemModel.query().insertGraph(
+    const results = await AuthorisedSystemModel.query().insertGraphAndFetch(
       [
         {
           client_id: payload.clientId,
@@ -40,7 +40,7 @@ class AuthorisedSystemController {
       }
     )
 
-    return graph
+    return results[0]
   }
 }
 
