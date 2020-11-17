@@ -30,28 +30,44 @@ describe('Sanitizing requests to the API', () => {
     RouteHelper.addPublicPostRoute(server)
   })
 
-  describe('When a payload includes characters like &, <, and >', () => {
-    it('allows the original values to get through unescaped', async () => {
+  describe('When a POST request contains a mix of dangerous and HTML content', () => {
+    it('sanitizes the request', async () => {
       const requestPayload = {
-        reference: 'BESESAME001',
-        customerName: 'Bert & Ernie <> Ltd'
+        reference: 'BESESAME001&',
+        codes: ['AB1', 'BD2', 'CD3<>'],
+        description: '<script>alert()</script>',
+        preferences: [true, false, true],
+        details: {
+          active: false,
+          orders: [
+            {
+              id: '123',
+              orderDate: '2012-04-23T18:25:43.511Z',
+              lines: [
+                { pos: 1, picked: true, item: 'widget<' },
+                { pos: 2, picked: false, item: '<script>alert()</script>' }
+              ]
+            }
+          ]
+        }
       }
 
-      const response = await server.inject(options(requestPayload))
-      const responsePayload = JSON.parse(response.payload)
-
-      expect(response.statusCode).to.equal(200)
-      expect(responsePayload).to.equal(requestPayload)
-    })
-  })
-
-  describe('When a payload has sub-properties including characters like &, <, and >', () => {
-    it('allows the original values to get through unescaped', async () => {
-      const requestPayload = {
-        reference: 'BESESAME001',
+      const expectedResponse = {
+        reference: 'BESESAME001&',
+        codes: ['AB1', 'BD2', 'CD3<>'],
+        preferences: [true, false, true],
         details: {
-          customerName: 'Bert & Ernie <> Ltd',
-          location: 'Bristol'
+          active: false,
+          orders: [
+            {
+              id: '123',
+              orderDate: '2012-04-23T18:25:43.511Z',
+              lines: [
+                { pos: 1, picked: true, item: 'widget<' },
+                { pos: 2, picked: false }
+              ]
+            }
+          ]
         }
       }
 
@@ -59,22 +75,7 @@ describe('Sanitizing requests to the API', () => {
       const responsePayload = JSON.parse(response.payload)
 
       expect(response.statusCode).to.equal(200)
-      expect(responsePayload).to.equal(requestPayload)
-    })
-  })
-
-  describe('When a payload includes malicious content', () => {
-    it('it strips it out', async () => {
-      const requestPayload = {
-        reference: 'BESESAME001',
-        customerName: '<script>alert(1)</script>'
-      }
-
-      const response = await server.inject(options(requestPayload))
-      const responsePayload = JSON.parse(response.payload)
-
-      expect(response.statusCode).to.equal(200)
-      expect(responsePayload).to.not.contain('customerName')
+      expect(responsePayload).to.equal(expectedResponse)
     })
   })
 })

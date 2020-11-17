@@ -7,15 +7,13 @@ const {
   AirbrakePlugin,
   AuthorisationPlugin,
   BlippPlugin,
-  CleanPayload,
-  DisinfectPlugin,
   HpalDebugPlugin,
   HapiNowAuthPlugin,
   HapiPinoPlugin,
   InvalidCharactersPlugin,
   MissingPayloadPlugin,
-  RouterPlugin,
-  UnescapePlugin
+  PayloadCleanerPlugin,
+  RouterPlugin
 } = require('./app/plugins')
 
 exports.deployment = async start => {
@@ -34,9 +32,7 @@ exports.deployment = async start => {
   await server.register(AirbrakePlugin)
   await server.register(MissingPayloadPlugin)
   await server.register(InvalidCharactersPlugin)
-  await server.register(DisinfectPlugin)
-  await server.register(UnescapePlugin)
-  await server.register(CleanPayload)
+  await server.register(PayloadCleanerPlugin)
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
   await server.register(BlippPlugin)
   await server.register(HpalDebugPlugin)
