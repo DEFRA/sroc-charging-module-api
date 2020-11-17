@@ -3,6 +3,7 @@
 const Boom = require('@hapi/boom')
 const { AuthorisedSystemModel, RegimeModel } = require('../../models')
 const { AuthorisedSystemTranslator } = require('../../translators')
+const { JsonPresenter } = require('../../presenters')
 
 class AuthorisedSystemController {
   static async index (_req, _h) {
@@ -47,7 +48,9 @@ class AuthorisedSystemController {
       throw Boom.internal("There was an error when we tried to create the authorised system. We'll assume it was our fault not yours.")
     }
 
-    return results[0]
+    const presenter = new JsonPresenter(results[0])
+
+    return presenter.call()
   }
 }
 
