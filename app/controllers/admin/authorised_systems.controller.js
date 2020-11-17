@@ -28,7 +28,7 @@ class AuthorisedSystemController {
     let results
     try {
       results = await AuthorisedSystemModel.transaction(async trx => {
-        const newRecords = await AuthorisedSystemModel.query().insertGraphAndFetch(
+        const newRecords = await AuthorisedSystemModel.query(trx).insertGraphAndFetch(
           [
             {
               client_id: translator.clientId,
