@@ -30,7 +30,7 @@ describe('Sanitizing requests to the API', () => {
     RouteHelper.addPublicPostRoute(server)
   })
 
-  describe.only('When a POST request contains a mix of dangerous and HTML content', () => {
+  describe('When a POST request contains a mix of dangerous and HTML content', () => {
     it('sanitizes the request', async () => {
       const requestPayload = {
         reference: 'BESESAME001&',
