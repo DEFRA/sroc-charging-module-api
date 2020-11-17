@@ -17,9 +17,8 @@ const authOptions = {
     const { client_id: clientId } = token.decodedJWT
 
     // Find the authorised system with a matching client ID
-    const authorisedSystem = await AuthorisedSystemModel
-      .query()
-      .findById(clientId)
+    const authorisedSystem = await AuthorisedSystemModel.query()
+      .findOne({ client_id: clientId })
 
     // We use the `options.auth.scope` property on our routes to manage authorisation and what endpoints a client can
     // access. Public endpoints have a scope of `system`. Admin can access these as well as those with only a scope of
