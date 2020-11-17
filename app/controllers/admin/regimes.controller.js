@@ -1,6 +1,6 @@
 'use strict'
 
-const { RegimeModel } = require('../models')
+const { RegimeModel } = require('../../models')
 
 class RegimesController {
   static async index (_req, _h) {

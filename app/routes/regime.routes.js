@@ -5,7 +5,7 @@ const { RegimesController } = require('../controllers')
 const routes = [
   {
     method: 'GET',
-    path: '/regimes',
+    path: '/admin/regimes',
     handler: RegimesController.index,
     options: {
       auth: {
@@ -15,7 +15,7 @@ const routes = [
   },
   {
     method: 'GET',
-    path: '/regimes/{id}',
+    path: '/admin/regimes/{id}',
     handler: RegimesController.show,
     options: {
       auth: {
