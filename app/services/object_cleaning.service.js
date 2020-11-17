@@ -99,22 +99,23 @@ class ObjectCleaningService {
     const keys = Object.keys(obj)
     const cleanedObj = {}
 
-    for (let i = 0; i < keys.length; ++i) {
+    for (const key of keys) {
       let result
-      if (typeof obj[keys[i]] === 'object') {
-        if (Array.isArray(obj[keys[i]])) {
-          result = this._cleanArray(obj[keys[i]])
+      if (typeof obj[key] === 'object') {
+        if (Array.isArray(obj[key])) {
+          result = this._cleanArray(obj[key])
         } else {
-          result = this._cleanObject(obj[keys[i]])
+          result = this._cleanObject(obj[key])
         }
       } else {
-        result = this._cleanValue(obj[keys[i]])
+        result = this._cleanValue(obj[key])
       }
 
       if (this._keepValue(result)) {
-        cleanedObj[keys[i]] = result
+        cleanedObj[key] = result
       }
     }
+
     return cleanedObj
   }
 
@@ -137,13 +138,13 @@ class ObjectCleaningService {
   static _cleanArray (array) {
     const cleanedArray = []
 
-    for (let i = 0; i < array.length; i++) {
+    for (const item of array) {
       let result
 
-      if (typeof array[i] === 'object') {
-        result = this._cleanObject(array[i])
+      if (typeof item === 'object') {
+        result = this._cleanObject(item)
       } else {
-        result = this._cleanValue(array[i])
+        result = this._cleanValue(item)
       }
 
       if (this._keepValue(result)) {
