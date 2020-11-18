@@ -13,7 +13,7 @@
     "createdbtest": "PGDATABASE=sroc_charge_test node db/create_database.js",
     "migratedb": "PGDATABASE=sroc_charge knex migrate:latest",
     "migratedbtest": "PGDATABASE=sroc_charge_test knex migrate:latest",
-    "unit-test": "PGDATABASE=sroc_charge_test lab"
+    "unit-test": "PGDATABASE=sroc_charge_test lab --silent-skips"
   },
   "repository": {
     "type": "git",
