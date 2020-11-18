@@ -1,9 +1,8 @@
 'use strict'
 
 const Boom = require('@hapi/boom')
-const { AuthorisedSystemModel, RegimeModel } = require('../../models')
-const { AuthorisedSystemTranslator } = require('../../translators')
-const { JsonPresenter } = require('../../presenters')
+const { AuthorisedSystemModel } = require('../../models')
+const { CreateAuthorisedSystemService } = require('../../services')
 
 class AuthorisedSystemController {
   static async index (_req, _h) {
@@ -18,39 +17,20 @@ class AuthorisedSystemController {
       .withGraphFetched('regimes')
   }
 
-  static async create (req, _h) {
-    const translator = new AuthorisedSystemTranslator(req.payload)
-
-    const regimes = await RegimeModel.query()
-      .select('id')
-      .where('slug', 'in', translator.authorisations)
-
-    let results
+  static async create (req, h) {
     try {
-      results = await AuthorisedSystemModel.transaction(async trx => {
-        const newRecords = await AuthorisedSystemModel.query(trx).insertGraphAndFetch(
-          [
-            {
-              client_id: translator.clientId,
-              name: translator.name,
-              admin: false,
-              status: translator.status,
-              regimes: regimes
-            }
-          ],
-          {
-            relate: true
-          }
-        )
-        return newRecords
-      })
+      const result = await CreateAuthorisedSystemService.call(req.payload)
+      return h.response(result).code(201)
     } catch (error) {
-      throw Boom.internal("There was an error when we tried to create the authorised system. We'll assume it was our fault not yours.")
+      // TODO: Think we can drop try/catch altogether and use a global hook to manage our errors and ensure they are
+      // boomed!
+      // https://medium.com/@andv/hapi-transforming-an-internal-server-error-occured-into-correct-boom-errors-1a2a72e6ffff
+      if (Boom.isBoom(error)) {
+        throw error
+      } else {
+        throw Boom.boomify(error)
+      }
     }
-
-    const presenter = new JsonPresenter(results[0])
-
-    return presenter.call()
   }
 }
 
