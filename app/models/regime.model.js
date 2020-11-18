@@ -1,11 +1,8 @@
 'use strict'
 
-const { db } = require('../../db')
-const { Model } = require('objection')
+const BaseModel = require('./base.model')
 
-Model.knex(db)
-
-class RegimeModel extends Model {
+class RegimeModel extends BaseModel {
   static get tableName () {
     return 'regimes'
   }
