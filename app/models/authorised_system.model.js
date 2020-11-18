@@ -1,5 +1,6 @@
 'use strict'
 
+const { Model } = require('objection')
 const BaseModel = require('./base.model')
 
 class AuthorisedSystemModel extends BaseModel {
