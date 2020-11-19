@@ -24,7 +24,7 @@ describe('Base presenter', () => {
 
     const testData = { before: true }
     const testPresenter = new BasePresenter(testData)
-    const presentation = testPresenter.call()
+    const presentation = testPresenter.go()
 
     expect(presentation.after).to.equal(true)
   })
@@ -33,6 +33,6 @@ describe('Base presenter', () => {
     const testData = { before: true }
     const testPresenter = new BasePresenter(testData)
 
-    expect(() => testPresenter.call()).to.throw('You need to specify _presentation in the child presenter')
+    expect(() => testPresenter.go()).to.throw('You need to specify _presentation in the child presenter')
   })
 })

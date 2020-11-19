@@ -20,7 +20,7 @@ describe('Object cleaning service', () => {
         customerName: 'Bert & Ernie  '
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.customerName).to.equal('Bert & Ernie')
     })
 
@@ -33,7 +33,7 @@ describe('Object cleaning service', () => {
         }
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.details.firstName).to.equal('Bert')
       expect(cleanedObject.details.lastName).to.equal('Ernie')
     })
@@ -44,7 +44,7 @@ describe('Object cleaning service', () => {
         codes: [' ABD1 ', 'B1 ', ' C2']
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.codes).to.equal(['ABD1', 'B1', 'C2'])
     })
 
@@ -57,7 +57,7 @@ describe('Object cleaning service', () => {
         ]
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.contacts[0].firstName).to.equal('Bert')
       expect(cleanedObject.contacts[0].lastName).to.equal('Ernie')
     })
@@ -70,7 +70,7 @@ describe('Object cleaning service', () => {
         customerName: ' '
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.not.contain('customerName')
     })
 
@@ -83,7 +83,7 @@ describe('Object cleaning service', () => {
         }
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.details).to.not.contain('firstName')
       expect(cleanedObject.details).to.contain('lastName')
     })
@@ -94,7 +94,7 @@ describe('Object cleaning service', () => {
         codes: [' ABD1 ', ' ', 'C2']
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.codes).to.equal(['ABD1', 'C2'])
     })
 
@@ -107,7 +107,7 @@ describe('Object cleaning service', () => {
         ]
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.contacts[0]).to.contain('firstName')
       expect(cleanedObject.contacts[0]).to.not.contain('lastName')
     })
@@ -120,7 +120,7 @@ describe('Object cleaning service', () => {
         customerName: ''
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.not.contain('customerName')
     })
 
@@ -133,7 +133,7 @@ describe('Object cleaning service', () => {
         }
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.details).to.not.contain('firstName')
       expect(cleanedObject.details).to.contain('lastName')
     })
@@ -144,7 +144,7 @@ describe('Object cleaning service', () => {
         codes: [' ABD1 ', '', 'C2']
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.codes).to.equal(['ABD1', 'C2'])
     })
 
@@ -157,7 +157,7 @@ describe('Object cleaning service', () => {
         ]
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.contacts[0]).to.contain('firstName')
       expect(cleanedObject.contacts[0]).to.not.contain('lastName')
     })
@@ -170,7 +170,7 @@ describe('Object cleaning service', () => {
         customerName: null
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.not.contain('customerName')
     })
 
@@ -183,7 +183,7 @@ describe('Object cleaning service', () => {
         }
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.details).to.not.contain('firstName')
       expect(cleanedObject.details).to.contain('lastName')
     })
@@ -194,7 +194,7 @@ describe('Object cleaning service', () => {
         codes: [' ABD1 ', null, 'C2']
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.codes).to.equal(['ABD1', 'C2'])
     })
 
@@ -207,7 +207,7 @@ describe('Object cleaning service', () => {
         ]
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.contacts[0]).to.contain('firstName')
       expect(cleanedObject.contacts[0]).to.not.contain('lastName')
     })
@@ -221,7 +221,7 @@ describe('Object cleaning service', () => {
         hasOrders: false
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.equal(dirtyObject)
     })
 
@@ -234,7 +234,7 @@ describe('Object cleaning service', () => {
         }
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.equal(dirtyObject)
     })
 
@@ -244,7 +244,7 @@ describe('Object cleaning service', () => {
         preferences: [true, false, true]
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.equal(dirtyObject)
     })
   })
@@ -257,7 +257,7 @@ describe('Object cleaning service', () => {
         lines: 5
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.equal(dirtyObject)
     })
 
@@ -270,7 +270,7 @@ describe('Object cleaning service', () => {
         }
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.equal(dirtyObject)
     })
 
@@ -280,7 +280,7 @@ describe('Object cleaning service', () => {
         lineValues: [10.0, 11.54, 2.99]
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.equal(dirtyObject)
     })
   })
@@ -292,7 +292,7 @@ describe('Object cleaning service', () => {
         customerName: 'Bert< & >Ernie'
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.equal(dirtyObject)
     })
 
@@ -305,7 +305,7 @@ describe('Object cleaning service', () => {
         }
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.equal(dirtyObject)
     })
 
@@ -315,7 +315,7 @@ describe('Object cleaning service', () => {
         codes: ['A1&', 'B2<', 'C3>']
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.equal(dirtyObject)
     })
   })
@@ -327,7 +327,7 @@ describe('Object cleaning service', () => {
         customerName: '<script>alert(1)</script>'
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject).to.not.contain('customerName')
     })
 
@@ -340,7 +340,7 @@ describe('Object cleaning service', () => {
         }
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.details).to.not.contain('firstName')
       expect(cleanedObject.details).to.contain('lastName')
     })
@@ -351,7 +351,7 @@ describe('Object cleaning service', () => {
         codes: ['ABD1', '<script>alert(1)</script>', 'C2']
       }
 
-      const cleanedObject = ObjectCleaningService.call(dirtyObject)
+      const cleanedObject = ObjectCleaningService.go(dirtyObject)
       expect(cleanedObject.codes).to.equal(['ABD1', 'C2'])
     })
   })

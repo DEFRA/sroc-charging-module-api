@@ -15,7 +15,7 @@ describe('Charge presenter', () => {
     it('negative value when chargeCredit is true', async () => {
       const testData = { chargeValue: 100, chargeCredit: true }
       const testPresenter = new ChargePresenter(testData)
-      const presentation = testPresenter.call()
+      const presentation = testPresenter.go()
 
       expect(presentation.chargeValue).to.equal(-100)
     })
@@ -23,7 +23,7 @@ describe('Charge presenter', () => {
     it('positive value when chargeCredit is false', async () => {
       const testData = { chargeValue: 100, chargeCredit: false }
       const testPresenter = new ChargePresenter(testData)
-      const presentation = testPresenter.call()
+      const presentation = testPresenter.go()
 
       expect(presentation.chargeValue).to.equal(100)
     })

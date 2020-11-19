@@ -22,12 +22,12 @@ class CalculateChargeController extends BaseCalculateChargeController {
 
   static _presentRequest (charge, regime) {
     const requestPresenter = new RulesServicePresenter({ ...charge, regime })
-    return CalculateChargeService.call(requestPresenter.call(), RulesServiceTranslator)
+    return CalculateChargeService.go(requestPresenter.go(), RulesServiceTranslator)
   }
 
   static _presentResponse (charge) {
     const responsePresenter = new ChargePresenter(charge)
-    return responsePresenter.call()
+    return responsePresenter.go()
   }
 }
 

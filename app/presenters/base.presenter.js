@@ -5,7 +5,7 @@ class BasePresenter {
     this._data = data
   }
 
-  call () {
+  go () {
     return this._presentation(this._data)
   }
 
