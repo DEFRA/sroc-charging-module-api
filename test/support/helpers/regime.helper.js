@@ -21,15 +21,13 @@ class RegimeHelper {
    * @returns {module:RegimeModel} The newly created instance of `RegimeModel`.
    */
   static async addRegime (slug, name) {
-    const regime = RegimeModel.query()
+    return await RegimeModel.query()
       .insert({
         slug: slug,
         name: name,
         pre_sroc_cutoff_date: '2018-04-01'
       })
       .returning('*')
-
-    return regime
   }
 }
 
