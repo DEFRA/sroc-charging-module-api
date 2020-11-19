@@ -1,5 +1,9 @@
 'use strict'
 
+/**
+ * @module RulesService
+ */
+
 const Got = require('got')
 const Tunnel = require('tunnel')
 

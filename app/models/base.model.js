@@ -1,5 +1,9 @@
 'use strict'
 
+/**
+ * @module BaseModel
+ */
+
 const { db } = require('../../db')
 const { Model, snakeCaseMappers } = require('objection')
 

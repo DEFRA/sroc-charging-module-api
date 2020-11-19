@@ -1,5 +1,9 @@
 'use strict'
 
+/**
+ * @module CognitoJwtToPemService
+ */
+
 const JwkToPem = require('jwk-to-pem')
 
 class CognitoJwtToPemService {

@@ -1,5 +1,9 @@
 'use strict'
 
+/**
+ * @module ObjectCleaningService
+ */
+
 const Sanitizer = require('sanitizer')
 
 /**

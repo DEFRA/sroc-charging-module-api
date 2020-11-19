@@ -1,5 +1,9 @@
 'use strict'
 
+/**
+ * @module RegimeModel
+ */
+
 const { Model } = require('objection')
 const BaseModel = require('./base.model')
 
