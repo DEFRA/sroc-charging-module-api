@@ -61,11 +61,9 @@ class AuthorisationService {
   }
 
   static async _userAuthorisedRegime (user, regimeSlug) {
-    const result = await user
+    return await user
       .$relatedQuery('regimes')
       .findOne({ slug: regimeSlug })
-
-    return result
   }
 }
 
