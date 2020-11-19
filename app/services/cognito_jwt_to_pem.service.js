@@ -3,7 +3,7 @@
 const JwkToPem = require('jwk-to-pem')
 
 class CognitoJwtToPemService {
-  static call (environment) {
+  static go (environment) {
     return this._convertJwksToPems(environment)
   }
 

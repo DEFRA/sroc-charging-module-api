@@ -20,7 +20,7 @@ describe('Charge service', () => {
   let rulesStub
 
   beforeEach(async () => {
-    rulesStub = Sinon.stub(RulesService, 'call').callsFake(async (data) => { return { body: data } })
+    rulesStub = Sinon.stub(RulesService, 'go').callsFake(async (data) => { return { body: data } })
   })
 
   afterEach(async () => {
@@ -30,7 +30,7 @@ describe('Charge service', () => {
   it('calls the rules service', async () => {
     const translator = { translator: true }
 
-    await CalculateChargeService.call(translator, Presenter)
+    await CalculateChargeService.go(translator, Presenter)
 
     expect(rulesStub.calledOnce).to.be.true()
   })
@@ -38,7 +38,7 @@ describe('Charge service', () => {
   it('returns a presenter containing the rules service response', async () => {
     const translator = { test: true }
 
-    const charge = await CalculateChargeService.call(translator, Presenter)
+    const charge = await CalculateChargeService.go(translator, Presenter)
 
     expect(charge).to.be.an.instanceOf(Presenter)
     expect(charge.response).to.equal(translator)
