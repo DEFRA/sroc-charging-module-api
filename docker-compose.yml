@@ -6,11 +6,11 @@ services:
     volumes:
       - db_volume:/var/lib/postgresql/data
     env_file:
-      - .env_docker
+      - .env
     environment:
       PG_PASSWORD: ${PGPASSWORD}
     ports:
-      - "5432:5432"
+      - "54320:5432"
 
   api:
     build:
@@ -19,7 +19,10 @@ services:
     volumes:
       - ./:/usr/src/app
     env_file:
-      - .env_docker
+      - .env
+    environment:
+      PGHOST: ${PGHOST_DOCKER}
+      PGUSER: ${PGUSER_DOCKER}
     ports:
       - "3000:3000"
     depends_on:

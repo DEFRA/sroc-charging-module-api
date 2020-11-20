@@ -9,6 +9,8 @@
 set -eufx
 
 # Do our stuff
+npm run createdb
+npm run createdbtest
 npm run migratedb
 npm run migratedbtest
 
