@@ -4,6 +4,15 @@ up:
 down:
 	docker-compose down
 
+lint:
+	docker container exec -it sroc-charging-module-api_api_1 npm run lint
+
+migrate:
+	docker container exec -it sroc-charging-module-api_api_1 npm run migratedb
+
+migrate-test:
+	docker container exec -it sroc-charging-module-api_api_1 npm run migratedbtest
+
 run-test:
 	docker container exec -it sroc-charging-module-api_api_1 npm run test
 

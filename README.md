@@ -19,17 +19,13 @@ Make sure you already have:
 
 ## Installation
 
-First clone the repository and then drop into your new local repo
+First clone the repository and then drop into your new local repo:
 
 ```bash
 git clone https://github.com/DEFRA/sroc-charging-module-api.git && cd sroc-charging-module-api
 ```
 
-Next download and install the dependencies
-
-```bash
-npm install
-```
+Our preference is to run the database and API within Docker, so [install Docker](https://docs.docker.com/get-docker/) if you don't already have it.
 
 ## Configuration
 
@@ -41,46 +37,49 @@ Check out [.env.example](/.env.example) for details of the required things you'l
 
 Refer to the [config files](config) for details of all the configuration used.
 
-## Databases
+## Running the app and initial seeding
 
-> PostgreSQL should already have been setup with a use able to create databases, tables etc.
-
-First step is to create the databases; one for when running the app normally and one to support the unit tests
+To run the app use:
 
 ```bash
-npm run createdb
-npm run createdbtest
+make up
 ```
 
-You then need to run the migrations to update the schema to match what the app expects
+This runs database creation and migration scripts each time. However the first time you run it you will need to seed the database. Once the Docker container is running, open a new terminal and use:
 
 ```bash
-npm run migratedb
-npm run migratedbtest
+make seed
 ```
 
-## Running the app
-
-To run the app use
-
+A convenient shortcut for `docker-compose down` is provided, to be run after shutting down the server:
 ```bash
-npm start
-```
-
-To run with live-reload on file updates enabled use
-
-```bash
-npm run watch
+make down
 ```
 
 ## Testing the app
 
-> Unit tests are coming!
-
-To check the code is written and formatted in a way that meets our [standard](https://github.com/DEFRA/software-development-standards/blob/master/standards/javascript_standards.md) use
+To run unit tests, use:
 
 ```bash
-npm run lint
+make run-test
+```
+
+This will:
+
+- Lint the code to check that it is written and formatted in a way that meets our [standard](https://github.com/DEFRA/software-development-standards/blob/master/standards/javascript_standards.md);
+- Run any outstanding migrations on the test database;
+- Run the unit tests.
+
+Each of these can be run individually using:
+
+```bash
+make lint
+```
+```bash
+make migrate-test
+```
+```bash
+make run-unit-test
 ```
 
 ## Contributing to this project
