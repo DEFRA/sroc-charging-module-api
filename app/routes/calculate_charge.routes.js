@@ -5,12 +5,12 @@ const { PresrocCalculateChargeController, SrocCalculateChargeController } = requ
 const routes = [
   {
     method: 'POST',
-    path: '/v1/{regime}/calculate_charge',
+    path: '/v1/{regime}/calculate-charge',
     handler: PresrocCalculateChargeController.calculate
   },
   {
     method: 'POST',
-    path: '/v2/{regime}/calculate_charge',
+    path: '/v2/{regime}/calculate-charge',
     handler: SrocCalculateChargeController.calculate
   }
 ]
