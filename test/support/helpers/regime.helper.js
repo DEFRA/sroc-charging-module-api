@@ -20,8 +20,8 @@ class RegimeHelper {
    * @param {string} name Name for the regiime
    * @returns {module:RegimeModel} The newly created instance of `RegimeModel`.
    */
-  static async addRegime (slug, name) {
-    return await RegimeModel.query()
+  static addRegime (slug, name) {
+    return RegimeModel.query()
       .insert({
         slug: slug,
         name: name,
