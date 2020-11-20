@@ -10,7 +10,7 @@ const { expect } = Code
 // Thing under test
 const { JsonPresenter } = require('../../app/presenters')
 
-describe.only('Json Presenter', () => {
+describe('Json Presenter', () => {
   it('returns whatever you pass in', () => {
     const data = {
       reference: 'BESESAME001',
