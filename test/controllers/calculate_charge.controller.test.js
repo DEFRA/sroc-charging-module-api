@@ -20,7 +20,7 @@ const JsonWebToken = require('jsonwebtoken')
 
 const { SimpleFixtures, S127S130Fixtures, S126ProrataCreditFixtures } = require('../support/fixtures/wrls/calculate_charge')
 
-describe('Calculate charge controller: POST /v2/{regime}/calculate_charge', () => {
+describe('Calculate charge controller: POST /v2/{regime}/calculate-charge', () => {
   let server
 
   // Create auth token for stubbing authorisation
@@ -85,7 +85,7 @@ function mockRulesService (request, response) {
 const calculateChargeOptions = (authToken, payload) => {
   return {
     method: 'POST',
-    url: '/v2/srocWrls/calculate_charge',
+    url: '/v2/srocWrls/calculate-charge',
     headers: { authorization: `Bearer ${authToken}` },
     payload
   }
