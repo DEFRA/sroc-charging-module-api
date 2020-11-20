@@ -23,6 +23,7 @@ services:
     environment:
       PGHOST: ${PGHOST_DOCKER}
       PGUSER: ${PGUSER_DOCKER}
+    tty: true
     ports:
       - "3000:3000"
     depends_on:
