@@ -17,7 +17,7 @@ class AuthorisedSystemController {
   }
 
   static async create (req, h) {
-    const result = await CreateAuthorisedSystemService.call(req.payload)
+    const result = await CreateAuthorisedSystemService.go(req.payload)
     return h.response(result).code(201)
   }
 }

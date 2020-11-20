@@ -46,7 +46,7 @@ class CreateAuthorisedSystemService {
   static _response (authorisedSystem) {
     const presenter = new JsonPresenter(authorisedSystem)
 
-    return presenter.call()
+    return presenter.go()
   }
 }
 
