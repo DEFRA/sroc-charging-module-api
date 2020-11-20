@@ -29,7 +29,7 @@ describe('Rules service', () => {
       .reply(200, wrls.response)
     const presenter = dummyPresenter('wrls', 2020, wrls.request)
 
-    const result = await RulesService.call(presenter)
+    const result = await RulesService.go(presenter)
 
     expect(result.body).to.equal(wrls.response)
   })
@@ -47,8 +47,8 @@ describe('Rules service', () => {
       const presenterWrls = dummyPresenter('wrls', 2020)
       const presenterCfd = dummyPresenter('cfd', 2020)
 
-      const { requestUrl: requestUrlWrls } = await RulesService.call(presenterWrls)
-      const { requestUrl: requestUrlCfd } = await RulesService.call(presenterCfd)
+      const { requestUrl: requestUrlWrls } = await RulesService.go(presenterWrls)
+      const { requestUrl: requestUrlCfd } = await RulesService.go(presenterCfd)
 
       expect(requestUrlWrls).to.not.equal(requestUrlCfd)
     })
@@ -57,8 +57,8 @@ describe('Rules service', () => {
       const presenter2019 = dummyPresenter('wrls', 2019)
       const presenter2020 = dummyPresenter('wrls', 2020)
 
-      const { requestUrl: requestUrl2019 } = await RulesService.call(presenter2019)
-      const { requestUrl: requestUrl2020 } = await RulesService.call(presenter2020)
+      const { requestUrl: requestUrl2019 } = await RulesService.go(presenter2019)
+      const { requestUrl: requestUrl2020 } = await RulesService.go(presenter2020)
 
       expect(requestUrl2019).to.not.equal(requestUrl2020)
     })

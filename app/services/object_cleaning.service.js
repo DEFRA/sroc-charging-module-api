@@ -1,5 +1,9 @@
 'use strict'
 
+/**
+ * @module ObjectCleaningService
+ */
+
 const Sanitizer = require('sanitizer')
 
 /**
@@ -71,7 +75,7 @@ const Sanitizer = require('sanitizer')
  * * @module ObjectCleaningService
  */
 class ObjectCleaningService {
-  static call (obj) {
+  static go (obj) {
     return this._cleanObject(obj)
   }
 

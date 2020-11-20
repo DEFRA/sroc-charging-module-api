@@ -6,7 +6,7 @@ const { AuthorisedSystemModel } = require('../models')
 
 const authOptions = {
   verifyJWT: true,
-  keychain: CognitoJwtToPemService.call(AuthenticationConfig.environment),
+  keychain: CognitoJwtToPemService.go(AuthenticationConfig.environment),
   verifyOptions: {
     algorithms: ['RS256'],
     ignoreExpiration: AuthenticationConfig.ignoreJwtExpiration

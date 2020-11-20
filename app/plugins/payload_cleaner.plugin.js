@@ -79,7 +79,7 @@ const PayloadCleanerPlugin = {
         return h.continue
       }
 
-      request.payload = ObjectCleaningService.call(request.payload)
+      request.payload = ObjectCleaningService.go(request.payload)
 
       return h.continue
     })

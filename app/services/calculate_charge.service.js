@@ -1,6 +1,10 @@
 'use strict'
 
 /**
+ * @module CalculateChargeService
+ */
+
+/**
  * This service handles the presentation of a calculate charge request to the rules
  * service, and the translation of the response.
  */
@@ -20,8 +24,8 @@ class CalculateChargeService {
    * @param {object} Translator A translator which will contain the response from the rules service
    * @returns {object} An instance of Translator containing the response from the rules service
    */
-  static async call (presenter, Translator) {
-    const response = await RulesService.call(presenter)
+  static async go (presenter, Translator) {
+    const response = await RulesService.go(presenter)
     return new Translator(response.body)
   }
 }
