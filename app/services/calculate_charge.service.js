@@ -1,6 +1,10 @@
 'use strict'
 
 /**
+ * @module CalculateChargeService
+ */
+
+/**
  * This service handles the presentation of a calculate charge request to the rules
  * service, and the translation of the response.
  */

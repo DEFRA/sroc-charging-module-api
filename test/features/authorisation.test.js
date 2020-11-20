@@ -12,7 +12,13 @@ const { expect } = Code
 const { deployment } = require('../../server')
 
 // Test helpers
-const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper, RouteHelper } = require('../support/helpers')
+const {
+  AuthorisationHelper,
+  AuthorisedSystemHelper,
+  DatabaseHelper,
+  RegimeHelper,
+  RouteHelper
+} = require('../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -20,12 +26,14 @@ const JsonWebToken = require('jsonwebtoken')
 describe('Authorisation with the API', () => {
   let server
   let authToken
-  const nonAdminClientId = 'k7ehotrs1fqer7hoaslv7ilmr'
+  const nonAdminClientId = '1234546789'
 
   before(async () => {
     await DatabaseHelper.clean()
     await AuthorisedSystemHelper.addAdminSystem()
-    await AuthorisedSystemHelper.addSystem(nonAdminClientId, 'wrls')
+
+    const regime = await RegimeHelper.addRegime('wrls', 'Water')
+    await AuthorisedSystemHelper.addSystem(nonAdminClientId, 'system', [regime])
 
     server = await deployment()
     RouteHelper.addAdminRoute(server)
