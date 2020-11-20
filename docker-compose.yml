@@ -5,8 +5,10 @@ services:
     image: postgres:10-alpine
     volumes:
       - db_volume:/var/lib/postgresql/data
+    env_file:
+      - .env_docker
     environment:
-      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      PG_PASSWORD: ${PGPASSWORD}
     ports:
       - "5432:5432"
 
@@ -22,6 +24,7 @@ services:
       - "3000:3000"
     depends_on:
       - db
+    command: 'npm run watch'
 
 volumes:
   db_volume:

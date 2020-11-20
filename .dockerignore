@@ -3,6 +3,7 @@
 !app
 !config
 !db
+!entrypoint.sh
 !keys
 !knexfile.js
 !package-lock.json
