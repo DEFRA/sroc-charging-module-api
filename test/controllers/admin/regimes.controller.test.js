@@ -60,6 +60,7 @@ describe('Regimes controller', () => {
 
         const payload = JSON.parse(response.payload)
 
+        expect(response.statusCode).to.equal(200)
         expect(payload.length).to.equal(3)
         expect(payload[0].slug).to.equal('ice')
       })
@@ -71,6 +72,7 @@ describe('Regimes controller', () => {
 
         const payload = JSON.parse(response.payload)
 
+        expect(response.statusCode).to.equal(200)
         expect(payload.length).to.equal(0)
       })
     })
