@@ -44,7 +44,8 @@ describe('Show Regime service', () => {
 
   describe('When there is no matching regime', () => {
     it('returns throws an error', async () => {
-      const err = await expect(ShowRegimeService.go('f0d3b4dc-2cae-11eb-adc1-0242ac120002')).to.reject(Error, 'No regime found')
+      const id = 'f0d3b4dc-2cae-11eb-adc1-0242ac120002'
+      const err = await expect(ShowRegimeService.go(id)).to.reject(Error, `No regime found with id ${id}`)
 
       expect(err).to.be.an.error()
     })

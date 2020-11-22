@@ -22,7 +22,7 @@ class ShowRegimeService {
     const regime = await this._regime(id)
 
     if (!regime) {
-      throw Boom.notFound('No regime found', id)
+      throw Boom.notFound(`No regime found with id ${id}`)
     }
 
     return this._response(regime)
