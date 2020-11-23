@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:10-alpine
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      PG_PASSWORD: ${PGPASSWORD}
+    ports:
+      - "54320:5432"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    env_file:
+      - .env
+    environment:
+      PGHOST: ${PGHOST_DOCKER}
+      PGUSER: ${PGUSER_DOCKER}
+    tty: true
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    command: 'npm run watch'
+
+volumes:
+  db_volume:
