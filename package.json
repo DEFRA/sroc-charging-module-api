@@ -26,6 +26,7 @@
   "dependencies": {
     "@airbrake/node": "^1.4.1",
     "@hapi/hapi": "^20.0.1",
+    "@hapi/joi": "^17.1.1",
     "@now-ims/hapi-now-auth": "^2.0.2",
     "blipp": "^4.0.1",
     "dotenv": "^8.2.0",
