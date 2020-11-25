@@ -21,6 +21,18 @@ describe('Show Authorised System service', () => {
   })
 
   describe('When there is a matching authorised system', () => {
+    describe("and it's the 'admin'", () => {
+      it('returns a result with no related regimes', async () => {
+        // Add a regime to give assurance the result is not based on the table being empty
+        await RegimeHelper.addRegime('ice', 'Ice')
+        const authorisedSystem = await AuthorisedSystemHelper.addAdminSystem()
+
+        const result = await ShowAuthorisedSystemService.go(authorisedSystem.id)
+
+        expect(result.regimes.length).to.equal(0)
+      })
+    })
+
     it('returns the matching record', async () => {
       const authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1')
 
