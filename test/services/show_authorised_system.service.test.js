@@ -1,0 +1,64 @@
+'use strict'
+
+// Test framework dependencies
+const Lab = require('@hapi/lab')
+const Code = require('@hapi/code')
+
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
+
+// Test helpers
+const { AuthorisedSystemHelper, DatabaseHelper, RegimeHelper } = require('../support/helpers')
+const AuthorisedSystemModel = require('../../app/models/authorised_system.model')
+const { DataError } = require('objection')
+
+// Thing under test
+const { ShowAuthorisedSystemService } = require('../../app/services')
+
+describe('Show Authorised System service', () => {
+  beforeEach(async () => {
+    await DatabaseHelper.clean()
+  })
+
+  describe('When there is a matching authorised system', () => {
+    it('returns the matching record', async () => {
+      const authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1')
+
+      const result = await ShowAuthorisedSystemService.go(authorisedSystem.id)
+
+      expect(result instanceof AuthorisedSystemModel).to.equal(true)
+      expect(result.id).to.equal(authorisedSystem.id)
+    })
+
+    it('returns a result that includes a list of related regimes', async () => {
+      const regime1 = await RegimeHelper.addRegime('ice', 'Ice')
+      const regime2 = await RegimeHelper.addRegime('wind', 'Wind')
+      const regime3 = await RegimeHelper.addRegime('fire', 'Fire')
+
+      const authorisedSystem = await AuthorisedSystemHelper
+        .addSystem('1234546789', 'system1', [regime1, regime2, regime3])
+
+      const result = await ShowAuthorisedSystemService.go(authorisedSystem.id)
+
+      expect(result.regimes.length).to.equal(3)
+      expect(result.regimes[0].slug).to.equal('ice')
+    })
+  })
+
+  describe('When there is no matching regime', () => {
+    it('throws an error', async () => {
+      const id = 'f0d3b4dc-2cae-11eb-adc1-0242ac120002'
+      const err = await expect(ShowAuthorisedSystemService.go(id)).to.reject(Error, `No authorised system found with id ${id}`)
+
+      expect(err).to.be.an.error()
+    })
+  })
+
+  describe('When an invalid UUID is used', () => {
+    it('returns throws an error', async () => {
+      const err = await expect(ShowAuthorisedSystemService.go('123456789')).to.reject(DataError)
+
+      expect(err).to.be.an.error()
+    })
+  })
+})
