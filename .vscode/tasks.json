@@ -5,7 +5,7 @@
   "tasks": [
     {
       "label": "Start sroc-cma environment",
-      "detail": "Start a local docker environment for SROC charging module API",
+      "detail": "Build if needed then run a local docker environment",
       "type": "shell",
       "command": "docker-compose up",
       "group": "test",
@@ -20,7 +20,7 @@
     },
     {
       "label": "Drop sroc-cma containers",
-      "detail": "Drop any stopped containers for SROC charging module API",
+      "detail": "Drop any stopped containers",
       "type": "shell",
       "command": "docker-compose down",
       "group": "test",
@@ -35,7 +35,7 @@
     },
     {
       "label": "Clean sroc-cma environment",
-      "detail": "Will drop the containers, then remove the images and volumes",
+      "detail": "Will drop the containers, then remove the related images and volumes",
       "type": "shell",
       "command": "docker-compose down --rmi local -v",
       "group": "test",
@@ -49,8 +49,23 @@
       }
     },
     {
+      "label": "Run sroc-cma lint checks",
+      "detail": "Run lint checks against the code",
+      "type": "shell",
+      "command": "docker-compose exec app npm run unit-test",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
       "label": "Run sroc-cma unit tests",
-      "detail": "Run unit tests in docker for SROC charging module API",
+      "detail": "Run unit tests in docker",
       "type": "shell",
       "command": "docker-compose exec app npm run unit-test",
       "group": "test",
@@ -68,6 +83,21 @@
       "detail": "Will run the migrations for the main db",
       "type": "shell",
       "command": "docker-compose exec app npm run migratedb",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Run sroc-cma dev seeds",
+      "detail": "Will run the seeds for the main db",
+      "type": "shell",
+      "command": "docker-compose exec app npx knex seed:run",
       "group": "test",
       "presentation": {
         "echo": true,
