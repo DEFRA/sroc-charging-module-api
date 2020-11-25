@@ -13,6 +13,7 @@
 
 const {
   AirbrakeRoutes,
+  AuthorisedSystemRoutes,
   BillRunRoutes,
   RegimeRoutes,
   RootRoutes,
@@ -23,6 +24,7 @@ const {
 const routes = [
   ...RootRoutes,
   ...AirbrakeRoutes,
+  ...AuthorisedSystemRoutes,
   ...BillRunRoutes,
   ...TransactionRoutes,
   ...RegimeRoutes,
