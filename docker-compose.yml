@@ -5,30 +5,46 @@ services:
     image: postgres:10-alpine
     volumes:
       - db_volume:/var/lib/postgresql/data
-    env_file:
-      - .env
-    environment:
-      PG_PASSWORD: ${PGPASSWORD}
     ports:
       - "54320:5432"
-
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./:/usr/src/app
     env_file:
       - .env
-    environment:
-      PGHOST: ${PGHOST_DOCKER}
-      PGUSER: ${PGUSER_DOCKER}
-    tty: true
+
+  app:
+    build:
+      context: .
+      args:
+        - NODE_ENV=development
+    command: ../node_modules/.bin/nodemon --inspect=0.0.0.0:9229 ./server.js
     ports:
-      - "3000:3000"
+      - "3003:3000"
+      - "9229:9229"
+      - "9230:9230"
+    volumes:
+      # Bind mount the local folder into the container at `/home/node/app` when the container starts. This is what
+      # gives us the ability to edit files on the host but have them run within the docker container.
+      #
+      # Note: the delegated option is just a performance optimisation for Macs. The docker-compose default mode is
+      # 'consistent'. This means any time a write happens it is immediately flushed to all participants of the mount.
+      # 'cached' means the host is the authority; changes on the host will eventually reach the container. 'delegated'
+      # means the container is the authority; changes made in it will eventually reach the host. 'delegated' is seen as
+      # the most suitable option for bind mounts containing source code and provides the best performance on Macs.
+      - .:/home/node/app:delegated
+      # Bind-mounting these two files will let you add packages during development without rebuilding, for example,
+      # to add bower to your app while developing, just install it inside the container and then nodemon will restart.
+      # Your changes will last until you "docker-compose down" and will be saved on host for next build
+      - ./package.json:/home/node/package.json
+      - ./package-lock.json:/home/node/package-lock.json
+      # This is a workaround to prevent the host node_modules from accidently getting mounted in the container in case
+      # you want to use either `node` or `npm` outside it, for example, to run linting.
+      - notused:/home/node/app/node_modules
+    env_file:
+      - .env
+    # Run these services first before you run this one. Note, it does not wait or check to ensure the service is fully
+    # up and running before starting the app. So do not use this to manage critical dependency ordering.
     depends_on:
       - db
-    command: 'npm run watch'
 
 volumes:
   db_volume:
+  notused:

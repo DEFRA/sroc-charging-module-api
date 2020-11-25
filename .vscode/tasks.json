@@ -1,0 +1,142 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start sroc-cma environment",
+      "detail": "Build if needed then run a local docker environment",
+      "type": "shell",
+      "command": "docker-compose up",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Drop sroc-cma containers",
+      "detail": "Drop any stopped containers",
+      "type": "shell",
+      "command": "docker-compose down",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Clean sroc-cma environment",
+      "detail": "Will drop the containers, then remove the related images and volumes",
+      "type": "shell",
+      "command": "docker-compose down --rmi local -v",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Run sroc-cma lint checks",
+      "detail": "Run lint checks against the code",
+      "type": "shell",
+      "command": "docker-compose exec app npm run unit-test",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Run sroc-cma unit tests",
+      "detail": "Run unit tests in docker",
+      "type": "shell",
+      "command": "docker-compose exec app npm run unit-test",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Run sroc-cma dev migrations",
+      "detail": "Will run the migrations for the main db",
+      "type": "shell",
+      "command": "docker-compose exec app npm run migratedb",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Run sroc-cma dev seeds",
+      "detail": "Will run the seeds for the main db",
+      "type": "shell",
+      "command": "docker-compose exec app npx knex seed:run",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Prepare sroc-cma test db",
+      "detail": "Will create test db and run migrations. Is safe to call repeatedly",
+      "type": "shell",
+      "command": "docker-compose exec app /bin/sh -c 'npm run createdbtest && npm run migratedbtest'",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Open shell in sroc-cma container",
+      "detail": "Will open /bin/sh in the running 'app' container",
+      "type": "shell",
+      "command": "docker-compose exec app /bin/sh",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    }
+  ]
+}
