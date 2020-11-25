@@ -37,50 +37,53 @@ Check out [.env.example](/.env.example) for details of the required things you'l
 
 Refer to the [config files](config) for details of all the configuration used.
 
-## Running the app and initial seeding
+## Docker
 
-To run the app use:
+As [Docker](https://www.docker.com/) is our chosen solution for deploying and managing the app in production we also use it for local development. The following will get an environment up and running quickly ready for development. It assumes 2 things
 
-```bash
-make up
-```
+- you have Docker installed
+- you are using [VSCode](https://code.visualstudio.com/) for development
 
-This runs database creation and migration scripts each time. However the first time you run it you will need to seed the database. Once the Docker container is running, open a new terminal and use:
+### Initial build
 
-```bash
-make seed
-```
+Open the project in VSCode and then use the [Command palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) to access the tasks we have provided in [tasks.json](.vscode/tasks.json)
 
-A convenient shortcut for `docker-compose down` is provided, to be run after shutting down the server:
-```bash
-make down
-```
+With the palette open search for **Run test task** and once highlighted select it. From the list that's presented select **Start sroc-cma environment**
+
+You should see a new terminal open up and [Docker Compose](https://docs.docker.com/compose/) begin to start building the images. Once that is done it will switch to running the API in docker.
+
+### Prep the database
+
+The database is automatically created but you still need to run migrations and seed it. Again using the command palette and the **Run test task** option, find and select in turn
+
+- **Run sroc-cma dev migrations**
+- **Run sroc-cma dev seeds**
+
+The API should now be ready to use.
+
+### Prep for testing
+
+Before we can run any tests the 'test' database needs to be created and migrations run against it. Using the command palette and the **Run test task** option, find and select
+
+- **Prepare sroc-cma test db**
+
+This will both create the test database and run migrations against it. It is also safe to run repeatedly should you need to run new migrations.
+
+### Non-vscode users
+
+If you are not a VSCode user it does not mean you cannot use Docker. Refer to [tasks.json](.vscode/tasks.json) for the commands being run and implement them in your preferred tool.
 
 ## Testing the app
 
-To run unit tests, use:
+To run lint checks use the command palette and the **Run test task** option to find and select
 
-```bash
-make run-test
-```
+- **Run sroc-cma lint checks**
 
-This will:
+To run unit tests find and select
 
-- Lint the code to check that it is written and formatted in a way that meets our [standard](https://github.com/DEFRA/software-development-standards/blob/master/standards/javascript_standards.md);
-- Run any outstanding migrations on the test database;
-- Run the unit tests.
+- **Run sroc-cma unit tests**
 
-Each of these can be run individually using:
-
-```bash
-make lint
-```
-```bash
-make migrate-test
-```
-```bash
-make run-unit-test
-```
+Check out the `scripts` in [package.json](package.json) if you intend to run things locally.
 
 ## Contributing to this project
 
