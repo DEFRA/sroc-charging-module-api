@@ -78,4 +78,38 @@ describe('Authorised systems controller', () => {
       })
     })
   })
+
+  describe('Show authorised system: GET /admin/authorised-systems/{id}', () => {
+    const options = (id, token) => {
+      return {
+        method: 'GET',
+        url: `/admin/authorised-systems/${id}`,
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    describe('When the authorised system exists', () => {
+      it('returns a match', async () => {
+        const authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1')
+
+        const response = await server.inject(options(authorisedSystem.id, authToken))
+        const payload = JSON.parse(response.payload)
+
+        expect(response.statusCode).to.equal(200)
+        expect(payload.name).to.equal('system1')
+      })
+    })
+
+    describe('When the authorised system does not exist', () => {
+      it("returns a 404 'not found' response", async () => {
+        const id = 'f0d3b4dc-2cae-11eb-adc1-0242ac120002'
+        const response = await server.inject(options(id, authToken))
+
+        const payload = JSON.parse(response.payload)
+
+        expect(response.statusCode).to.equal(404)
+        expect(payload.message).to.equal(`No authorised system found with id ${id}`)
+      })
+    })
+  })
 })
