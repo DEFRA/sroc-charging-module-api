@@ -1,6 +1,6 @@
 'use strict'
 
-const { ListAuthorisedSystemsService } = require('../../services')
+const { ListAuthorisedSystemsService, ShowAuthorisedSystemService } = require('../../services')
 
 class AuthorisedSystemsController {
   static async index (_req, h) {
@@ -10,7 +10,9 @@ class AuthorisedSystemsController {
   }
 
   static async show (req, h) {
-    return h.response('hello').code(200)
+    const result = await ShowAuthorisedSystemService.go(req.params.id)
+
+    return h.response(result).code(200)
   }
 }
 
