@@ -61,19 +61,20 @@ describe('Authorised systems controller', () => {
         const payload = JSON.parse(response.payload)
 
         expect(response.statusCode).to.equal(200)
-        expect(payload.length).to.equal(3)
-        expect(payload[0].name).to.equal('system1')
+        expect(payload.length).to.equal(4)
+        expect(payload[1].name).to.equal('system1')
       })
     })
 
-    describe('When there are no authorised systems', () => {
-      it('returns an empty list', async () => {
+    describe("When there is only the 'admin' system", () => {
+      it('returns just it', async () => {
         const response = await server.inject(options(authToken))
 
         const payload = JSON.parse(response.payload)
 
         expect(response.statusCode).to.equal(200)
-        expect(payload.length).to.equal(0)
+        expect(payload.length).to.equal(1)
+        expect(payload[0].name).to.equal('admin')
       })
     })
   })
