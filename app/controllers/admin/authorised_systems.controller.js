@@ -1,8 +1,12 @@
 'use strict'
 
+const { ListAuthorisedSystemsService } = require('../../services')
+
 class AuthorisedSystemsController {
   static async index (_req, h) {
-    return h.response('Hello').code(200)
+    const result = await ListAuthorisedSystemsService.go()
+
+    return h.response(result).code(200)
   }
 }
 
