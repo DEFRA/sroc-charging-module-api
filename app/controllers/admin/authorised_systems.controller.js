@@ -8,6 +8,10 @@ class AuthorisedSystemsController {
 
     return h.response(result).code(200)
   }
+
+  static async show (req, h) {
+    return h.response('hello').code(200)
+  }
 }
 
 module.exports = AuthorisedSystemsController
