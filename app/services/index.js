@@ -6,6 +6,7 @@ const CognitoJwtToPemService = require('./cognito_jwt_to_pem.service')
 const ListRegimesService = require('./list_regimes.service')
 const ObjectCleaningService = require('./object_cleaning.service')
 const RulesService = require('./rules.service')
+const ShowRegimeService = require('./show_regime.service')
 
 module.exports = {
   AuthorisationService,
@@ -13,5 +14,6 @@ module.exports = {
   CognitoJwtToPemService,
   ListRegimesService,
   ObjectCleaningService,
-  RulesService
+  RulesService,
+  ShowRegimeService
 }
