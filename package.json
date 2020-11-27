@@ -9,11 +9,11 @@
     "watch": "./node_modules/nodemon/bin/nodemon.js --watch ./app --watch server.js -x node server.js",
     "lint": "standard",
     "test": "npm run lint && npm run migratedbtest && npm run unit-test",
-    "createdb": "PGDATABASE=sroc_charge node db/create_database.js",
-    "createdbtest": "PGDATABASE=sroc_charge_test node db/create_database.js",
-    "migratedb": "PGDATABASE=sroc_charge knex migrate:latest",
-    "migratedbtest": "PGDATABASE=sroc_charge_test knex migrate:latest",
-    "unit-test": "PGDATABASE=sroc_charge_test lab --silent-skips"
+    "createdb": "node db/create_database.js",
+    "createdbtest": "NODE_ENV=test node db/create_database.js",
+    "migratedb": "knex migrate:latest",
+    "migratedbtest": "NODE_ENV=test knex migrate:latest",
+    "unit-test": "lab --silent-skips"
   },
   "repository": {
     "type": "git",
