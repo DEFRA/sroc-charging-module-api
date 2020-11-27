@@ -54,7 +54,7 @@ describe('Create Authorised System service', () => {
       })
     })
 
-    describe('that contains no authorised', () => {
+    describe('that contains no authorised regimes', () => {
       it('creates a new authorised system', async () => {
         const payload = validPayload()
         const result = await CreateAuthorisedSystemService.go(payload)
