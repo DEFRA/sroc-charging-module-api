@@ -26,6 +26,14 @@ class AuthorisedSystemModel extends BaseModel {
           },
           to: 'regimes.id'
         }
+      },
+      billRuns: {
+        relation: Model.HasManyRelation,
+        modelClass: 'bill_run.model',
+        join: {
+          from: 'authorised_systems.id',
+          to: 'bill_runs.created_by'
+        }
       }
     }
   }
