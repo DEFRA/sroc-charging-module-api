@@ -13,7 +13,7 @@ const { ValidationError } = require('joi')
 // Thing under test
 const { BillRunTranslator } = require('../../app/translators')
 
-describe.only('Bill Run translator', () => {
+describe('Bill Run translator', () => {
   const data = region => {
     return {
       region: region
