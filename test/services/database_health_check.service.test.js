@@ -13,7 +13,7 @@ const { DatabaseHelper } = require('../support/helpers')
 // Thing under test
 const { DatabaseHealthCheckService } = require('../../app/services')
 
-describe.only('Database Health Check service', () => {
+describe('Database Health Check service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
   })
