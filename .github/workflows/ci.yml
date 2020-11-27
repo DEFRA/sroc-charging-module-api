@@ -17,6 +17,7 @@ jobs:
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       POSTGRES_DB: sroc_charge_test
+      POSTGRES_DB_TEST: sroc_charge_test
       ENVIRONMENT: dev
       RULES_SERVICE_URL: http://example.com
       RULES_SERVICE_USER: admin
