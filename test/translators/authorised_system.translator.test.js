@@ -48,5 +48,21 @@ describe('Authorised system translator', () => {
         expect(() => new AuthorisedSystemTranslator(invalidData(['wrls']))).to.throw(ValidationError)
       })
     })
+
+    describe("When the data contains no 'status'", () => {
+      const validData = () => {
+        return {
+          clientId: 'i7rnixijjrawj7azzhwwxxxxxx',
+          name: 'olmos',
+          authorisations: []
+        }
+      }
+
+      it("defaults it to 'active'", async () => {
+        const translator = new AuthorisedSystemTranslator(validData())
+
+        expect(translator.status).to.equal('active')
+      })
+    })
   })
 })
