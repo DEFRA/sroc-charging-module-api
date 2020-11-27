@@ -22,6 +22,16 @@ const routes = [
         scope: ['admin']
       }
     }
+  },
+  {
+    method: 'POST',
+    path: '/admin/authorised-systems',
+    handler: AuthorisedSystemsController.create,
+    options: {
+      auth: {
+        scope: ['admin']
+      }
+    }
   }
 ]
 
