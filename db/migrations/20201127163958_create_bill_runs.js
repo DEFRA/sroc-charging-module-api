@@ -12,6 +12,7 @@ exports.up = async function (knex) {
       // Data
       table.uuid('regime_id').notNullable()
       table.string('region').notNullable()
+      table.uuid('created_by').notNullable()
 
       // Automatic timestamps
       table.timestamps(false, true)
