@@ -10,6 +10,7 @@ const { expect } = Code
 // Test helpers
 const { AuthorisedSystemHelper, DatabaseHelper, RegimeHelper } = require('../support/helpers')
 const { ValidationError } = require('joi')
+const { UniqueViolationError } = require('db-errors')
 
 // Thing under test
 const { CreateAuthorisedSystemService } = require('../../app/services')
@@ -72,7 +73,7 @@ describe('Create Authorised System service', () => {
     })
   })
 
-  describe.only('When the payload contains an invalid request', () => {
+  describe('When the payload contains an invalid request', () => {
     const invalidPayload = (clientId = 'i7rnixijjrawj7azzhwwxxxxxx', name = 'olmos') => {
       return {
         clientId: clientId,
@@ -97,7 +98,7 @@ describe('Create Authorised System service', () => {
           await AuthorisedSystemHelper.addSystem('1234546789', 'system')
 
           const payload = invalidPayload('1234546789')
-          const err = await expect(CreateAuthorisedSystemService.go(payload)).to.reject(Error)
+          const err = await expect(CreateAuthorisedSystemService.go(payload)).to.reject(UniqueViolationError)
 
           expect(err).to.be.an.error()
         })
@@ -119,7 +120,7 @@ describe('Create Authorised System service', () => {
           await AuthorisedSystemHelper.addSystem('987654321', 'system')
 
           const payload = invalidPayload('1234546789', 'system')
-          const err = await expect(CreateAuthorisedSystemService.go(payload)).to.reject(Error)
+          const err = await expect(CreateAuthorisedSystemService.go(payload)).to.reject(UniqueViolationError)
 
           expect(err).to.be.an.error()
         })
