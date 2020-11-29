@@ -21,6 +21,14 @@ class BillRunModel extends BaseModel {
           from: 'bill_runs.created_by',
           to: 'authorised_systems.id'
         }
+      },
+      regime: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: 'regime.model',
+        join: {
+          from: 'bill_runs.regime_id',
+          to: 'regimes.id'
+        }
       }
     }
   }
