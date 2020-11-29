@@ -14,7 +14,7 @@ class BillRunModel extends BaseModel {
 
   static get relationMappings () {
     return {
-      createdBy: {
+      authorisedSystem: {
         relation: Model.BelongsToOneRelation,
         modelClass: 'authorised_system.model',
         join: {
