@@ -5,12 +5,17 @@ const { NotSupportedController, PresrocTransactionsController } = require('../co
 const routes = [
   {
     method: 'GET',
-    path: '/v1/transactions',
+    path: '/v1/{regimeId}/transactions',
     handler: NotSupportedController.index
   },
   {
     method: 'GET',
-    path: '/v2/transactions',
+    path: '/v1/{regimeId}/transactions/{transactionId}',
+    handler: NotSupportedController.index
+  },
+  {
+    method: 'GET',
+    path: '/v2/{regimeId}/transactions',
     handler: PresrocTransactionsController.index
   }
 ]
