@@ -1,8 +1,6 @@
 'use strict'
 
-const BaseBillRunsController = require('../base_bill_runs.controller')
-
-class BillRunsController extends BaseBillRunsController {
+class BillRunsController {
   static async index (_req, _h) {
     return 'hello, pre-sroc billruns'
   }
