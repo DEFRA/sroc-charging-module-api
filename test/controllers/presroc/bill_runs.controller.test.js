@@ -17,7 +17,7 @@ const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper, RegimeHelpe
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
-describe.only('Presroc Bill Runs controller', () => {
+describe('Presroc Bill Runs controller', () => {
   const clientID = '1234546789'
   let server
   let authToken
