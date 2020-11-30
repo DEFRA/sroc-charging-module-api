@@ -1,8 +1,12 @@
 'use strict'
 
+const { CreateBillRunService } = require('../../services')
+
 class BillRunsController {
-  static async index (_req, _h) {
-    return 'hello, pre-sroc billruns'
+  static async create (req, h) {
+    const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
+
+    return h.response(result).code(201)
   }
 }
 

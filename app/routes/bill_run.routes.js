@@ -4,14 +4,14 @@ const { PresrocBillRunsController } = require('../controllers')
 
 const routes = [
   {
-    method: 'GET',
+    method: 'POST',
     path: '/v1/{regimeId}/billruns',
-    handler: PresrocBillRunsController.index
+    handler: PresrocBillRunsController.create
   },
   {
-    method: 'GET',
+    method: 'POST',
     path: '/v2/{regimeId}/billruns',
-    handler: PresrocBillRunsController.index
+    handler: PresrocBillRunsController.create
   }
 ]
 
