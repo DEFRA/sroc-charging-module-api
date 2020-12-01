@@ -7,12 +7,12 @@ class RulesServiceHelper {
     return RulesServiceConfig.url
   }
 
-  static application (regime) {
-    return RulesServiceConfig.endpoints[regime].application
+  static application (regime, ruleset) {
+    return RulesServiceConfig.endpoints[regime].rulesets[ruleset].application
   }
 
-  static ruleset (regime) {
-    return RulesServiceConfig.endpoints[regime].ruleset
+  static ruleset (regime, ruleset) {
+    return RulesServiceConfig.endpoints[regime].rulesets[ruleset].ruleset
   }
 
   static response (regime) {
@@ -24,10 +24,10 @@ class RulesServiceHelper {
   }
 
   // Helper function to return all data for a given regime in one go
-  static allRulesData (regime) {
+  static allRulesData (regime, ruleset) {
     return {
-      application: this.application(regime),
-      ruleset: this.ruleset(regime),
+      application: this.application(regime, ruleset),
+      ruleset: this.ruleset(regime, ruleset),
       response: this.response(regime),
       request: this.request(regime)
     }

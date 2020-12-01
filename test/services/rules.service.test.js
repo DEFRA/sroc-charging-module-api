@@ -15,7 +15,16 @@ const { RulesServiceHelper } = require('../support/helpers')
 const { RulesService } = require('../../app/services')
 
 // Wraps regime, financial year and charge params in a dummy presenter object for passing to rules service
-const dummyPresenter = (regime, financialYear, chargeParams = {}) => ({ regime, financialYear, chargeParams })
+// const dummyPresenter = (regime, financialYear, ruleset, chargeParams = {}) => ({ regime, financialYear, ruleset, chargeParams })
+
+const dummyPresenter = (regime, financialYear, ruleset, chargeParams = {}) => {
+  return {
+    regime,
+    financialYear,
+    ruleset,
+    chargeParams
+  }
+}
 
 describe('Rules service', () => {
   afterEach(async () => {
@@ -23,11 +32,11 @@ describe('Rules service', () => {
   })
 
   it('calls the rules service API', async () => {
-    const wrls = RulesServiceHelper.allRulesData('wrls')
+    const wrls = RulesServiceHelper.allRulesData('wrls', 'sroc')
     Nock(RulesServiceHelper.url)
       .post(`/${wrls.application}/${wrls.ruleset}_2020_21`, wrls.request)
       .reply(200, wrls.response)
-    const presenter = dummyPresenter('wrls', 2020, wrls.request)
+    const presenter = dummyPresenter('wrls', 2020, 'sroc', wrls.request)
 
     const result = await RulesService.go(presenter)
 
@@ -44,8 +53,8 @@ describe('Rules service', () => {
     })
 
     it('for different regimes', async () => {
-      const presenterWrls = dummyPresenter('wrls', 2020)
-      const presenterCfd = dummyPresenter('cfd', 2020)
+      const presenterWrls = dummyPresenter('wrls', 2020, 'sroc')
+      const presenterCfd = dummyPresenter('cfd', 2020, 'sroc')
 
       const { requestUrl: requestUrlWrls } = await RulesService.go(presenterWrls)
       const { requestUrl: requestUrlCfd } = await RulesService.go(presenterCfd)
@@ -54,8 +63,8 @@ describe('Rules service', () => {
     })
 
     it('for different years', async () => {
-      const presenter2019 = dummyPresenter('wrls', 2019)
-      const presenter2020 = dummyPresenter('wrls', 2020)
+      const presenter2019 = dummyPresenter('wrls', 2019, 'sroc')
+      const presenter2020 = dummyPresenter('wrls', 2020, 'sroc')
 
       const { requestUrl: requestUrl2019 } = await RulesService.go(presenter2019)
       const { requestUrl: requestUrl2020 } = await RulesService.go(presenter2020)
