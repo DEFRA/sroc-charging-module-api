@@ -5,7 +5,7 @@ const Joi = require('joi')
 const Boom = require('@hapi/boom')
 const { RulesServiceConfig } = require('../../config')
 
-class ChargeTranslator extends BaseTranslator {
+class SrocChargeTranslator extends BaseTranslator {
   constructor (data) {
     super(data)
 
@@ -50,7 +50,9 @@ class ChargeTranslator extends BaseTranslator {
       section126Factor: Joi.number().allow(null).empty(null).default(1.0),
       section127Agreement: Joi.boolean().required(),
       twoPartTariff: Joi.boolean().required(),
-      compensationCharge: Joi.boolean().required()
+      compensationCharge: Joi.boolean().required(),
+      // Set a new field called ruleset. This will be used to determine which ruleset to query in the rules service
+      ruleset: Joi.string().default('sroc')
     })
   }
 
@@ -69,7 +71,8 @@ class ChargeTranslator extends BaseTranslator {
       section126Factor: 'regimeValue11',
       section127Agreement: 'regimeValue12',
       twoPartTariff: 'regimeValue16',
-      compensationCharge: 'regimeValue17'
+      compensationCharge: 'regimeValue17',
+      ruleset: 'ruleset'
     }
   }
 
@@ -93,4 +96,4 @@ class ChargeTranslator extends BaseTranslator {
   }
 }
 
-module.exports = ChargeTranslator
+module.exports = SrocChargeTranslator

@@ -4,19 +4,19 @@ const BaseCalculateChargeController = require('../base_calculate_charge.controll
 
 const { ChargeModel } = require('../../models')
 const { CalculateChargeService } = require('../../services')
-const { ChargeTranslator, RulesServiceTranslator } = require('../../translators')
+const { SrocChargeTranslator, RulesServiceTranslator } = require('../../translators')
 const { ChargePresenter, RulesServicePresenter } = require('../../presenters')
 
 class CalculateChargeController extends BaseCalculateChargeController {
   static async calculate (req, _h) {
     const charge = CalculateChargeController._createCharge(req.payload)
-    const rulesServiceResponse = await CalculateChargeController._presentRequest(charge, req.params.regime)
+    const rulesServiceResponse = await CalculateChargeController._presentRequest(charge, req.app.regime.slug)
     Object.assign(charge, rulesServiceResponse)
     return CalculateChargeController._presentResponse(charge)
   }
 
   static _createCharge (payload) {
-    const translatedRequest = new ChargeTranslator(payload)
+    const translatedRequest = new SrocChargeTranslator(payload)
     return new ChargeModel(translatedRequest)
   }
 
