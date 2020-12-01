@@ -10,7 +10,7 @@ const { ChargePresenter, RulesServicePresenter } = require('../../presenters')
 class CalculateChargeController extends BaseCalculateChargeController {
   static async calculate (req, _h) {
     const charge = CalculateChargeController._createCharge(req.payload)
-    const rulesServiceResponse = await CalculateChargeController._presentRequest(charge, req.params.regime)
+    const rulesServiceResponse = await CalculateChargeController._presentRequest(charge, req.app.regime.slug)
     Object.assign(charge, rulesServiceResponse)
     return CalculateChargeController._presentResponse(charge)
   }
