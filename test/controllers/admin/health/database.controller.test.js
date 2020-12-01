@@ -55,12 +55,7 @@ describe('Database controller', () => {
 
       expect(response.statusCode).to.equal(200)
 
-      // We expect at least the following tables to exist
-      // - authorised_systems
-      // - authorised_systems_regimes
-      // - knex_migrations
-      // - knex_migrations_lock
-      // - regimes
+      // We expect at least 5 tables to exist and be returned in the results
       expect(payload.length).to.be.at.least(5)
       expect(payload[0].relname).to.exist()
     })
