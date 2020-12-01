@@ -4,7 +4,7 @@ const BaseCalculateChargeController = require('../base_calculate_charge.controll
 
 const { ChargeModel } = require('../../models')
 const { CalculateChargeService } = require('../../services')
-const { ChargeTranslator, RulesServiceTranslator } = require('../../translators')
+const { SrocChargeTranslator, RulesServiceTranslator } = require('../../translators')
 const { ChargePresenter, RulesServicePresenter } = require('../../presenters')
 
 class CalculateChargeController extends BaseCalculateChargeController {
@@ -16,7 +16,7 @@ class CalculateChargeController extends BaseCalculateChargeController {
   }
 
   static _createCharge (payload) {
-    const translatedRequest = new ChargeTranslator(payload)
+    const translatedRequest = new SrocChargeTranslator(payload)
     return new ChargeModel(translatedRequest)
   }
 

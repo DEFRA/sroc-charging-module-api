@@ -12,12 +12,12 @@ const { ValidationError } = require('joi')
 const testData = require('../support/fixtures/charge.json')
 
 // Thing under test
-const { ChargeTranslator } = require('../../app/translators')
+const { SrocChargeTranslator } = require('../../app/translators')
 
-describe('Charge translator', () => {
+describe('SROC Charge translator', () => {
   describe('prorata days', () => {
     it('are correctly calculated', async () => {
-      const testTranslator = new ChargeTranslator({
+      const testTranslator = new SrocChargeTranslator({
         ...testData,
         billableDays: 128,
         authorisedDays: 256
@@ -27,7 +27,7 @@ describe('Charge translator', () => {
     })
 
     it('are correctly padded to 3 digits', async () => {
-      const testTranslator = new ChargeTranslator({
+      const testTranslator = new SrocChargeTranslator({
         ...testData,
         billableDays: 8,
         authorisedDays: 16
@@ -39,7 +39,7 @@ describe('Charge translator', () => {
 
   describe('financial year', () => {
     it('is the previous year for start dates in March or earlier', async () => {
-      const testTranslator = new ChargeTranslator({
+      const testTranslator = new SrocChargeTranslator({
         ...testData,
         periodStart: '01-MAR-2022'
       })
@@ -48,7 +48,7 @@ describe('Charge translator', () => {
     })
 
     it('is the current year for start dates in April onwards', async () => {
-      const testTranslator = new ChargeTranslator({
+      const testTranslator = new SrocChargeTranslator({
         ...testData,
         periodStart: '01-APR-2021'
       })
@@ -63,7 +63,7 @@ describe('Charge translator', () => {
         periodEnd: '01-APR-2022'
       }
 
-      expect(() => new ChargeTranslator(invalidDates)).to.throw(ValidationError)
+      expect(() => new SrocChargeTranslator(invalidDates)).to.throw(ValidationError)
     })
   })
 })
