@@ -12,6 +12,16 @@ const routes = [
         scope: ['admin']
       }
     }
+  },
+  {
+    method: 'GET',
+    path: '/admin/authorised-systems/{id}',
+    handler: AuthorisedSystemsController.show,
+    options: {
+      auth: {
+        scope: ['admin']
+      }
+    }
   }
 ]
 
