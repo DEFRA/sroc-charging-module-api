@@ -14,40 +14,35 @@ const defaultConfig = {
   }
 }
 
+const defaultConnection = {
+  host: DatabaseConfig.host,
+  user: DatabaseConfig.user,
+  password: DatabaseConfig.password,
+  database: DatabaseConfig.database,
+  port: DatabaseConfig.port,
+  charset: 'utf8'
+}
+
 const development = {
+  ...defaultConfig,
   connection: {
-    host: DatabaseConfig.host,
-    user: DatabaseConfig.user,
-    password: DatabaseConfig.password,
-    database: DatabaseConfig.database,
-    port: DatabaseConfig.port,
-    charset: 'utf8'
-  },
-  ...defaultConfig
+    ...defaultConnection
+  }
 }
 
 const test = {
+  ...defaultConfig,
   connection: {
-    host: DatabaseConfig.host,
-    user: DatabaseConfig.user,
-    password: DatabaseConfig.password,
-    database: DatabaseConfig.testDatabase,
-    port: DatabaseConfig.port,
-    charset: 'utf8'
-  },
-  ...defaultConfig
+    ...defaultConnection,
+    database: DatabaseConfig.testDatabase
+  }
 }
 
 const production = {
+  ...defaultConfig,
   connection: {
-    host: DatabaseConfig.host,
-    user: DatabaseConfig.user,
-    password: DatabaseConfig.password,
-    database: DatabaseConfig.database,
-    port: DatabaseConfig.port,
-    charset: 'utf8'
-  },
-  ...defaultConfig
+    ...defaultConnection
+  }
 }
 
 module.exports = { development, test, production }
