@@ -16,8 +16,8 @@ class RulesService {
   // * chargeParams is an object containing the parameters to be passed to the rules service
   static go (presenter) {
     const { url, username, password, httpProxy } = RulesServiceConfig
-    const { regime, financialYear, chargeParams } = presenter
-    const path = this._makeRulesPath(regime, financialYear)
+    const { ruleset, regime, financialYear, chargeParams } = presenter
+    const path = this._makeRulesPath(ruleset, regime, financialYear)
     const requestOptions = this._requestOptions(url, chargeParams, username, password)
     const proxyOptions = httpProxy ? this._proxyOptions(httpProxy) : ''
 
@@ -25,8 +25,8 @@ class RulesService {
   }
 
   // generate the path for the specified regime, year and ruleset
-  static _makeRulesPath (regime, year) {
-    const { application, ruleset } = RulesServiceConfig.endpoints[regime]
+  static _makeRulesPath (rulesetId, regime, year) {
+    const { application, ruleset } = RulesServiceConfig.endpoints[regime].rulesets[rulesetId]
     const suffix = this._yearSuffix(year)
     return `${application}/${ruleset}${suffix}`
   }
