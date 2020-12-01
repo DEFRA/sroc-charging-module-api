@@ -50,7 +50,9 @@ class SrocChargeTranslator extends BaseTranslator {
       section126Factor: Joi.number().allow(null).empty(null).default(1.0),
       section127Agreement: Joi.boolean().required(),
       twoPartTariff: Joi.boolean().required(),
-      compensationCharge: Joi.boolean().required()
+      compensationCharge: Joi.boolean().required(),
+      // Set a new field called ruleset. This will be used to determine which ruleset to query in the rules service
+      ruleset: Joi.string().default('sroc')
     })
   }
 
@@ -69,7 +71,8 @@ class SrocChargeTranslator extends BaseTranslator {
       section126Factor: 'regimeValue11',
       section127Agreement: 'regimeValue12',
       twoPartTariff: 'regimeValue16',
-      compensationCharge: 'regimeValue17'
+      compensationCharge: 'regimeValue17',
+      ruleset: 'ruleset'
     }
   }
 
