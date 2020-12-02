@@ -1,12 +1,12 @@
 'use strict'
 
-const { PresrocBillRunsController } = require('../controllers')
+const { NotSupportedController, PresrocBillRunsController } = require('../controllers')
 
 const routes = [
   {
     method: 'POST',
     path: '/v1/{regimeId}/billruns',
-    handler: PresrocBillRunsController.create
+    handler: NotSupportedController.index
   },
   {
     method: 'POST',
