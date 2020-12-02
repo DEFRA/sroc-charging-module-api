@@ -7,7 +7,6 @@ const AuthorisedSystemsController = require('./admin/authorised_systems.controll
 const AirbrakeController = require('./admin/health/airbrake.controller')
 const DatabaseController = require('./admin/health/database.controller')
 
-const BaseBillRunsController = require('./base_bill_runs.controller')
 const BaseTransactionsController = require('./base_transactions.controller')
 const BaseCalculateChargeController = require('./base_calculate_charge.controller')
 
@@ -23,7 +22,6 @@ module.exports = {
   RegimesController,
   AirbrakeController,
   AuthorisedSystemsController,
-  BaseBillRunsController,
   BaseTransactionsController,
   BaseCalculateChargeController,
   DatabaseController,
