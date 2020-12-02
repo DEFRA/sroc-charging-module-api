@@ -112,4 +112,44 @@ describe('Authorised systems controller', () => {
       })
     })
   })
+
+  describe('Adding an authorised system: POST /admin/authorised-systems', () => {
+    const options = (token, payload) => {
+      return {
+        method: 'POST',
+        url: '/admin/authorised-systems',
+        headers: { authorization: `Bearer ${token}` },
+        payload: payload
+      }
+    }
+
+    it("adds a new authorised system and returns its details including the 'id'", async () => {
+      const requestPayload = {
+        clientId: 'i7rnixijjrawj7azzhwwxxxxxx',
+        name: 'olmos',
+        status: 'active',
+        authorisations: ['wrls']
+      }
+
+      const response = await server.inject(options(authToken, requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(201)
+      expect(responsePayload.id).to.exist()
+      expect(responsePayload.clientId).to.equal(requestPayload.clientId)
+    })
+
+    it('will not add an authorised system with invalid data', async () => {
+      const requestPayload = {
+        clientId: '',
+        name: 'olmos',
+        status: 'active',
+        authorisations: ['wrls']
+      }
+
+      const response = await server.inject(options(authToken, requestPayload))
+
+      expect(response.statusCode).to.equal(422)
+    })
+  })
 })
