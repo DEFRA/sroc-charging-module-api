@@ -1,20 +1,22 @@
 'use strict'
 
-const DatabaseConfig = require('../config/database.config')
+const environment = process.env.NODE_ENV || 'development'
 
-// If the script has been run using the package.json scripts the database name
-// will be set as `sroc_charge` or `sroc_charge_test`. This is done by
-// overriding the PGDATABASE env var set in .env (or the current environment).
-const databaseName = DatabaseConfig.database
+const dbConfig = require('../knexfile')[environment]
 
-// connect to maintenance database
+const databaseName = dbConfig.connection.database
+
+// Connect to maintenance database. We can't use `knexfile.js` and require it as we would in other places because it
+// will already have instantiated using the actual db.
+// So we have to grab our config and instantiate it ourselves here so we can connect against the default 'postgres' db.
+// https://stackoverflow.com/a/31428260/6117745
 const knex = require('knex')({
   client: 'pg',
   connection: {
-    host: DatabaseConfig.host,
-    port: DatabaseConfig.port,
-    user: DatabaseConfig.user,
-    password: DatabaseConfig.password,
+    host: dbConfig.connection.host,
+    port: dbConfig.connection.port,
+    user: dbConfig.connection.user,
+    password: dbConfig.connection.password,
     database: 'postgres',
     charset: 'utf8'
   }
