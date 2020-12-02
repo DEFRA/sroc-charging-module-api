@@ -1,6 +1,8 @@
 'use strict'
 
-const dbConfig = require('../knexfile')
+const environment = process.env.NODE_ENV || 'development'
+
+const dbConfig = require('../knexfile')[environment]
 
 const db = require('knex')(dbConfig)
 
