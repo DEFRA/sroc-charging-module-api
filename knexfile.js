@@ -25,9 +25,7 @@ const defaultConnection = {
 
 const development = {
   ...defaultConfig,
-  connection: {
-    ...defaultConnection
-  }
+  connection: defaultConnection
 }
 
 const test = {
@@ -40,9 +38,7 @@ const test = {
 
 const production = {
   ...defaultConfig,
-  connection: {
-    ...defaultConnection
-  }
+  connection: defaultConnection
 }
 
 module.exports = { development, test, production }
