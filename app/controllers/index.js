@@ -3,7 +3,9 @@
 const RootController = require('./root.controller')
 
 const RegimesController = require('./admin/regimes.controller')
+const AuthorisedSystemsController = require('./admin/authorised_systems.controller')
 const AirbrakeController = require('./admin/health/airbrake.controller')
+const DatabaseController = require('./admin/health/database.controller')
 
 const BaseCalculateChargeController = require('./base_calculate_charge.controller')
 
@@ -19,7 +21,9 @@ module.exports = {
   RootController,
   RegimesController,
   AirbrakeController,
+  AuthorisedSystemsController,
   BaseCalculateChargeController,
+  DatabaseController,
   PresrocBillRunsController,
   PresrocTransactionsController,
   PresrocCalculateChargeController,
