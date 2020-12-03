@@ -1,8 +1,6 @@
 'use strict'
 
-const BaseTransactionsController = require('../base_transactions.controller')
-
-class TransactionsController extends BaseTransactionsController {
+class TransactionsController {
   static async index (_req, _h) {
     return 'hello, pre-sroc transactions'
   }

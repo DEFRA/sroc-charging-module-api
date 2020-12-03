@@ -1,5 +1,7 @@
 'use strict'
 
+const { NotSupportedController } = require('../../../app/controllers')
+
 /**
  * A helper that provides test routes.
  *
@@ -89,6 +91,23 @@ class RouteHelper {
         auth: {
           scope: ['system']
         }
+      }
+    })
+  }
+
+  /**
+   * Adds a route to a Hapi server instance which replicates an unsupported route.
+   *
+   * This supports testing that when we flag a route as 'unsupported' it behaves as we expect. For example, we are
+   * flagging that the /v1 versions of a number of endpoints are not supported in this project.
+   */
+  static addNotSupportedRoute (server) {
+    server.route({
+      method: 'GET',
+      path: '/test/not-supported',
+      handler: NotSupportedController.index,
+      options: {
+        auth: false
       }
     })
   }
