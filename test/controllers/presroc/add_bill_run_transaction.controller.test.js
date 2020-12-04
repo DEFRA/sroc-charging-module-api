@@ -17,7 +17,7 @@ const { AuthorisationHelper } = require('../../support/helpers')
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
-describe.only('Presroc Add Bill Run Transaction controller', () => {
+describe('Presroc Add Bill Run Transaction controller', () => {
   const clientID = '1234546789'
   const billRunId = 'b976d8e4-3644-11eb-adc1-0242ac120002'
   let server
