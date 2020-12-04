@@ -86,7 +86,7 @@ describe('Transaction translator', () => {
   })
 
   describe('Default values', () => {
-    it("defaults 'newLicense' to 'false'", async () => {
+    it("defaults 'newLicence' to 'false'", async () => {
       const testTranslator = new TransactionTranslator(data)
 
       expect(testTranslator.newLicence).to.be.a.boolean().and.equal(false)
