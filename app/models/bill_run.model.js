@@ -29,6 +29,14 @@ class BillRunModel extends BaseModel {
           from: 'bill_runs.regime_id',
           to: 'regimes.id'
         }
+      },
+      transactions: {
+        relation: Model.HasManyRelation,
+        modelClass: 'transaction.model',
+        join: {
+          from: 'bill_runs.id',
+          to: 'transactions.bill_run_id'
+        }
       }
     }
   }
