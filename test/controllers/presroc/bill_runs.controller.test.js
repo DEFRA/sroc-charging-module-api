@@ -42,11 +42,11 @@ describe('Presroc Bill Runs controller', () => {
     Sinon.restore()
   })
 
-  describe('Adding an authorised system: POST /v2/{regimeId}/billruns', () => {
+  describe('Adding an authorised system: POST /v2/{regimeId}/bill-runs', () => {
     const options = (token, payload) => {
       return {
         method: 'POST',
-        url: '/v2/wrls/billruns',
+        url: '/v2/wrls/bill-runs',
         headers: { authorization: `Bearer ${token}` },
         payload: payload
       }

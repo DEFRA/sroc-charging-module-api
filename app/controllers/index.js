@@ -11,6 +11,7 @@ const BaseCalculateChargeController = require('./base_calculate_charge.controlle
 
 const NotSupportedController = require('./not_supported.controller')
 
+const PresrocAddBillRunTransactionController = require('./presroc/add_bill_run_transaction.controller')
 const PresrocBillRunsController = require('./presroc/bill_runs.controller')
 const PresrocTransactionsController = require('./presroc/transactions.controller')
 const PresrocCalculateChargeController = require('./presroc/calculate_charge.controller')
@@ -24,6 +25,7 @@ module.exports = {
   AuthorisedSystemsController,
   BaseCalculateChargeController,
   DatabaseController,
+  PresrocAddBillRunTransactionController,
   PresrocBillRunsController,
   PresrocTransactionsController,
   PresrocCalculateChargeController,
