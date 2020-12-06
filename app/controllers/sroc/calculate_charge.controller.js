@@ -4,8 +4,8 @@ const BaseCalculateChargeController = require('../base_calculate_charge.controll
 
 const { ChargeModel } = require('../../models')
 const { CalculateChargeService } = require('../../services')
-const { SrocChargeTranslator, RulesServiceTranslator } = require('../../translators')
-const { ChargePresenter, RulesServicePresenter } = require('../../presenters')
+const { SrocChargeTranslator, SrocRulesServiceTranslator } = require('../../translators')
+const { ChargePresenter, SrocRulesServicePresenter } = require('../../presenters')
 
 class CalculateChargeController extends BaseCalculateChargeController {
   static async calculate (req, _h) {
@@ -21,8 +21,8 @@ class CalculateChargeController extends BaseCalculateChargeController {
   }
 
   static _presentRequest (charge, regime) {
-    const requestPresenter = new RulesServicePresenter({ ...charge, regime })
-    return CalculateChargeService.go(requestPresenter.go(), RulesServiceTranslator)
+    const requestPresenter = new SrocRulesServicePresenter({ ...charge, regime })
+    return CalculateChargeService.go(requestPresenter.go(), SrocRulesServiceTranslator)
   }
 
   static _presentResponse (charge) {
