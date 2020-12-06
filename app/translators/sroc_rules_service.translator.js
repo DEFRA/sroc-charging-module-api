@@ -3,7 +3,7 @@
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
 
-class RulesServiceTranslator extends BaseTranslator {
+class SrocRulesServiceTranslator extends BaseTranslator {
   constructor (data) {
     // The rules service returns the data we need in a WRLSChargingResponse object within the response object
     super(data.WRLSChargingResponse)
@@ -69,4 +69,4 @@ class RulesServiceTranslator extends BaseTranslator {
   }
 }
 
-module.exports = RulesServiceTranslator
+module.exports = SrocRulesServiceTranslator

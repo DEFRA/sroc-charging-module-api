@@ -2,7 +2,7 @@
 
 const BasePresenter = require('./base.presenter')
 
-class RulesServicePresenter extends BasePresenter {
+class SrocRulesServicePresenter extends BasePresenter {
   _presentation (data) {
     return {
       ruleset: data.ruleset,
@@ -25,4 +25,4 @@ class RulesServicePresenter extends BasePresenter {
   }
 }
 
-module.exports = RulesServicePresenter
+module.exports = SrocRulesServicePresenter

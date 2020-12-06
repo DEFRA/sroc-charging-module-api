@@ -11,7 +11,7 @@ const { expect } = Code
 const { WRLSChargingResponse: testResponse } = require('../support/fixtures/wrls/rules_service_response.json')
 
 // Thing under test
-const { RulesServiceTranslator } = require('../../app/translators')
+const { SrocRulesServiceTranslator } = require('../../app/translators')
 
 describe('Rules Service translator', () => {
   describe('baselineCharge', () => {
@@ -23,7 +23,7 @@ describe('Rules Service translator', () => {
         }
       }
 
-      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
+      const testTranslator = new SrocRulesServiceTranslator({ WRLSChargingResponse: testData })
 
       expect(testTranslator.baselineCharge).to.equal(12345)
     })
@@ -36,7 +36,7 @@ describe('Rules Service translator', () => {
         chargeValue: 123.45
       }
 
-      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
+      const testTranslator = new SrocRulesServiceTranslator({ WRLSChargingResponse: testData })
 
       expect(testTranslator.chargeValue).to.equal(12345)
     })
@@ -50,7 +50,7 @@ describe('Rules Service translator', () => {
         s127Agreement: 'S127 x 0.5'
       }
 
-      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
+      const testTranslator = new SrocRulesServiceTranslator({ WRLSChargingResponse: testData })
 
       expect(testTranslator.lineAttr10).to.equal('S127 x 0.5')
     })
@@ -61,7 +61,7 @@ describe('Rules Service translator', () => {
         abatementAdjustment: 'S126 x 0.5'
       }
 
-      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
+      const testTranslator = new SrocRulesServiceTranslator({ WRLSChargingResponse: testData })
 
       expect(testTranslator.lineAttr10).to.equal('S126 x 0.5')
     })
@@ -72,7 +72,7 @@ describe('Rules Service translator', () => {
         abatementAdjustment: 'S126 x 1.0'
       }
 
-      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
+      const testTranslator = new SrocRulesServiceTranslator({ WRLSChargingResponse: testData })
 
       expect(testTranslator.lineAttr10).to.equal(null)
     })
