@@ -5,11 +5,13 @@ const BaseModel = require('./base.model')
 const BillRunModel = require('./bill_run.model')
 const ChargeModel = require('./charge.model')
 const RegimeModel = require('./regime.model')
+const TransactionModel = require('./transaction.model')
 
 module.exports = {
   AuthorisedSystemModel,
   BaseModel,
   BillRunModel,
   ChargeModel,
-  RegimeModel
+  RegimeModel,
+  TransactionModel
 }
