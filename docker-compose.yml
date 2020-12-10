@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:10-alpine
     volumes:
-      - db_volume:/var/lib/postgresql/data
+      - cma_db_volume:/var/lib/postgresql/data
     ports:
       - "54320:5432"
     env_file:
@@ -37,7 +37,7 @@ services:
       - ./package-lock.json:/home/node/package-lock.json
       # This is a workaround to prevent the host node_modules from accidently getting mounted in the container in case
       # you want to use either `node` or `npm` outside it, for example, to run linting.
-      - notused:/home/node/app/node_modules
+      - cma_notused:/home/node/app/node_modules
     env_file:
       - .env
     # Run these services first before you run this one. Note, it does not wait or check to ensure the service is fully
@@ -46,5 +46,5 @@ services:
       - db
 
 volumes:
-  db_volume:
-  notused:
+  cma_db_volume:
+  cma_notused:
