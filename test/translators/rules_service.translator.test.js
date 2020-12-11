@@ -14,29 +14,14 @@ const { WRLSChargingResponse: testResponse } = require('../support/fixtures/wrls
 const { RulesServiceTranslator } = require('../../app/translators')
 
 describe('Rules Service translator', () => {
-  describe('baselineCharge', () => {
-    it('is correctly returned', async () => {
-      const testData = {
-        ...testResponse,
-        decisionPoints: {
-          baselineCharge: 123.45
-        }
-      }
-
-      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
-
-      expect(testTranslator.baselineCharge).to.equal(12345)
-    })
-  })
-
   describe('chargeValue', () => {
-    it('is correctly returned', async () => {
-      const testData = {
+    it('is translated to pence instead of pounds and pence', async () => {
+      const data = {
         ...testResponse,
         chargeValue: 123.45
       }
 
-      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
+      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: data })
 
       expect(testTranslator.chargeValue).to.equal(12345)
     })
@@ -44,35 +29,35 @@ describe('Rules Service translator', () => {
 
   describe('lineAttr10', () => {
     it('returns S127 value if present', async () => {
-      const testData = {
+      const data = {
         ...testResponse,
         abatementAdjustment: 'S126 x 0.5',
         s127Agreement: 'S127 x 0.5'
       }
 
-      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
+      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: data })
 
       expect(testTranslator.lineAttr10).to.equal('S127 x 0.5')
     })
 
     it('returns S126 value if it indicates adjustment', async () => {
-      const testData = {
+      const data = {
         ...testResponse,
         abatementAdjustment: 'S126 x 0.5'
       }
 
-      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
+      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: data })
 
       expect(testTranslator.lineAttr10).to.equal('S126 x 0.5')
     })
 
-    it('returns null if S126 value doesn\'t indicate adjustment', async () => {
-      const testData = {
+    it("returns null if S126 value doesn't indicate adjustment", async () => {
+      const data = {
         ...testResponse,
         abatementAdjustment: 'S126 x 1.0'
       }
 
-      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: testData })
+      const testTranslator = new RulesServiceTranslator({ WRLSChargingResponse: data })
 
       expect(testTranslator.lineAttr10).to.equal(null)
     })
