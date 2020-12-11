@@ -5,7 +5,6 @@ const Joi = require('joi')
 
 class PreRulesServiceTranslator extends BaseTranslator {
   constructor (data) {
-    console.log(`PRS ${JSON.stringify(data)}`)
     // The rules service returns the data we need in a WRLSChargingResponse object within the response object
     super(data.WRLSChargingResponse)
 

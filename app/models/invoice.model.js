@@ -1,15 +1,15 @@
 'use strict'
 
 /**
- * @module TransactionModel
+ * @module InvoiceModel
  */
 
 const { Model } = require('objection')
 const BaseModel = require('./base.model')
 
-class TransactionModel extends BaseModel {
+class InvoiceModel extends BaseModel {
   static get tableName () {
-    return 'transactions'
+    return 'invoices'
   }
 
   static get relationMappings () {
@@ -18,20 +18,20 @@ class TransactionModel extends BaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: 'bill_run.model',
         join: {
-          from: 'transactions.bill_run_id',
+          from: 'invoices.bill_run_id',
           to: 'bill_runs.id'
         }
       },
-      invoice: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'invoice.model',
+      transactions: {
+        relation: Model.HasManyRelation,
+        modelClass: 'transaction.model',
         join: {
-          from: 'transactions.invoice_id',
-          to: 'invoices.id'
+          from: 'invoices.id',
+          to: 'transactions.invoice_id'
         }
       }
     }
   }
 }
 
-module.exports = TransactionModel
+module.exports = InvoiceModel
