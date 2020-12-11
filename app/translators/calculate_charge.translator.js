@@ -5,7 +5,7 @@ const Joi = require('joi')
 const Boom = require('@hapi/boom')
 const { RulesServiceConfig } = require('../../config')
 
-class SrocChargeTranslator extends BaseTranslator {
+class CalculateChargeTranslator extends BaseTranslator {
   constructor (data) {
     super(data)
 
@@ -96,4 +96,4 @@ class SrocChargeTranslator extends BaseTranslator {
   }
 }
 
-module.exports = SrocChargeTranslator
+module.exports = CalculateChargeTranslator
