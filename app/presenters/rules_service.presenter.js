@@ -7,18 +7,23 @@ class RulesServicePresenter extends BasePresenter {
     return {
       ruleset: data.ruleset,
       regime: data.regime,
-      financialYear: data.chargeFinancialYear,
+      financialYear: data.financialYear,
       chargeParams: {
         WRLSChargingRequest: {
-          chargeCategory: data.chargeCategoryCode,
-          abatementAdjustment: data.regimeValue11,
-          s127Agreement: data.regimeValue12,
-          s130Agreement: data.regimeValue9,
-          source: data.regimeValue6,
           billableDays: data.regimeValue4,
           abstractableDays: data.regimeValue5,
+          volume: data.lineAttr5,
+          source: data.regimeValue6,
+          season: data.regimeValue7,
+          loss: data.regimeValue8,
+          secondPartCharge: data.regimeValue16,
           compensationCharge: data.regimeValue17,
-          secondPartCharge: data.regimeValue16
+          eiucSource: data.regimeValue13,
+          waterUndertaker: data.regimeValue14,
+          region: data.regimeValue15,
+          s127Agreement: data.regimeValue12,
+          s130Agreement: data.regimeValue9,
+          abatementAdjustment: data.regimeValue11
         }
       }
     }
