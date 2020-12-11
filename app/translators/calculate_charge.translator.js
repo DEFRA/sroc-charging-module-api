@@ -3,17 +3,13 @@
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
 const Boom = require('@hapi/boom')
-const { RulesServiceConfig } = require('../../config')
 
 class CalculateChargeTranslator extends BaseTranslator {
   constructor (data) {
     super(data)
 
-    // Prorata days string is generated from other properties
     this.lineAttr3 = this._prorataDays()
-
-    // Financial year is calculated based on chargePeriodStart
-    this.chargeFinancialYear = this._financialYear(this.chargePeriodStart)
+    this.financialYear = this._financialYear(this.periodStart)
 
     // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year
     this._validateFinancialYear()
@@ -21,11 +17,11 @@ class CalculateChargeTranslator extends BaseTranslator {
 
   _validateFinancialYear () {
     const schema = Joi.object({
-      chargePeriodEndFinancialYear: Joi.number().equal(this.chargeFinancialYear)
+      periodEndFinancialYear: Joi.number().equal(this.financialYear)
     })
 
     const data = {
-      chargePeriodEndFinancialYear: this._financialYear(this.chargePeriodEnd)
+      periodEndFinancialYear: this._financialYear(this.periodEnd)
     }
 
     const { error } = schema.validate(data)
@@ -37,60 +33,89 @@ class CalculateChargeTranslator extends BaseTranslator {
 
   _schema () {
     return Joi.object({
-      chargeCategoryCode: Joi.string().required(),
-      periodStart: Joi.date().less(Joi.ref('periodEnd')).min(RulesServiceConfig.srocMinDate).required(),
-      periodEnd: Joi.date().required(),
-      credit: Joi.boolean().required(),
-      billableDays: Joi.number().integer().min(0).max(366).required(),
       authorisedDays: Joi.number().integer().min(0).max(366).required(),
-      volume: Joi.number().min(0),
-      source: Joi.string().required(), // validated in rules service
-      section130Agreement: Joi.boolean().required(),
-      section126Agreement: Joi.boolean(),
+      billableDays: Joi.number().integer().min(0).max(366).required(),
+      compensationCharge: Joi.boolean().required(),
+      credit: Joi.boolean().required(),
+      // validated in the rules service
+      eiucSource: Joi.when('compensationCharge', { is: true, then: Joi.string().required() }),
+      loss: Joi.string().required(), // validated in rules service
+      periodStart: Joi.date().less(Joi.ref('periodEnd')).min('01-APR-2014').required(),
+      periodEnd: Joi.date().required(),
+      regionalChargingArea: Joi.string().required(), // validated in the rules service
+      // Set a new field called ruleset. This will be used to determine which ruleset to query in the rules service
+      ruleset: Joi.string().default('presroc'),
+      season: Joi.string().required(), // validated in rules service
       section126Factor: Joi.number().allow(null).empty(null).default(1.0),
       section127Agreement: Joi.boolean().required(),
+      section130Agreement: Joi.boolean().required(),
+      source: Joi.string().required(), // validated in rules service
       twoPartTariff: Joi.boolean().required(),
-      compensationCharge: Joi.boolean().required(),
-      // Set a new field called ruleset. This will be used to determine which ruleset to query in the rules service
-      ruleset: Joi.string().default('sroc')
+      volume: Joi.number().min(0),
+      waterUndertaker: Joi.boolean().required()
     })
   }
 
   _translations () {
     return {
-      chargeCategoryCode: 'chargeCategoryCode',
-      periodStart: 'chargePeriodStart',
-      periodEnd: 'chargePeriodEnd',
-      credit: 'chargeCredit',
-      billableDays: 'regimeValue4',
       authorisedDays: 'regimeValue5',
-      volume: 'lineAttr5',
-      source: 'regimeValue6',
-      section130Agreement: 'regimeValue9',
-      section126Agreement: 'regimeValue10',
+      billableDays: 'regimeValue4',
+      compensationCharge: 'regimeValue17',
+      credit: 'credit',
+      loss: 'regimeValue8',
+      periodEnd: 'periodEnd',
+      periodStart: 'periodStart',
+      regionalChargingArea: 'regimeValue15',
+      ruleset: 'ruleset',
+      season: 'regimeValue7',
       section126Factor: 'regimeValue11',
       section127Agreement: 'regimeValue12',
+      section130Agreement: 'regimeValue9',
+      source: 'regimeValue6',
       twoPartTariff: 'regimeValue16',
-      compensationCharge: 'regimeValue17',
-      ruleset: 'ruleset'
+      volume: 'lineAttr5',
+      waterUndertaker: 'regimeValue14'
     }
   }
 
-  _prorataDays () {
-    return `${this._padNumber(this.regimeValue4)}/${this._padNumber(this.regimeValue5)}`
-  }
-
-  // If the charge period start date is January to March then the financial year is the previous year
-  // Otherwise, the financial year is the current year
+  /**
+   * Returns the calculated financial year for a given date
+   *
+   * If the date is January to March then the financial year is the previous year. Otherwise, the financial year is the
+   * current year.
+   *
+   * For example, if the date is 01-MAR-2022 then the financial year will be 2021. If the it's 01-MAY-2022 then the
+   * financial year will be 2022.
+   *
+   * @param {String} date
+   * @returns {Number} The calculated financial year
+  */
   _financialYear (date) {
-    const chargePeriodDate = new Date(date)
-    const month = chargePeriodDate.getMonth()
-    const year = chargePeriodDate.getFullYear()
+    const periodDate = new Date(date)
+    const month = periodDate.getMonth()
+    const year = periodDate.getFullYear()
 
     return (month <= 2 ? year - 1 : year)
   }
 
-  // Return a number as a string, padded to 3 digits with leading zeroes
+  /**
+   * Returns billable and authorised day values as a specially formatted string.
+   *
+   * For example, if billable days is 12 and authorised days is 6 it will return `012/006`.
+   *
+   * @returns {String} Billable days and authorised days as a formatted string
+   */
+  _prorataDays () {
+    return `${this._padNumber(this.regimeValue4)}/${this._padNumber(this.regimeValue5)}`
+  }
+
+  /**
+   * Return a number as a string, padded to 3 digits with leading zeroes
+   *
+   * For example, `_padNumber(3)` will return `003`.
+   *
+   * @returns {Number} the number padded with leading zeroes
+   */
   _padNumber (number) {
     return number.toString().padStart(3, '0')
   }
