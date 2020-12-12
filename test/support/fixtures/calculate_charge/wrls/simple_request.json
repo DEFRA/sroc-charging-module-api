@@ -1,0 +1,19 @@
+{
+  "periodStart": "01-APR-2020",
+  "periodEnd": "31-MAR-2021",
+  "credit": false,
+  "billableDays": 214,
+  "authorisedDays": 214,
+  "volume": "3.5865",
+  "source": "Supported",
+  "season": "Summer",
+  "loss": "Low",
+  "twoPartTariff": false,
+  "compensationCharge": false,
+  "eiucSource": "Tidal",
+  "waterUndertaker": false,
+  "regionalChargingArea": "Midlands",
+  "section126Factor": 1,
+  "section127Agreement": false,
+  "section130Agreement": false
+}
