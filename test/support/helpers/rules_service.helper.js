@@ -15,21 +15,11 @@ class RulesServiceHelper {
     return RulesServiceConfig.endpoints[regime].rulesets[ruleset].ruleset
   }
 
-  static response (regime) {
-    return require(`../fixtures/${regime}/rules_service_response.json`)
-  }
-
-  static request (regime) {
-    return require(`../fixtures/${regime}/rules_service_request.json`)
-  }
-
   // Helper function to return all data for a given regime in one go
   static allRulesData (regime, ruleset) {
     return {
       application: this.application(regime, ruleset),
-      ruleset: this.ruleset(regime, ruleset),
-      response: this.response(regime),
-      request: this.request(regime)
+      ruleset: this.ruleset(regime, ruleset)
     }
   }
 }
