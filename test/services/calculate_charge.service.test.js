@@ -7,40 +7,66 @@ const Sinon = require('sinon')
 const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
+// Test helpers
+const { wrls: fixtures } = require('../support/fixtures/calculate_charge')
+
+// Things we need to stub
+const { RulesService } = require('../../app/services')
+
 // Thing under test
-const { CalculateChargeService, RulesService } = require('../../app/services')
+const { CalculateChargeService } = require('../../app/services')
 
-class Presenter {
-  constructor (response) {
-    this.response = { ...response }
-  }
-}
+describe('Calculate Charge service', () => {
+  describe('When the data is valid', () => {
+    describe("is for the 'WRLS' regime", () => {
+      // We don't need an actual regime record for the calculate charge service as nowhere in its logic do we need an
+      // ID
+      const regime = {
+        slug: 'wrls'
+      }
 
-describe('Charge service', () => {
-  let rulesStub
+      afterEach(async () => {
+        Sinon.restore()
+      })
 
-  beforeEach(async () => {
-    rulesStub = Sinon.stub(RulesService, 'go').callsFake(async (data) => { return { body: data } })
-  })
+      describe("and is a 'simple' request", () => {
+        beforeEach(async () => {
+          Sinon.stub(RulesService, 'go').returns(fixtures.simple.rulesService)
+        })
 
-  afterEach(async () => {
-    rulesStub.restore()
-  })
+        it('returns a calculated charge', async () => {
+          const result = await CalculateChargeService.go(fixtures.simple.request, regime)
 
-  it('calls the rules service', async () => {
-    const translator = { translator: true }
+          expect(result.calculation).to.exist()
+          expect(result).to.equal(fixtures.simple.response)
+        })
+      })
 
-    await CalculateChargeService.go(translator, Presenter)
+      describe("and is a 'Section 126 prorata credit' request", () => {
+        beforeEach(async () => {
+          Sinon.stub(RulesService, 'go').returns(fixtures.s126ProrataCredit.rulesService)
+        })
 
-    expect(rulesStub.calledOnce).to.be.true()
-  })
+        it('returns a calculated charge', async () => {
+          const result = await CalculateChargeService.go(fixtures.s126ProrataCredit.request, regime)
 
-  it('returns a presenter containing the rules service response', async () => {
-    const translator = { test: true }
+          expect(result.calculation).to.exist()
+          expect(result).to.equal(fixtures.s126ProrataCredit.response)
+        })
+      })
 
-    const charge = await CalculateChargeService.go(translator, Presenter)
+      describe("and is a 'Section agreements true' request", () => {
+        beforeEach(async () => {
+          Sinon.stub(RulesService, 'go').returns(fixtures.sectionAgreementsTrue.rulesService)
+        })
 
-    expect(charge).to.be.an.instanceOf(Presenter)
-    expect(charge.response).to.equal(translator)
+        it('returns a calculated charge', async () => {
+          const result = await CalculateChargeService.go(fixtures.sectionAgreementsTrue.request, regime)
+
+          expect(result.calculation).to.exist()
+          expect(result).to.equal(fixtures.sectionAgreementsTrue.response)
+        })
+      })
+    })
   })
 })
