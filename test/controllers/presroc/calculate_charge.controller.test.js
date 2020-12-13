@@ -22,7 +22,7 @@ const {
   RulesServiceHelper
 } = require('../../support/helpers')
 
-const { wrls: fixtures } = require('../../support/fixtures/calculate_charge')
+const { presroc: fixtures } = require('../../support/fixtures/calculate_charge')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')

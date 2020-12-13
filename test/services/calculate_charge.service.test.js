@@ -8,7 +8,7 @@ const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { wrls: fixtures } = require('../support/fixtures/calculate_charge')
+const { presroc: fixtures } = require('../support/fixtures/calculate_charge')
 
 // Things we need to stub
 const { RulesService } = require('../../app/services')

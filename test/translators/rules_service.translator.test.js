@@ -9,7 +9,7 @@ const { expect } = Code
 
 // Test helpers
 const { GeneralHelper } = require('../support/helpers')
-const rulesServiceFixture = require('../support/fixtures/calculate_charge/wrls/simple_rules_service.json')
+const rulesServiceFixture = require('../support/fixtures/calculate_charge/presroc/simple_rules_service.json')
 
 // Thing under test
 const { RulesServiceTranslator } = require('../../app/translators')
