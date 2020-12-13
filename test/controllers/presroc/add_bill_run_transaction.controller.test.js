@@ -5,14 +5,14 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, after } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
 const { deployment } = require('../../../server')
 
 // Test helpers
-const { AuthorisationHelper } = require('../../support/helpers')
+const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper, RegimeHelper } = require('../../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -30,6 +30,13 @@ describe('Presroc Add Bill Run Transaction controller', () => {
     Sinon
       .stub(JsonWebToken, 'verify')
       .returns(AuthorisationHelper.decodeToken(authToken))
+  })
+
+  beforeEach(async () => {
+    await DatabaseHelper.clean()
+
+    const regime = await RegimeHelper.addRegime('wrls', 'WRLS')
+    await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
   })
 
   after(async () => {
