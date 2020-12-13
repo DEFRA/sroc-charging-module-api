@@ -59,7 +59,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TEST_WRLS_Pre_SRoC_RuleApp/WRLS_Pre_SRoC_RuleSet_2019_20')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'presroc')}_2019_20`)
           })
         })
 
@@ -69,7 +69,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TEST_WRLS_Pre_SRoC_RuleApp/WRLS_Pre_SRoC_RuleSet_2020_21')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'presroc')}_2020_21`)
           })
         })
       })
@@ -81,7 +81,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TEST_WRLS_SRoC_RuleApp/WRLS_SRoC_RuleSet_2019_20')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'sroc')}_2019_20`)
           })
         })
 
@@ -91,7 +91,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TEST_WRLS_SRoC_RuleApp/WRLS_SRoC_RuleSet_2020_21')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'sroc')}_2020_21`)
           })
         })
       })
@@ -105,7 +105,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_WasteFacilities_RuleApp/WasteFacilities_RuleSet_2019_20')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'presroc')}_2019_20`)
           })
         })
 
@@ -115,7 +115,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_WasteFacilities_RuleApp/WasteFacilities_RuleSet_2020_21')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'presroc')}_2020_21`)
           })
         })
       })
@@ -127,7 +127,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_WasteFacilities_RuleApp/WasteFacilities_RuleSet_2019_20')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'sroc')}_2019_20`)
           })
         })
 
@@ -137,7 +137,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_WasteFacilities_RuleApp/WasteFacilities_RuleSet_2020_21')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'sroc')}_2020_21`)
           })
         })
       })
@@ -151,7 +151,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_Installations_RuleApp/Installations_RuleSet_2019_20')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'presroc')}_2019_20`)
           })
         })
 
@@ -161,7 +161,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_Installations_RuleApp/Installations_RuleSet_2020_21')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'presroc')}_2020_21`)
           })
         })
       })
@@ -173,7 +173,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_Installations_RuleApp/Installations_RuleSet_2019_20')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'sroc')}_2019_20`)
           })
         })
 
@@ -183,7 +183,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_Installations_RuleApp/Installations_RuleSet_2020_21')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'sroc')}_2020_21`)
           })
         })
       })
@@ -197,7 +197,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_WaterQuality_RuleApp/WaterQuality_RuleSet_2019_20')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'presroc')}_2019_20`)
           })
         })
 
@@ -207,7 +207,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_WaterQuality_RuleApp/WaterQuality_RuleSet_2020_21')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'presroc')}_2020_21`)
           })
         })
       })
@@ -219,7 +219,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_WaterQuality_RuleApp/WaterQuality_RuleSet_2019_20')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'sroc')}_2019_20`)
           })
         })
 
@@ -229,7 +229,7 @@ describe('Rules service', () => {
             await RulesService.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal('TCM_WaterQuality_RuleApp/WaterQuality_RuleSet_2020_21')
+            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'sroc')}_2020_21`)
           })
         })
       })
