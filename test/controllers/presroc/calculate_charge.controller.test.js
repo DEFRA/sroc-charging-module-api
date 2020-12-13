@@ -6,25 +6,26 @@ const Code = require('@hapi/code')
 const Sinon = require('sinon')
 const Nock = require('nock')
 
-const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../server')
+const { deployment } = require('../../../server')
 
 // Test helpers
 const {
   AuthorisationHelper,
   AuthorisedSystemHelper,
   DatabaseHelper,
+  GeneralHelper,
   RegimeHelper,
   RulesServiceHelper
-} = require('../support/helpers')
+} = require('../../support/helpers')
+
+const { wrls: fixtures } = require('../../support/fixtures/calculate_charge')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-
-const { SimpleFixtures, S127S130Fixtures, S126ProrataCreditFixtures } = require('../support/fixtures/wrls/calculate_charge')
 
 describe('Calculate charge controller', () => {
   const clientID = '1234546789'
@@ -38,6 +39,13 @@ describe('Calculate charge controller', () => {
     Sinon
       .stub(JsonWebToken, 'verify')
       .returns(AuthorisationHelper.decodeToken(authToken))
+
+    // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
+    // the interception rather than remove it after the first request
+    Nock(RulesServiceHelper.url)
+      .post(() => true)
+      .reply(200, fixtures.simple.rulesService)
+      .persist()
   })
 
   beforeEach(async () => {
@@ -49,13 +57,10 @@ describe('Calculate charge controller', () => {
 
   after(async () => {
     Sinon.restore()
-  })
-
-  afterEach(async () => {
     Nock.cleanAll()
   })
 
-  describe('Calculate a charge: POST /v2/{regimeId}/calculate-charge', () => {
+  describe('Calculating a charge: POST /v2/{regimeId}/calculate-charge', () => {
     const options = (token, payload) => {
       return {
         method: 'POST',
@@ -65,40 +70,27 @@ describe('Calculate charge controller', () => {
       }
     }
 
-    it('handles example 1 (simple case)', async () => {
-      mockRulesService(SimpleFixtures.rulesServiceRequest, SimpleFixtures.rulesServiceResponse)
+    describe('When the request is valid', () => {
+      it('returns the calculated charge', async () => {
+        const requestPayload = fixtures.simple.request
 
-      const response = await server.inject(options(authToken, SimpleFixtures.calculateChargeRequest))
-      const payload = JSON.parse(response.payload)
+        const response = await server.inject(options(authToken, requestPayload))
+        const responsePayload = JSON.parse(response.payload)
 
-      expect(response.statusCode).to.equal(200)
-      expect(payload).to.equal(SimpleFixtures.calculateChargeResponse)
+        expect(response.statusCode).to.equal(200)
+        expect(responsePayload).to.equal(fixtures.simple.response)
+      })
     })
 
-    it('handles example 2 (includes S127 and S130)', async () => {
-      mockRulesService(S127S130Fixtures.rulesServiceRequest, S127S130Fixtures.rulesServiceResponse)
+    describe('When the request is invalid', () => {
+      it('returns an error', async () => {
+        const requestPayload = GeneralHelper.cloneObject(fixtures.simple.request)
+        requestPayload.periodStart = '01-APR-2021'
 
-      const response = await server.inject(options(authToken, S127S130Fixtures.calculateChargeRequest))
-      const payload = JSON.parse(response.payload)
+        const response = await server.inject(options(authToken, requestPayload))
 
-      expect(response.statusCode).to.equal(200)
-      expect(payload).to.equal(S127S130Fixtures.calculateChargeResponse)
-    })
-
-    it('handles example 3 (S126, a pro-rata calculation and a credit)', async () => {
-      mockRulesService(S126ProrataCreditFixtures.rulesServiceRequest, S126ProrataCreditFixtures.rulesServiceResponse)
-
-      const response = await server.inject(options(authToken, S126ProrataCreditFixtures.calculateChargeRequest))
-      const payload = JSON.parse(response.payload)
-
-      expect(response.statusCode).to.equal(200)
-      expect(payload).to.equal(S126ProrataCreditFixtures.calculateChargeResponse)
+        expect(response.statusCode).to.equal(422)
+      })
     })
   })
 })
-
-function mockRulesService (request, response) {
-  Nock(RulesServiceHelper.url, { encodedQueryParams: true })
-    .post('/TEST_WRLS_SRoC_RuleApp/WRLS_SRoC_RuleSet_2021_22', request)
-    .reply(200, response)
-}
