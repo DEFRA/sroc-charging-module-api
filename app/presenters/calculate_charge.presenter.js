@@ -1,7 +1,14 @@
 'use strict'
 
+/**
+ * @module RulesServicePresenter
+ */
+
 const BasePresenter = require('./base.presenter')
 
+/**
+ * Handles formatting the data into the response we send to clients after a calculate charge request.
+ */
 class CalculateChargePresenter extends BasePresenter {
   _presentation (data) {
     return {

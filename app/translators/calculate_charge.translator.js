@@ -1,5 +1,9 @@
 'use strict'
 
+/**
+ * @module CalculateChargeTranslator
+ */
+
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
 const Boom = require('@hapi/boom')

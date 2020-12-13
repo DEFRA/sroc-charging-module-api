@@ -1,5 +1,9 @@
 'use strict'
 
+/**
+ * @module RulesServiceTranslator
+ */
+
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
 
