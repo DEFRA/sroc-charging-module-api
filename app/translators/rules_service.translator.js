@@ -1,5 +1,9 @@
 'use strict'
 
+/**
+ * @module RulesServiceTranslator
+ */
+
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
 
@@ -8,52 +12,43 @@ class RulesServiceTranslator extends BaseTranslator {
     // The rules service returns the data we need in a WRLSChargingResponse object within the response object
     super(data.WRLSChargingResponse)
 
-    // baselineCharge and chargeValue are converted to pence
-    this.baselineCharge = this._baselineCharge()
-    this.chargeValue = this._chargeValue()
+    this.chargeValue = this._convertToPence(this._data.chargeValue)
+    this.sucFactor = this._convertToPence(this._data.sucFactor)
 
     // Charge element agreement is determined based on rules service response
-    this.lineAttr10 = this._chargeElementAgreement()
+    this.lineAttr10 = this._determineChargeElementAgreement()
   }
 
   _schema () {
     return Joi.object({
       chargeValue: Joi.number().required(),
+      sucFactor: Joi.number(),
+      sourceFactor: Joi.number(),
+      seasonFactor: Joi.number(),
+      lossFactor: Joi.number(),
+      abatementAdjustment: Joi.string().required(),
       s127Agreement: Joi.string().allow(null),
       s130Agreement: Joi.string().allow(null),
-      abatementAdjustment: Joi.string().required(),
-      decisionPoints: Joi.object({
-        baselineCharge: Joi.number().required()
-      })
+      eiucSourceFactor: Joi.number(),
+      eiucFactor: Joi.number()
     }).options({ stripUnknown: true })
   }
 
   _translations () {
     return {
-      s130Agreement: 'lineAttr9'
+      chargeValue: 'chargeValue',
+      sucFactor: 'lineAttr4',
+      sourceFactor: 'lineAttr6',
+      seasonFactor: 'lineAttr7',
+      lossFactor: 'lineAttr8',
+      s130Agreement: 'lineAttr9',
+      eiucSourceFactor: 'lineAttr13',
+      eiucFactor: 'lineAttr14'
     }
-  }
-
-  _baselineCharge () {
-    return this._convertToPence(this._data.decisionPoints.baselineCharge)
-  }
-
-  _chargeValue () {
-    return this._convertToPence(this._data.chargeValue)
-  }
-
-  _convertToPence (value) {
-    const floatValue = parseFloat(value)
-
-    if (isNaN(floatValue)) {
-      return null
-    }
-
-    return Math.round(floatValue * 100)
   }
 
   // The data used for the charge element agreement depends on what the rules service returns
-  _chargeElementAgreement () {
+  _determineChargeElementAgreement () {
     // If a value is returned indicating an adjustment under Section 127 then use it
     if (this._data.s127Agreement) {
       return this._data.s127Agreement
@@ -66,6 +61,16 @@ class RulesServiceTranslator extends BaseTranslator {
 
     // Otherwise, return null
     return null
+  }
+
+  _convertToPence (value) {
+    const floatValue = parseFloat(value)
+
+    if (isNaN(floatValue)) {
+      return null
+    }
+
+    return Math.round(floatValue * 100)
   }
 }
 

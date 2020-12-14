@@ -1,10 +1,12 @@
 'use strict'
 
-const BaseCalculateChargeController = require('../base_calculate_charge.controller')
+const { CalculateChargeService } = require('../../services')
 
-class CalculateChargeController extends BaseCalculateChargeController {
-  static async calculate (req, _h) {
-    return req
+class CalculateChargeController {
+  static async calculate (req, h) {
+    const result = await CalculateChargeService.go(req.payload, req.app.regime)
+
+    return h.response(result).code(200)
   }
 }
 
