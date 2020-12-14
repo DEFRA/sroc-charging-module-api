@@ -1,5 +1,7 @@
 'use strict'
 
+const Hoek = require('@hapi/hoek')
+
 /**
  * Class of general test helper methods
  *
@@ -16,8 +18,8 @@ class GeneralHelper {
    *
    * There are a number of ways to clone an object. Using the spread operator (`...`) or `Object.assign` however, will
    * only do a shallow clone (copy the top level properties but still reference any sub-properties). Because our
-   * fixtures can be multidimensional we need to do a deep clone. Using JSON.parse & JSON.stringify is a quick way of
-   * doing a deep clone, though not advised for large objects.
+   * fixtures can be multidimensional we need to do a deep clone. Hapi brings in the dependency Hoek which contains a
+   * `clone()` method that does deep cloning so we use that.
    *
    * You can read more about cloning objects here https://www.samanthaming.com/tidbits/70-3-ways-to-clone-objects/
    *
@@ -25,7 +27,7 @@ class GeneralHelper {
    * @returns {Object} a deep clone of the object
    */
   static cloneObject (thingToBeCloned) {
-    return JSON.parse(JSON.stringify(thingToBeCloned))
+    return Hoek.clone(thingToBeCloned)
   }
 }
 
