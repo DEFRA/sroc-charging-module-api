@@ -66,24 +66,54 @@ describe('Authenticating with the API', () => {
     })
 
     describe('and I have a valid bearer token', () => {
-      before(async () => {
-        authToken = AuthorisationHelper.adminToken()
+      describe("that contains a recognised 'client_id'", () => {
+        before(async () => {
+          authToken = AuthorisationHelper.adminToken()
 
-        Sinon
-          .stub(JsonWebToken, 'verify')
-          .returns(AuthorisationHelper.decodeToken(authToken))
+          Sinon
+            .stub(JsonWebToken, 'verify')
+            .returns(AuthorisationHelper.decodeToken(authToken))
+        })
+
+        it('returns a success response', async () => {
+          const options = {
+            method: 'GET',
+            url: '/test/admin',
+            headers: { authorization: `Bearer ${authToken}` }
+          }
+
+          const response = await server.inject(options)
+
+          expect(response.statusCode).to.equal(200)
+        })
       })
 
-      it('returns a success response', async () => {
-        const options = {
-          method: 'GET',
-          url: '/test/admin',
-          headers: { authorization: `Bearer ${authToken}` }
-        }
+      describe("but it contains an unrecognised 'client_id'", () => {
+        const unknownClientId = 'notfromroundhere'
 
-        const response = await server.inject(options)
+        before(async () => {
+          authToken = AuthorisationHelper.adminToken()
+          const decodedTokenWithUnknownId = AuthorisationHelper.decodeToken(authToken)
+          decodedTokenWithUnknownId.client_id = unknownClientId
 
-        expect(response.statusCode).to.equal(200)
+          Sinon
+            .stub(JsonWebToken, 'verify')
+            .returns(decodedTokenWithUnknownId)
+        })
+
+        it('returns a 401 error', async () => {
+          const options = {
+            method: 'GET',
+            url: '/test/admin',
+            headers: { authorization: `Bearer ${authToken}` }
+          }
+
+          const response = await server.inject(options)
+          const payload = JSON.parse(response.payload)
+
+          expect(response.statusCode).to.equal(401)
+          expect(payload.message).to.equal(`The client ID '${unknownClientId}' is not recognised`)
+        })
       })
     })
 
