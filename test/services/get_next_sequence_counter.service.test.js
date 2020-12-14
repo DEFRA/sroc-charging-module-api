@@ -14,7 +14,7 @@ const { NotFoundError } = require('objection')
 // Thing under test
 const { GetNextSequenceCounterService } = require('../../app/services')
 
-describe.only('Get Next Sequence Counter service', () => {
+describe('Get Next Sequence Counter service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
   })
