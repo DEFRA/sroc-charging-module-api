@@ -9,8 +9,7 @@ const { expect } = Code
 
 // Test helpers
 const { DatabaseHelper, RegimeHelper, SequenceCounterHelper } = require('../support/helpers')
-// const AuthorisedSystemModel = require('../../app/models/authorised_system.model')
-// const { DataError } = require('objection')
+const { NotFoundError } = require('objection')
 
 // Thing under test
 const { GetNextSequenceCounterService } = require('../../app/services')
@@ -28,8 +27,28 @@ describe.only('Get Next Sequence Counter service', () => {
       const result = await GetNextSequenceCounterService.go(regime.id, 'R')
       const secondResult = await GetNextSequenceCounterService.go(regime.id, 'R')
 
-      expect(result.billRunNumber).to.equal(10001)
-      expect(secondResult.billRunNumber).to.equal(10002)
+      expect(result).to.equal(10001)
+      expect(secondResult).to.equal(10002)
+    })
+  })
+
+  describe('When invalid data is specified', () => {
+    it('throws an error for an invalid regime', async () => {
+      const regime = await RegimeHelper.addRegime('test', 'Test')
+      await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
+
+      const err = await expect(GetNextSequenceCounterService.go('11111111-1111-1111-1111-111111111111', 'R')).to.reject(NotFoundError)
+
+      expect(err).to.be.an.error()
+    })
+
+    it('throws an error for an invalid region', async () => {
+      const regime = await RegimeHelper.addRegime('test', 'Test')
+      await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
+
+      const err = await expect(GetNextSequenceCounterService.go(regime.id, 'X')).to.reject(NotFoundError)
+
+      expect(err).to.be.an.error()
     })
   })
 })
