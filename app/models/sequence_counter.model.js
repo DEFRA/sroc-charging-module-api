@@ -1,13 +1,13 @@
 'use strict'
 
 /**
- * @module SequenceCountersModel
+ * @module SequenceCounterModel
  */
 
 const { Model } = require('objection')
 const BaseModel = require('./base.model')
 
-class SequenceCountersModel extends BaseModel {
+class SequenceCounterModel extends BaseModel {
   static get tableName () {
     return 'sequence_counters'
   }
@@ -26,4 +26,4 @@ class SequenceCountersModel extends BaseModel {
   }
 }
 
-module.exports = SequenceCountersModel
+module.exports = SequenceCounterModel
