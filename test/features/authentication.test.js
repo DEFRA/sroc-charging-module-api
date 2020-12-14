@@ -88,11 +88,13 @@ describe('Authenticating with the API', () => {
         })
       })
 
-      describe.only("but it contains an unrecognised 'client_id'", () => {
+      describe("but it contains an unrecognised 'client_id'", () => {
+        const unknownClientId = 'notfromroundhere'
+
         before(async () => {
           authToken = AuthorisationHelper.adminToken()
           const decodedTokenWithUnknownId = AuthorisationHelper.decodeToken(authToken)
-          decodedTokenWithUnknownId.client_id = 'notfromroundhere'
+          decodedTokenWithUnknownId.client_id = unknownClientId
 
           Sinon
             .stub(JsonWebToken, 'verify')
@@ -107,8 +109,10 @@ describe('Authenticating with the API', () => {
           }
 
           const response = await server.inject(options)
+          const payload = JSON.parse(response.payload)
 
           expect(response.statusCode).to.equal(401)
+          expect(payload.message).to.equal(`The client ID '${unknownClientId}' is not recognised`)
         })
       })
     })
