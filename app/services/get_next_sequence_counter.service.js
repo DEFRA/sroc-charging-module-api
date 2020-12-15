@@ -27,10 +27,11 @@ class GetNextSequenceCounterService {
 
   static async _updateSequenceCounter (regimeId, region) {
     return SequenceCounterModel.query()
+      .findOne({
+        regime_id: regimeId,
+        region
+      })
       .increment('bill_run_number', 1)
-      .where('regime_id', '=', regimeId)
-      .andWhere('region', '=', region)
-      .first()
       .returning('bill_run_number')
       .throwIfNotFound({
         message: 'Invalid combination of regime and region'
