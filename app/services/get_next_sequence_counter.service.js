@@ -27,7 +27,7 @@ class GetNextSequenceCounterService {
 
   static async _updateSequenceCounter (regimeId, region) {
     return SequenceCounterModel.query()
-      .increment('billRunNumber', 1)
+      .increment('bill_run_number', 1)
       .where('regime_id', '=', regimeId)
       .andWhere('region', '=', region)
       .first()
