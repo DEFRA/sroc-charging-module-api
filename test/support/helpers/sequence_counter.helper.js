@@ -3,7 +3,7 @@
 const { SequenceCounterModel } = require('../../../app/models')
 
 /**
- * Use to help wwith creating 'Sequence counter' records
+ * Use to help with creating 'Sequence counter' records
  */
 class SequenceCounterHelper {
   /**
