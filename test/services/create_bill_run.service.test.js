@@ -8,7 +8,7 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, DatabaseHelper, RegimeHelper } = require('../support/helpers')
+const { AuthorisedSystemHelper, DatabaseHelper, RegimeHelper, SequenceCounterHelper } = require('../support/helpers')
 const BillRunModel = require('../../app/models/bill_run.model')
 const { ValidationError } = require('joi')
 
@@ -27,6 +27,7 @@ describe('Create Bill Run service', () => {
     await DatabaseHelper.clean()
     regime = await RegimeHelper.addRegime('ice', 'water')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
+    await SequenceCounterHelper.addSequenceCounter(regime.id, payload.region)
   })
 
   describe('When the data is valid', () => {
@@ -53,6 +54,13 @@ describe('Create Bill Run service', () => {
       const result = await CreateBillRunService.go(payload, authorisedSystem, regime)
 
       expect(result.status).to.equal('initialised')
+    })
+
+    it('records the bill run number', async () => {
+      const result = await CreateBillRunService.go(payload, authorisedSystem, regime)
+
+      // Bill run number column defaults to 10000 so the first number retrieved will be 10001
+      expect(result.billRunNumber).to.equal(10001)
     })
   })
 
