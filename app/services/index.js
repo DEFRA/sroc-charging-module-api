@@ -6,7 +6,6 @@ const CognitoJwtToPemService = require('./cognito_jwt_to_pem.service')
 const CreateAuthorisedSystemService = require('./create_authorised_system.service')
 const CreateBillRunService = require('./create_bill_run.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
-const GetNextSequenceCounterService = require('./get_next_sequence_counter.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
 const ListRegimesService = require('./list_regimes.service')
 const NextBillRunNumberService = require('./next_bill_run_number.service')
@@ -22,7 +21,6 @@ module.exports = {
   CreateAuthorisedSystemService,
   CreateBillRunService,
   DatabaseHealthCheckService,
-  GetNextSequenceCounterService,
   ListAuthorisedSystemsService,
   ListRegimesService,
   ObjectCleaningService,

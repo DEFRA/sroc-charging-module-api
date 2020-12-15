@@ -9,7 +9,7 @@ const { BillRunTranslator } = require('../translators')
 const { JsonPresenter } = require('../presenters')
 
 // Files in the same folder cannot be destructured from index.js so have to be required directly
-const GetNextSequenceCounterService = require('./get_next_sequence_counter.service')
+const NextBillRunNumberService = require('./next_bill_run_number.service')
 
 /**
  * Creates a new bill run record
@@ -34,7 +34,7 @@ class CreateBillRunService {
 
   static async _create (translator, authorisedSystem, regime) {
     return BillRunModel.transaction(async trx => {
-      const billRunNumber = await GetNextSequenceCounterService.go(regime.id, translator.region)
+      const billRunNumber = await NextBillRunNumberService.go(regime.id, translator.region)
       return BillRunModel.query()
         .insert({
           region: translator.region,
