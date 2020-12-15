@@ -37,6 +37,18 @@ class AuthorisedSystemModel extends BaseModel {
       }
     }
   }
+
+  /**
+   * Returns whether the authorised system is 'active' or not
+   *
+   * Checks the value of `status` on the instance and if 'active' it returns `true` else it returns `false`. We use this
+   * as part of authorisation to determine if the client is permitted to use the service or not.
+   *
+   * @returns {boolean} whether this instance is 'active'
+   */
+  $active () {
+    return (this.status.toLowerCase() === 'active')
+  }
 }
 
 module.exports = AuthorisedSystemModel
