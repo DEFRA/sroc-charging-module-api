@@ -28,6 +28,12 @@ const authOptions = {
       throw Boom.unauthorized(`The client ID '${clientId}' is not recognised`)
     }
 
+    if (!authorisedSystem.$active()) {
+      // We return a 403 rather than a 401 because the credentials are for a valid user (so they are authenticated) but
+      // because the user is not 'active' they are forbidden from accessing any functionality (not authorized)
+      throw Boom.forbidden(`Client ID '${clientId}' is no longer active`)
+    }
+
     // We use the `options.auth.scope` property on our routes to manage authorisation and what endpoints a client can
     // access. Public endpoints have a scope of `system`. Admin can access these as well as those with only a scope of
     // `admin`.

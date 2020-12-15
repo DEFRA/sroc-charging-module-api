@@ -27,13 +27,17 @@ describe('Authorisation with the API', () => {
   let server
   let authToken
   const nonAdminClientId = '1234546789'
+  const inactiveAdminClientId = 'admin12345'
+  const inactiveSystemClientId = 'system12345'
 
   before(async () => {
     await DatabaseHelper.clean()
     await AuthorisedSystemHelper.addAdminSystem()
+    await AuthorisedSystemHelper.addAdminSystem(inactiveAdminClientId, 'inactiveadmin', 'inactive')
 
     const regime = await RegimeHelper.addRegime('wrls', 'Water')
     await AuthorisedSystemHelper.addSystem(nonAdminClientId, 'system', [regime])
+    await AuthorisedSystemHelper.addSystem(inactiveSystemClientId, 'inactivesystem', [regime], 'inactive')
 
     server = await deployment()
     RouteHelper.addAdminRoute(server)
@@ -89,6 +93,28 @@ describe('Authorisation with the API', () => {
         expect(response.statusCode).to.equal(403)
       })
     })
+
+    describe("but my status is not 'active'", () => {
+      before(async () => {
+        authToken = AuthorisationHelper.nonAdminToken(inactiveAdminClientId)
+
+        Sinon
+          .stub(JsonWebToken, 'verify')
+          .returns(AuthorisationHelper.decodeToken(authToken))
+      })
+
+      it('returns a 403 response', async () => {
+        const options = {
+          method: 'GET',
+          url: '/test/admin',
+          headers: { authorization: `Bearer ${authToken}` }
+        }
+
+        const response = await server.inject(options)
+
+        expect(response.statusCode).to.equal(403)
+      })
+    })
   })
 
   describe('When accessing a /{regimeId}/action (system) route', () => {
@@ -96,47 +122,95 @@ describe('Authorisation with the API', () => {
       Sinon.restore()
     })
 
-    describe('and I am an admin client', () => {
-      before(async () => {
-        authToken = AuthorisationHelper.adminToken()
+    describe('I am an admin client', () => {
+      describe("and my status is 'active'", () => {
+        before(async () => {
+          authToken = AuthorisationHelper.adminToken()
 
-        Sinon
-          .stub(JsonWebToken, 'verify')
-          .returns(AuthorisationHelper.decodeToken(authToken))
+          Sinon
+            .stub(JsonWebToken, 'verify')
+            .returns(AuthorisationHelper.decodeToken(authToken))
+        })
+
+        it('returns a success response', async () => {
+          const options = {
+            method: 'GET',
+            url: '/test/wrls/system',
+            headers: { authorization: `Bearer ${authToken}` }
+          }
+
+          const response = await server.inject(options)
+
+          expect(response.statusCode).to.equal(200)
+        })
       })
 
-      it('returns a success response', async () => {
-        const options = {
-          method: 'GET',
-          url: '/test/wrls/system',
-          headers: { authorization: `Bearer ${authToken}` }
-        }
+      describe("but my status is not 'active'", () => {
+        before(async () => {
+          authToken = AuthorisationHelper.nonAdminToken(inactiveAdminClientId)
 
-        const response = await server.inject(options)
+          Sinon
+            .stub(JsonWebToken, 'verify')
+            .returns(AuthorisationHelper.decodeToken(authToken))
+        })
 
-        expect(response.statusCode).to.equal(200)
+        it('returns a 403 response', async () => {
+          const options = {
+            method: 'GET',
+            url: '/test/admin',
+            headers: { authorization: `Bearer ${authToken}` }
+          }
+
+          const response = await server.inject(options)
+
+          expect(response.statusCode).to.equal(403)
+        })
       })
     })
 
-    describe('and I am a system client', () => {
-      before(async () => {
-        authToken = AuthorisationHelper.nonAdminToken(nonAdminClientId)
+    describe('I am a system client', () => {
+      describe("and my status is 'active'", () => {
+        before(async () => {
+          authToken = AuthorisationHelper.nonAdminToken(nonAdminClientId)
 
-        Sinon
-          .stub(JsonWebToken, 'verify')
-          .returns(AuthorisationHelper.decodeToken(authToken))
+          Sinon
+            .stub(JsonWebToken, 'verify')
+            .returns(AuthorisationHelper.decodeToken(authToken))
+        })
+
+        it('returns a success response', async () => {
+          const options = {
+            method: 'GET',
+            url: '/test/wrls/system',
+            headers: { authorization: `Bearer ${authToken}` }
+          }
+
+          const response = await server.inject(options)
+
+          expect(response.statusCode).to.equal(200)
+        })
       })
 
-      it('returns a success response', async () => {
-        const options = {
-          method: 'GET',
-          url: '/test/wrls/system',
-          headers: { authorization: `Bearer ${authToken}` }
-        }
+      describe("but my status is not 'active'", () => {
+        before(async () => {
+          authToken = AuthorisationHelper.nonAdminToken(inactiveSystemClientId)
 
-        const response = await server.inject(options)
+          Sinon
+            .stub(JsonWebToken, 'verify')
+            .returns(AuthorisationHelper.decodeToken(authToken))
+        })
 
-        expect(response.statusCode).to.equal(200)
+        it('returns a 403 response', async () => {
+          const options = {
+            method: 'GET',
+            url: '/test/admin',
+            headers: { authorization: `Bearer ${authToken}` }
+          }
+
+          const response = await server.inject(options)
+
+          expect(response.statusCode).to.equal(403)
+        })
       })
     })
   })
@@ -146,47 +220,95 @@ describe('Authorisation with the API', () => {
       Sinon.restore()
     })
 
-    describe('and I am an admin client', () => {
-      before(async () => {
-        authToken = AuthorisationHelper.adminToken()
+    describe('I am an admin client', () => {
+      describe("and my status is 'active'", () => {
+        before(async () => {
+          authToken = AuthorisationHelper.adminToken()
 
-        Sinon
-          .stub(JsonWebToken, 'verify')
-          .returns(AuthorisationHelper.decodeToken(authToken))
+          Sinon
+            .stub(JsonWebToken, 'verify')
+            .returns(AuthorisationHelper.decodeToken(authToken))
+        })
+
+        it('returns a success response', async () => {
+          const options = {
+            method: 'GET',
+            url: '/test/public',
+            headers: { authorization: `Bearer ${authToken}` }
+          }
+
+          const response = await server.inject(options)
+
+          expect(response.statusCode).to.equal(200)
+        })
       })
 
-      it('returns a success response', async () => {
-        const options = {
-          method: 'GET',
-          url: '/test/public',
-          headers: { authorization: `Bearer ${authToken}` }
-        }
+      describe("but my status is not 'active'", () => {
+        before(async () => {
+          authToken = AuthorisationHelper.nonAdminToken(inactiveAdminClientId)
 
-        const response = await server.inject(options)
+          Sinon
+            .stub(JsonWebToken, 'verify')
+            .returns(AuthorisationHelper.decodeToken(authToken))
+        })
 
-        expect(response.statusCode).to.equal(200)
+        it('returns a success response', async () => {
+          const options = {
+            method: 'GET',
+            url: '/test/public',
+            headers: { authorization: `Bearer ${authToken}` }
+          }
+
+          const response = await server.inject(options)
+
+          expect(response.statusCode).to.equal(200)
+        })
       })
     })
 
-    describe('and I am a system client', () => {
-      before(async () => {
-        authToken = AuthorisationHelper.nonAdminToken(nonAdminClientId)
+    describe('I am a system client', () => {
+      describe("and my status is 'active'", () => {
+        before(async () => {
+          authToken = AuthorisationHelper.nonAdminToken(nonAdminClientId)
 
-        Sinon
-          .stub(JsonWebToken, 'verify')
-          .returns(AuthorisationHelper.decodeToken(authToken))
+          Sinon
+            .stub(JsonWebToken, 'verify')
+            .returns(AuthorisationHelper.decodeToken(authToken))
+        })
+
+        it('returns a success response', async () => {
+          const options = {
+            method: 'GET',
+            url: '/test/public',
+            headers: { authorization: `Bearer ${authToken}` }
+          }
+
+          const response = await server.inject(options)
+
+          expect(response.statusCode).to.equal(200)
+        })
       })
 
-      it('returns a success response', async () => {
-        const options = {
-          method: 'GET',
-          url: '/test/public',
-          headers: { authorization: `Bearer ${authToken}` }
-        }
+      describe("but my status is not 'active'", () => {
+        before(async () => {
+          authToken = AuthorisationHelper.nonAdminToken(inactiveSystemClientId)
 
-        const response = await server.inject(options)
+          Sinon
+            .stub(JsonWebToken, 'verify')
+            .returns(AuthorisationHelper.decodeToken(authToken))
+        })
 
-        expect(response.statusCode).to.equal(200)
+        it('returns a success response', async () => {
+          const options = {
+            method: 'GET',
+            url: '/test/public',
+            headers: { authorization: `Bearer ${authToken}` }
+          }
+
+          const response = await server.inject(options)
+
+          expect(response.statusCode).to.equal(200)
+        })
       })
     })
 
