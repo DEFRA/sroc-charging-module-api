@@ -33,13 +33,13 @@ class CreateBillRunService {
   }
 
   static async _create (translator, authorisedSystem, regime) {
-    return BillRunModel.transaction(async trx => {
+    return BillRunModel.transaction(async () => {
       const billRunNumber = await NextBillRunNumberService.go(regime.id, translator.region)
       return BillRunModel.query()
         .insert({
+          billRunNumber,
           region: translator.region,
           regimeId: regime.id,
-          billRunNumber,
           createdBy: authorisedSystem.id,
           status: 'initialised'
         })
