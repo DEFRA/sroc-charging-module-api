@@ -12,7 +12,7 @@ const { SequenceCounterModel } = require('../models')
  * The bill run number in the sequence_counters table is the last number issued
  * Therefore, we increment it by 1 and return the new number
  *
- * If an invalid region & regime pair is supplied, a Boom badData error is thrown
+ * If an invalid region & regime pair is supplied, an Objection NotFoundError is thrown
  *
  * @param {string} regimeId Id of the regime to get the next counter for
  * @param {string} region The region to get the next counter for
