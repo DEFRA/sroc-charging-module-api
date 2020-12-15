@@ -12,7 +12,7 @@ const { DatabaseHelper, RegimeHelper, SequenceCounterHelper } = require('../supp
 const { NotFoundError } = require('objection')
 
 // Thing under test
-const { GetNextSequenceCounterService } = require('../../app/services')
+const { NextBillRunNumberService } = require('../../app/services')
 
 describe('Get Next Sequence Counter service', () => {
   beforeEach(async () => {
@@ -24,8 +24,8 @@ describe('Get Next Sequence Counter service', () => {
       const regime = await RegimeHelper.addRegime('test', 'Test')
       await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
-      const result = await GetNextSequenceCounterService.go(regime.id, 'R')
-      const secondResult = await GetNextSequenceCounterService.go(regime.id, 'R')
+      const result = await NextBillRunNumberService.go(regime.id, 'R')
+      const secondResult = await NextBillRunNumberService.go(regime.id, 'R')
 
       expect(result).to.equal(10001)
       expect(secondResult).to.equal(10002)
@@ -38,8 +38,8 @@ describe('Get Next Sequence Counter service', () => {
       const otherRegime = await RegimeHelper.addRegime('other', 'Other')
       await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
 
-      const result = await GetNextSequenceCounterService.go(regime.id, 'R')
-      const otherResult = await GetNextSequenceCounterService.go(otherRegime.id, 'S')
+      const result = await NextBillRunNumberService.go(regime.id, 'R')
+      const otherResult = await NextBillRunNumberService.go(otherRegime.id, 'S')
 
       expect(result).to.equal(10001)
       expect(otherResult).to.equal(10001)
@@ -51,7 +51,7 @@ describe('Get Next Sequence Counter service', () => {
       const regime = await RegimeHelper.addRegime('test', 'Test')
       await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
-      const err = await expect(GetNextSequenceCounterService.go('11111111-1111-1111-1111-111111111111', 'R')).to.reject(NotFoundError)
+      const err = await expect(NextBillRunNumberService.go('11111111-1111-1111-1111-111111111111', 'R')).to.reject(NotFoundError)
 
       expect(err).to.be.an.error()
     })
@@ -60,7 +60,7 @@ describe('Get Next Sequence Counter service', () => {
       const regime = await RegimeHelper.addRegime('test', 'Test')
       await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
-      const err = await expect(GetNextSequenceCounterService.go(regime.id, 'X')).to.reject(NotFoundError)
+      const err = await expect(NextBillRunNumberService.go(regime.id, 'X')).to.reject(NotFoundError)
 
       expect(err).to.be.an.error()
     })

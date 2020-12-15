@@ -8,9 +8,9 @@ const CreateBillRunService = require('./create_bill_run.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
 const ListRegimesService = require('./list_regimes.service')
+const NextBillRunNumberService = require('./next_bill_run_number.service')
 const ObjectCleaningService = require('./object_cleaning.service')
 const RulesService = require('./rules.service')
-const GetNextSequenceCounterService = require('./get_next_sequence_counter.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
 const ShowRegimeService = require('./show_regime.service')
 
@@ -25,7 +25,7 @@ module.exports = {
   ListRegimesService,
   ObjectCleaningService,
   RulesService,
-  GetNextSequenceCounterService,
+  NextBillRunNumberService,
   ShowAuthorisedSystemService,
   ShowRegimeService
 }
