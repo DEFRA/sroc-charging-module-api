@@ -28,11 +28,9 @@ class CreateAuthorisedSystemService {
   }
 
   static async _regimes (authorisations) {
-    const regimes = await RegimeModel.query()
+    return RegimeModel.query()
       .select('id')
       .where('slug', 'in', authorisations)
-
-    return regimes
   }
 
   static async _create (translator, regimes) {

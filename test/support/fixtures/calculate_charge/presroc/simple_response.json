@@ -1,0 +1,13 @@
+{
+  "calculation": {
+      "chargeValue": 772,
+      "sourceFactor": 3,
+      "seasonFactor": 1.6,
+      "lossFactor": 0.03,
+      "licenceHolderChargeAgreement": null,
+      "chargeElementAgreement": null,
+      "eiucSourceFactor": 0,
+      "eiuc": 0,
+      "suc": 1495
+  }
+}
