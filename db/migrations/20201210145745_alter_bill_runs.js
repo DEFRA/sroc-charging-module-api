@@ -8,7 +8,7 @@ exports.up = async function (knex) {
     .schema
     .alterTable(tableName, table => {
       // Add column
-      table.integer(columnName)
+      table.integer('bill_run_number)
     })
 }
 
