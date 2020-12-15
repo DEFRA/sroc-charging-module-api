@@ -27,22 +27,24 @@ const GetNextSequenceCounterService = require('./get_next_sequence_counter.servi
 class CreateBillRunService {
   static async go (payload, authorisedSystem, regime) {
     const translator = new BillRunTranslator(payload)
-    const billRunNumber = await GetNextSequenceCounterService.go(regime.id, translator.region)
-    const billRun = await this._create(translator, authorisedSystem, regime, billRunNumber)
+    const billRun = await this._create(translator, authorisedSystem, regime)
 
     return this._response(billRun)
   }
 
-  static async _create (translator, authorisedSystem, regime, billRunNumber) {
-    return BillRunModel.query()
-      .insert({
-        region: translator.region,
-        regimeId: regime.id,
-        billRunNumber,
-        createdBy: authorisedSystem.id,
-        status: 'initialised'
-      })
-      .returning('*')
+  static async _create (translator, authorisedSystem, regime) {
+    return BillRunModel.transaction(async trx => {
+      const billRunNumber = await GetNextSequenceCounterService.go(regime.id, translator.region)
+      return BillRunModel.query()
+        .insert({
+          region: translator.region,
+          regimeId: regime.id,
+          billRunNumber,
+          createdBy: authorisedSystem.id,
+          status: 'initialised'
+        })
+        .returning('*')
+    })
   }
 
   static async _response (billRun) {
