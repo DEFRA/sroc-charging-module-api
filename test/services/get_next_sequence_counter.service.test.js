@@ -30,6 +30,20 @@ describe('Get Next Sequence Counter service', () => {
       expect(result).to.equal(10001)
       expect(secondResult).to.equal(10002)
     })
+
+    it('only increments the specified region and regime', async () => {
+      const regime = await RegimeHelper.addRegime('test', 'Test')
+      await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
+
+      const otherRegime = await RegimeHelper.addRegime('other', 'Other')
+      await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
+
+      const result = await GetNextSequenceCounterService.go(regime.id, 'R')
+      const otherResult = await GetNextSequenceCounterService.go(otherRegime.id, 'S')
+
+      expect(result).to.equal(10001)
+      expect(otherResult).to.equal(10001)
+    })
   })
 
   describe('When invalid data is specified', () => {
