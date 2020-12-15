@@ -6,6 +6,7 @@
 
 const { SequenceCounterModel } = require('../models')
 
+class GetNextSequenceCounterService {
 /**
  * Returns the next bill_run_number for the given region and regime
  *
@@ -18,7 +19,6 @@ const { SequenceCounterModel } = require('../models')
  * @param {string} region The region to get the next counter for
  * @returns {integer} Value of the next counter
  */
-class GetNextSequenceCounterService {
   static async go (regimeId, region) {
     const result = await this._updateSequenceCounter(regimeId, region)
 
