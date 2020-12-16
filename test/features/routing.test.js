@@ -20,13 +20,13 @@ const options = (url) => {
   }
 }
 
-describe('Routing requests to the API', () => {
+describe.only('Routing requests to the API', () => {
   let server
 
   // Create server before each test
   before(async () => {
     server = await deployment()
-    RouteHelper.addPublicPostRoute(server)
+    RouteHelper.addPublicRoute(server)
   })
 
   describe('When a request path has a trailing slash', () => {
