@@ -20,7 +20,7 @@ const options = (url) => {
   }
 }
 
-describe.only('Routing requests to the API', () => {
+describe('Routing requests to the API', () => {
   let server
 
   // Create server before each test
