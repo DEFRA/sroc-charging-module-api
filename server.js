@@ -18,7 +18,7 @@ const {
 
 exports.deployment = async start => {
   // Create the hapi server
-  const server = Hapi.server(ServerConfig)
+  const server = Hapi.server(ServerConfig.hapi)
 
   // Register our auth plugin and then the strategies (needs to be done in this
   // order)
@@ -34,8 +34,12 @@ exports.deployment = async start => {
   await server.register(InvalidCharactersPlugin)
   await server.register(PayloadCleanerPlugin)
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
-  await server.register(BlippPlugin)
-  await server.register(HpalDebugPlugin)
+
+  // Register non-production plugins
+  if (ServerConfig.environment === 'development') {
+    await server.register(BlippPlugin)
+    await server.register(HpalDebugPlugin)
+  }
 
   await server.initialize()
 
