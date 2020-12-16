@@ -31,34 +31,30 @@ describe('Create Bill Run service', () => {
   })
 
   describe('When the data is valid', () => {
-    it('creates a bill', async () => {
-      const result = await CreateBillRunService.go(payload, authorisedSystem, regime)
+    let result
 
-      expect(result instanceof BillRunModel).to.equal(true)
+    beforeEach(async () => {
+      const billRun = await CreateBillRunService.go(payload, authorisedSystem, regime)
+      result = await BillRunModel.query().findById(billRun.billRun.id)
+    })
+
+    it('creates a bill', async () => {
       expect(result.id).to.exist()
     })
 
     it("records the 'regime' it's for", async () => {
-      const result = await CreateBillRunService.go(payload, authorisedSystem, regime)
-
       expect(result.regimeId).to.equal(regime.id)
     })
 
     it("records who it was 'created_by'", async () => {
-      const result = await CreateBillRunService.go(payload, authorisedSystem, regime)
-
       expect(result.createdBy).to.equal(authorisedSystem.id)
     })
 
     it("defaults 'status' to 'initialised", async () => {
-      const result = await CreateBillRunService.go(payload, authorisedSystem, regime)
-
       expect(result.status).to.equal('initialised')
     })
 
     it('records the bill run number', async () => {
-      const result = await CreateBillRunService.go(payload, authorisedSystem, regime)
-
       // Bill run number column defaults to 10000 so the first number retrieved will be 10001
       expect(result.billRunNumber).to.equal(10001)
     })
