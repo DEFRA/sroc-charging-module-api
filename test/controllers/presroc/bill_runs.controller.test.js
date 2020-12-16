@@ -12,7 +12,7 @@ const { expect } = Code
 const { deployment } = require('../../../server')
 
 // Test helpers
-const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper, RegimeHelper } = require('../../support/helpers')
+const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper, RegimeHelper, SequenceCounterHelper } = require('../../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -21,6 +21,7 @@ describe('Presroc Bill Runs controller', () => {
   const clientID = '1234546789'
   let server
   let authToken
+  let regime
 
   before(async () => {
     server = await deployment()
@@ -34,7 +35,7 @@ describe('Presroc Bill Runs controller', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
-    const regime = await RegimeHelper.addRegime('wrls', 'WRLS')
+    regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
   })
 
@@ -57,6 +58,8 @@ describe('Presroc Bill Runs controller', () => {
         region: 'A'
       }
 
+      await SequenceCounterHelper.addSequenceCounter(regime.id, requestPayload.region)
+
       const response = await server.inject(options(authToken, requestPayload))
       const responsePayload = JSON.parse(response.payload)
 
@@ -69,6 +72,8 @@ describe('Presroc Bill Runs controller', () => {
       const requestPayload = {
         region: 'Z'
       }
+
+      await SequenceCounterHelper.addSequenceCounter(regime.id, requestPayload.region)
 
       const response = await server.inject(options(authToken, requestPayload))
 
