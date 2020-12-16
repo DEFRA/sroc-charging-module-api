@@ -8,6 +8,9 @@ const { BillRunModel } = require('../models')
 const { BillRunTranslator } = require('../translators')
 const { JsonPresenter } = require('../presenters')
 
+// Files in the same folder cannot be destructured from index.js so have to be required directly
+const NextBillRunNumberService = require('./next_bill_run_number.service')
+
 /**
  * Creates a new bill run record
  *
@@ -30,14 +33,18 @@ class CreateBillRunService {
   }
 
   static async _create (translator, authorisedSystem, regime) {
-    return BillRunModel.query()
-      .insert({
-        region: translator.region,
-        regimeId: regime.id,
-        createdBy: authorisedSystem.id,
-        status: 'initialised'
-      })
-      .returning('*')
+    return BillRunModel.transaction(async () => {
+      const billRunNumber = await NextBillRunNumberService.go(regime.id, translator.region)
+      return BillRunModel.query()
+        .insert({
+          billRunNumber,
+          region: translator.region,
+          regimeId: regime.id,
+          createdBy: authorisedSystem.id,
+          status: 'initialised'
+        })
+        .returning('*')
+    })
   }
 
   static async _response (billRun) {
