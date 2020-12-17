@@ -9,46 +9,10 @@ class TransactionTranslator extends BaseTranslator {
     super(data)
 
     this.lineAttr3 = this._prorataDays()
-    this.chargeFinancialYear = this._financialYear(this.chargePeriodStart)
+    this.financialYear = this._financialYear(this.periodStart)
 
     // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year
     this._validateFinancialYear()
-  }
-
-  _translations () {
-    return {
-      region: 'region',
-      customerReference: 'customerReference',
-      batchNumber: 'regimeValue1',
-      licenceNumber: 'lineAttr1',
-      chargePeriod: 'lineAttr2',
-      chargeElementId: 'regimeValue3',
-      areaCode: 'lineAreaCode',
-      lineDescription: 'lineDescription',
-      newLicence: 'newLicence',
-      clientId: 'clientId',
-      ruleset: 'ruleset',
-      periodStart: 'chargePeriodStart',
-      periodEnd: 'chargePeriodEnd',
-      credit: 'chargeCredit',
-      billableDays: 'regimeValue4',
-      authorisedDays: 'regimeValue5',
-      volume: 'lineAttr5',
-      source: 'regimeValue6',
-      season: 'regimeValue7',
-      loss: 'regimeValue8',
-      section130Agreement: 'regimeValue9',
-      section126Agreement: 'regimeValue10',
-      section126Factor: 'regimeValue11',
-      section127Agreement: 'regimeValue12',
-      twoPartTariff: 'regimeValue16',
-      compensationCharge: 'regimeValue17',
-      eiucSource: 'regimeValue13',
-      waterUndertaker: 'regimeValue14',
-      regionalChargingArea: 'regimeValue15',
-      prorataDays: 'lineAttr3',
-      chargeFinancialYear: 'chargeFinancialYear'
-    }
   }
 
   _schema () {
@@ -63,7 +27,6 @@ class TransactionTranslator extends BaseTranslator {
       lineDescription: Joi.string().max(240).required(),
       newLicence: Joi.boolean().default(false),
       clientId: Joi.string().allow('', null),
-      // Set a new field called ruleset. This will be used to determine which ruleset to query in the rules service
       ruleset: Joi.string().default('presroc'),
       periodStart: Joi.date().less(Joi.ref('periodEnd')).min('01-APR-2014').required(),
       periodEnd: Joi.date().required(),
@@ -85,13 +48,49 @@ class TransactionTranslator extends BaseTranslator {
     })
   }
 
+  _translations () {
+    return {
+      ruleset: 'ruleset',
+      region: 'region',
+      customerReference: 'customerReference',
+      periodStart: 'periodStart',
+      periodEnd: 'periodEnd',
+      financialYear: 'financialYear',
+      newLicence: 'newLicence',
+      clientId: 'clientId',
+      credit: 'credit',
+      areaCode: 'lineAreaCode',
+      lineDescription: 'lineDescription',
+      licenceNumber: 'lineAttr1',
+      chargePeriod: 'lineAttr2',
+      prorataDays: 'lineAttr3',
+      volume: 'lineAttr5',
+      batchNumber: 'regimeValue1',
+      chargeElementId: 'regimeValue3',
+      billableDays: 'regimeValue4',
+      authorisedDays: 'regimeValue5',
+      source: 'regimeValue6',
+      season: 'regimeValue7',
+      loss: 'regimeValue8',
+      section130Agreement: 'regimeValue9',
+      section126Agreement: 'regimeValue10',
+      section126Factor: 'regimeValue11',
+      section127Agreement: 'regimeValue12',
+      eiucSource: 'regimeValue13',
+      waterUndertaker: 'regimeValue14',
+      regionalChargingArea: 'regimeValue15',
+      twoPartTariff: 'regimeValue16',
+      compensationCharge: 'regimeValue17'
+    }
+  }
+
   _validateFinancialYear () {
     const schema = Joi.object({
-      chargePeriodEndFinancialYear: Joi.number().equal(this.chargeFinancialYear)
+      periodEndFinancialYear: Joi.number().equal(this.financialYear)
     })
 
     const data = {
-      chargePeriodEndFinancialYear: this._financialYear(this.chargePeriodEnd)
+      periodEndFinancialYear: this._financialYear(this.periodEnd)
     }
 
     const { error } = schema.validate(data)
@@ -114,9 +113,9 @@ class TransactionTranslator extends BaseTranslator {
    * @returns {Number} The calculated financial year
   */
   _financialYear (date) {
-    const chargePeriodDate = new Date(date)
-    const month = chargePeriodDate.getMonth()
-    const year = chargePeriodDate.getFullYear()
+    const periodDate = new Date(date)
+    const month = periodDate.getMonth()
+    const year = periodDate.getFullYear()
 
     return (month <= 2 ? year - 1 : year)
   }
