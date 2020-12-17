@@ -6,7 +6,7 @@
 
 const { BillRunModel } = require('../models')
 const { BillRunTranslator } = require('../translators')
-const { JsonPresenter } = require('../presenters')
+const { CreateBillRunPresenter } = require('../presenters')
 
 // Files in the same folder cannot be destructured from index.js so have to be required directly
 const NextBillRunNumberService = require('./next_bill_run_number.service')
@@ -48,7 +48,7 @@ class CreateBillRunService {
   }
 
   static async _response (billRun) {
-    const presenter = new JsonPresenter(billRun)
+    const presenter = new CreateBillRunPresenter(billRun)
 
     return presenter.go()
   }

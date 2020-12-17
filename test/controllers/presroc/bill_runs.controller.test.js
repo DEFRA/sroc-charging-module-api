@@ -62,10 +62,12 @@ describe('Presroc Bill Runs controller', () => {
 
       const response = await server.inject(options(authToken, requestPayload))
       const responsePayload = JSON.parse(response.payload)
+      const { billRun } = responsePayload
 
       expect(response.statusCode).to.equal(201)
-      expect(responsePayload.id).to.exist()
-      expect(responsePayload.region).to.equal(requestPayload.region)
+      expect(billRun.id).to.exist()
+      expect(billRun.billRunNumber).to.exist()
+      expect(billRun).to.have.length(2)
     })
 
     it('will not add an bill run with invalid data', async () => {
