@@ -76,11 +76,10 @@ FROM node_base AS production
 # run
 ENV NODE_ENV production
 
-# Set port to use. Default to port 3000 for node, and 9229 and 9230 (tests) to support debugging from vscode. Our
-# docker-compose.yml overrides this to 3003 to avoid clashes with other environments
+# Set port to use. Default to port 3000 for node. Don't expose debug ports for production
 ARG PORT=3000
 ENV PORT $PORT
-EXPOSE $PORT 9229 9230
+EXPOSE $PORT
 
 # Install dependencies first, in a different location for easier app bind mounting for local development. To do this we
 # first copy just the package*.json files from the host
