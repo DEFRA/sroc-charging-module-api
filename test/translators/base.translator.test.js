@@ -45,6 +45,12 @@ describe('Base translator', () => {
 
       expect(() => new BaseTranslator(testData)).to.throw()
     })
+
+    it('allows data to be passed that is not part of the validation', async () => {
+      const testData = { before: true, test: true }
+
+      expect(() => new BaseTranslator(testData)).to.not.throw()
+    })
   })
 
   describe('translation', () => {
@@ -61,6 +67,16 @@ describe('Base translator', () => {
       const testData = { before: true }
 
       expect(() => new BaseTranslator(testData)).to.throw()
+    })
+
+    it('translates data that is not part of the valdation', async () => {
+      translationsStub.restore()
+      translationsStub = Sinon.stub(BaseTranslator.prototype, '_translations').returns({ test: 'passed' })
+      const testData = { test: true }
+
+      const testTranslator = new BaseTranslator(testData)
+
+      expect(testTranslator.passed).to.equal(true)
     })
   })
 })
