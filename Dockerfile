@@ -1,3 +1,7 @@
+################################################################################
+# Generate base stage
+#
+# Use alpine version to help reduce size of image and improve security (less things installed from the get go)
 FROM node:12.19.0-alpine AS node_base
 
 # Ensure we have updated whatever packages come as part of the alpine image before we start using it. This was a
@@ -21,6 +25,8 @@ WORKDIR /home/node
 USER node
 
 ################################################################################
+# Create development (final stage)
+#
 FROM node_base AS development
 
 # Set our node environment. Defaults to production, though our docker-compose overrides this to development on build and
@@ -38,6 +44,7 @@ EXPOSE $PORT 9229 9230
 COPY package.json package-lock.json* ./
 
 RUN npm install
+
 # Update the PATH env var to add any node binaries from our dependencies to it. This should make them discoverable from
 # the command line
 ENV PATH /home/node/node_modules/.bin:$PATH
@@ -61,6 +68,8 @@ COPY . .
 CMD [ "../node_modules/.bin/nodemon", "--inspect=0.0.0.0:9229", "./server.js" ]
 
 ################################################################################
+# Create production (final stage)
+#
 FROM node_base AS production
 
 # Set our node environment. Defaults to production, though our docker-compose overrides this to development on build and
@@ -78,6 +87,7 @@ EXPOSE $PORT 9229 9230
 COPY package.json package-lock.json* ./
 
 RUN npm install
+
 # Update the PATH env var to add any node binaries from our dependencies to it. This should make them discoverable from
 # the command line
 ENV PATH /home/node/node_modules/.bin:$PATH
