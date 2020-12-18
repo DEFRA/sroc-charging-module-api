@@ -23,7 +23,7 @@ exports.down = async function (knex) {
     .schema
     .alterTable(tableName, table => {
       // Drop client_id unique constraint
-      table.unique('client_id')
+      table.dropUnique('client_id')
     })
 
   await knex
