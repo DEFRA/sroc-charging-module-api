@@ -20,7 +20,7 @@ class BaseTranslator {
   }
 
   _validate (data) {
-    return this._schema().validate(data, { abortEarly: false })
+    return this._schema().validate(data, { abortEarly: false, allowUnknown: true })
   }
 
   _translate (data, translations) {
