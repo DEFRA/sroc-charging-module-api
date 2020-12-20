@@ -15,7 +15,7 @@ const { deployment } = require('../../server')
 // However, the server module it is written against exposes its methods in such a way they are easy to stub/spy on.
 // We've had no such luck with Hapi. So though we can't get our expectations to work we can see with well placed
 // console logs that when these tests are run the behaviour we expect to see does happen.
-describe.only('Gracefully shuts down when asked to terminate', () => {
+describe('Gracefully shuts down when asked to terminate', () => {
   let server
 
   before(async () => {
