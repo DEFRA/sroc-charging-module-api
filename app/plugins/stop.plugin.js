@@ -23,8 +23,6 @@
  * @module StopPlugin
  */
 
-// const logger = require('pino')()
-
 const StopPlugin = {
   name: 'stop',
   register: (server, _options) => {
