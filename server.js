@@ -13,7 +13,8 @@ const {
   InvalidCharactersPlugin,
   MissingPayloadPlugin,
   PayloadCleanerPlugin,
-  RouterPlugin
+  RouterPlugin,
+  StopPlugin
 } = require('./app/plugins')
 
 exports.deployment = async start => {
@@ -27,6 +28,7 @@ exports.deployment = async start => {
   server.auth.default('jwt-strategy')
 
   // Register the remaining plugins
+  await server.register(StopPlugin)
   await server.register(AuthorisationPlugin)
   await server.register(RouterPlugin)
   await server.register(AirbrakePlugin)
