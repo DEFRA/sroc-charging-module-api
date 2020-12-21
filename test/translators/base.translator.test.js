@@ -51,6 +51,15 @@ describe('Base translator', () => {
 
       expect(() => new BaseTranslator(testData)).to.not.throw()
     })
+
+    it('allows access to the untranslated validated data', async () => {
+      const testData = { before: true, test: true }
+
+      const testTranslator = new BaseTranslator(testData)
+
+      expect(testTranslator.validatedData).to.equal(testData)
+      expect(testTranslator.after).to.equal(true)
+    })
   })
 
   describe('translation', () => {

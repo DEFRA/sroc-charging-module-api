@@ -18,6 +18,19 @@ class BaseTranslator {
     Object.assign(this, { _data: validatedData })
   }
 
+  /**
+   * The validated data untranslated
+   *
+   * This was originally added to support needing to pass a validated transaction create request to the
+   * `CalculateChargeService` but with its original property names/. Doing it this way avoids needing another translator
+   * to sit between the 2.
+   *
+   * @return {Object} The validated data passed into the translator but untranslated.
+   */
+  get validatedData () {
+    return this._data
+  }
+
   _validate (data) {
     return this._schema().validate(data, { abortEarly: false, allowUnknown: true })
   }
