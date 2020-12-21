@@ -14,9 +14,21 @@ class BaseTranslator {
     const translatedData = this._translate(validatedData, this._translations())
     Object.assign(this, translatedData)
 
-    // Assign validated data to _data and set it to be non-enumerable so it isn't visible outside of the translator
+    // Assign validated data to _data
     Object.assign(this, { _data: validatedData })
-    Object.defineProperty(this, '_data', { enumerable: false })
+  }
+
+  /**
+   * The validated data untranslated
+   *
+   * This was originally added to support needing to pass a validated transaction create request to the
+   * `CalculateChargeService` but with its original property names/. Doing it this way avoids needing another translator
+   * to sit between the 2.
+   *
+   * @return {Object} The validated data passed into the translator but untranslated.
+   */
+  get validatedData () {
+    return this._data
   }
 
   _validate (data) {
