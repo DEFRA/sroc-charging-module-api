@@ -12,12 +12,12 @@ const { AuthorisedSystemHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = 
 const TransactionModel = require('../../app/models/bill_run.model')
 const { ValidationError } = require('joi')
 
-const { presroc: fixtures } = require('../support/fixtures/calculate_charge')
+const { presroc: fixtures } = require('../support/fixtures/create_transaction')
 
 // Thing under test
 const { CreateTransactionService } = require('../../app/services')
 
-describe.only('Create Transaction service', () => {
+describe('Create Transaction service', () => {
   const billRunId = 'b976d8e4-3644-11eb-adc1-0242ac120002'
   let authorisedSystem
   let regime
