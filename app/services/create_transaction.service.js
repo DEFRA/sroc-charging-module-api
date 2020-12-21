@@ -14,7 +14,7 @@ class CreateTransactionService {
 
     this._applyCalculatedCharge(translator, calculatedCharge)
 
-    return 'not done yet'
+    return JSON.stringify(translator)
   }
 
   static _calculateCharge (translator, regime) {
