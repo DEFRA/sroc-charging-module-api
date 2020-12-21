@@ -14,9 +14,8 @@ class BaseTranslator {
     const translatedData = this._translate(validatedData, this._translations())
     Object.assign(this, translatedData)
 
-    // Assign validated data to _data and set it to be non-enumerable so it isn't visible outside of the translator
+    // Assign validated data to _data
     Object.assign(this, { _data: validatedData })
-    Object.defineProperty(this, '_data', { enumerable: false })
   }
 
   _validate (data) {
