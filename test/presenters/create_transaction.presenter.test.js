@@ -10,7 +10,7 @@ const { expect } = Code
 // Thing under test
 const { CreateTransactionPresenter } = require('../../app/presenters')
 
-describe.only('Create Transaction presenter', () => {
+describe('Create Transaction presenter', () => {
   it('correctly presents the data', () => {
     // Format and content of the test data does not have to accurately reflect a transaction. The key thing is the
     // presenter can pull what it needs from it
