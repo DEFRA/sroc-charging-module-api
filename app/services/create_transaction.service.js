@@ -4,7 +4,7 @@
  * @module CreateTransactionService
  */
 
- const { TransactionTranslator } = require('../translators')
+const { TransactionTranslator } = require('../translators')
 
 class CreateTransactionService {
   static async go (payload, billRunId, authorisedSystem, regime) {
