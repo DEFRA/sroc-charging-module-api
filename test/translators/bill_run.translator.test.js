@@ -14,41 +14,53 @@ const { ValidationError } = require('joi')
 const { BillRunTranslator } = require('../../app/translators')
 
 describe('Bill Run translator', () => {
-  const data = region => {
+  const payload = {
+    region: 'A'
+  }
+
+  const data = (payload, regimeId = 'ff75f82d-d56f-4807-9cad-12f23d6b29a8') => {
     return {
-      region: region
+      regimeId,
+      ...payload
     }
   }
 
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
-        const region = 'A'
-
-        expect(() => new BillRunTranslator(data(region))).to.not.throw()
+        expect(() => new BillRunTranslator(data(payload))).to.not.throw()
       })
 
       it("does not throw an error if the 'region' is lowercase", async () => {
-        const region = 'a'
+        const lowercasePayload = {
+          ...payload,
+          region: 'a'
+        }
 
-        expect(() => new BillRunTranslator(data(region))).to.not.throw()
+        expect(() => new BillRunTranslator(data(lowercasePayload))).to.not.throw()
       })
     })
 
     describe('when the data is not valid', () => {
       describe("because the 'region' is missing", () => {
         it('throws an error', async () => {
-          const region = ''
+          const invalidPayload = {
+            ...payload,
+            region: ''
+          }
 
-          expect(() => new BillRunTranslator(data(region))).to.throw(ValidationError)
+          expect(() => new BillRunTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
 
       describe("because the 'region' is unrecognised", () => {
         it('throws an error', async () => {
-          const region = 'Z'
+          const invalidPayload = {
+            ...payload,
+            region: 'Z'
+          }
 
-          expect(() => new BillRunTranslator(data(region))).to.throw(ValidationError)
+          expect(() => new BillRunTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
     })
