@@ -4,7 +4,7 @@
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 
-const { describe, it } = exports.lab = Lab.script()
+const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
@@ -15,9 +15,14 @@ const rulesServiceFixture = require('../support/fixtures/calculate_charge/presro
 const { RulesServiceTranslator } = require('../../app/translators')
 
 describe('Rules Service translator', () => {
+  let data
+
+  beforeEach(async () => {
+    data = GeneralHelper.cloneObject(rulesServiceFixture)
+  })
+
   describe("the 'chargeValue' property", () => {
     it('is translated to pence instead of pounds and pence', async () => {
-      const data = GeneralHelper.cloneObject(rulesServiceFixture)
       data.WRLSChargingResponse.chargeValue = 123.45
 
       const testTranslator = new RulesServiceTranslator(data)
@@ -28,7 +33,6 @@ describe('Rules Service translator', () => {
 
   describe("the 'lineAttr10' property", () => {
     it('returns S127 value if present', async () => {
-      const data = GeneralHelper.cloneObject(rulesServiceFixture)
       data.WRLSChargingResponse.abatementAdjustment = 'S126 x 0.5'
       data.WRLSChargingResponse.s127Agreement = 'S127 x 0.5'
 
@@ -38,7 +42,6 @@ describe('Rules Service translator', () => {
     })
 
     it('returns S126 value if it indicates adjustment', async () => {
-      const data = GeneralHelper.cloneObject(rulesServiceFixture)
       data.WRLSChargingResponse.abatementAdjustment = 'S126 x 0.5'
 
       const testTranslator = new RulesServiceTranslator(data)
@@ -47,7 +50,6 @@ describe('Rules Service translator', () => {
     })
 
     it("returns null if S126 value doesn't indicate adjustment", async () => {
-      const data = GeneralHelper.cloneObject(rulesServiceFixture)
       data.WRLSChargingResponse.abatementAdjustment = 'S126 x 1.0'
 
       const testTranslator = new RulesServiceTranslator(data)
@@ -57,9 +59,7 @@ describe('Rules Service translator', () => {
   })
 
   describe("the 'chargeCalculation' property", () => {
-    it.only('returns an exact copy of the response received from the rules service', async => {
-      const data = GeneralHelper.cloneObject(rulesServiceFixture)
-
+    it('returns an exact copy of the response received from the rules service', async => {
       const testTranslator = new RulesServiceTranslator(data)
 
       expect(testTranslator.chargeCalculation).to.equal(JSON.stringify(data))
