@@ -6,6 +6,7 @@ const Joi = require('joi')
 class BillRunTranslator extends BaseTranslator {
   _translations () {
     return {
+      authorisedSystemId: 'createdBy',
       regimeId: 'regimeId',
       region: 'region'
     }
@@ -13,6 +14,7 @@ class BillRunTranslator extends BaseTranslator {
 
   _schema () {
     return Joi.object({
+      authorisedSystemId: Joi.string().required(),
       regimeId: Joi.string().required(),
       region: Joi.string().uppercase().valid(...this._validRegions())
     })

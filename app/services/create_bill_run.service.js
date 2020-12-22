@@ -26,13 +26,17 @@ const NextBillRunNumberService = require('./next_bill_run_number.service')
  */
 class CreateBillRunService {
   static async go (payload, authorisedSystem, regime) {
-    const translator = new BillRunTranslator({ ...payload, regimeId: regime.id })
-    const billRun = await this._create(translator, authorisedSystem)
+    const translator = new BillRunTranslator({
+      ...payload,
+      regimeId: regime.id,
+      authorisedSystemId: authorisedSystem.id
+    })
+    const billRun = await this._create(translator)
 
     return this._response(billRun)
   }
 
-  static async _create (translator, authorisedSystem) {
+  static async _create (translator) {
     return BillRunModel.transaction(async () => {
       const billRunNumber = await NextBillRunNumberService.go(translator.regimeId, translator.region)
       return BillRunModel.query()
@@ -40,7 +44,7 @@ class CreateBillRunService {
           billRunNumber,
           region: translator.region,
           regimeId: translator.regimeId,
-          createdBy: authorisedSystem.id,
+          createdBy: translator.createdBy,
           status: 'initialised'
         })
         .returning('*')
