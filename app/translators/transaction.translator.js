@@ -15,7 +15,9 @@ class TransactionTranslator extends BaseTranslator {
       areaCode: Joi.string().uppercase().valid(...this._validAreas()),
       lineDescription: Joi.string().max(240).required(),
       newLicence: Joi.boolean().default(false),
-      clientId: Joi.string().allow('', null)
+      clientId: Joi.string().allow('', null),
+      // Set a new field called ruleset. This will identify which ruleset the transaction and it's charge relates to
+      ruleset: Joi.string().default('presroc')
     })
   }
 
