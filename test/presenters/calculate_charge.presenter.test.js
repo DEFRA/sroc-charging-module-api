@@ -14,7 +14,7 @@ describe('Charge presenter', () => {
   describe("when the request was marked as a 'credit'", () => {
     const data = {
       chargeValue: 100,
-      credit: true
+      chargeCredit: true
     }
 
     it("returns a negative 'chargeValue'", async () => {
@@ -28,7 +28,7 @@ describe('Charge presenter', () => {
   describe("when the request was not marked as a 'credit'", () => {
     const data = {
       chargeValue: 100,
-      credit: false
+      chargeCredit: false
     }
 
     it("returns a postive 'chargeValue'", async () => {

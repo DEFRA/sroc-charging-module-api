@@ -65,7 +65,7 @@ class CalculateChargeTranslator extends BaseTranslator {
       authorisedDays: 'regimeValue5',
       billableDays: 'regimeValue4',
       compensationCharge: 'regimeValue17',
-      credit: 'credit',
+      credit: 'chargeCredit',
       loss: 'regimeValue8',
       periodEnd: 'periodEnd',
       periodStart: 'periodStart',
