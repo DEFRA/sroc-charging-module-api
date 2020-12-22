@@ -14,7 +14,7 @@ class RulesServicePresenter extends BasePresenter {
     return {
       ruleset: data.ruleset,
       regime: data.regime,
-      financialYear: data.financialYear,
+      financialYear: data.chargeFinancialYear,
       chargeParams: {
         WRLSChargingRequest: {
           billableDays: data.regimeValue4,

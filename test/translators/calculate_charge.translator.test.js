@@ -62,7 +62,7 @@ describe('Calculate Charge translator', () => {
         periodEnd: '30-MAR-2022'
       })
 
-      expect(testTranslator.financialYear).to.equal(2021)
+      expect(testTranslator.chargeFinancialYear).to.equal(2021)
     })
 
     it("correctly determines the current year for 'period' dates in April onwards", async () => {
@@ -72,7 +72,7 @@ describe('Calculate Charge translator', () => {
         periodEnd: '01-MAY-2021'
       })
 
-      expect(testTranslator.financialYear).to.equal(2021)
+      expect(testTranslator.chargeFinancialYear).to.equal(2021)
     })
   })
 
