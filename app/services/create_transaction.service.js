@@ -33,7 +33,7 @@ class CreateTransactionService {
    * database.
    */
   static _applyCalculatedCharge (translator, calculatedCharge) {
-    Object.assign(translator, calculatedCharge)
+    Object.assign(translator, calculatedCharge.calculation)
   }
 }
 
