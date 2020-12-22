@@ -25,7 +25,7 @@ class TransactionTranslator extends BaseTranslator {
       region: 'region',
       customerReference: 'customerReference',
       periodStart: 'chargePeriodStart',
-      periodEnd: 'periodEnd',
+      periodEnd: 'chargePeriodEnd',
       newLicence: 'newLicence',
       clientId: 'clientId',
       credit: 'chargeCredit',

@@ -25,7 +25,7 @@ class CalculateChargeTranslator extends BaseTranslator {
     })
 
     const data = {
-      periodEndFinancialYear: this._financialYear(this.periodEnd)
+      periodEndFinancialYear: this._financialYear(this.chargePeriodEnd)
     }
 
     const { error } = schema.validate(data)
@@ -67,7 +67,7 @@ class CalculateChargeTranslator extends BaseTranslator {
       compensationCharge: 'regimeValue17',
       credit: 'chargeCredit',
       loss: 'regimeValue8',
-      periodEnd: 'periodEnd',
+      periodEnd: 'chargePeriodEnd',
       periodStart: 'chargePeriodStart',
       regionalChargingArea: 'regimeValue15',
       ruleset: 'ruleset',
