@@ -21,7 +21,7 @@ const { JsonPresenter } = require('../presenters')
 class CreateAuthorisedSystemService {
   static async go (payload) {
     const translator = new AuthorisedSystemTranslator(payload)
-    const regimes = await this._regimes(translator.authorisations)
+    const regimes = await this._regimes(translator.validatedData.authorisations)
     const authorisedSystem = await this._create(translator, regimes)
 
     return this._response(authorisedSystem)
@@ -38,10 +38,7 @@ class CreateAuthorisedSystemService {
       const newRecords = await AuthorisedSystemModel.query(trx).insertGraphAndFetch(
         [
           {
-            client_id: translator.clientId,
-            name: translator.name,
-            admin: false,
-            status: translator.status,
+            ...translator,
             regimes: regimes
           }
         ],
