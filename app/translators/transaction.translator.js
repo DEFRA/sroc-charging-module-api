@@ -6,6 +6,7 @@ const Joi = require('joi')
 class TransactionTranslator extends BaseTranslator {
   _schema () {
     return Joi.object({
+      billRunId: Joi.string().required(),
       region: Joi.string().uppercase().valid(...this._validRegions()),
       customerReference: Joi.string().uppercase().max(12).required(),
       batchNumber: Joi.string().allow('', null),
@@ -23,6 +24,7 @@ class TransactionTranslator extends BaseTranslator {
 
   _translations () {
     return {
+      billRunId: 'billRunId',
       ruleset: 'ruleset',
       region: 'region',
       customerReference: 'customerReference',
