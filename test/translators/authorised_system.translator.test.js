@@ -32,6 +32,12 @@ describe('Authorised system translator', () => {
 
       expect(testTranslator.status).to.be.a.string().and.equal('active')
     })
+
+    it("defaults 'admin' to 'false'", async () => {
+      const testTranslator = new AuthorisedSystemTranslator(data(payload, ['wrls']))
+
+      expect(testTranslator.admin).to.be.a.boolean().and.equal(false)
+    })
   })
 
   describe('Validation', () => {

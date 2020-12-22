@@ -8,6 +8,7 @@ class AuthorisedSystemTranslator extends BaseTranslator {
     return {
       clientId: 'clientId',
       name: 'name',
+      admin: 'admin',
       status: 'status',
       authorisations: 'authorisations'
     }
@@ -17,6 +18,7 @@ class AuthorisedSystemTranslator extends BaseTranslator {
     return Joi.object({
       clientId: Joi.string().required(),
       name: Joi.string().required(),
+      admin: Joi.boolean().default(false),
       status: Joi.string().default('active'),
       authorisations: Joi.array().items(Joi.string())
     })
