@@ -18,9 +18,14 @@ describe('Bill Run translator', () => {
     region: 'A'
   }
 
-  const data = (payload, regimeId = 'ff75f82d-d56f-4807-9cad-12f23d6b29a8') => {
+  const data = (
+    payload,
+    regimeId = 'ff75f82d-d56f-4807-9cad-12f23d6b29a8',
+    authorisedSystemId = 'e46b816a-3fe8-438a-a3f9-7a1a8eb525ce'
+  ) => {
     return {
       regimeId,
+      authorisedSystemId,
       ...payload
     }
   }
