@@ -32,6 +32,23 @@ describe('Calculate Charge translator', () => {
     section130Agreement: false
   }
 
+  describe('Default values', () => {
+    it("defaults 'section126Factor' to '1.0'", async () => {
+      const testTranslator = new CalculateChargeTranslator({
+        ...data,
+        section126Factor: null
+      })
+
+      expect(testTranslator.regimeValue11).to.be.a.number().and.equal(1.0)
+    })
+
+    it("defaults 'ruleset' to 'presroc'", async () => {
+      const testTranslator = new CalculateChargeTranslator(data)
+
+      expect(testTranslator.ruleset).to.be.a.string().and.equal('presroc')
+    })
+  })
+
   describe('calculating prorataDays', () => {
     it('correctly calculates the format', async () => {
       const testTranslator = new CalculateChargeTranslator({

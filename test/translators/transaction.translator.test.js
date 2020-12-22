@@ -47,6 +47,12 @@ describe('Transaction translator', () => {
 
       expect(testTranslator.newLicence).to.be.a.boolean().and.equal(false)
     })
+
+    it("defaults 'ruleset' to 'presroc'", async () => {
+      const testTranslator = new TransactionTranslator(data)
+
+      expect(testTranslator.ruleset).to.be.a.string().and.equal('presroc')
+    })
   })
 
   describe('Validation', () => {
