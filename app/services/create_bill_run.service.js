@@ -15,7 +15,7 @@ const NextBillRunNumberService = require('./next_bill_run_number.service')
  * Creates a new bill run record
  *
  * The service handles validating and translating the request to the API and then creating a new bill run for the
- * selected regime. It then returns the new bill run as the result.
+ * selected regime. It then returns a representation of the new bill run to be used in the response.
  *
  * @param {Object} payload The payload from the API request
  * @param {module:AuthorisedSystemModel} authorisedSystem Instance of `AuthorisedSystemModel' representing the
@@ -26,14 +26,18 @@ const NextBillRunNumberService = require('./next_bill_run_number.service')
  */
 class CreateBillRunService {
   static async go (payload, authorisedSystem, regime) {
-    const translator = new BillRunTranslator({
+    const translator = this._translateRequest(payload, authorisedSystem, regime)
+    const billRun = await this._create(translator)
+
+    return this._response(billRun)
+  }
+
+  static _translateRequest (payload, authorisedSystem, regime) {
+    return new BillRunTranslator({
       ...payload,
       regimeId: regime.id,
       authorisedSystemId: authorisedSystem.id
     })
-    const billRun = await this._create(translator)
-
-    return this._response(billRun)
   }
 
   static async _create (translator) {
@@ -41,11 +45,8 @@ class CreateBillRunService {
       const billRunNumber = await NextBillRunNumberService.go(translator.regimeId, translator.region)
       return BillRunModel.query()
         .insert({
-          billRunNumber,
-          region: translator.region,
-          regimeId: translator.regimeId,
-          createdBy: translator.createdBy,
-          status: 'initialised'
+          ...translator,
+          billRunNumber
         })
         .returning('*')
     })

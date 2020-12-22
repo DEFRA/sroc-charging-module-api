@@ -8,7 +8,8 @@ class BillRunTranslator extends BaseTranslator {
     return {
       authorisedSystemId: 'createdBy',
       regimeId: 'regimeId',
-      region: 'region'
+      region: 'region',
+      status: 'status'
     }
   }
 
@@ -16,7 +17,8 @@ class BillRunTranslator extends BaseTranslator {
     return Joi.object({
       authorisedSystemId: Joi.string().required(),
       regimeId: Joi.string().required(),
-      region: Joi.string().uppercase().valid(...this._validRegions())
+      region: Joi.string().uppercase().valid(...this._validRegions()),
+      status: Joi.string().default('initialised')
     })
   }
 
