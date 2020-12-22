@@ -41,7 +41,9 @@ describe('Bill Run translator', () => {
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
-        expect(() => new BillRunTranslator(data(payload))).to.not.throw()
+        const result = new BillRunTranslator(data(payload))
+
+        expect(result).to.not.be.an.error()
       })
 
       it("does not throw an error if the 'region' is lowercase", async () => {
