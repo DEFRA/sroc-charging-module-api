@@ -14,6 +14,14 @@ class AuthorisedSystemModel extends BaseModel {
 
   static get relationMappings () {
     return {
+      billRuns: {
+        relation: Model.HasManyRelation,
+        modelClass: 'bill_run.model',
+        join: {
+          from: 'authorised_systems.id',
+          to: 'bill_runs.created_by'
+        }
+      },
       regimes: {
         relation: Model.ManyToManyRelation,
         modelClass: 'regime.model',
@@ -25,14 +33,6 @@ class AuthorisedSystemModel extends BaseModel {
             to: 'authorised_systems_regimes.regime_id'
           },
           to: 'regimes.id'
-        }
-      },
-      billRuns: {
-        relation: Model.HasManyRelation,
-        modelClass: 'bill_run.model',
-        join: {
-          from: 'authorised_systems.id',
-          to: 'bill_runs.created_by'
         }
       },
       transactions: {
