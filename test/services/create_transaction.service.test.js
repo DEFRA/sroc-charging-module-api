@@ -52,7 +52,7 @@ describe('Create Transaction service', () => {
       // result = await TransactionModel.query().findById(transaction.transaction.id)
     })
 
-    it('creates a transaction', async () => {
+    it.only('creates a transaction', async () => {
       console.log(transaction)
       // expect(result.id).to.exist()
     })
