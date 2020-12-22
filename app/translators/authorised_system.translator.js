@@ -9,8 +9,7 @@ class AuthorisedSystemTranslator extends BaseTranslator {
       clientId: 'clientId',
       name: 'name',
       admin: 'admin',
-      status: 'status',
-      authorisations: 'authorisations'
+      status: 'status'
     }
   }
 
