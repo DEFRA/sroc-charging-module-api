@@ -21,6 +21,14 @@ class TransactionModel extends BaseModel {
           from: 'transactions.bill_run_id',
           to: 'bill_runs.id'
         }
+      },
+      regime: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: 'regime.model',
+        join: {
+          from: 'transactions.regime_id',
+          to: 'regimes.id'
+        }
       }
     }
   }
