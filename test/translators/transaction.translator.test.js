@@ -41,9 +41,13 @@ describe('Transaction translator', () => {
     areaCode: 'ARCA'
   }
 
-  const data = (payload, billRunId = 'e2a28efc-09eb-439e-95bc-e64c68ab1ea5') => {
+  const data = (
+    payload,
+    billRunId = 'e2a28efc-09eb-439e-95bc-e64c68ab1ea5',
+    regimeId = 'ff75f82d-d56f-4807-9cad-12f23d6b29a8') => {
     return {
       billRunId,
+      regimeId,
       ...payload
     }
   }
