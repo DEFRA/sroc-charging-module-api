@@ -47,7 +47,9 @@ class CalculateChargeTranslator extends BaseTranslator {
       periodStart: Joi.date().less(Joi.ref('periodEnd')).min('01-APR-2014').required(),
       periodEnd: Joi.date().required(),
       regionalChargingArea: Joi.string().required(), // validated in the rules service
-      // Set a new field called ruleset. This will be used to determine which ruleset to query in the rules service
+      // Set a new field called ruleset. This will be used to determine which ruleset to query in the rules service. If
+      // the data comes from a calculate charge request we deafult it. If the data comes from a create transaction
+      // request it will already be populated
       ruleset: Joi.string().default('presroc'),
       season: Joi.string().required(), // validated in rules service
       section126Factor: Joi.number().allow(null).empty(null).default(1.0),
