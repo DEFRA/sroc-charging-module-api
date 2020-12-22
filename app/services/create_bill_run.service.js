@@ -41,11 +41,8 @@ class CreateBillRunService {
       const billRunNumber = await NextBillRunNumberService.go(translator.regimeId, translator.region)
       return BillRunModel.query()
         .insert({
-          billRunNumber,
-          region: translator.region,
-          regimeId: translator.regimeId,
-          createdBy: translator.createdBy,
-          status: translator.status
+          ...translator,
+          billRunNumber
         })
         .returning('*')
     })
