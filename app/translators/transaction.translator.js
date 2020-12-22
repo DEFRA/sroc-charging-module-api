@@ -8,6 +8,7 @@ class TransactionTranslator extends BaseTranslator {
     return Joi.object({
       billRunId: Joi.string().required(),
       regimeId: Joi.string().required(),
+      authorisedSystemId: Joi.string().required(),
       region: Joi.string().uppercase().valid(...this._validRegions()),
       customerReference: Joi.string().uppercase().max(12).required(),
       batchNumber: Joi.string().allow('', null),
@@ -27,6 +28,7 @@ class TransactionTranslator extends BaseTranslator {
     return {
       billRunId: 'billRunId',
       regimeId: 'regimeId',
+      authorisedSystemId: 'createdBy',
       ruleset: 'ruleset',
       region: 'region',
       customerReference: 'customerReference',
