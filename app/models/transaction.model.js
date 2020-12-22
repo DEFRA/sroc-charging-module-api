@@ -14,6 +14,14 @@ class TransactionModel extends BaseModel {
 
   static get relationMappings () {
     return {
+      authorisedSystem: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: 'authorised_system.model',
+        join: {
+          from: 'transactions.created_by',
+          to: 'authorised_systems.id'
+        }
+      },
       billRun: {
         relation: Model.BelongsToOneRelation,
         modelClass: 'bill_run.model',

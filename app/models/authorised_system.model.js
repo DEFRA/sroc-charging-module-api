@@ -34,6 +34,14 @@ class AuthorisedSystemModel extends BaseModel {
           from: 'authorised_systems.id',
           to: 'bill_runs.created_by'
         }
+      },
+      transactions: {
+        relation: Model.HasManyRelation,
+        modelClass: 'transaction.model',
+        join: {
+          from: 'authorised_systems.id',
+          to: 'transactions.created_by'
+        }
       }
     }
   }
