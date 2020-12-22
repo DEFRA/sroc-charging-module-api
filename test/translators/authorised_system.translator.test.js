@@ -14,54 +14,68 @@ const { ValidationError } = require('joi')
 const { AuthorisedSystemTranslator } = require('../../app/translators')
 
 describe('Authorised system translator', () => {
+  const payload = {
+    clientId: 'i7rnixijjrawj7azzhwwxxxxxx',
+    name: 'olmos'
+  }
+
+  const data = (payload, regimes) => {
+    return {
+      ...payload,
+      authorisations: regimes
+    }
+  }
+
+  describe('Default values', () => {
+    it("defaults 'status' to 'active'", async () => {
+      const testTranslator = new AuthorisedSystemTranslator(data(payload))
+
+      expect(testTranslator.status).to.be.a.string().and.equal('active')
+    })
+
+    it("defaults 'admin' to 'false'", async () => {
+      const testTranslator = new AuthorisedSystemTranslator(data(payload, ['wrls']))
+
+      expect(testTranslator.admin).to.be.a.boolean().and.equal(false)
+    })
+  })
+
   describe('Validation', () => {
     describe('when the data is valid', () => {
-      const validData = regimes => {
-        return {
-          clientId: 'i7rnixijjrawj7azzhwwxxxxxx',
-          name: 'olmos',
-          status: 'active',
-          authorisations: regimes
-        }
-      }
-
       it('does not throw an error', async () => {
-        expect(() => new AuthorisedSystemTranslator(validData(['wrls']))).to.not.throw()
+        const result = new AuthorisedSystemTranslator(data(payload, ['wrls']))
+
+        expect(result).to.not.be.an.error()
       })
 
       it('does not throw an error if authorised regimes is empty', async () => {
-        expect(() => new AuthorisedSystemTranslator(validData([]))).to.not.throw()
+        const result = new AuthorisedSystemTranslator(data(payload, []))
+
+        expect(result).to.not.be.an.error()
       })
     })
 
     describe('when the data is not valid', () => {
-      const invalidData = regimes => {
-        return {
-          clientId: '',
-          name: 'olmos',
-          status: 'active',
-          authorisations: regimes
-        }
-      }
+      describe("because 'clientId' is missing", () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            clientId: ''
+          }
 
-      it('throws an error', async () => {
-        expect(() => new AuthorisedSystemTranslator(invalidData(['wrls']))).to.throw(ValidationError)
+          expect(() => new AuthorisedSystemTranslator(data(invalidPayload, ['wrls']))).to.throw(ValidationError)
+        })
       })
-    })
 
-    describe("When the data contains no 'status'", () => {
-      const validData = () => {
-        return {
-          clientId: 'i7rnixijjrawj7azzhwwxxxxxx',
-          name: 'olmos',
-          authorisations: []
-        }
-      }
+      describe("because 'name' is missing", () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            name: ''
+          }
 
-      it("defaults it to 'active'", async () => {
-        const translator = new AuthorisedSystemTranslator(validData())
-
-        expect(translator.status).to.equal('active')
+          expect(() => new AuthorisedSystemTranslator(data(invalidPayload, ['wrls']))).to.throw(ValidationError)
+        })
       })
     })
   })
