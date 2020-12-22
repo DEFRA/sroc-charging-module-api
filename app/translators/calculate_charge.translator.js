@@ -13,7 +13,7 @@ class CalculateChargeTranslator extends BaseTranslator {
     super(data)
 
     this.lineAttr3 = this._prorataDays()
-    this.chargeFinancialYear = this._financialYear(this.periodStart)
+    this.chargeFinancialYear = this._financialYear(this.chargePeriodStart)
 
     // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year
     this._validateFinancialYear()
@@ -68,7 +68,7 @@ class CalculateChargeTranslator extends BaseTranslator {
       credit: 'chargeCredit',
       loss: 'regimeValue8',
       periodEnd: 'periodEnd',
-      periodStart: 'periodStart',
+      periodStart: 'chargePeriodStart',
       regionalChargingArea: 'regimeValue15',
       ruleset: 'ruleset',
       season: 'regimeValue7',
