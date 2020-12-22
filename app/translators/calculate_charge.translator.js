@@ -13,7 +13,7 @@ class CalculateChargeTranslator extends BaseTranslator {
     super(data)
 
     this.lineAttr3 = this._prorataDays()
-    this.financialYear = this._financialYear(this.periodStart)
+    this.chargeFinancialYear = this._financialYear(this.periodStart)
 
     // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year
     this._validateFinancialYear()
@@ -21,7 +21,7 @@ class CalculateChargeTranslator extends BaseTranslator {
 
   _validateFinancialYear () {
     const schema = Joi.object({
-      periodEndFinancialYear: Joi.number().equal(this.financialYear)
+      periodEndFinancialYear: Joi.number().equal(this.chargeFinancialYear)
     })
 
     const data = {
