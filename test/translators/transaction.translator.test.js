@@ -58,7 +58,9 @@ describe('Transaction translator', () => {
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
-        expect(() => new TransactionTranslator(data).to.not.throw())
+        const result = new TransactionTranslator(data)
+
+        expect(result).to.not.be.an.error()
       })
     })
 
