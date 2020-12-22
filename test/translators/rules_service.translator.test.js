@@ -55,4 +55,14 @@ describe('Rules Service translator', () => {
       expect(testTranslator.lineAttr10).to.equal(null)
     })
   })
+
+  describe("the 'chargeCalculation' property", () => {
+    it.only('returns an exact copy of the response received from the rules service', async => {
+      const data = GeneralHelper.cloneObject(rulesServiceFixture)
+
+      const testTranslator = new RulesServiceTranslator(data)
+
+      expect(testTranslator.chargeCalculation).to.equal(JSON.stringify(data))
+    })
+  })
 })

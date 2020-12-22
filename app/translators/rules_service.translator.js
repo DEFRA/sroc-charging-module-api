@@ -12,6 +12,9 @@ class RulesServiceTranslator extends BaseTranslator {
     // The rules service returns the data we need in a WRLSChargingResponse object within the response object
     super(data.WRLSChargingResponse)
 
+    // We retain a copy of the actual response for audit purposes
+    this.chargeCalculation = JSON.stringify(data)
+
     this.chargeValue = this._convertToPence(this._data.chargeValue)
     this.sucFactor = this._convertToPence(this._data.sucFactor)
 
