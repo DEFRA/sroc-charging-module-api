@@ -14,8 +14,12 @@ class BaseTranslator {
     const translatedData = this._translate(validatedData, this._translations())
     Object.assign(this, translatedData)
 
-    // Assign validated data to _data
+    // Assign validated data to _data and set it to be non-enumerable so it isn't visible outside of the translator.
+    // For example, this allows us to pass a translator instance to Objection's `query().insert()` method as is rather
+    // than defining each property to update. Without this Objection would see `_data` and try and include it in the
+    // insert query
     Object.assign(this, { _data: validatedData })
+    Object.defineProperty(this, '_data', { enumerable: false })
   }
 
   /**
