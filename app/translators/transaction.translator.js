@@ -29,7 +29,7 @@ class TransactionTranslator extends BaseTranslator {
       financialYear: 'financialYear',
       newLicence: 'newLicence',
       clientId: 'clientId',
-      credit: 'credit',
+      credit: 'chargeCredit',
       areaCode: 'lineAreaCode',
       lineDescription: 'lineDescription',
       licenceNumber: 'lineAttr1',

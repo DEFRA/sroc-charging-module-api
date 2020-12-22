@@ -28,7 +28,7 @@ class CalculateChargePresenter extends BasePresenter {
 
   // Returns a negative or positive value for chargeValue dependent on whether credit is true or false
   _calculateChargeValue (data) {
-    return data.credit ? -data.chargeValue : data.chargeValue
+    return data.chargeCredit ? -data.chargeValue : data.chargeValue
   }
 }
 
