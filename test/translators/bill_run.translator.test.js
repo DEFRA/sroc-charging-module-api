@@ -30,6 +30,14 @@ describe('Bill Run translator', () => {
     }
   }
 
+  describe('Default values', () => {
+    it("defaults 'status' to 'initialised'", async () => {
+      const testTranslator = new BillRunTranslator(data(payload))
+
+      expect(testTranslator.status).to.be.a.string().and.equal('initialised')
+    })
+  })
+
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {

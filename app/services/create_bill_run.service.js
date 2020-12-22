@@ -45,7 +45,7 @@ class CreateBillRunService {
           region: translator.region,
           regimeId: translator.regimeId,
           createdBy: translator.createdBy,
-          status: 'initialised'
+          status: translator.status
         })
         .returning('*')
     })
