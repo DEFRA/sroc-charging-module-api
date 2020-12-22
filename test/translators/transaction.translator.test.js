@@ -14,7 +14,7 @@ const { ValidationError } = require('joi')
 const { TransactionTranslator } = require('../../app/translators')
 
 describe('Transaction translator', () => {
-  const data = {
+  const payload = {
     periodStart: '01-APR-2019',
     periodEnd: '31-MAR-2020',
     credit: false,
@@ -41,15 +41,22 @@ describe('Transaction translator', () => {
     areaCode: 'ARCA'
   }
 
+  const data = (payload, billRunId = 'e2a28efc-09eb-439e-95bc-e64c68ab1ea5') => {
+    return {
+      billRunId,
+      ...payload
+    }
+  }
+
   describe('Default values', () => {
     it("defaults 'newLicence' to 'false'", async () => {
-      const testTranslator = new TransactionTranslator(data)
+      const testTranslator = new TransactionTranslator(data(payload))
 
       expect(testTranslator.newLicence).to.be.a.boolean().and.equal(false)
     })
 
     it("defaults 'ruleset' to 'presroc'", async () => {
-      const testTranslator = new TransactionTranslator(data)
+      const testTranslator = new TransactionTranslator(data(payload))
 
       expect(testTranslator.ruleset).to.be.a.string().and.equal('presroc')
     })
@@ -58,7 +65,7 @@ describe('Transaction translator', () => {
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
-        const result = new TransactionTranslator(data)
+        const result = new TransactionTranslator(data(payload))
 
         expect(result).to.not.be.an.error()
       })
@@ -67,23 +74,23 @@ describe('Transaction translator', () => {
     describe('when the data is not valid', () => {
       describe("because 'region' is not a valid region", () => {
         it('throws an error', async () => {
-          const invalidData = {
-            ...data,
+          const invalidPayload = {
+            ...payload,
             region: 'INVALID_REGION'
           }
 
-          expect(() => new TransactionTranslator(invalidData)).to.throw(ValidationError)
+          expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
 
       describe("because 'areaCode' is not a valid area", () => {
         it('throws an error', async () => {
-          const invalidData = {
-            ...data,
+          const invalidPayload = {
+            ...payload,
             areaCode: 'INVALID_AREA'
           }
 
-          expect(() => new TransactionTranslator(invalidData)).to.throw(ValidationError)
+          expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
     })
