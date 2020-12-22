@@ -42,6 +42,14 @@ class RegimeModel extends BaseModel {
           from: 'regimes.id',
           to: 'sequence_counters.regime_id'
         }
+      },
+      transactions: {
+        relation: Model.HasManyRelation,
+        modelClass: 'transaction.model',
+        join: {
+          from: 'regimes.id',
+          to: 'transactions.regime_id'
+        }
       }
     }
   }
