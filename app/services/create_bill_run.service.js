@@ -26,14 +26,18 @@ const NextBillRunNumberService = require('./next_bill_run_number.service')
  */
 class CreateBillRunService {
   static async go (payload, authorisedSystem, regime) {
-    const translator = new BillRunTranslator({
+    const translator = this._translateRequest(payload, authorisedSystem, regime)
+    const billRun = await this._create(translator)
+
+    return this._response(billRun)
+  }
+
+  static _translateRequest (payload, authorisedSystem, regime) {
+    return new BillRunTranslator({
       ...payload,
       regimeId: regime.id,
       authorisedSystemId: authorisedSystem.id
     })
-    const billRun = await this._create(translator)
-
-    return this._response(billRun)
   }
 
   static async _create (translator) {
