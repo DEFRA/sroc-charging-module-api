@@ -31,6 +31,16 @@ describe('Rules Service translator', () => {
     })
   })
 
+  describe("the 'sucFactor' property", () => {
+    it('is translated to pence instead of pounds and pence', async () => {
+      data.WRLSChargingResponse.sucFactor = 123.45
+
+      const testTranslator = new RulesServiceTranslator(data)
+
+      expect(testTranslator.lineAttr4).to.equal(12345)
+    })
+  })
+
   describe("the 'lineAttr10' property", () => {
     it('returns S127 value if present', async () => {
       data.WRLSChargingResponse.abatementAdjustment = 'S126 x 0.5'
