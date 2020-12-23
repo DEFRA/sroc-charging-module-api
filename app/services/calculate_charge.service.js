@@ -22,13 +22,24 @@ class CalculateChargeService {
    * @param {Object} payload The payload from the API request
    * @param {module:RegimeModel} regime Instance of `RegimeModel` representing the regime we are calculating the charge
    * for
+   * @param {boolean} [presenterResponse] Whether to return the result ready for responding to a client (the default) or
+   * to return the rules service result directly
    *
-   * @returns {Object} The calculated charge
+   * @returns {Object} The calculated charge, either formatted ready for responding to the client or as translated from
+   * the rules service response
    */
-  static async go (payload, regime) {
+  static async go (payload, regime, presenterResponse = true) {
     const translator = this._translateRequest(payload, regime)
     const calculatedCharge = await this._calculateCharge(translator)
 
+    // When creating a transaction we'll want the response from rules service directly. We need all the values
+    // translated to things we understand. So we use this option to allow us to return early with that result
+    if (!presenterResponse) {
+      return calculatedCharge
+    }
+
+    // When responding to a calculate charge request we need to present the response in a format the client will
+    // understand. So we merge the translator and the rules service result and then prepare the response
     this._applyCalculatedCharge(translator, calculatedCharge)
 
     return this._response(translator)

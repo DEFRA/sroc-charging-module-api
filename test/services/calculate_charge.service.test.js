@@ -25,11 +25,11 @@ describe('Calculate Charge service', () => {
     slug: 'wrls'
   }
 
-  describe('When the data is valid', () => {
-    afterEach(async () => {
-      Sinon.restore()
-    })
+  afterEach(async () => {
+    Sinon.restore()
+  })
 
+  describe('When the data is valid', () => {
     describe("and is a 'simple' request", () => {
       beforeEach(async () => {
         Sinon.stub(RulesService, 'go').returns(fixtures.simple.rulesService)
@@ -78,6 +78,19 @@ describe('Calculate Charge service', () => {
       const err = await expect(CalculateChargeService.go(invalidPaylod, regime)).to.reject(ValidationError)
 
       expect(err).to.be.an.error()
+    })
+  })
+
+  describe("When I don't want a 'presenter response'", () => {
+    beforeEach(async () => {
+      Sinon.stub(RulesService, 'go').returns(fixtures.simple.rulesService)
+    })
+
+    it("returns the 'rule service response'", async () => {
+      const result = await CalculateChargeService.go(fixtures.simple.request, regime, false)
+
+      expect(result.calculation).to.not.exist()
+      expect(result.chargeCalculation).to.exist()
     })
   })
 })
