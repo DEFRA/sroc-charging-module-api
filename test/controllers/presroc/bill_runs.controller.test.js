@@ -19,6 +19,7 @@ const JsonWebToken = require('jsonwebtoken')
 
 describe('Presroc Bill Runs controller', () => {
   const clientID = '1234546789'
+  const billRunId = 'b976d8e4-3644-11eb-adc1-0242ac120002'
   let server
   let authToken
   let regime
@@ -80,6 +81,23 @@ describe('Presroc Bill Runs controller', () => {
       const response = await server.inject(options(authToken, requestPayload))
 
       expect(response.statusCode).to.equal(422)
+    })
+  })
+
+  describe('Add a bill run transaction: POST /v2/{regimeId}/bill-runs/{billRunId}/transactions', () => {
+    const options = (token, payload) => {
+      return {
+        method: 'POST',
+        url: `/v2/wrls/bill-runs/${billRunId}/transactions`,
+        headers: { authorization: `Bearer ${token}` },
+        payload: payload
+      }
+    }
+
+    it('responds to POST request', async () => {
+      const response = await server.inject(options(authToken, {}))
+
+      expect(response.statusCode).to.equal(200)
     })
   })
 })

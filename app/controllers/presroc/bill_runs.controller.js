@@ -8,6 +8,10 @@ class BillRunsController {
 
     return h.response(result).code(201)
   }
+
+  static async createTransaction (_req, _h) {
+    return 'hello, pre-sroc add bill run transaction'
+  }
 }
 
 module.exports = BillRunsController
