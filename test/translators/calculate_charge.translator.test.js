@@ -12,7 +12,7 @@ const { ValidationError } = require('joi')
 const { CalculateChargeTranslator } = require('../../app/translators')
 
 describe('Calculate Charge translator', () => {
-  const data = {
+  const payload = {
     periodStart: '01-APR-2020',
     periodEnd: '31-MAR-2021',
     credit: false,
@@ -32,18 +32,26 @@ describe('Calculate Charge translator', () => {
     section130Agreement: false
   }
 
+  const data = (payload, regime = 'wrls') => {
+    return {
+      regime,
+      ...payload
+    }
+  }
+
   describe('Default values', () => {
     it("defaults 'section126Factor' to '1.0'", async () => {
-      const testTranslator = new CalculateChargeTranslator({
-        ...data,
+      const empty126FactorPayload = {
+        ...payload,
         section126Factor: null
-      })
+      }
+      const testTranslator = new CalculateChargeTranslator(data(empty126FactorPayload))
 
       expect(testTranslator.regimeValue11).to.be.a.number().and.equal(1.0)
     })
 
     it("defaults 'ruleset' to 'presroc'", async () => {
-      const testTranslator = new CalculateChargeTranslator(data)
+      const testTranslator = new CalculateChargeTranslator(data(payload))
 
       expect(testTranslator.ruleset).to.be.a.string().and.equal('presroc')
     })
@@ -51,21 +59,23 @@ describe('Calculate Charge translator', () => {
 
   describe('calculating prorataDays', () => {
     it('correctly calculates the format', async () => {
-      const testTranslator = new CalculateChargeTranslator({
-        ...data,
+      const proraratPayload = {
+        ...payload,
         billableDays: 128,
         authorisedDays: 256
-      })
+      }
+      const testTranslator = new CalculateChargeTranslator(data(proraratPayload))
 
       expect(testTranslator.lineAttr3).to.equal('128/256')
     })
 
     it('correctly pads values to 3 digits', async () => {
-      const testTranslator = new CalculateChargeTranslator({
-        ...data,
+      const proraratPayload = {
+        ...payload,
         billableDays: 8,
         authorisedDays: 16
-      })
+      }
+      const testTranslator = new CalculateChargeTranslator(data(proraratPayload))
 
       expect(testTranslator.lineAttr3).to.equal('008/016')
     })
@@ -73,21 +83,23 @@ describe('Calculate Charge translator', () => {
 
   describe('calculating the financial year', () => {
     it("correctly determines the previous year for 'period' dates in March or earlier", async () => {
-      const testTranslator = new CalculateChargeTranslator({
-        ...data,
+      const financialYearPayload = {
+        ...payload,
         periodStart: '01-MAR-2022',
         periodEnd: '30-MAR-2022'
-      })
+      }
+      const testTranslator = new CalculateChargeTranslator(data(financialYearPayload))
 
       expect(testTranslator.chargeFinancialYear).to.equal(2021)
     })
 
     it("correctly determines the current year for 'period' dates in April onwards", async () => {
-      const testTranslator = new CalculateChargeTranslator({
-        ...data,
+      const financialYearPayload = {
+        ...payload,
         periodStart: '01-APR-2021',
         periodEnd: '01-MAY-2021'
-      })
+      }
+      const testTranslator = new CalculateChargeTranslator(data(financialYearPayload))
 
       expect(testTranslator.chargeFinancialYear).to.equal(2021)
     })
@@ -96,7 +108,7 @@ describe('Calculate Charge translator', () => {
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
-        const result = new CalculateChargeTranslator(data)
+        const result = new CalculateChargeTranslator(data(payload))
 
         expect(result).to.not.be.an.error()
       })
@@ -105,48 +117,48 @@ describe('Calculate Charge translator', () => {
     describe('when the data is not valid', () => {
       describe("because the 'periodStart' is greater than the 'periodEnd'", () => {
         it('throws an error', async () => {
-          const invalidData = {
-            ...data,
+          const invalidPayload = {
+            ...payload,
             periodStart: '01-APR-2021'
           }
 
-          expect(() => new CalculateChargeTranslator(invalidData)).to.throw(ValidationError)
+          expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
 
       describe("because the 'periodEnd' is less than 01-APR-2014", () => {
         it('throws an error', async () => {
-          const invalidData = {
-            ...data,
+          const invalidPayload = {
+            ...payload,
             periodStart: '01-FEB-2014',
             periodEnd: '01-MAR-2014'
           }
 
-          expect(() => new CalculateChargeTranslator(invalidData)).to.throw(ValidationError)
+          expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
 
       describe("because 'eiucSource' is empty when 'compensationCharge' is true", () => {
         it('throws an error', async () => {
-          const invalidData = {
-            ...data,
+          const invalidPayload = {
+            ...payload,
             compensationCharge: true,
             eiucSource: ''
           }
 
-          expect(() => new CalculateChargeTranslator(invalidData)).to.throw(ValidationError)
+          expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
 
       describe("because 'periodStart' and 'periodEnd' are not in the same financial year", () => {
         it('throws an error', async () => {
-          const invalidData = {
-            ...data,
+          const invalidPayload = {
+            ...payload,
             periodStart: '01-APR-2021',
             periodEnd: '01-APR-2022'
           }
 
-          expect(() => new CalculateChargeTranslator(invalidData)).to.throw(ValidationError)
+          expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
     })
