@@ -21,7 +21,7 @@ class CalculateChargePresenter extends BasePresenter {
         chargeElementAgreement: data.lineAttr10,
         eiucSourceFactor: data.lineAttr13,
         eiuc: data.lineAttr14,
-        suc: data.sucFactor
+        suc: data.lineAttr4
       }
     }
   }
