@@ -96,7 +96,9 @@ describe('Calculate Charge translator', () => {
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
-        expect(() => new CalculateChargeTranslator(data).to.not.throw())
+        const result = new CalculateChargeTranslator(data)
+
+        expect(result).to.not.be.an.error()
       })
     })
 
