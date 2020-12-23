@@ -81,7 +81,8 @@ class CalculateChargeTranslator extends BaseTranslator {
       source: 'regimeValue6',
       twoPartTariff: 'regimeValue16',
       volume: 'lineAttr5',
-      waterUndertaker: 'regimeValue14'
+      waterUndertaker: 'regimeValue14',
+      regime: 'regime'
     }
   }
 
