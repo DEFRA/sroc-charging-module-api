@@ -68,10 +68,6 @@ class RulesServiceTranslator extends BaseTranslator {
   _convertToPence (value) {
     const floatValue = parseFloat(value)
 
-    if (isNaN(floatValue)) {
-      return null
-    }
-
     return Math.round(floatValue * 100)
   }
 }
