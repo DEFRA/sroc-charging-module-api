@@ -16,7 +16,7 @@ class RulesServiceTranslator extends BaseTranslator {
     this.chargeCalculation = JSON.stringify(data)
 
     this.chargeValue = this._convertToPence(this._data.chargeValue)
-    this.sucFactor = this._convertToPence(this._data.sucFactor)
+    this.lineAttr4 = this._convertToPence(this._data.sucFactor)
 
     // Charge element agreement is determined based on rules service response
     this.lineAttr10 = this._determineChargeElementAgreement()
@@ -40,7 +40,6 @@ class RulesServiceTranslator extends BaseTranslator {
   _translations () {
     return {
       chargeValue: 'chargeValue',
-      sucFactor: 'lineAttr4',
       sourceFactor: 'lineAttr6',
       seasonFactor: 'lineAttr7',
       lossFactor: 'lineAttr8',
