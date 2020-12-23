@@ -4,6 +4,7 @@
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
+const Nock = require('nock')
 
 const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
@@ -12,17 +13,30 @@ const { expect } = Code
 const { deployment } = require('../../../server')
 
 // Test helpers
-const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper, RegimeHelper, SequenceCounterHelper } = require('../../support/helpers')
+const {
+  AuthorisationHelper,
+  AuthorisedSystemHelper,
+  BillRunHelper,
+  DatabaseHelper,
+  GeneralHelper,
+  RegimeHelper,
+  RulesServiceHelper,
+  SequenceCounterHelper
+} = require('../../support/helpers')
+
+const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
+const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
 describe('Presroc Bill Runs controller', () => {
   const clientID = '1234546789'
-  const billRunId = 'b976d8e4-3644-11eb-adc1-0242ac120002'
   let server
   let authToken
   let regime
+  let authorisedSystem
+  let billRun
 
   before(async () => {
     server = await deployment()
@@ -31,17 +45,25 @@ describe('Presroc Bill Runs controller', () => {
     Sinon
       .stub(JsonWebToken, 'verify')
       .returns(AuthorisationHelper.decodeToken(authToken))
+
+    // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
+    // the interception rather than remove it after the first request
+    Nock(RulesServiceHelper.url)
+      .post(() => true)
+      .reply(200, chargeFixtures.simple.rulesService)
+      .persist()
   })
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
+    authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
   })
 
   after(async () => {
     Sinon.restore()
+    Nock.cleanAll()
   })
 
   describe('Adding a bill run: POST /v2/{regimeId}/bill-runs', () => {
@@ -71,7 +93,7 @@ describe('Presroc Bill Runs controller', () => {
       expect(billRun).to.have.length(2)
     })
 
-    it('will not add an bill run with invalid data', async () => {
+    it('will not add a bill run with invalid data', async () => {
       const requestPayload = {
         region: 'Z'
       }
@@ -85,7 +107,7 @@ describe('Presroc Bill Runs controller', () => {
   })
 
   describe('Add a bill run transaction: POST /v2/{regimeId}/bill-runs/{billRunId}/transactions', () => {
-    const options = (token, payload) => {
+    const options = (token, payload, billRunId) => {
       return {
         method: 'POST',
         url: `/v2/wrls/bill-runs/${billRunId}/transactions`,
@@ -94,10 +116,31 @@ describe('Presroc Bill Runs controller', () => {
       }
     }
 
-    it('responds to POST request', async () => {
-      const response = await server.inject(options(authToken, {}))
+    beforeEach(async () => {
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    })
 
-      expect(response.statusCode).to.equal(200)
+    describe('When the request is valid', () => {
+      it("returns the 'id' of the new transaction", async () => {
+        const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
+
+        const response = await server.inject(options(authToken, requestPayload, billRun.id))
+        const responsePayload = JSON.parse(response.payload)
+
+        expect(response.statusCode).to.equal(201)
+        expect(responsePayload.transaction.id).to.exist()
+      })
+    })
+
+    describe('When the request is invalid', () => {
+      it('returns an error', async () => {
+        const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
+        requestPayload.periodStart = '01-APR-2021'
+
+        const response = await server.inject(options(authToken, requestPayload, billRun.id))
+
+        expect(response.statusCode).to.equal(422)
+      })
     })
   })
 })
