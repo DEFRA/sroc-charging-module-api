@@ -2,7 +2,6 @@
 
 const {
   NotSupportedController,
-  PresrocAddBillRunTransactionController,
   PresrocBillRunsController
 } = require('../controllers')
 
@@ -25,7 +24,7 @@ const routes = [
   {
     method: 'POST',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/transactions',
-    handler: PresrocAddBillRunTransactionController.create
+    handler: PresrocBillRunsController.createTransaction
   }
 ]
 
