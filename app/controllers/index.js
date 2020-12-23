@@ -9,7 +9,6 @@ const DatabaseController = require('./admin/health/database.controller')
 const NotSupportedController = require('./not_supported.controller')
 const PresrocBillRunsController = require('./presroc/bill_runs.controller')
 const PresrocCalculateChargeController = require('./presroc/calculate_charge.controller')
-const PresrocTransactionsController = require('./presroc/transactions.controller')
 
 module.exports = {
   RootController,
@@ -19,6 +18,5 @@ module.exports = {
   DatabaseController,
   PresrocBillRunsController,
   PresrocCalculateChargeController,
-  PresrocTransactionsController,
   NotSupportedController
 }
