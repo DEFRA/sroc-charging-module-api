@@ -10,7 +10,7 @@ const { expect } = Code
 
 // Test helpers
 const { AuthorisedSystemHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = require('../support/helpers')
-const TransactionModel = require('../../app/models/bill_run.model')
+const { TransactionModel } = require('../../app/models')
 const { ValidationError } = require('joi')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
@@ -49,12 +49,11 @@ describe('Create Transaction service', () => {
     beforeEach(async () => {
       Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
       transaction = await CreateTransactionService.go(payload, billRunId, authorisedSystem, regime)
-      // result = await TransactionModel.query().findById(transaction.transaction.id)
+      result = await TransactionModel.query().findById(transaction.transaction.id)
     })
 
-    it.only('creates a transaction', async () => {
-      console.log(transaction)
-      // expect(result.id).to.exist()
+    it('creates a transaction', async () => {
+      expect(result.id).to.exist()
     })
   })
 
