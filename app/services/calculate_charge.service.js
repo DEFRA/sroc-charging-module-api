@@ -26,16 +26,23 @@ class CalculateChargeService {
    * @returns {Object} The calculated charge
    */
   static async go (payload, regime) {
-    const translator = new CalculateChargeTranslator(payload)
-    const calculatedCharge = await this._calculateCharge(translator, regime.slug)
+    const translator = this._translateRequest(payload, regime)
+    const calculatedCharge = await this._calculateCharge(translator)
 
     this._applyCalculatedCharge(translator, calculatedCharge)
 
     return this._response(translator)
   }
 
-  static async _calculateCharge (translator, regimeSlug) {
-    const presenter = new RulesServicePresenter({ ...translator, regime: regimeSlug })
+  static _translateRequest (payload, regime) {
+    return new CalculateChargeTranslator({
+      ...payload,
+      regime: regime.slug
+    })
+  }
+
+  static async _calculateCharge (translator) {
+    const presenter = new RulesServicePresenter(translator)
     const result = await RulesService.go(presenter.go())
 
     return new RulesServiceTranslator(result)

@@ -58,7 +58,8 @@ class CalculateChargeTranslator extends BaseTranslator {
       source: Joi.string().required(), // validated in rules service
       twoPartTariff: Joi.boolean().required(),
       volume: Joi.number().min(0),
-      waterUndertaker: Joi.boolean().required()
+      waterUndertaker: Joi.boolean().required(),
+      regime: Joi.string().required() // needed to determine which endpoints to call in the rules service
     })
   }
 
@@ -80,7 +81,8 @@ class CalculateChargeTranslator extends BaseTranslator {
       source: 'regimeValue6',
       twoPartTariff: 'regimeValue16',
       volume: 'lineAttr5',
-      waterUndertaker: 'regimeValue14'
+      waterUndertaker: 'regimeValue14',
+      regime: 'regime'
     }
   }
 
