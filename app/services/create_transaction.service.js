@@ -7,6 +7,7 @@
 const { TransactionModel } = require('../models')
 const { TransactionTranslator } = require('../translators')
 const CalculateChargeService = require('./calculate_charge.service')
+const { CreateTransactionPresenter } = require('../presenters')
 
 class CreateTransactionService {
   static async go (payload, billRunId, authorisedSystem, regime) {
@@ -15,9 +16,9 @@ class CreateTransactionService {
 
     this._applyCalculatedCharge(translator, calculatedCharge)
 
-    const transaction = await this._create(billRunId, authorisedSystem, regime, translator)
+    const transaction = await this._create(translator)
 
-    return JSON.stringify(transaction)
+    return this._response(transaction)
   }
 
   static _translateRequest (payload, billRunId, authorisedSystem, regime) {
@@ -48,7 +49,7 @@ class CreateTransactionService {
     Object.assign(translator, calculatedCharge)
   }
 
-  static _create (billRunId, authorisedSystem, regime, translator) {
+  static _create (translator) {
     return TransactionModel.transaction(async trx => {
       const transaction = await TransactionModel.query(trx)
         .insert({
@@ -58,6 +59,12 @@ class CreateTransactionService {
 
       return transaction
     })
+  }
+
+  static async _response (transaction) {
+    const presenter = new CreateTransactionPresenter(transaction)
+
+    return presenter.go()
   }
 }
 
