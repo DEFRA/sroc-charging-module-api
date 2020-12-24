@@ -9,9 +9,16 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = require('../support/helpers')
+const {
+  AuthorisedSystemHelper,
+  BillRunHelper,
+  DatabaseHelper,
+  GeneralHelper,
+  RegimeHelper
+} = require('../support/helpers')
 const { TransactionModel } = require('../../app/models')
 const { ValidationError } = require('joi')
+const { ForeignKeyViolationError } = require('db-errors')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
@@ -43,12 +50,14 @@ describe('Create Transaction service', () => {
   })
 
   describe('When the data is valid', () => {
+    let billRun
     let transaction
     let result
 
     beforeEach(async () => {
       Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
-      transaction = await CreateTransactionService.go(payload, billRunId, authorisedSystem, regime)
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      transaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
       result = await TransactionModel.query().findById(transaction.transaction.id)
     })
 
@@ -95,6 +104,18 @@ describe('Create Transaction service', () => {
     describe("because 'regime' is not specified", () => {
       it('throws an error', async () => {
         const err = await expect(CreateTransactionService.go(payload, billRunId, authorisedSystem)).to.reject(TypeError)
+
+        expect(err).to.be.an.error()
+      })
+    })
+
+    describe("because the 'bill run' does not exist", () => {
+      beforeEach(async () => {
+        Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
+      })
+
+      it('throws an error', async () => {
+        const err = await expect(CreateTransactionService.go(payload, billRunId, authorisedSystem, regime)).to.reject(ForeignKeyViolationError)
 
         expect(err).to.be.an.error()
       })
