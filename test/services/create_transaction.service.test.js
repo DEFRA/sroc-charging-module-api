@@ -9,7 +9,13 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = require('../support/helpers')
+const {
+  AuthorisedSystemHelper,
+  BillRunHelper,
+  DatabaseHelper,
+  GeneralHelper,
+  RegimeHelper
+} = require('../support/helpers')
 const { TransactionModel } = require('../../app/models')
 const { ValidationError } = require('joi')
 
@@ -43,12 +49,14 @@ describe('Create Transaction service', () => {
   })
 
   describe('When the data is valid', () => {
+    let billRun
     let transaction
     let result
 
     beforeEach(async () => {
       Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
-      transaction = await CreateTransactionService.go(payload, billRunId, authorisedSystem, regime)
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      transaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
       result = await TransactionModel.query().findById(transaction.transaction.id)
     })
 
