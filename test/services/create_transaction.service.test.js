@@ -18,6 +18,7 @@ const {
 } = require('../support/helpers')
 const { TransactionModel } = require('../../app/models')
 const { ValidationError } = require('joi')
+const { ForeignKeyViolationError } = require('db-errors')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
@@ -103,6 +104,18 @@ describe('Create Transaction service', () => {
     describe("because 'regime' is not specified", () => {
       it('throws an error', async () => {
         const err = await expect(CreateTransactionService.go(payload, billRunId, authorisedSystem)).to.reject(TypeError)
+
+        expect(err).to.be.an.error()
+      })
+    })
+
+    describe("because the 'bill run' does not exist", () => {
+      beforeEach(async () => {
+        Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
+      })
+
+      it('throws an error', async () => {
+        const err = await expect(CreateTransactionService.go(payload, billRunId, authorisedSystem, regime)).to.reject(ForeignKeyViolationError)
 
         expect(err).to.be.an.error()
       })
