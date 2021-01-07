@@ -7,6 +7,7 @@
 const { TransactionModel } = require('../models')
 const { TransactionTranslator } = require('../translators')
 const CalculateChargeService = require('./calculate_charge.service')
+const InvoiceService = require('./invoice.service')
 const { CreateTransactionPresenter } = require('../presenters')
 
 class CreateTransactionService {
@@ -16,7 +17,8 @@ class CreateTransactionService {
 
     this._applyCalculatedCharge(translator, calculatedCharge)
 
-    const transaction = await this._create(translator)
+    const invoice = await this._invoice(translator)
+    const transaction = await this._create(translator, invoice)
 
     return this._response(transaction)
   }
@@ -49,11 +51,16 @@ class CreateTransactionService {
     Object.assign(translator, calculatedCharge)
   }
 
-  static _create (translator) {
+  static async _invoice (translator) {
+    return InvoiceService.go(translator)
+  }
+
+  static _create (translator, invoice) {
     return TransactionModel.transaction(async trx => {
       const transaction = await TransactionModel.query(trx)
         .insert({
-          ...translator
+          ...translator,
+          invoiceId: invoice.id
         })
         .returning('*')
 
