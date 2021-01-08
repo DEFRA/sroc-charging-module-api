@@ -26,7 +26,7 @@ class InvoiceService {
     return invoice
   }
 
-  static _invoice (billRunId, customerReference, financialYear) {
+  static async _invoice (billRunId, customerReference, financialYear) {
     return InvoiceModel.query()
       .findOrInsert(
         {

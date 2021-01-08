@@ -9,6 +9,7 @@ const { expect } = Code
 
 // Test helpers
 const { DatabaseHelper, GeneralHelper } = require('../support/helpers')
+const { InvoiceModel } = require('../../app/models')
 
 // Thing under test
 const { InvoiceService } = require('../../app/services')
@@ -33,49 +34,69 @@ describe('Invoice service', () => {
   })
 
   describe('When a valid transaction is supplied', () => {
-    it('returns correct data', async () => {
-      const result = await InvoiceService.go(transaction)
+    it('creates an invoice', async () => {
+      const invoice = await InvoiceService.go(transaction)
+      const result = await InvoiceModel.query().findById(invoice.id)
 
-      expect(result.billRunId).to.equal(transaction.billRunId)
-      expect(result.customerReference).to.equal(transaction.customerReference)
-      expect(result.financialYear).to.equal(transaction.chargeFinancialYear)
+      expect(result.id).to.exist()
+    })
+
+    it('returns correct data', async () => {
+      const invoice = await InvoiceService.go(transaction)
+
+      expect(invoice.billRunId).to.equal(transaction.billRunId)
+      expect(invoice.customerReference).to.equal(transaction.customerReference)
+      expect(invoice.financialYear).to.equal(transaction.chargeFinancialYear)
     })
   })
 
   describe('When a debit transaction is supplied', () => {
     it('correctly calculates the summary', async () => {
-      const result = await InvoiceService.go(transaction)
+      const invoice = await InvoiceService.go(transaction)
 
-      expect(result.debitCount).to.equal(1)
-      expect(result.debitValue).to.equal(transaction.chargeValue)
+      expect(invoice.debitCount).to.equal(1)
+      expect(invoice.debitValue).to.equal(transaction.chargeValue)
     })
   })
 
   describe('When a credit transaction is supplied', () => {
     it('correctly calculates the summary', async () => {
       transaction.chargeCredit = true
-      const result = await InvoiceService.go(transaction)
+      const invoice = await InvoiceService.go(transaction)
 
-      expect(result.creditCount).to.equal(1)
-      expect(result.creditValue).to.equal(transaction.chargeValue)
+      expect(invoice.creditCount).to.equal(1)
+      expect(invoice.creditValue).to.equal(transaction.chargeValue)
     })
   })
 
   describe('When a zero value transaction is supplied', () => {
     it('correctly calculates the summary', async () => {
       transaction.chargeValue = 0
-      const result = await InvoiceService.go(transaction)
+      const invoice = await InvoiceService.go(transaction)
 
-      expect(result.zeroCount).to.equal(1)
+      expect(invoice.zeroCount).to.equal(1)
     })
   })
 
   describe('When a new licence transaction is supplied', () => {
     it('correctly sets the new licence flag', async () => {
       transaction.newLicence = true
-      const result = await InvoiceService.go(transaction)
+      const invoice = await InvoiceService.go(transaction)
 
-      expect(result.newLicenceCount).to.equal(1)
+      expect(invoice.newLicenceCount).to.equal(1)
+    })
+  })
+
+  describe.only('When two transactions are created', () => {
+    it('correctly calculates the summary', async () => {
+      const firstInvoice = await InvoiceService.go(transaction)
+      // We save the invoice with stats to the database as this isn't done by InvoiceService
+      await InvoiceModel.query().update(firstInvoice)
+
+      const secondInvoice = await InvoiceService.go(transaction)
+
+      expect(secondInvoice.debitCount).to.equal(2)
+      expect(secondInvoice.debitValue).to.equal(transaction.chargeValue * 2)
     })
   })
 })
