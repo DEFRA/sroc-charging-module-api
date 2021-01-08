@@ -5,7 +5,6 @@
  */
 
 const { InvoiceModel } = require('../models')
-const Hoek = require('@hapi/hoek')
 
 class InvoiceService {
 /**
@@ -22,9 +21,9 @@ class InvoiceService {
   static async go (transaction) {
     const invoice = await this._invoice(transaction.billRunId, transaction.customerReference, transaction.chargeFinancialYear)
 
-    const updatedInvoice = this._updateStats(invoice, transaction)
+    this._updateStats(invoice, transaction)
 
-    return updatedInvoice
+    return invoice
   }
 
   static _invoice (billRunId, customerReference, financialYear) {
@@ -39,23 +38,19 @@ class InvoiceService {
   }
 
   static _updateStats (invoice, transaction) {
-    const updatedInvoice = Hoek.clone(invoice)
-
     if (transaction.chargeCredit) {
-      updatedInvoice.creditCount += 1
-      updatedInvoice.creditValue += transaction.chargeValue
+      invoice.creditCount += 1
+      invoice.creditValue += transaction.chargeValue
     } else if (transaction.chargeValue === 0) {
-      updatedInvoice.zeroCount += 1
+      invoice.zeroCount += 1
     } else {
-      updatedInvoice.debitCount += 1
-      updatedInvoice.debitValue += transaction.chargeValue
+      invoice.debitCount += 1
+      invoice.debitValue += transaction.chargeValue
     }
 
     if (transaction.newLicence) {
-      updatedInvoice.newLicenceCount += 1
+      invoice.newLicenceCount += 1
     }
-
-    return updatedInvoice
   }
 }
 
