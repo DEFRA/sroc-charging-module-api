@@ -13,7 +13,7 @@ const { DatabaseHelper, GeneralHelper } = require('../support/helpers')
 // Thing under test
 const { InvoiceService } = require('../../app/services')
 
-describe.only('Invoice service', () => {
+describe('Invoice service', () => {
   let transaction
 
   const dummyTransaction = {
