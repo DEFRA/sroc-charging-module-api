@@ -14,7 +14,7 @@ class CreateTransactionService {
   static async go (payload, billRunId, authorisedSystem, regime) {
     const translator = this._translateRequest(payload, billRunId, authorisedSystem, regime)
     const calculatedCharge = await this._calculateCharge(translator, regime)
-    console.log(calculatedCharge)
+
     this._applyCalculatedCharge(translator, calculatedCharge)
 
     const invoice = await this._invoice(translator)
