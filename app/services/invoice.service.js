@@ -27,7 +27,7 @@ class InvoiceService {
   }
 
   static _populateStats (invoice, transaction) {
-    if (transaction.credit) {
+    if (transaction.chargeCredit) {
       invoice.creditCount += 1
       invoice.creditValue += transaction.chargeValue
     } else if (transaction.chargeValue === 0) {

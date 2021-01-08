@@ -18,6 +18,7 @@ class CreateTransactionService {
     this._applyCalculatedCharge(translator, calculatedCharge)
 
     const invoice = await this._invoice(translator)
+
     const transaction = await this._create(translator, invoice)
 
     return this._response(transaction)
@@ -63,6 +64,8 @@ class CreateTransactionService {
           invoiceId: invoice.id
         })
         .returning('*')
+
+      await invoice.$query(trx).patch()
 
       return transaction
     })
