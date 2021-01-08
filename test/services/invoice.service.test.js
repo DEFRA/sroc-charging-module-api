@@ -87,7 +87,7 @@ describe('Invoice service', () => {
     })
   })
 
-  describe.only('When two transactions are created', () => {
+  describe('When two transactions are created', () => {
     it('correctly calculates the summary', async () => {
       const firstInvoice = await InvoiceService.go(transaction)
       // We save the invoice with stats to the database as this isn't done by InvoiceService
