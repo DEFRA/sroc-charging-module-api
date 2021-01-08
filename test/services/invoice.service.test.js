@@ -61,7 +61,7 @@ describe('Invoice service', () => {
     })
   })
 
-  describe('When a credit transaction is supplied', () => {
+  describe('When a zero value transaction is supplied', () => {
     it('correctly calculates the summary', async () => {
       transaction.chargeValue = 0
       const result = await InvoiceService.go(transaction)
