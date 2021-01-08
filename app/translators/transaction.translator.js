@@ -4,12 +4,6 @@ const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
 
 class TransactionTranslator extends BaseTranslator {
-  constructor (data) {
-    super(data)
-
-    this.chargeFinancialYear = this._financialYear(this.chargePeriodStart)
-  }
-
   _schema () {
     return Joi.object({
       billRunId: Joi.string().required(),
@@ -111,26 +105,6 @@ class TransactionTranslator extends BaseTranslator {
       'DEFAULT',
       'MULTI'
     ]
-  }
-
-  /**
-   * Returns the calculated financial year for a given date
-   *
-   * If the date is January to March then the financial year is the previous year. Otherwise, the financial year is the
-   * current year.
-   *
-   * For example, if the date is 01-MAR-2022 then the financial year will be 2021. If the it's 01-MAY-2022 then the
-   * financial year will be 2022.
-   *
-   * @param {String} date
-   * @returns {Number} The calculated financial year
-  */
-  _financialYear (date) {
-    const periodDate = new Date(date)
-    const month = periodDate.getMonth()
-    const year = periodDate.getFullYear()
-
-    return (month <= 2 ? year - 1 : year)
   }
 }
 
