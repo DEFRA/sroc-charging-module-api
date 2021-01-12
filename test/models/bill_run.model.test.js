@@ -24,25 +24,25 @@ describe('Bill Run Model', () => {
       expect(instance.$editable()).to.be.true()
     })
 
-    it("returns 'false' when the status is not 'generating'", async () => {
+    it("returns 'false' when the status is 'generating'", async () => {
       const instance = BillRunModel.fromJson({ status: 'generating' })
 
       expect(instance.$editable()).to.be.false()
     })
 
-    it("returns 'false' when the status is not 'pending'", async () => {
+    it("returns 'false' when the status is 'pending'", async () => {
       const instance = BillRunModel.fromJson({ status: 'pending' })
 
       expect(instance.$editable()).to.be.false()
     })
 
-    it("returns 'false' when the status is not 'billed'", async () => {
+    it("returns 'false' when the status is 'billed'", async () => {
       const instance = BillRunModel.fromJson({ status: 'billed' })
 
       expect(instance.$editable()).to.be.false()
     })
 
-    it("returns 'false' when the status is not 'billing_not_required'", async () => {
+    it("returns 'false' when the status is 'billing_not_required'", async () => {
       const instance = BillRunModel.fromJson({ status: 'billing_not_required' })
 
       expect(instance.$editable()).to.be.false()
