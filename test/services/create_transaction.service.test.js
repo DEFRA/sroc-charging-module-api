@@ -18,7 +18,6 @@ const {
 } = require('../support/helpers')
 const { TransactionModel } = require('../../app/models')
 const { ValidationError } = require('joi')
-const { ForeignKeyViolationError } = require('db-errors')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
@@ -81,11 +80,17 @@ describe('Create Transaction service', () => {
       })
 
       describe("due to an item validated by the 'charge'", () => {
+        let billRun
+
+        beforeEach(async () => {
+          billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+        })
+
         it('throws an error', async () => {
           payload.periodStart = '01-APR-2021'
 
           const err = await expect(
-            CreateTransactionService.go(payload, billRunId, authorisedSystem, regime)
+            CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
           ).to.reject(ValidationError)
 
           expect(err).to.be.an.error()
@@ -110,12 +115,8 @@ describe('Create Transaction service', () => {
     })
 
     describe("because the 'bill run' does not exist", () => {
-      beforeEach(async () => {
-        Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
-      })
-
       it('throws an error', async () => {
-        const err = await expect(CreateTransactionService.go(payload, billRunId, authorisedSystem, regime)).to.reject(ForeignKeyViolationError)
+        const err = await expect(CreateTransactionService.go(payload, billRunId, authorisedSystem, regime)).to.reject()
 
         expect(err).to.be.an.error()
       })
@@ -125,14 +126,13 @@ describe('Create Transaction service', () => {
       let billRun
 
       beforeEach(async () => {
-        Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
         billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'billed')
       })
 
       it('throws an error', async () => {
         const err = await expect(
           CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
-        ).to.reject(TypeError)
+        ).to.reject()
 
         expect(err).to.be.an.error()
       })
