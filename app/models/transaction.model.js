@@ -45,6 +45,14 @@ class TransactionModel extends BaseModel {
           from: 'transactions.invoice_id',
           to: 'invoices.id'
         }
+      },
+      licence: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: 'licence.model',
+        join: {
+          from: 'transactions.licence_id',
+          to: 'licences.id'
+        }
       }
     }
   }

@@ -29,6 +29,14 @@ class InvoiceModel extends BaseModel {
           from: 'invoices.id',
           to: 'transactions.invoice_id'
         }
+      },
+      licences: {
+        relation: Model.HasManyRelation,
+        modelClass: 'transaction.model',
+        join: {
+          from: 'invoices.id',
+          to: 'licences.invoice_id'
+        }
       }
     }
   }
