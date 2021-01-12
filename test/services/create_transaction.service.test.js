@@ -120,5 +120,22 @@ describe('Create Transaction service', () => {
         expect(err).to.be.an.error()
       })
     })
+
+    describe("because the 'bill run' is not 'editable'", () => {
+      let billRun
+
+      beforeEach(async () => {
+        Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
+        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'billed')
+      })
+
+      it('throws an error', async () => {
+        const err = await expect(
+          CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        ).to.reject(TypeError)
+
+        expect(err).to.be.an.error()
+      })
+    })
   })
 })
