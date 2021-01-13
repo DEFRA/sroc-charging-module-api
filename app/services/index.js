@@ -1,6 +1,7 @@
 'use strict'
 
 const AuthorisationService = require('./authorisation.service')
+const BillRunService = require('./bill_run.service')
 const CalculateChargeService = require('./calculate_charge.service')
 const CognitoJwtToPemService = require('./cognito_jwt_to_pem.service')
 const CreateAuthorisedSystemService = require('./create_authorised_system.service')
@@ -19,6 +20,7 @@ const ShowRegimeService = require('./show_regime.service')
 
 module.exports = {
   AuthorisationService,
+  BillRunService,
   CalculateChargeService,
   CognitoJwtToPemService,
   CreateAuthorisedSystemService,

@@ -40,6 +40,22 @@ class BillRunModel extends BaseModel {
       }
     }
   }
+
+  /**
+   * Returns whether the bill run can be 'edited'
+   *
+   * Once a bill run has been 'sent', which means the transaction file is generated, it cannot be edited. This includes
+   * adding or deleting transactions, or deleting the bill run altogether.
+   *
+   * After being 'sent' the bill run status may change to `billed` or `billing_not_required` but it still remains
+   * uneditable.
+   *
+   * A bill run is also uneditable if it's in the middle of generating its summary. We can't allow changes which will
+   * cause the generated result to be invalid.
+   */
+  $editable () {
+    return ['initialised', 'summarised'].includes(this.status)
+  }
 }
 
 module.exports = BillRunModel

@@ -6,6 +6,7 @@
 
 const { TransactionModel } = require('../models')
 const { TransactionTranslator } = require('../translators')
+const BillRunService = require('./bill_run.service')
 const CalculateChargeService = require('./calculate_charge.service')
 const InvoiceService = require('./invoice.service')
 const LicenceService = require('./licence.service')
@@ -14,6 +15,11 @@ const { CreateTransactionPresenter } = require('../presenters')
 class CreateTransactionService {
   static async go (payload, billRunId, authorisedSystem, regime) {
     const translator = this._translateRequest(payload, billRunId, authorisedSystem, regime)
+
+    // TODO: Retain the result of this method call once we start updating the summary details of the bill run. For now,
+    // it is used to confirm the bill run exists and is in an 'editable' state
+    await this._billRun(billRunId)
+
     const calculatedCharge = await this._calculateCharge(translator, regime)
 
     this._applyCalculatedCharge(translator, calculatedCharge)
@@ -33,6 +39,10 @@ class CreateTransactionService {
       regimeId: regime.id,
       authorisedSystemId: authorisedSystem.id
     })
+  }
+
+  static async _billRun (billRunId) {
+    return BillRunService.go(billRunId)
   }
 
   static _calculateCharge (translator, regime) {
