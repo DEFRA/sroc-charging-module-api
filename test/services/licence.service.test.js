@@ -19,6 +19,7 @@ describe('Licence service', () => {
 
   const dummyTransaction = {
     invoiceId: 'f0d3b4dc-2cae-11eb-adc1-0242ac120002',
+    billRunId: 'f0d3b4dc-2cae-11eb-adc1-0242ac120002',
     lineAttr1: 'LICENCE_NUMBER',
     customerReference: 'CUSTOMER_REFERENCE',
     chargeFinancialYear: 2021,
