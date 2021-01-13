@@ -32,7 +32,7 @@ class LicenceService {
       .findOrInsert(
         {
           invoice_id: invoiceId,
-          line_attr1: licenceNumber,
+          licence_number: licenceNumber,
           customer_reference: customerReference,
           financial_year: financialYear
         }

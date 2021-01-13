@@ -11,7 +11,8 @@ exports.up = async function (knex) {
 
       // Data
       table.uuid('invoice_id').notNullable()
-      table.string('line_attr1').notNullable() // Licence number is represented as line_attr1
+      table.uuid('bill_run_id').notNullable()
+      table.string('licence_number').notNullable()
       table.string('customer_reference').notNullable()
       table.integer('financial_year').notNullable()
 
@@ -25,8 +26,9 @@ exports.up = async function (knex) {
 
       table.integer('new_licence_count').notNullable().defaultTo(0)
 
-      // There can only be 1 customer summary per invoice per financial year for a licence
-      table.unique(['invoice_id', 'line_attr1', 'customer_reference', 'financial_year'])
+      // There can only be 1 customer summary per invoice for a licence]
+      // (note that each invoice is unique to a customer and financial year)
+      table.unique(['invoice_id', 'licence_number'])
 
       // Automatic timestamps
       table.timestamps(false, true)

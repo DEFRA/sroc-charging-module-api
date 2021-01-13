@@ -29,6 +29,14 @@ class LicenceModel extends BaseModel {
           from: 'licences.id',
           to: 'transactions.licence_id'
         }
+      },
+      billRun: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: 'bill_run.model',
+        join: {
+          from: 'licences.bill_run_id',
+          to: 'bill_runs.id'
+        }
       }
     }
   }
