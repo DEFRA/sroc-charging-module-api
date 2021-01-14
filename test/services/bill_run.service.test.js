@@ -30,13 +30,14 @@ describe('Bill Run service', () => {
   })
 
   describe('When a valid bill run ID is supplied', () => {
+    let transaction
+
     beforeEach(async () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId)
+      transaction = { ...dummyTransaction, billRunId: billRun.id }
     })
 
     it('returns the matching bill run', async () => {
-      const transaction = { ...dummyTransaction, billRunId: billRun.id }
-
       const result = await BillRunService.go(transaction)
 
       expect(result.id).to.equal(billRun.id)
@@ -44,8 +45,6 @@ describe('Bill Run service', () => {
 
     describe('When a debit transaction is supplied', () => {
       it('correctly calculates the summary', async () => {
-        const transaction = { ...dummyTransaction, billRunId: billRun.id }
-
         const result = await BillRunService.go(transaction)
 
         expect(result.debitCount).to.equal(1)
@@ -55,7 +54,7 @@ describe('Bill Run service', () => {
 
     describe('When a credit transaction is supplied', () => {
       it('correctly calculates the summary', async () => {
-        const transaction = { ...dummyTransaction, billRunId: billRun.id, chargeCredit: true }
+        transaction.chargeCredit = true
 
         const result = await BillRunService.go(transaction)
 
@@ -66,7 +65,7 @@ describe('Bill Run service', () => {
 
     describe('When a zero value transaction is supplied', () => {
       it('correctly calculates the summary', async () => {
-        const transaction = { ...dummyTransaction, billRunId: billRun.id, chargeValue: 0 }
+        transaction.chargeValue = 0
 
         const result = await BillRunService.go(transaction)
 
@@ -76,7 +75,7 @@ describe('Bill Run service', () => {
 
     describe('When a new licence transaction is supplied', () => {
       it('correctly sets the new licence flag', async () => {
-        const transaction = { ...dummyTransaction, billRunId: billRun.id, newLicence: true }
+        transaction.newLicence = true
 
         const result = await BillRunService.go(transaction)
 
@@ -86,7 +85,7 @@ describe('Bill Run service', () => {
 
     describe('When two transactions are created', () => {
       it('correctly calculates the summary', async () => {
-        const transaction = { ...dummyTransaction, billRunId: billRun.id }
+        transaction.billRunId = billRun.id
         const firstResult = await BillRunService.go(transaction)
         // We save the invoice with stats to the database as this isn't done by BillRunService
         await BillRunModel.query().update(firstResult)
