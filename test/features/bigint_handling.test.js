@@ -26,6 +26,7 @@ describe('Handling BigInts', () => {
       chargeValue: 2547483647,
       ruleset: 'presroc',
       invoiceId: 'f0d3b4dc-2cae-11eb-adc1-0242ac120002',
+      licenceId: 'f0d3b4dc-2cae-11eb-adc1-0242ac120002',
       regimeId,
       createdBy,
       billRunId
