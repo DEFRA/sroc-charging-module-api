@@ -20,20 +20,20 @@ class LicenceService {
 
   static async go (transaction) {
     // licence number is lineAttr1 in database
-    const licence = await this._licence(
-      transaction.invoiceId,
-      transaction.billRunId,
-      transaction.lineAttr1,
-      transaction.customerReference,
-      transaction.chargeFinancialYear
-    )
+    const licence = await this._licence(transaction)
 
     this._updateStats(licence, transaction)
 
     return licence
   }
 
-  static async _licence (invoiceId, billRunId, licenceNumber, customerReference, financialYear) {
+  static async _licence ({
+    invoiceId,
+    billRunId,
+    lineAttr1: licenceNumber,
+    customerReference,
+    chargeFinancialYear: financialYear
+  }) {
     return LicenceModel.query()
       .findOrInsert(
         {
