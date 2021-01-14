@@ -10,8 +10,8 @@ const { BillRunModel } = require('../models')
 
 class BillRunService {
   /**
-  * Finds the matching bill run, determines if a transaction can be added to it and updates updates the count and value
-  * stats as per the transaction details.
+  * Finds the matching bill run, determines if a transaction can be added to it and updates the count and value stat
+  * as per the transaction details.
   *
   * Note that the updated stats are _not_ saved back to the database; it is up to the caller to do this.
   *
