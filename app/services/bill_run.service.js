@@ -12,13 +12,13 @@ class BillRunService {
   /**
   * Finds the matching bill run and determines if a transaction can be added to it.
   *
-  * @param {Object} billRunId Id of the bill run to find and assess
+  * @param {Object} transaction translator belonging to the bill run to find and assess
   * @returns {module:BillRunModel} a `BillRunModel` if found else it will throw a `Boom` error
   */
-  static async go (billRunId) {
-    const billRun = await BillRunModel.query().findById(billRunId)
+  static async go (transaction) {
+    const billRun = await BillRunModel.query().findById(transaction.billRunId)
 
-    this._validateBillRun(billRun, billRunId)
+    this._validateBillRun(billRun, transaction.billRunId)
 
     return billRun
   }

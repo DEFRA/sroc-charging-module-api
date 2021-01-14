@@ -18,7 +18,7 @@ class CreateTransactionService {
 
     // TODO: Retain the result of this method call once we start updating the summary details of the bill run. For now,
     // it is used to confirm the bill run exists and is in an 'editable' state
-    await this._billRun(billRunId)
+    await this._billRun(translator)
 
     const calculatedCharge = await this._calculateCharge(translator, regime)
 
@@ -41,8 +41,8 @@ class CreateTransactionService {
     })
   }
 
-  static async _billRun (billRunId) {
-    return BillRunService.go(billRunId)
+  static async _billRun (transaction) {
+    return BillRunService.go(transaction)
   }
 
   static _calculateCharge (translator, regime) {

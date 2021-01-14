@@ -13,7 +13,7 @@ const { BillRunHelper, DatabaseHelper } = require('../support/helpers')
 // Thing under test
 const { BillRunService } = require('../../app/services')
 
-describe('Invoice service', () => {
+describe('Bill Run service', () => {
   const authorisedSystemId = '6fd613d8-effb-4bcd-86c7-b0025d121692'
   const regimeId = '4206994c-5db9-4539-84a6-d4b6a671e2ba'
   let billRun
@@ -28,7 +28,9 @@ describe('Invoice service', () => {
     })
 
     it('returns the matching bill run', async () => {
-      const result = await BillRunService.go(billRun.id)
+      const transaction = { billRunId: billRun.id }
+
+      const result = await BillRunService.go(transaction)
 
       expect(result.id).to.equal(billRun.id)
     })
@@ -39,7 +41,9 @@ describe('Invoice service', () => {
 
     describe('because no matching bill run exists', () => {
       it('throws an error', async () => {
-        const err = await expect(BillRunService.go(unknownBillRunId)).to.reject()
+        const transaction = { billRunId: unknownBillRunId }
+
+        const err = await expect(BillRunService.go(transaction)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
@@ -52,7 +56,9 @@ describe('Invoice service', () => {
       })
 
       it('throws an error', async () => {
-        const err = await expect(BillRunService.go(billRun.id)).to.reject()
+        const transaction = { billRunId: billRun.id }
+
+        const err = await expect(BillRunService.go(transaction)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message)
