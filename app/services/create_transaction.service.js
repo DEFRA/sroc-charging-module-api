@@ -16,18 +16,15 @@ class CreateTransactionService {
   static async go (payload, billRunId, authorisedSystem, regime) {
     const translator = this._translateRequest(payload, billRunId, authorisedSystem, regime)
 
-    // TODO: Retain the result of this method call once we start updating the summary details of the bill run. For now,
-    // it is used to confirm the bill run exists and is in an 'editable' state
-    await this._billRun(translator)
-
     const calculatedCharge = await this._calculateCharge(translator, regime)
 
     this._applyCalculatedCharge(translator, calculatedCharge)
 
+    const billRun = await this._billRun(translator)
     const invoice = await this._invoice(translator)
     const licence = await this._licence({ ...translator, invoiceId: invoice.id })
 
-    const transaction = await this._create(translator, invoice, licence)
+    const transaction = await this._create(translator, invoice, licence, billRun)
 
     return this._response(transaction)
   }
@@ -39,10 +36,6 @@ class CreateTransactionService {
       regimeId: regime.id,
       authorisedSystemId: authorisedSystem.id
     })
-  }
-
-  static async _billRun (transaction) {
-    return BillRunService.go(transaction)
   }
 
   static _calculateCharge (translator, regime) {
@@ -64,6 +57,10 @@ class CreateTransactionService {
     Object.assign(translator, calculatedCharge)
   }
 
+  static async _billRun (translator) {
+    return BillRunService.go(translator)
+  }
+
   static async _invoice (translator) {
     return InvoiceService.go(translator)
   }
@@ -72,7 +69,7 @@ class CreateTransactionService {
     return LicenceService.go(translator)
   }
 
-  static _create (translator, invoice, licence) {
+  static _create (translator, invoice, licence, billRun) {
     return TransactionModel.transaction(async trx => {
       const transaction = await TransactionModel.query(trx)
         .insert({
@@ -84,6 +81,7 @@ class CreateTransactionService {
 
       await invoice.$query(trx).patch()
       await licence.$query(trx).patch()
+      await billRun.$query(trx).patch()
 
       return transaction
     })
