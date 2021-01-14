@@ -13,8 +13,6 @@ exports.up = async function (knex) {
       table.uuid('invoice_id').notNullable()
       table.uuid('bill_run_id').notNullable()
       table.string('licence_number').notNullable()
-      table.string('customer_reference').notNullable()
-      table.integer('financial_year').notNullable()
 
       table.integer('credit_count').notNullable().defaultTo(0)
       table.bigInteger('credit_value').notNullable().defaultTo(0)

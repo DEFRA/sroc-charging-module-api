@@ -47,8 +47,8 @@ describe('Licence service', () => {
       const licence = await LicenceService.go(transaction)
 
       expect(licence.invoiceId).to.equal(transaction.invoiceId)
-      expect(licence.customerReference).to.equal(transaction.customerReference)
-      expect(licence.financialYear).to.equal(transaction.chargeFinancialYear)
+      expect(licence.billRunId).to.equal(transaction.billRunId)
+      expect(licence.licenceNumber).to.equal(transaction.lineAttr1)
     })
   })
 

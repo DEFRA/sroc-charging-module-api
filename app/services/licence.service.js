@@ -30,18 +30,14 @@ class LicenceService {
   static async _licence ({
     invoiceId,
     billRunId,
-    lineAttr1: licenceNumber,
-    customerReference,
-    chargeFinancialYear: financialYear
+    lineAttr1: licenceNumber
   }) {
     return LicenceModel.query()
       .findOrInsert(
         {
           invoice_id: invoiceId,
           bill_run_id: billRunId,
-          licence_number: licenceNumber,
-          customer_reference: customerReference,
-          financial_year: financialYear
+          licence_number: licenceNumber
         }
       )
   }
