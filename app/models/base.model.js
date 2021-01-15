@@ -20,6 +20,8 @@ class BaseModel extends Model {
    * Objective supports using snake_case names in the database and camelCase in the code. By overriding the
    * `columnNameMappers()` static property we can tell Objective to use its snakeCaseMappers function.
    *
+   * We set the `underscoreBeforeDigits` option so that properties like lineAttr1 are correctly changed to line_attr_1.
+   *
    * This means when we access a property on the model we can use camelCase even if the underlying database property
    * was snake_case. It also means we get camelCase object keys, handy when you need to return a db query result as is
    * in a response.
@@ -30,7 +32,7 @@ class BaseModel extends Model {
    * @see {@link https://vincit.github.io/objection.js/recipes/snake-case-to-camel-case-conversion.html}
    */
   static get columnNameMappers () {
-    return snakeCaseMappers()
+    return snakeCaseMappers({ underscoreBeforeDigits: true })
   }
 
   /**
