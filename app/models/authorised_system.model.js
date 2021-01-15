@@ -9,7 +9,7 @@ const BaseModel = require('./base.model')
 
 class AuthorisedSystemModel extends BaseModel {
   static get tableName () {
-    return 'authorised_systems'
+    return 'authorisedSystems'
   }
 
   static get relationMappings () {
@@ -18,19 +18,19 @@ class AuthorisedSystemModel extends BaseModel {
         relation: Model.HasManyRelation,
         modelClass: 'bill_run.model',
         join: {
-          from: 'authorised_systems.id',
-          to: 'bill_runs.created_by'
+          from: 'authorisedSystems.id',
+          to: 'billRuns.createdBy'
         }
       },
       regimes: {
         relation: Model.ManyToManyRelation,
         modelClass: 'regime.model',
         join: {
-          from: 'authorised_systems.id',
+          from: 'authorisedSystems.id',
           through: {
-            // authorised_systems_regimes is a join table
-            from: 'authorised_systems_regimes.authorised_system_id',
-            to: 'authorised_systems_regimes.regime_id'
+            // authorisedSystemsRegimes is a join table
+            from: 'authorisedSystemsRegimes.authorisedSystemId',
+            to: 'authorisedSystemsRegimes.regimeId'
           },
           to: 'regimes.id'
         }
@@ -39,8 +39,8 @@ class AuthorisedSystemModel extends BaseModel {
         relation: Model.HasManyRelation,
         modelClass: 'transaction.model',
         join: {
-          from: 'authorised_systems.id',
-          to: 'transactions.created_by'
+          from: 'authorisedSystems.id',
+          to: 'transactions.createdBy'
         }
       }
     }

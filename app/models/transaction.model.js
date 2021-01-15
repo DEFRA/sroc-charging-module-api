@@ -18,23 +18,23 @@ class TransactionModel extends BaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: 'authorised_system.model',
         join: {
-          from: 'transactions.created_by',
-          to: 'authorised_systems.id'
+          from: 'transactions.createdBy',
+          to: 'authorisedSystems.id'
         }
       },
       billRun: {
         relation: Model.BelongsToOneRelation,
         modelClass: 'bill_run.model',
         join: {
-          from: 'transactions.bill_run_id',
-          to: 'bill_runs.id'
+          from: 'transactions.billRunId',
+          to: 'billRuns.id'
         }
       },
       regime: {
         relation: Model.BelongsToOneRelation,
         modelClass: 'regime.model',
         join: {
-          from: 'transactions.regime_id',
+          from: 'transactions.regimeId',
           to: 'regimes.id'
         }
       },
@@ -42,7 +42,7 @@ class TransactionModel extends BaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: 'invoice.model',
         join: {
-          from: 'transactions.invoice_id',
+          from: 'transactions.invoiceId',
           to: 'invoices.id'
         }
       },
@@ -50,7 +50,7 @@ class TransactionModel extends BaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: 'licence.model',
         join: {
-          from: 'transactions.licence_id',
+          from: 'transactions.licenceId',
           to: 'licences.id'
         }
       }

@@ -5,7 +5,7 @@
  */
 
 const { db } = require('../../db')
-const { Model, snakeCaseMappers } = require('objection')
+const { Model } = require('objection')
 const BaseQueryBuilder = require('./base_query_builder')
 
 // We only have to do this once in the app and then it will be set globally for Objection. As we are not using multiple
@@ -14,27 +14,6 @@ const BaseQueryBuilder = require('./base_query_builder')
 Model.knex(db)
 
 class BaseModel extends Model {
-  /**
-   * An objective property we override to enable snakeCaseMappers
-   *
-   * Objective supports using snake_case names in the database and camelCase in the code. By overriding the
-   * `columnNameMappers()` static property we can tell Objective to use its snakeCaseMappers function.
-   *
-   * We set the `underscoreBeforeDigits` option so that properties like lineAttr1 are correctly changed to line_attr_1.
-   *
-   * This means when we access a property on the model we can use camelCase even if the underlying database property
-   * was snake_case. It also means we get camelCase object keys, handy when you need to return a db query result as is
-   * in a response.
-   *
-   * Remember though that within the context of Objective queries, for example `MyModel.query().where()` we still need
-   * to use the actual database names.
-   *
-   * @see {@link https://vincit.github.io/objection.js/recipes/snake-case-to-camel-case-conversion.html}
-   */
-  static get columnNameMappers () {
-    return snakeCaseMappers({ underscoreBeforeDigits: true })
-  }
-
   /**
    * An objective property we override to tell it where to search for models for relationships
    *

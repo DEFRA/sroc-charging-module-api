@@ -9,7 +9,7 @@ const BaseModel = require('./base.model')
 
 class SequenceCounterModel extends BaseModel {
   static get tableName () {
-    return 'sequence_counters'
+    return 'sequenceCounters'
   }
 
   static get relationMappings () {
@@ -18,7 +18,7 @@ class SequenceCounterModel extends BaseModel {
         relation: Model.ManyToManyRelation,
         modelClass: 'regime.model',
         join: {
-          from: 'sequence_counters.regime_id',
+          from: 'sequenceCounters.regimeId',
           to: 'regime.id'
         }
       }

@@ -21,8 +21,8 @@ class RegimeModel extends BaseModel {
           from: 'regimes.id',
           through: {
             // authorised_systems_regimes is a join table
-            from: 'authorised_systems_regimes.regime_id',
-            to: 'authorised_systems_regimes.authorised_system_id'
+            from: 'authorisedSystemsRegimes.regimeId',
+            to: 'authorisedSystemsRegimes.authorisedSystemId'
           },
           to: 'authorised_systems.id'
         }
@@ -32,7 +32,7 @@ class RegimeModel extends BaseModel {
         modelClass: 'bill_run.model',
         join: {
           from: 'regimes.id',
-          to: 'bill_runs.regime_id'
+          to: 'billRuns.regimeId'
         }
       },
       sequenceCounters: {
@@ -40,7 +40,7 @@ class RegimeModel extends BaseModel {
         modelClass: 'sequence_counters.model',
         join: {
           from: 'regimes.id',
-          to: 'sequence_counters.regime_id'
+          to: 'sequenceCounters.regimeId'
         }
       },
       transactions: {
@@ -48,7 +48,7 @@ class RegimeModel extends BaseModel {
         modelClass: 'transaction.model',
         join: {
           from: 'regimes.id',
-          to: 'transactions.regime_id'
+          to: 'transactions.regimeId'
         }
       }
     }
