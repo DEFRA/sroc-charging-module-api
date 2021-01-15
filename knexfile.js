@@ -14,7 +14,7 @@ const defaultConfig = {
     directory: './db/seeds'
   },
   /**
-   * Passing in `knexSnakeCaseMappers` allows is to use camelCase everywhere and knex will convert it to snake_case on
+   * Passing in `knexSnakeCaseMappers` allows us to use camelCase everywhere and knex will convert it to snake_case on
    * the fly.
    *
    * We set the `underscoreBeforeDigits` option so that properties like lineAttr1 are correctly changed to line_attr_1.

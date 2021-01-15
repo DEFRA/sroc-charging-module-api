@@ -20,11 +20,11 @@ class RegimeModel extends BaseModel {
         join: {
           from: 'regimes.id',
           through: {
-            // authorised_systems_regimes is a join table
+            // authorisedSystemsRegimes is a join table
             from: 'authorisedSystemsRegimes.regimeId',
             to: 'authorisedSystemsRegimes.authorisedSystemId'
           },
-          to: 'authorised_systems.id'
+          to: 'authorisedSystems.id'
         }
       },
       billRuns: {
