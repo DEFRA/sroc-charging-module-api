@@ -2,7 +2,7 @@
 
 const environment = process.env.NODE_ENV || 'development'
 
-const dbConfig = require('../knexfile')[environment]
+const dbConfig = require('../knexfile.application')[environment]
 
 // Some of our db fields are of type BigInt. The 'pg' driver by default will return these as strings because of concerns
 // about precision loss (a pg BigInt has a bigger range than a JavaScript integer). However, a JavaScript integer has
