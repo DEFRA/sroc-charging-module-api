@@ -11,8 +11,8 @@
     "test": "npm run lint && npm run migratedbtest && npm run unit-test",
     "createdb": "node db/create_database.js",
     "createdbtest": "NODE_ENV=test node db/create_database.js",
-    "migratedb": "knex migrate:latest",
-    "migratedbtest": "NODE_ENV=test knex migrate:latest",
+    "migratedb": "knex  --knexfile=knexfile.migration.js migrate:latest",
+    "migratedbtest": "NODE_ENV=test knex --knexfile=knexfile.migration.js migrate:latest",
     "unit-test": "lab --silent-skips --shuffle"
   },
   "repository": {
