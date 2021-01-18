@@ -63,7 +63,7 @@ exports.down = async function (knex) {
   await knex
     .schema
     .alterTable(tableName, table => {
-      // Iterate over columns list and rename from new name back to new name
+      // Iterate over columns list and rename from new name back to old name
       columns.forEach(column => table.renameColumn(column.newName, column.oldName))
     })
 }
