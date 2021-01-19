@@ -1,6 +1,6 @@
 'use strict'
 
-const { CreateBillRunService, CreateTransactionService } = require('../../services')
+const { CreateBillRunService, CreateTransactionService, GenerateBillRunSummaryService } = require('../../services')
 
 class BillRunsController {
   static async create (req, h) {
@@ -16,6 +16,9 @@ class BillRunsController {
   }
 
   static async generateSummary (req, h) {
+    // TODO: confirm whether await is needed here
+    await GenerateBillRunSummaryService.go(req.params.billRunId)
+
     return h.response().code(204)
   }
 }

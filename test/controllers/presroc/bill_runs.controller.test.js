@@ -158,12 +158,29 @@ describe('Presroc Bill Runs controller', () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
     })
 
-    it('returns status 204', async () => {
-      const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
+    describe('When the request is valid', () => {
+      describe('When the summary has not yet been generated', () => {
+        it('returns success status 204', async () => {
+          const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
 
-      const response = await server.inject(options(authToken, requestPayload, billRun.id))
+          const response = await server.inject(options(authToken, requestPayload, billRun.id))
 
-      expect(response.statusCode).to.equal(204)
+          expect(response.statusCode).to.equal(204)
+        })
+      })
+    })
+
+    describe('When the request is invalid', () => {
+      describe('When the summary has already been generated', () => {
+        it('returns error status 409', async () => {
+          const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
+          await server.inject(options(authToken, requestPayload, billRun.id))
+
+          const response = await server.inject(options(authToken, requestPayload, billRun.id))
+
+          expect(response.statusCode).to.equal(409)
+        })
+      })
     })
   })
 })
