@@ -42,6 +42,25 @@ class InvoiceModel extends BaseModel {
   }
 
   /**
+   * Modifiers allow us to reuse logic in queries. In this case, we define a zeroValue modifier which we can use in
+   * queries to select all invoices which are zero value, eg:
+   *
+   * return billRun.$relatedQuery('invoices')
+   *   .modify('zeroValue')
+   *   .patch({ summarised: true })
+   */
+  static get modifiers () {
+    return {
+      zeroValue (query) {
+        query
+          .where('creditCount', 0)
+          .where('debitCount', 0)
+          .where('zeroCount', '>', 0)
+      }
+    }
+  }
+
+  /**
    * If an invoice has been handled during generation of a bill run summary then it is said to be "summarised" and its
    * status is set accordingly.
    *
@@ -49,6 +68,15 @@ class InvoiceModel extends BaseModel {
    */
   $summarised () {
     return this.status === 'summarised'
+  }
+
+  /**
+    * This returns true if all transactions in the invoice are zero value.
+    *
+    * TODO: Confirm whether this is needed or whether the modifier is sufficient
+    */
+  $zeroValue () {
+    return (this.creditCount === 0 && this.debitCount === 0 && this.zeroCount !== 0)
   }
 }
 

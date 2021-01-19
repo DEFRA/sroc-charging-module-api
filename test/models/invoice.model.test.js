@@ -48,4 +48,76 @@ describe('Bill Run Model', () => {
       expect(instance.$summarised()).to.be.false()
     })
   })
+
+  describe('the $zeroValue() method', () => {
+    it("returns 'true' when all transactions are zero-value", async () => {
+      const instance = InvoiceModel.fromJson({
+        creditCount: 0,
+        debitCount: 0,
+        zeroCount: 1
+      })
+
+      expect(instance.$zeroValue()).to.be.true()
+    })
+
+    it("returns 'false' when there are credits and zero-value transactions", async () => {
+      const instance = InvoiceModel.fromJson({
+        creditCount: 1,
+        debitCount: 0,
+        zeroCount: 1
+      })
+
+      expect(instance.$zeroValue()).to.be.false()
+    })
+
+    it("returns 'false' when there are debits and zero-value transactions", async () => {
+      const instance = InvoiceModel.fromJson({
+        creditCount: 0,
+        debitCount: 1,
+        zeroCount: 1
+      })
+
+      expect(instance.$zeroValue()).to.be.false()
+    })
+
+    it("returns 'false' when there are credits and debits and there are zero-value transactions", async () => {
+      const instance = InvoiceModel.fromJson({
+        creditCount: 1,
+        debitCount: 1,
+        zeroCount: 1
+      })
+
+      expect(instance.$zeroValue()).to.be.false()
+    })
+
+    it("returns 'false' when there are credits but no zero-value transactions", async () => {
+      const instance = InvoiceModel.fromJson({
+        creditCount: 1,
+        debitCount: 0,
+        zeroCount: 0
+      })
+
+      expect(instance.$zeroValue()).to.be.false()
+    })
+
+    it("returns 'false' when there are debits but no zero-value transactions", async () => {
+      const instance = InvoiceModel.fromJson({
+        creditCount: 0,
+        debitCount: 1,
+        zeroCount: 0
+      })
+
+      expect(instance.$zeroValue()).to.be.false()
+    })
+
+    it("returns 'false' when there are credits and debits but no zero-value transactions", async () => {
+      const instance = InvoiceModel.fromJson({
+        creditCount: 1,
+        debitCount: 1,
+        zeroCount: 0
+      })
+
+      expect(instance.$zeroValue()).to.be.false()
+    })
+  })
 })

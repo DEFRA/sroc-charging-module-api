@@ -18,9 +18,11 @@ class GenerateBillRunSummaryService {
   static async go (billRunId) {
     const billRun = await BillRunModel.query().findById(billRunId)
 
-    this._validateBillRun(billRun, billRunId)
+    await this._validateBillRun(billRun, billRunId)
+    await this._setGeneratingSummaryStatus(billRun)
+    await this._summariseBillRun(billRun)
 
-    await billRun.$query().patch({ status: 'generating_summary' })
+    return billRun
   }
 
   static _validateBillRun (billRun, billRunId) {
@@ -31,6 +33,21 @@ class GenerateBillRunSummaryService {
     if (billRun.$generatingSummary()) {
       throw Boom.conflict(`Summary for bill run ${billRun} is already being generated`)
     }
+  }
+
+  static async _setGeneratingSummaryStatus (billRun) {
+    await billRun.$query()
+      .patch({ status: 'generating_summary' })
+  }
+
+  static async _summariseBillRun (billRun) {
+    await this._summariseZeroValueInvoices(billRun)
+  }
+
+  static async _summariseZeroValueInvoices (billRun) {
+    return billRun.$relatedQuery('invoices')
+      .modify('zeroValue')
+      .patch({ summarised: true })
   }
 }
 
