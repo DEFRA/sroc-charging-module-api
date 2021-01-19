@@ -18,8 +18,8 @@ class InvoiceModel extends BaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: 'bill_run.model',
         join: {
-          from: 'invoices.bill_run_id',
-          to: 'bill_runs.id'
+          from: 'invoices.billRunId',
+          to: 'billRuns.id'
         }
       },
       transactions: {
@@ -27,7 +27,7 @@ class InvoiceModel extends BaseModel {
         modelClass: 'transaction.model',
         join: {
           from: 'invoices.id',
-          to: 'transactions.invoice_id'
+          to: 'transactions.invoiceId'
         }
       },
       licences: {
@@ -35,7 +35,7 @@ class InvoiceModel extends BaseModel {
         modelClass: 'licence.model',
         join: {
           from: 'invoices.id',
-          to: 'licences.invoice_id'
+          to: 'licences.invoiceId'
         }
       }
     }

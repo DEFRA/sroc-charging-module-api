@@ -18,15 +18,15 @@ class BillRunModel extends BaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: 'authorised_system.model',
         join: {
-          from: 'bill_runs.created_by',
-          to: 'authorised_systems.id'
+          from: 'billRuns.createdBy',
+          to: 'authorisedSystems.id'
         }
       },
       regime: {
         relation: Model.BelongsToOneRelation,
         modelClass: 'regime.model',
         join: {
-          from: 'bill_runs.regime_id',
+          from: 'billRuns.regimeId',
           to: 'regimes.id'
         }
       },
@@ -34,8 +34,8 @@ class BillRunModel extends BaseModel {
         relation: Model.HasManyRelation,
         modelClass: 'transaction.model',
         join: {
-          from: 'bill_runs.id',
-          to: 'transactions.bill_run_id'
+          from: 'billRuns.id',
+          to: 'transactions.billRunId'
         }
       }
     }

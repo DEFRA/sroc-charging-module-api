@@ -18,7 +18,7 @@ class SequenceCounterModel extends BaseModel {
         relation: Model.ManyToManyRelation,
         modelClass: 'regime.model',
         join: {
-          from: 'sequence_counters.regime_id',
+          from: 'sequenceCounters.regimeId',
           to: 'regime.id'
         }
       }

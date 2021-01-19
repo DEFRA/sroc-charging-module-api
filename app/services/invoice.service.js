@@ -19,20 +19,24 @@ class InvoiceService {
 */
 
   static async go (transaction) {
-    const invoice = await this._invoice(transaction.billRunId, transaction.customerReference, transaction.chargeFinancialYear)
+    const invoice = await this._invoice(transaction)
 
     this._updateStats(invoice, transaction)
 
     return invoice
   }
 
-  static async _invoice (billRunId, customerReference, financialYear) {
+  static async _invoice ({
+    billRunId,
+    customerReference,
+    chargeFinancialYear: financialYear
+  }) {
     return InvoiceModel.query()
       .findOrInsert(
         {
-          bill_run_id: billRunId,
-          customer_reference: customerReference,
-          financial_year: financialYear
+          billRunId,
+          customerReference,
+          financialYear
         }
       )
   }

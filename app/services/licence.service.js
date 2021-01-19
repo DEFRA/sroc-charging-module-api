@@ -35,9 +35,9 @@ class LicenceService {
     return LicenceModel.query()
       .findOrInsert(
         {
-          invoice_id: invoiceId,
-          bill_run_id: billRunId,
-          licence_number: licenceNumber
+          invoiceId,
+          billRunId,
+          licenceNumber
         }
       )
   }
