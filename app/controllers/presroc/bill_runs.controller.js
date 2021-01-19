@@ -14,6 +14,10 @@ class BillRunsController {
 
     return h.response(result).code(201)
   }
+
+  static async generateSummary (req, h) {
+    return h.response().code(204)
+  }
 }
 
 module.exports = BillRunsController

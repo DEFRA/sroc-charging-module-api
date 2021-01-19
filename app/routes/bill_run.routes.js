@@ -25,6 +25,11 @@ const routes = [
     method: 'POST',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/transactions',
     handler: PresrocBillRunsController.createTransaction
+  },
+  {
+    method: 'POST',
+    path: '/v2/{regimeId}/bill-runs/{billRunId}/generate-summary',
+    handler: PresrocBillRunsController.generateSummary
   }
 ]
 

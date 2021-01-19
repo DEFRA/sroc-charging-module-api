@@ -143,4 +143,27 @@ describe('Presroc Bill Runs controller', () => {
       })
     })
   })
+
+  describe('Generate a bill run summary: POST /v2/{regimeId}/bill-runs/{billRunId}/generate-summary', () => {
+    const options = (token, payload, billRunId) => {
+      return {
+        method: 'POST',
+        url: `/v2/wrls/bill-runs/${billRunId}/generate-summary`,
+        headers: { authorization: `Bearer ${token}` },
+        payload: payload
+      }
+    }
+
+    beforeEach(async () => {
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    })
+
+    it('returns status 204', async () => {
+      const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
+
+      const response = await server.inject(options(authToken, requestPayload, billRun.id))
+
+      expect(response.statusCode).to.equal(204)
+    })
+  })
 })
