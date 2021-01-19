@@ -15,7 +15,7 @@ const { knexSnakeCaseMappers } = require('objection')
  * We set the `underscoreBeforeDigits` option so that properties like lineAttr1 are correctly changed to line_attr_1.
  *
  * However this causes issues with migrations as it still applies the underscore before the digit even if the rest of
- * the name is snake case. So for example, a migration to create line_attr_1 will actually create line_attr_1. We
+ * the name is snake case. So for example, a migration to create line_attr_1 will actually create line_attr__1. We
  * therefore only add `knexSnakeCaseMappers` when running the application to ensure that it isn't applied to
  * migrations.
  *
