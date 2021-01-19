@@ -56,7 +56,16 @@ class InvoiceModel extends BaseModel {
           .where('creditCount', 0)
           .where('debitCount', 0)
           .where('zeroCount', '>', 0)
+      },
+
+      // TODO: Confirm this logic is correct and what to do if debit value is greater than credit value.
+      // TODO: Can this be done without whereRaw, which seems to override the snake case mapping?
+      // TODO: Do we need to pull the value of 500 in from config file?
+      deminimis (query) {
+        query
+          .whereRaw('credit_value - debit_value < ?', 500)
       }
+
     }
   }
 

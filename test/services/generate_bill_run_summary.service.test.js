@@ -48,7 +48,29 @@ describe('Bill Run service', () => {
 
       it("do not set non-zero value invoice 'summarised' flag to true", async () => {
         await InvoiceHelper.addInvoice(billRun.id, customerReference, 2020, 0, 0, 0, 0, 1)
-        const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 0, 1, 0, 1)
+        const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 200, 1)
+        await GenerateBillRunSummaryService.go(billRun.id)
+
+        const result = await InvoiceModel.query().findById(invoice.id)
+
+        expect(result.summarised).to.equal(false)
+      })
+    })
+
+    describe('When there is a deminimis invoice', () => {
+      it("set 'summarised' flag to true", async () => {
+        const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 600, 1, 300, 0)
+        await GenerateBillRunSummaryService.go(billRun.id)
+
+        const result = await InvoiceModel.query().findById(invoice.id)
+
+        expect(result.summarised).to.equal(true)
+      })
+    })
+
+    describe('When there is no deminimis invoice', () => {
+      it("leave 'summarised' flag as false", async () => {
+        const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 900, 1, 300, 0)
         await GenerateBillRunSummaryService.go(billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
