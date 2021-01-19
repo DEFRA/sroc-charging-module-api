@@ -9,7 +9,7 @@ const BaseModel = require('./base.model')
 
 class BillRunModel extends BaseModel {
   static get tableName () {
-    return 'bill_runs'
+    return 'billRuns'
   }
 
   static get relationMappings () {
@@ -20,6 +20,14 @@ class BillRunModel extends BaseModel {
         join: {
           from: 'billRuns.createdBy',
           to: 'authorisedSystems.id'
+        }
+      },
+      invoices: {
+        relation: Model.HasManyRelation,
+        modelClass: 'invoice.model',
+        join: {
+          from: 'billRuns.id',
+          to: 'invoices.billRunId'
         }
       },
       regime: {
