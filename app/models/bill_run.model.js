@@ -56,6 +56,13 @@ class BillRunModel extends BaseModel {
   $editable () {
     return ['initialised', 'summarised'].includes(this.status)
   }
+
+  /**
+   * Returns true if the bill run summary is being generated
+   */
+  $generatingSummary () {
+    return this.status === 'generating_summary'
+  }
 }
 
 module.exports = BillRunModel

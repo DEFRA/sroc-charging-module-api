@@ -18,12 +18,19 @@ class GenerateBillRunSummaryService {
   static async go (billRunId) {
     const billRun = await BillRunModel.query().findById(billRunId)
 
-    if (billRun.status === 'generating_summary') {
-      throw Boom.conflict(`Summary for bill run ${billRun} is already being generated`)
+    this._validateBillRun(billRun, billRunId)
+
+    await billRun.$query().patch({ status: 'generating_summary' })
+  }
+
+  static _validateBillRun (billRun, billRunId) {
+    if (!billRun) {
+      throw Boom.badData(`Bill run ${billRunId} is unknown.`)
     }
 
-    // Set status to generating_summary
-    await billRun.$query().patch({ status: 'generating_summary' })
+    if (billRun.$generatingSummary()) {
+      throw Boom.conflict(`Summary for bill run ${billRun} is already being generated`)
+    }
   }
 }
 
