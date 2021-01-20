@@ -31,7 +31,7 @@ class GenerateBillRunSummaryService {
     }
 
     if (billRun.$generatingSummary()) {
-      throw Boom.conflict(`Summary for bill run ${billRun} is already being generated`)
+      throw Boom.conflict(`Summary for bill run ${billRun.id} is already being generated`)
     }
   }
 

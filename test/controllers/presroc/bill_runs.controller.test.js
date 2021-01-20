@@ -177,8 +177,10 @@ describe('Presroc Bill Runs controller', () => {
           await server.inject(options(authToken, requestPayload, billRun.id))
 
           const response = await server.inject(options(authToken, requestPayload, billRun.id))
+          const responsePayload = JSON.parse(response.payload)
 
           expect(response.statusCode).to.equal(409)
+          expect(responsePayload.message).to.equal(`Summary for bill run ${billRun.id} is already being generated`)
         })
       })
     })
