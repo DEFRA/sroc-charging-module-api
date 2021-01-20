@@ -83,15 +83,6 @@ class InvoiceModel extends BaseModel {
   $summarised () {
     return this.status === 'summarised'
   }
-
-  /**
-    * This returns true if all transactions in the invoice are zero value.
-    *
-    * TODO: Confirm whether this is needed or whether the modifier is sufficient
-    */
-  $zeroValue () {
-    return (this.creditCount === 0 && this.debitCount === 0 && this.zeroCount !== 0)
-  }
 }
 
 module.exports = InvoiceModel
