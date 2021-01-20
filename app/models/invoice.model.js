@@ -7,6 +7,8 @@
 const { Model } = require('objection')
 const BaseModel = require('./base.model')
 
+const DEMINIMIS_LIMIT = 500
+
 class InvoiceModel extends BaseModel {
   static get tableName () {
     return 'invoices'
@@ -42,8 +44,7 @@ class InvoiceModel extends BaseModel {
   }
 
   /**
-   * Modifiers allow us to reuse logic in queries. In this case, we define a zeroValue modifier which we can use in
-   * queries to select all invoices which are zero value, eg:
+   * Modifiers allow us to reuse logic in queries, eg. to select all invoices which are zero value:
    *
    * return billRun.$relatedQuery('invoices')
    *   .modify('zeroValue')
@@ -51,6 +52,9 @@ class InvoiceModel extends BaseModel {
    */
   static get modifiers () {
     return {
+      /**
+       * zeroValue modifier selects all invoices which are zero value.
+       */
       zeroValue (query) {
         query
           .where('creditCount', 0)
@@ -58,12 +62,13 @@ class InvoiceModel extends BaseModel {
           .where('zeroCount', '>', 0)
       },
 
-      // TODO: Confirm this logic is correct and what to do if debit value is greater than credit value.
-      // TODO: Can this be done without whereRaw, which seems to override the snake case mapping?
-      // TODO: Do we need to pull the value of 500 in from config file?
+      /**
+       * deminimis modifier selects all invoices which are deminimis.
+       */
       deminimis (query) {
         query
-          .whereRaw('credit_value - debit_value < ?', 500)
+          .whereRaw('credit_value - debit_value > 0')
+          .whereRaw('credit_value - debit_value < ?', DEMINIMIS_LIMIT)
       }
 
     }
