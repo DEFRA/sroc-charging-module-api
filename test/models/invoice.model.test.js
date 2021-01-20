@@ -10,7 +10,7 @@ const { expect } = Code
 // Thing under test
 const { InvoiceModel } = require('../../app/models')
 
-describe('Bill Run Model', () => {
+describe('Invoice Model', () => {
   describe('the $summarised() method', () => {
     it("returns 'true' when the status is 'summarised'", async () => {
       const instance = InvoiceModel.fromJson({ status: 'summarised' })

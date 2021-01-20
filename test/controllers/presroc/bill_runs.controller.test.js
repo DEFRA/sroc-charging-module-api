@@ -144,11 +144,11 @@ describe('Presroc Bill Runs controller', () => {
     })
   })
 
-  describe('Generate a bill run summary: POST /v2/{regimeId}/bill-runs/{billRunId}/generate-summary', () => {
+  describe('Generate a bill run summary: POST /v2/{regimeId}/bill-runs/{billRunId}/generate', () => {
     const options = (token, payload, billRunId) => {
       return {
         method: 'POST',
-        url: `/v2/wrls/bill-runs/${billRunId}/generate-summary`,
+        url: `/v2/wrls/bill-runs/${billRunId}/generate`,
         headers: { authorization: `Bearer ${token}` },
         payload: payload
       }

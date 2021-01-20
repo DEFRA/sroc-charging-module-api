@@ -15,7 +15,7 @@ class BillRunsController {
     return h.response(result).code(201)
   }
 
-  static async generateSummary (req, h) {
+  static async generate (req, h) {
     // TODO: confirm whether await is needed here
     await GenerateBillRunSummaryService.go(req.params.billRunId)
 

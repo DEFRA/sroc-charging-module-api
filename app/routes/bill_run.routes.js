@@ -28,8 +28,8 @@ const routes = [
   },
   {
     method: 'POST',
-    path: '/v2/{regimeId}/bill-runs/{billRunId}/generate-summary',
-    handler: PresrocBillRunsController.generateSummary
+    path: '/v2/{regimeId}/bill-runs/{billRunId}/generate',
+    handler: PresrocBillRunsController.generate
   }
 ]
 

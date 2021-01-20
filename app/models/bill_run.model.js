@@ -68,8 +68,8 @@ class BillRunModel extends BaseModel {
   /**
    * Returns true if the bill run summary is being generated
    */
-  $generatingSummary () {
-    return this.status === 'generating_summary'
+  $generating () {
+    return this.status === 'generating'
   }
 }
 

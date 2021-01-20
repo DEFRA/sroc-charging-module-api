@@ -19,7 +19,7 @@ class GenerateBillRunSummaryService {
     const billRun = await BillRunModel.query().findById(billRunId)
 
     await this._validateBillRun(billRun, billRunId)
-    await this._setGeneratingSummaryStatus(billRun)
+    await this._setGeneratingStatus(billRun)
     await this._summariseBillRun(billRun)
 
     return billRun
@@ -30,14 +30,14 @@ class GenerateBillRunSummaryService {
       throw Boom.badData(`Bill run ${billRunId} is unknown.`)
     }
 
-    if (billRun.$generatingSummary()) {
+    if (billRun.$generating()) {
       throw Boom.conflict(`Summary for bill run ${billRun.id} is already being generated`)
     }
   }
 
-  static async _setGeneratingSummaryStatus (billRun) {
+  static async _setGeneratingStatus (billRun) {
     await billRun.$query()
-      .patch({ status: 'generating_summary' })
+      .patch({ status: 'generating' })
   }
 
   static async _summariseBillRun (billRun) {

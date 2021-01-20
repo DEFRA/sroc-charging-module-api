@@ -30,10 +30,10 @@ describe('Bill Run service', () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId)
     })
 
-    it("sets the bill run status to 'generating_summary'", async () => {
+    it("sets the bill run status to 'generating'", async () => {
       const result = await GenerateBillRunSummaryService.go(billRun.id)
 
-      expect(result.status).to.equal('generating_summary')
+      expect(result.status).to.equal('generating')
     })
 
     describe('When there is a zero value invoice', () => {
