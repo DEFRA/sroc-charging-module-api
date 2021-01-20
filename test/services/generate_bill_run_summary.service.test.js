@@ -46,7 +46,7 @@ describe('Generate Bill Run Summary service', () => {
         expect(result.summarised).to.equal(true)
       })
 
-      describe('When there is also a non-zero value invoice', () => {
+      describe('and there is also a non-zero value invoice', () => {
         it("leaves the 'summarised' flag of the non-zero value invoice as false", async () => {
           await InvoiceHelper.addInvoice(billRun.id, customerReference, 2020, 0, 0, 0, 0, 1)
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 200, 1)
