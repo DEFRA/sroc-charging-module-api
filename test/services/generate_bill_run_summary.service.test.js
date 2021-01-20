@@ -14,7 +14,7 @@ const { InvoiceModel } = require('../../app/models')
 // Thing under test
 const { GenerateBillRunSummaryService } = require('../../app/services')
 
-describe('Bill Run service', () => {
+describe('Generate Bill Run Summary service', () => {
   const authorisedSystemId = '6fd613d8-effb-4bcd-86c7-b0025d121692'
   const regimeId = '4206994c-5db9-4539-84a6-d4b6a671e2ba'
   const customerReference = 'A11111111A'
@@ -37,7 +37,7 @@ describe('Bill Run service', () => {
     })
 
     describe('When there is a zero value invoice', () => {
-      it("set 'summarised' flag to true", async () => {
+      it("sets the 'summarised' flag to true", async () => {
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 0, 0, 0, 0, 1)
         await GenerateBillRunSummaryService.go(billRun.id)
 
@@ -46,19 +46,21 @@ describe('Bill Run service', () => {
         expect(result.summarised).to.equal(true)
       })
 
-      it("do not set non-zero value invoice 'summarised' flag to true", async () => {
-        await InvoiceHelper.addInvoice(billRun.id, customerReference, 2020, 0, 0, 0, 0, 1)
-        const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 200, 1)
-        await GenerateBillRunSummaryService.go(billRun.id)
+      describe('When there is also a non-zero value invoice', () => {
+        it("leaves the 'summarised' flag of the non-zero value invoice as false", async () => {
+          await InvoiceHelper.addInvoice(billRun.id, customerReference, 2020, 0, 0, 0, 0, 1)
+          const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 200, 1)
+          await GenerateBillRunSummaryService.go(billRun.id)
 
-        const result = await InvoiceModel.query().findById(invoice.id)
+          const result = await InvoiceModel.query().findById(invoice.id)
 
-        expect(result.summarised).to.equal(false)
+          expect(result.summarised).to.equal(false)
+        })
       })
     })
 
     describe('When deminimis applies', () => {
-      it("set 'summarised' flag to true", async () => {
+      it("sets the 'summarised' flag to true", async () => {
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 600, 1, 300, 0)
         await GenerateBillRunSummaryService.go(billRun.id)
 
@@ -70,7 +72,7 @@ describe('Bill Run service', () => {
 
     describe('When deminimis does not apply', () => {
       describe('Because the invoice net value is over 500', () => {
-        it("leave 'summarised' flag as false", async () => {
+        it("leaves the 'summarised' flag as false", async () => {
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 900, 1, 300, 0)
           await GenerateBillRunSummaryService.go(billRun.id)
 
@@ -81,7 +83,7 @@ describe('Bill Run service', () => {
       })
 
       describe('Because the invoice net value is under 0', () => {
-        it("leave 'summarised' flag as false", async () => {
+        it("leaves the 'summarised' flag as false", async () => {
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 100, 1, 300, 0)
           await GenerateBillRunSummaryService.go(billRun.id)
 
