@@ -73,16 +73,6 @@ class InvoiceModel extends BaseModel {
 
     }
   }
-
-  /**
-   * If an invoice has been handled during generation of a bill run summary then it is said to be "summarised" and its
-   * status is set accordingly.
-   *
-   * This returns true if the invoice has been summarised.
-   */
-  $summarised () {
-    return this.status === 'summarised'
-  }
 }
 
 module.exports = InvoiceModel
