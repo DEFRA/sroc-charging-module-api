@@ -33,6 +33,10 @@ class GenerateBillRunSummaryService {
     if (billRun.$generating()) {
       throw Boom.conflict(`Summary for bill run ${billRun.id} is already being generated`)
     }
+
+    if (!billRun.$editable()) {
+      throw Boom.badData(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
+    }
   }
 
   static async _setGeneratingStatus (billRun) {

@@ -96,14 +96,35 @@ describe('Generate Bill Run Summary service', () => {
   })
 
   describe('When an invalid bill run ID is supplied', () => {
-    const unknownBillRunId = '05f32bd9-7bce-42c2-8d6a-b14a8e26d531'
-
     describe('because no matching bill run exists', () => {
       it('throws an error', async () => {
+        const unknownBillRunId = '05f32bd9-7bce-42c2-8d6a-b14a8e26d531'
+
         const err = await expect(GenerateBillRunSummaryService.go(unknownBillRunId)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
+      })
+    })
+
+    describe('because the bill run is already generating', () => {
+      it('throws an error', async () => {
+        const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId, 'A', 'generating')
+        const err = await expect(GenerateBillRunSummaryService.go(generatingBillRun.id)).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal(`Summary for bill run ${generatingBillRun.id} is already being generated`)
+      })
+    })
+
+    describe('because the bill run is not editable', () => {
+      it('throws an error', async () => {
+        const notEditableStatus = 'NOT_EDITABLE'
+        const notEditableBillRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId, 'A', notEditableStatus)
+        const err = await expect(GenerateBillRunSummaryService.go(notEditableBillRun.id)).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal(`Bill run ${notEditableBillRun.id} cannot be edited because its status is ${notEditableStatus}.`)
       })
     })
   })
