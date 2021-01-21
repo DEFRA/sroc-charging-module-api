@@ -174,13 +174,13 @@ describe('Presroc Bill Runs controller', () => {
       describe('When the summary has already been generated', () => {
         it('returns error status 409', async () => {
           const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
-          await server.inject(options(authToken, requestPayload, billRun.id))
+          const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, requestPayload.region, 'generating')
 
-          const response = await server.inject(options(authToken, requestPayload, billRun.id))
+          const response = await server.inject(options(authToken, requestPayload, generatingBillRun.id))
           const responsePayload = JSON.parse(response.payload)
 
           expect(response.statusCode).to.equal(409)
-          expect(responsePayload.message).to.equal(`Summary for bill run ${billRun.id} is already being generated`)
+          expect(responsePayload.message).to.equal(`Summary for bill run ${generatingBillRun.id} is already being generated`)
         })
       })
     })
