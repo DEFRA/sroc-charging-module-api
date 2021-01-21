@@ -41,18 +41,20 @@ class GenerateBillRunSummaryService {
   }
 
   static async _summariseBillRun (billRun) {
-    await this._summariseZeroValueInvoices(billRun)
-    await this._summariseDeminimisInvoices(billRun)
+    return BillRunModel.transaction(async trx => {
+      await this._summariseZeroValueInvoices(billRun, trx)
+      await this._summariseDeminimisInvoices(billRun, trx)
+    })
   }
 
-  static async _summariseZeroValueInvoices (billRun) {
-    return billRun.$relatedQuery('invoices')
+  static async _summariseZeroValueInvoices (billRun, trx) {
+    return billRun.$relatedQuery('invoices', trx)
       .modify('zeroValue')
       .patch({ summarised: true })
   }
 
-  static async _summariseDeminimisInvoices (billRun) {
-    return billRun.$relatedQuery('invoices')
+  static async _summariseDeminimisInvoices (billRun, trx) {
+    return billRun.$relatedQuery('invoices', trx)
       .modify('deminimis')
       .patch({ summarised: true })
   }
