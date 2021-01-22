@@ -1,14 +1,14 @@
 'use strict'
 
 /**
- * @module GenerateBillRunSummaryService
+ * @module GenerateBillRunService
  */
 
 const Boom = require('@hapi/boom')
 
 const { BillRunModel } = require('../models')
 
-class GenerateBillRunSummaryService {
+class GenerateBillRunService {
   /**
   * Initiates the generation of a bill run summary.
   *
@@ -64,4 +64,4 @@ class GenerateBillRunSummaryService {
   }
 }
 
-module.exports = GenerateBillRunSummaryService
+module.exports = GenerateBillRunService

@@ -12,7 +12,7 @@ const { BillRunHelper, DatabaseHelper, InvoiceHelper } = require('../support/hel
 const { InvoiceModel } = require('../../app/models')
 
 // Thing under test
-const { GenerateBillRunSummaryService } = require('../../app/services')
+const { GenerateBillRunService } = require('../../app/services')
 
 describe('Generate Bill Run Summary service', () => {
   const authorisedSystemId = '6fd613d8-effb-4bcd-86c7-b0025d121692'
@@ -31,7 +31,7 @@ describe('Generate Bill Run Summary service', () => {
     })
 
     it("sets the bill run status to 'generating'", async () => {
-      const result = await GenerateBillRunSummaryService.go(billRun.id)
+      const result = await GenerateBillRunService.go(billRun.id)
 
       expect(result.status).to.equal('generating')
     })
@@ -39,7 +39,7 @@ describe('Generate Bill Run Summary service', () => {
     describe('When there is a zero value invoice', () => {
       it("sets the 'summarised' flag to true", async () => {
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 0, 0, 0, 0, 1)
-        await GenerateBillRunSummaryService.go(billRun.id)
+        await GenerateBillRunService.go(billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -50,7 +50,7 @@ describe('Generate Bill Run Summary service', () => {
         it("leaves the 'summarised' flag of the non-zero value invoice as false", async () => {
           await InvoiceHelper.addInvoice(billRun.id, customerReference, 2020, 0, 0, 0, 0, 1)
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 200, 1)
-          await GenerateBillRunSummaryService.go(billRun.id)
+          await GenerateBillRunService.go(billRun.id)
 
           const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -62,7 +62,7 @@ describe('Generate Bill Run Summary service', () => {
     describe('When deminimis applies', () => {
       it("sets the 'summarised' flag to true", async () => {
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 600, 1, 300, 0)
-        await GenerateBillRunSummaryService.go(billRun.id)
+        await GenerateBillRunService.go(billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -74,7 +74,7 @@ describe('Generate Bill Run Summary service', () => {
       describe('Because the invoice net value is over 500', () => {
         it("leaves the 'summarised' flag as false", async () => {
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 900, 1, 300, 0)
-          await GenerateBillRunSummaryService.go(billRun.id)
+          await GenerateBillRunService.go(billRun.id)
 
           const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -85,7 +85,7 @@ describe('Generate Bill Run Summary service', () => {
       describe('Because the invoice net value is under 0', () => {
         it("leaves the 'summarised' flag as false", async () => {
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 100, 1, 300, 0)
-          await GenerateBillRunSummaryService.go(billRun.id)
+          await GenerateBillRunService.go(billRun.id)
 
           const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -100,7 +100,7 @@ describe('Generate Bill Run Summary service', () => {
       it('throws an error', async () => {
         const unknownBillRunId = '05f32bd9-7bce-42c2-8d6a-b14a8e26d531'
 
-        const err = await expect(GenerateBillRunSummaryService.go(unknownBillRunId)).to.reject()
+        const err = await expect(GenerateBillRunService.go(unknownBillRunId)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
@@ -110,7 +110,7 @@ describe('Generate Bill Run Summary service', () => {
     describe('because the bill run is already generating', () => {
       it('throws an error', async () => {
         const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId, 'A', 'generating')
-        const err = await expect(GenerateBillRunSummaryService.go(generatingBillRun.id)).to.reject()
+        const err = await expect(GenerateBillRunService.go(generatingBillRun.id)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(`Summary for bill run ${generatingBillRun.id} is already being generated`)
@@ -121,7 +121,7 @@ describe('Generate Bill Run Summary service', () => {
       it('throws an error', async () => {
         const notEditableStatus = 'NOT_EDITABLE'
         const notEditableBillRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId, 'A', notEditableStatus)
-        const err = await expect(GenerateBillRunSummaryService.go(notEditableBillRun.id)).to.reject()
+        const err = await expect(GenerateBillRunService.go(notEditableBillRun.id)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(`Bill run ${notEditableBillRun.id} cannot be edited because its status is ${notEditableStatus}.`)
