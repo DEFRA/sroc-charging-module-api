@@ -7,7 +7,7 @@
       "label": "Start sroc-cma environment",
       "detail": "Build if needed then run a local docker environment",
       "type": "shell",
-      "command": "docker-compose up",
+      "command": "GIT_COMMIT=$(git rev-parse HEAD) docker-compose up",
       "group": "test",
       "presentation": {
         "echo": true,

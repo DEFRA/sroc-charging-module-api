@@ -14,6 +14,14 @@ services:
     build:
       context: .
       target: development
+      # Used to support the API returning diagnostic information about which versions of the app and image it is
+      # running. In the local development environment the DOCKER_TAG will always be latest. We get the git commit hash
+      # by running `git rev-parse HEAD`. However, that type of interpolation is not supported in a `docker.compose.yml`
+      # file. So, we have to rely on it having been set as an env var locally before `docker-compose up` is run.
+      # If you checkout `.vscode/tasks.json` you'll see we've baked it into our start CMA environment command.
+      args:
+        - GIT_COMMIT=${GIT_COMMIT}
+        - DOCKER_TAG=latest
     ports:
       - "3003:3000"
       - "9229:9229"
