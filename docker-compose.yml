@@ -7,6 +7,11 @@ services:
       - cma_db_volume:/var/lib/postgresql/data
     ports:
       - "54320:5432"
+    # This is not something we'd worry about in production. But to avoid confusion locally we want the commit hash
+    # reported back by the API to reflect the current commit, not just the one at the time the image was originally
+    # built. So we can override the env var in the container with whatever it is when we call `docker-compose up`.
+    environment:
+      - GIT_COMMIT=${GIT_COMMIT}
     env_file:
       - .env
 
@@ -14,6 +19,14 @@ services:
     build:
       context: .
       target: development
+      # Used to support the API returning diagnostic information about which versions of the app and image it is
+      # running. In the local development environment the DOCKER_TAG will always be latest. We get the git commit hash
+      # by running `git rev-parse HEAD`. However, that type of interpolation is not supported in a `docker.compose.yml`
+      # file. So, we have to rely on it having been set as an env var locally before `docker-compose up` is run.
+      # If you checkout `.vscode/tasks.json` you'll see we've baked it into our start CMA environment command.
+      args:
+        - GIT_COMMIT=${GIT_COMMIT}
+        - DOCKER_TAG=latest
     ports:
       - "3003:3000"
       - "9229:9229"
