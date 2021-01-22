@@ -143,4 +143,46 @@ describe('Presroc Bill Runs controller', () => {
       })
     })
   })
+
+  describe('Generate a bill run summary: POST /v2/{regimeId}/bill-runs/{billRunId}/generate', () => {
+    const options = (token, payload, billRunId) => {
+      return {
+        method: 'POST',
+        url: `/v2/wrls/bill-runs/${billRunId}/generate`,
+        headers: { authorization: `Bearer ${token}` },
+        payload: payload
+      }
+    }
+
+    beforeEach(async () => {
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    })
+
+    describe('When the request is valid', () => {
+      describe('When the summary has not yet been generated', () => {
+        it('returns success status 204', async () => {
+          const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
+
+          const response = await server.inject(options(authToken, requestPayload, billRun.id))
+
+          expect(response.statusCode).to.equal(204)
+        })
+      })
+    })
+
+    describe('When the request is invalid', () => {
+      describe('When the summary has already been generated', () => {
+        it('returns error status 409', async () => {
+          const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
+          const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, requestPayload.region, 'generating')
+
+          const response = await server.inject(options(authToken, requestPayload, generatingBillRun.id))
+          const responsePayload = JSON.parse(response.payload)
+
+          expect(response.statusCode).to.equal(409)
+          expect(responsePayload.message).to.equal(`Summary for bill run ${generatingBillRun.id} is already being generated`)
+        })
+      })
+    })
+  })
 })
