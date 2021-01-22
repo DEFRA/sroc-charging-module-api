@@ -5,6 +5,7 @@
 !db
 !entrypoint.sh
 !keys
+!knexfile.application.js
 !knexfile.js
 !package-lock.json
 !package.json
