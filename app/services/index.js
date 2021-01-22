@@ -8,6 +8,7 @@ const CreateAuthorisedSystemService = require('./create_authorised_system.servic
 const CreateBillRunService = require('./create_bill_run.service')
 const CreateTransactionService = require('./create_transaction.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
+const GenerateBillRunService = require('./generate_bill_run.service')
 const InvoiceService = require('./invoice.service')
 const LicenceService = require('./licence.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
@@ -27,6 +28,7 @@ module.exports = {
   CreateBillRunService,
   CreateTransactionService,
   DatabaseHealthCheckService,
+  GenerateBillRunService,
   InvoiceService,
   LicenceService,
   ListAuthorisedSystemsService,
