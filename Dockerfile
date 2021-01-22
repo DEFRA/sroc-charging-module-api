@@ -29,6 +29,14 @@ USER node
 #
 FROM node_base AS development
 
+# Version information for both the app and the image. The app will use this information to let us the delivery team
+# know exactly what we are talking to. The ARG values need to be provided in the build image command. The ENVs will
+# then get set to these values whenever a container is started.
+ARG GIT_COMMIT
+ENV GIT_COMMIT $GIT_COMMIT
+ARG DOCKER_TAG
+ENV DOCKER_TAG $DOCKER_TAG
+
 # Set our node environment. Defaults to production, though our docker-compose overrides this to development on build and
 # run
 ENV NODE_ENV development
