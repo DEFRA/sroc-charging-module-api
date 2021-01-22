@@ -33,7 +33,7 @@ FROM node_base AS development
 # know exactly what we are talking to. The ARG values need to be provided in the build image command. The ENVs will
 # then get set to these values whenever a container is started.
 ARG GIT_COMMIT
-ENV GIT_COMMIT $GIT_COMMIT
+ENV GIT_COMMIT=${GIT_COMMIT}
 ARG DOCKER_TAG
 ENV DOCKER_TAG $DOCKER_TAG
 
