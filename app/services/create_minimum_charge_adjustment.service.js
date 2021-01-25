@@ -60,7 +60,7 @@ class CreateMinimumChargeAdjustmentService {
     ]
 
     return Object.fromEntries(
-      Object.entries(transaction).filter(([key, value]) => keepList.includes(key))
+      Object.entries(transaction).filter(([key]) => keepList.includes(key))
     )
   }
 
@@ -77,7 +77,7 @@ class CreateMinimumChargeAdjustmentService {
    * Minimum charge adjustment is only applied when an invoice has newLicence set to true, so we would want the
    * adjustment transaction to have newLicence set to true as well
    */
-  static _applyNewLicenceFlag (translator, calculatedCharge) {
+  static _applyNewLicenceFlag (translator) {
     Object.assign(translator, { newLicence: true })
   }
 
