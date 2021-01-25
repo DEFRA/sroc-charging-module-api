@@ -17,7 +17,6 @@ const {
   RegimeHelper
 } = require('../support/helpers')
 const { LicenceModel, TransactionModel } = require('../../app/models')
-const { ValidationError } = require('joi')
 
 const { CreateTransactionService } = require('../../app/services')
 
@@ -27,7 +26,6 @@ const { presroc: requestFixtures } = require('../support/fixtures/create_transac
 const { CreateMinimumChargeAdjustmentService } = require('../../app/services')
 
 describe('Create Minimum Charge Adjustment service', () => {
-  const billRunId = 'b976d8e4-3644-11eb-adc1-0242ac120002'
   let authorisedSystem
   let regime
   let payload
@@ -65,6 +63,23 @@ describe('Create Minimum Charge Adjustment service', () => {
     it('creates a transaction', async () => {
       result = await TransactionModel.query().findById(minimumChargeAdjustment.transaction.id)
       expect(result.id).to.exist()
+    })
+
+    it('reads data from another transaction in the licence', async () => {
+      const fieldsToTest = [
+        'billRunId',
+        'regimeId',
+        'createdBy',
+        'region',
+        'customerReference',
+        'lineAttr1',
+        'lineAttr2',
+        'lineDescription',
+        'ruleset',
+        'chargeFinancialYear'
+      ]
+      result = await TransactionModel.query().findById(minimumChargeAdjustment.transaction.id)
+      fieldsToTest.forEach(field => expect(result[field]).to.equal(transactionRecord[field]))
     })
   })
 })
