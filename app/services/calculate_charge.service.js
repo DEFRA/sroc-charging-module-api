@@ -57,9 +57,12 @@ class CalculateChargeService {
   }
 
   static async _calculateCharge (translator) {
+    console.log('_calculateCharge')
     const presenter = new RulesServicePresenter(translator)
+    console.log('_calculateCharge')
     const result = await RulesService.go(presenter.go())
 
+    console.log('_calculateCharge')
     return new RulesServiceTranslator(result)
   }
 
