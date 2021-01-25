@@ -11,26 +11,23 @@ const LicenceService = require('./licence.service')
 const { CreateTransactionPresenter } = require('../presenters')
 
 class CreateMinimumChargeAdjustmentService {
-  static async go (licenceToAdjust, billRunId, authorisedSystem, regime) {
-    /**
-     * We want to receive a licence and we'll pull out the first transaction associated with it to get most of the
-     * details we need. Then we just need to set newLicence to TRUE and chargeValue to the argument we receive.
-     */
-
-    // Get the first transaction for this licence. Note that this query would still return all records from the db if
-    // we only used .first() so we add .limit(1) to ensure only 1 record is returned.
+  /**
+   * Creates a minimum charge adjustment transaction and update summary values accordingly.
+   *
+   * @param {module:LicenceModel} licenceToAdjust Licence object which will have an adjustment transaction added
+   * @returns {module:TransactionModel} A `TransactionModel` instance representing the adjustment transaction
+   */
+  static async go (licenceToAdjust, chargeValue) {
+    // Get the first transaction for this licence as we will use it to get details like billRunId, regime etc. We add
+    // .limit(1) to ensure only 1 record is returned from the db.
     const transaction = await licenceToAdjust.$relatedQuery('transactions')
       .limit(1)
       .first()
 
     const transactionTemplate = this._filterTransaction(transaction)
 
-    const calculatedCharge = {
-      chargeValue: 772,
-      newLicence: true
-    }
-
-    this._applyCalculatedCharge(transactionTemplate, calculatedCharge)
+    this._applyChargeValue(transactionTemplate, chargeValue)
+    this._applyNewLicenceFlag(transactionTemplate)
 
     const billRun = await this._billRun(transactionTemplate)
     const invoice = await this._invoice(transactionTemplate)
@@ -68,15 +65,20 @@ class CreateMinimumChargeAdjustmentService {
   }
 
   /**
-   * Assign properties of the calculated charge to the translator object
-   *
-   * The translator represents our transaction until we persist it. A transaction encompasses properties we get from the
-   * client making the request and the results we get back from the charge service. This is why we assign the calculated
-   * charge to the translator. It gives us a complete representation of the transaction ready for persisting to the
-   * database.
+   * Assign the charge value passed to the service to the field chargeValue
    */
-  static _applyCalculatedCharge (translator, calculatedCharge) {
-    Object.assign(translator, calculatedCharge)
+  static _applyChargeValue (translator, chargeValue) {
+    Object.assign(translator, { chargeValue })
+  }
+
+  /**
+   * Set the newLicence flag to true
+   *
+   * Minimum charge adjustment is only applied when an invoice has newLicence set to true, so we would want the
+   * adjustment transaction to have newLicence set to true as well
+   */
+  static _applyNewLicenceFlag (translator, calculatedCharge) {
+    Object.assign(translator, { newLicence: true })
   }
 
   static async _billRun (transaction) {

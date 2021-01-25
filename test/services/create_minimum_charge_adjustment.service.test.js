@@ -32,6 +32,7 @@ describe('Create Minimum Charge Adjustment service', () => {
   let authorisedSystem
   let regime
   let payload
+  const chargeValue = 789
 
   before(async () => {
     // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
@@ -73,12 +74,26 @@ describe('Create Minimum Charge Adjustment service', () => {
       transaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
       transactionRecord = await TransactionModel.query().findById(transaction.transaction.id)
       licence = await LicenceModel.query().findById(transactionRecord.licenceId)
-      minimumChargeAdjustment = await CreateMinimumChargeAdjustmentService.go(licence, billRun.id, authorisedSystem, regime)
+      minimumChargeAdjustment = await CreateMinimumChargeAdjustmentService.go(licence, chargeValue)
     })
 
     it('creates a transaction', async () => {
       result = await TransactionModel.query().findById(minimumChargeAdjustment.transaction.id)
+
+      expect(result).to.be.be.an.instanceof(TransactionModel)
       expect(result.id).to.exist()
+    })
+
+    it('has the correct value', async () => {
+      result = await TransactionModel.query().findById(minimumChargeAdjustment.transaction.id)
+
+      expect(result.chargeValue).to.equal(chargeValue)
+    })
+
+    it('has newLicence set to true', async () => {
+      result = await TransactionModel.query().findById(minimumChargeAdjustment.transaction.id)
+
+      expect(result.newLicence).to.equal(true)
     })
 
     it('reads data from another transaction in the licence', async () => {
