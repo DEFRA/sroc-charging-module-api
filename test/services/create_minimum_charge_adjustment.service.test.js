@@ -4,8 +4,9 @@
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
+const Nock = require('nock')
 
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
@@ -14,13 +15,15 @@ const {
   BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
-  RegimeHelper
+  RegimeHelper,
+  RulesServiceHelper
 } = require('../support/helpers')
 const { LicenceModel, TransactionModel } = require('../../app/models')
 
 const { CreateTransactionService } = require('../../app/services')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
+const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
 
 // Thing under test
 const { CreateMinimumChargeAdjustmentService } = require('../../app/services')
@@ -29,6 +32,15 @@ describe('Create Minimum Charge Adjustment service', () => {
   let authorisedSystem
   let regime
   let payload
+
+  before(async () => {
+    // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
+    // the interception rather than remove it after the first request
+    Nock(RulesServiceHelper.url)
+      .post(() => true)
+      .reply(200, chargeFixtures.simple.rulesService)
+      .persist()
+  })
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -42,6 +54,10 @@ describe('Create Minimum Charge Adjustment service', () => {
 
   afterEach(async () => {
     Sinon.restore()
+  })
+
+  after(async () => {
+    Nock.cleanAll()
   })
 
   describe('When the data is valid', () => {

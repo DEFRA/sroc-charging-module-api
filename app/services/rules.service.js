@@ -67,7 +67,7 @@ class RulesService {
 
   static async _callRulesService (path, requestOptions, proxyOptions) {
     const response = await Got.post(path, { ...requestOptions, ...proxyOptions })
-    console.log(response)
+
     return response.body
   }
 
