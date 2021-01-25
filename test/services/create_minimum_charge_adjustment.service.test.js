@@ -32,7 +32,9 @@ describe('Create Minimum Charge Adjustment service', () => {
   let authorisedSystem
   let regime
   let payload
+
   const chargeValue = 789
+  const chargeCredit = true
 
   before(async () => {
     // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
@@ -73,15 +75,19 @@ describe('Create Minimum Charge Adjustment service', () => {
       transaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
       transactionRecord = await TransactionModel.query().findById(transaction.transaction.id)
       licence = await LicenceModel.query().findById(transactionRecord.licenceId)
-      minimumChargeAdjustment = await CreateMinimumChargeAdjustmentService.go(licence, chargeValue)
+      minimumChargeAdjustment = await CreateMinimumChargeAdjustmentService.go(licence, chargeValue, chargeCredit)
     })
 
     it('returns a transaction', async () => {
       expect(minimumChargeAdjustment).to.be.be.an.instanceof(TransactionModel)
     })
 
-    it('has the correct value', async () => {
+    it('has the correct charge value', async () => {
       expect(minimumChargeAdjustment.chargeValue).to.equal(chargeValue)
+    })
+
+    it('has the correct charge credit', async () => {
+      expect(minimumChargeAdjustment.chargeCredit).to.equal(chargeCredit)
     })
 
     it('has newLicence set to true', async () => {
