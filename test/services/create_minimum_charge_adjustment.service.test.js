@@ -67,7 +67,6 @@ describe('Create Minimum Charge Adjustment service', () => {
     let transactionRecord
     let licence
     let minimumChargeAdjustment
-    let result
 
     beforeEach(async () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
@@ -77,26 +76,19 @@ describe('Create Minimum Charge Adjustment service', () => {
       minimumChargeAdjustment = await CreateMinimumChargeAdjustmentService.go(licence, chargeValue)
     })
 
-    it('creates a transaction', async () => {
-      result = await TransactionModel.query().findById(minimumChargeAdjustment.transaction.id)
-
-      expect(result).to.be.be.an.instanceof(TransactionModel)
-      expect(result.id).to.exist()
+    it('returns a transaction', async () => {
+      expect(minimumChargeAdjustment).to.be.be.an.instanceof(TransactionModel)
     })
 
     it('has the correct value', async () => {
-      result = await TransactionModel.query().findById(minimumChargeAdjustment.transaction.id)
-
-      expect(result.chargeValue).to.equal(chargeValue)
+      expect(minimumChargeAdjustment.chargeValue).to.equal(chargeValue)
     })
 
     it('has newLicence set to true', async () => {
-      result = await TransactionModel.query().findById(minimumChargeAdjustment.transaction.id)
-
-      expect(result.newLicence).to.equal(true)
+      expect(minimumChargeAdjustment.newLicence).to.equal(true)
     })
 
-    it('reads data from another transaction in the licence', async () => {
+    it('reads data from another transaction within the licence', async () => {
       const fieldsToTest = [
         'billRunId',
         'regimeId',
@@ -109,8 +101,8 @@ describe('Create Minimum Charge Adjustment service', () => {
         'ruleset',
         'chargeFinancialYear'
       ]
-      result = await TransactionModel.query().findById(minimumChargeAdjustment.transaction.id)
-      fieldsToTest.forEach(field => expect(result[field]).to.equal(transactionRecord[field]))
+
+      fieldsToTest.forEach(field => expect(minimumChargeAdjustment[field]).to.equal(transactionRecord[field]))
     })
   })
 })
