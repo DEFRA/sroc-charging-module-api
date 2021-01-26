@@ -29,7 +29,7 @@ class BillRunService {
 
   static _validateBillRun (billRun, transaction) {
     if (!billRun) {
-      throw Boom.badData(`Bill run ${billRunId} is unknown.`)
+      throw Boom.badData(`Bill run ${transaction.billRunId} is unknown.`)
     }
 
     if (!billRun.$editable()) {
