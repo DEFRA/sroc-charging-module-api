@@ -52,8 +52,8 @@ class InvoiceService {
       invoice.debitValue += transaction.chargeValue
     }
 
-    if (transaction.newLicence) {
-      invoice.newLicenceCount += 1
+    if (transaction.subjectToMinimumCharge) {
+      invoice.subjectToMinimumChargeCount += 1
     }
   }
 }

@@ -54,8 +54,8 @@ class BillRunService {
       billRun.debitValue += transaction.chargeValue
     }
 
-    if (transaction.newLicence) {
-      billRun.newLicenceCount += 1
+    if (transaction.subjectToMinimumCharge) {
+      billRun.subjectToMinimumChargeCount += 1
     }
   }
 }

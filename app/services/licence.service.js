@@ -53,8 +53,8 @@ class LicenceService {
       licence.debitValue += transaction.chargeValue
     }
 
-    if (transaction.newLicence) {
-      licence.newLicenceCount += 1
+    if (transaction.subjectToMinimumCharge) {
+      licence.subjectToMinimumChargeCount += 1
     }
   }
 }

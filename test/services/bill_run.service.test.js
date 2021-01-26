@@ -74,13 +74,13 @@ describe('Bill Run service', () => {
       })
     })
 
-    describe('When a new licence transaction is supplied', () => {
-      it('correctly sets the new licence flag', async () => {
-        transaction.newLicence = true
+    describe('When a transaction subject to minimum charge is supplied', () => {
+      it.only('correctly sets the subject to minimum charge flag', async () => {
+        transaction.subjectToMinimumCharge = true
 
         const result = await BillRunService.go(transaction)
 
-        expect(result.newLicenceCount).to.equal(1)
+        expect(result.subjectToMinimumChargeCount).to.equal(1)
       })
     })
 

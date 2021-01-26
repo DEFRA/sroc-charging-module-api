@@ -80,12 +80,12 @@ describe('Licence service', () => {
     })
   })
 
-  describe('When a new licence transaction is supplied', () => {
-    it('correctly sets the new licence flag', async () => {
-      transaction.newLicence = true
+  describe('When a transaction subject to minimum charge is supplied', () => {
+    it('correctly sets the subject to minimum charge flag', async () => {
+      transaction.subjectToMinimumCharge = true
       const licence = await LicenceService.go(transaction)
 
-      expect(licence.newLicenceCount).to.equal(1)
+      expect(licence.subjectToMinimumChargeCount).to.equal(1)
     })
   })
 
