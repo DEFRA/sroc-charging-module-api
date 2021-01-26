@@ -27,7 +27,7 @@ class BillRunService {
     return billRun
   }
 
-  static _validateBillRun (billRun, billRunId, transaction) {
+  static _validateBillRun (billRun, transaction) {
     if (!billRun) {
       throw Boom.badData(`Bill run ${billRunId} is unknown.`)
     }
