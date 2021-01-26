@@ -48,7 +48,6 @@ describe('Bill Run translator', () => {
 
       it("does not throw an error if the 'region' is lowercase", async () => {
         const lowercasePayload = {
-          ...payload,
           region: 'a'
         }
 
@@ -60,7 +59,6 @@ describe('Bill Run translator', () => {
       describe("because the 'region' is missing", () => {
         it('throws an error', async () => {
           const invalidPayload = {
-            ...payload,
             region: ''
           }
 
@@ -71,11 +69,18 @@ describe('Bill Run translator', () => {
       describe("because the 'region' is unrecognised", () => {
         it('throws an error', async () => {
           const invalidPayload = {
-            ...payload,
             region: 'Z'
           }
 
           expect(() => new BillRunTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
+      describe('because the payload is empty', () => {
+        it('throws an error', async () => {
+          const emptyPayload = { }
+
+          expect(() => new BillRunTranslator(data(emptyPayload))).to.throw(ValidationError)
         })
       })
     })
