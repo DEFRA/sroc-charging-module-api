@@ -21,7 +21,7 @@ class BillRunService {
   static async go (transaction) {
     const billRun = await BillRunModel.query().findById(transaction.billRunId)
 
-    this._validateBillRun(billRun, transaction.billRunId, transaction)
+    this._validateBillRun(billRun, transaction)
     this._updateStats(billRun, transaction)
 
     return billRun
