@@ -19,6 +19,7 @@ describe('Bill Run service', () => {
   const regimeId = '4206994c-5db9-4539-84a6-d4b6a671e2ba'
   const dummyTransaction = {
     customerReference: 'CUSTOMER_REFERENCE',
+    region: 'A',
     chargeFinancialYear: 2021,
     chargeCredit: false,
     chargeValue: 5678
@@ -126,6 +127,23 @@ describe('Bill Run service', () => {
         expect(err.output.payload.message)
           .to
           .equal(`Bill run ${billRun.id} cannot be edited because its status is billed.`)
+      })
+    })
+
+    describe('because the bill run is for a different region', () => {
+      beforeEach(async () => {
+        billRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId, 'W')
+      })
+
+      it('throws an error', async () => {
+        const transaction = { ...dummyTransaction, billRunId: billRun.id }
+
+        const err = await expect(BillRunService.go(transaction)).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message)
+          .to
+          .equal(`Bill run ${billRun.id} is for region ${billRun.region} but transaction is for region ${transaction.region}.`)
       })
     })
   })
