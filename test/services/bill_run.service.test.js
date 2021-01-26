@@ -75,12 +75,44 @@ describe('Bill Run service', () => {
     })
 
     describe('When a transaction subject to minimum charge is supplied', () => {
-      it.only('correctly sets the subject to minimum charge flag', async () => {
+      beforeEach(async () => {
         transaction.subjectToMinimumCharge = true
+      })
 
+      it('correctly sets the subject to minimum charge flag', async () => {
         const result = await BillRunService.go(transaction)
 
         expect(result.subjectToMinimumChargeCount).to.equal(1)
+      })
+
+      describe('and the total is needed', () => {
+        beforeEach(async () => {
+          transaction.billRunId = billRun.id
+        })
+
+        it('correctly calculates the total for a debit', async () => {
+          const firstResult = await BillRunService.go(transaction)
+          // We save the invoice with stats to the database as this isn't done by BillRunService
+          await BillRunModel.query().update(firstResult)
+
+          const secondResult = await BillRunService.go(transaction)
+
+          expect(secondResult.subjectToMinimumChargeCount).to.equal(2)
+          expect(secondResult.subjectToMinimumChargeDebitValue).to.equal(transaction.chargeValue * 2)
+        })
+
+        it('correctly calculates the total for a credit', async () => {
+          transaction.chargeCredit = true
+
+          const firstResult = await BillRunService.go(transaction)
+          // We save the invoice with stats to the database as this isn't done by BillRunService
+          await BillRunModel.query().update(firstResult)
+
+          const secondResult = await BillRunService.go(transaction)
+
+          expect(secondResult.subjectToMinimumChargeCount).to.equal(2)
+          expect(secondResult.subjectToMinimumChargeCreditValue).to.equal(transaction.chargeValue * 2)
+        })
       })
     })
 

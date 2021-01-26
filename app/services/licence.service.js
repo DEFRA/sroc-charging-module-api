@@ -42,19 +42,21 @@ class LicenceService {
       )
   }
 
-  static _updateStats (licence, transaction) {
+  static _updateStats (object, transaction) {
     if (transaction.chargeCredit) {
-      licence.creditCount += 1
-      licence.creditValue += transaction.chargeValue
+      object.creditCount += 1
+      object.creditValue += transaction.chargeValue
+      object.subjectToMinimumChargeCreditValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
     } else if (transaction.chargeValue === 0) {
-      licence.zeroCount += 1
+      object.zeroCount += 1
     } else {
-      licence.debitCount += 1
-      licence.debitValue += transaction.chargeValue
+      object.debitCount += 1
+      object.debitValue += transaction.chargeValue
+      object.subjectToMinimumChargeDebitValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
     }
 
     if (transaction.subjectToMinimumCharge) {
-      licence.subjectToMinimumChargeCount += 1
+      object.subjectToMinimumChargeCount += 1
     }
   }
 }

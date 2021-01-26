@@ -41,19 +41,21 @@ class InvoiceService {
       )
   }
 
-  static _updateStats (invoice, transaction) {
+  static _updateStats (object, transaction) {
     if (transaction.chargeCredit) {
-      invoice.creditCount += 1
-      invoice.creditValue += transaction.chargeValue
+      object.creditCount += 1
+      object.creditValue += transaction.chargeValue
+      object.subjectToMinimumChargeCreditValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
     } else if (transaction.chargeValue === 0) {
-      invoice.zeroCount += 1
+      object.zeroCount += 1
     } else {
-      invoice.debitCount += 1
-      invoice.debitValue += transaction.chargeValue
+      object.debitCount += 1
+      object.debitValue += transaction.chargeValue
+      object.subjectToMinimumChargeDebitValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
     }
 
     if (transaction.subjectToMinimumCharge) {
-      invoice.subjectToMinimumChargeCount += 1
+      object.subjectToMinimumChargeCount += 1
     }
   }
 }
