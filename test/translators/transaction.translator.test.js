@@ -55,10 +55,10 @@ describe('Transaction translator', () => {
   }
 
   describe('Default values', () => {
-    it("defaults 'newLicence' to 'false'", async () => {
+    it("defaults 'subjectToMinimumCharge' to 'false'", async () => {
       const testTranslator = new TransactionTranslator(data(payload))
 
-      expect(testTranslator.newLicence).to.be.a.boolean().and.equal(false)
+      expect(testTranslator.subjectToMinimumCharge).to.be.a.boolean().and.equal(false)
     })
 
     it("defaults 'ruleset' to 'presroc'", async () => {

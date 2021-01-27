@@ -78,20 +78,49 @@ describe('Invoice service', () => {
     })
   })
 
-  describe('When a new licence transaction is supplied', () => {
-    it('correctly sets the new licence flag', async () => {
-      transaction.newLicence = true
-      const invoice = await InvoiceService.go(transaction)
+  describe('When a transaction subject to minimum charge is supplied', () => {
+    beforeEach(async () => {
+      transaction.subjectToMinimumCharge = true
+    })
 
-      expect(invoice.newLicenceCount).to.equal(1)
+    it('correctly sets the subject to minimum charge flag', async () => {
+      const result = await InvoiceService.go(transaction)
+
+      expect(result.subjectToMinimumChargeCount).to.equal(1)
+    })
+
+    describe('and the total is needed', () => {
+      it('correctly calculates the total for a debit', async () => {
+        const firstResult = await InvoiceService.go(transaction)
+        // We save the invoice with stats to the database as this isn't done by InvoiceService
+        await InvoiceModel.query().update(firstResult)
+
+        const secondInvoice = await InvoiceService.go(transaction)
+
+        expect(secondInvoice.subjectToMinimumChargeCount).to.equal(2)
+        expect(secondInvoice.subjectToMinimumChargeDebitValue).to.equal(transaction.chargeValue * 2)
+      })
+
+      it('correctly calculates the total for a credit', async () => {
+        transaction.chargeCredit = true
+
+        const firstResult = await InvoiceService.go(transaction)
+        // We save the invoice with stats to the database as this isn't done by InvoiceService
+        await InvoiceModel.query().update(firstResult)
+
+        const secondInvoice = await InvoiceService.go(transaction)
+
+        expect(secondInvoice.subjectToMinimumChargeCount).to.equal(2)
+        expect(secondInvoice.subjectToMinimumChargeCreditValue).to.equal(transaction.chargeValue * 2)
+      })
     })
   })
 
   describe('When two transactions are created', () => {
     it('correctly calculates the summary', async () => {
-      const firstInvoice = await InvoiceService.go(transaction)
+      const firstResult = await InvoiceService.go(transaction)
       // We save the invoice with stats to the database as this isn't done by InvoiceService
-      await InvoiceModel.query().update(firstInvoice)
+      await InvoiceModel.query().update(firstResult)
 
       const secondInvoice = await InvoiceService.go(transaction)
 

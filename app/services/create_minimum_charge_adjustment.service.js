@@ -33,7 +33,7 @@ class CreateMinimumChargeAdjustmentService {
 
     this._applyChargeValue(transactionTemplate, chargeValue)
     this._applyChargeCredit(transactionTemplate, chargeCredit)
-    this._applyNewLicenceFlag(transactionTemplate)
+    this._applysubjectToMinimumChargeFlag(transactionTemplate)
 
     return transactionTemplate
   }
@@ -53,13 +53,13 @@ class CreateMinimumChargeAdjustmentService {
   }
 
   /**
-   * Set the newLicence flag to true
+   * Set the subjectToMinimumCharge flag to true
    *
-   * Minimum charge adjustment is only applied when an invoice has newLicence set to true, so we would want the
-   * adjustment transaction to have newLicence set to true as well
+   * Minimum charge adjustment is only applied when an invoice has subjectToMinimumCharge set to true, so we would want the
+   * adjustment transaction to have subjectToMinimumCharge set to true as well
    */
-  static _applyNewLicenceFlag (translator) {
-    Object.assign(translator, { newLicence: true })
+  static _applysubjectToMinimumChargeFlag (translator) {
+    Object.assign(translator, { subjectToMinimumCharge: true })
   }
 }
 

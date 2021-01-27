@@ -43,19 +43,21 @@ class BillRunService {
     }
   }
 
-  static _updateStats (billRun, transaction) {
+  static _updateStats (object, transaction) {
     if (transaction.chargeCredit) {
-      billRun.creditCount += 1
-      billRun.creditValue += transaction.chargeValue
+      object.creditCount += 1
+      object.creditValue += transaction.chargeValue
+      object.subjectToMinimumChargeCreditValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
     } else if (transaction.chargeValue === 0) {
-      billRun.zeroCount += 1
+      object.zeroCount += 1
     } else {
-      billRun.debitCount += 1
-      billRun.debitValue += transaction.chargeValue
+      object.debitCount += 1
+      object.debitValue += transaction.chargeValue
+      object.subjectToMinimumChargeDebitValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
     }
 
-    if (transaction.newLicence) {
-      billRun.newLicenceCount += 1
+    if (transaction.subjectToMinimumCharge) {
+      object.subjectToMinimumChargeCount += 1
     }
   }
 }
