@@ -69,6 +69,7 @@ class CalculateChargeTranslator extends BaseTranslator {
       billableDays: 'regimeValue4',
       compensationCharge: 'regimeValue17',
       credit: 'chargeCredit',
+      eiucSource: 'regimeValue13',
       loss: 'regimeValue8',
       periodEnd: 'chargePeriodEnd',
       periodStart: 'chargePeriodStart',
