@@ -30,7 +30,7 @@ const MINIMUM_CHARGE_LIMIT = 2500
 // Thing under test
 const { CalculateMinimumChargeService } = require('../../app/services')
 
-describe('Calculate Minimum Charge service', () => {
+describe.only('Calculate Minimum Charge service', () => {
   let authorisedSystem
   let regime
   let payload
@@ -138,6 +138,27 @@ describe('Calculate Minimum Charge service', () => {
 
       expect(calculatedMinimumCharges).to.be.be.an.instanceof(Array)
       expect(calculatedMinimumCharges).to.be.empty()
+    })
+  })
+
+  describe('When a bill run has multiple invoices', () => {
+    let billRun
+
+    beforeEach(async () => {
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      payload.subjectToMinimumCharge = true
+    })
+
+    it('handles them all correctly', async () => {
+      const firstTransaction = await CreateTransactionService.go({ ...payload, customerReference: 'FIRST_CUST' }, billRun.id, authorisedSystem, regime)
+      const secondTransaction = await CreateTransactionService.go({ ...payload, customerReference: 'SECOND_CUST' }, billRun.id, authorisedSystem, regime)
+      const firstRecord = await TransactionModel.query().findById(firstTransaction.transaction.id)
+      const secondRecord = await TransactionModel.query().findById(secondTransaction.transaction.id)
+
+      const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
+
+      expect(calculatedMinimumCharges[0].chargeValue).to.equal(MINIMUM_CHARGE_LIMIT - firstRecord.chargeValue)
+      expect(calculatedMinimumCharges[1].chargeValue).to.equal(MINIMUM_CHARGE_LIMIT - secondRecord.chargeValue)
     })
   })
 })
