@@ -105,29 +105,6 @@ describe('Calculate Charge translator', () => {
     })
   })
 
-  describe("translating 'eiucSource'", () => {
-    describe("when 'compensationCharge' is 'false'", () => {
-      it('returns the translated value', async () => {
-        const testTranslator = new CalculateChargeTranslator(data(payload))
-
-        expect(testTranslator.regimeValue13).to.be.a.string().and.equal('Tidal')
-      })
-    })
-
-    describe("when 'compensationCharge' is 'true'", () => {
-      it('returns the translated value', async () => {
-        const compensationChargePayload = {
-          ...payload,
-          compensationCharge: true
-        }
-
-        const testTranslator = new CalculateChargeTranslator(data(compensationChargePayload))
-
-        expect(testTranslator.regimeValue13).to.be.a.string().and.equal('Tidal')
-      })
-    })
-  })
-
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
