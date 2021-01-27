@@ -8,6 +8,7 @@ const { Model } = require('objection')
 const BaseModel = require('./base.model')
 
 const DEMINIMIS_LIMIT = 500
+const MINIMUM_CHARGE_LIMIT = 2500
 
 class InvoiceModel extends BaseModel {
   static get tableName () {
@@ -69,8 +70,16 @@ class InvoiceModel extends BaseModel {
         query
           .whereRaw('credit_value - debit_value > 0')
           .whereRaw('credit_value - debit_value < ?', DEMINIMIS_LIMIT)
-      }
+      },
 
+      /**
+       * minimum charge modifier selects all invoices where minimum charge applies.
+       */
+      minimumCharge (query) {
+        query
+          .where('subjectToMinimumChargeCreditValue', '<', MINIMUM_CHARGE_LIMIT)
+          .orWhere('subjectToMinimumChargeDebitValue', '<', MINIMUM_CHARGE_LIMIT)
+      }
     }
   }
 }
