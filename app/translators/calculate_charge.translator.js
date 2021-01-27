@@ -57,7 +57,7 @@ class CalculateChargeTranslator extends BaseTranslator {
       section130Agreement: Joi.boolean().required(),
       source: Joi.string().required(), // validated in rules service
       twoPartTariff: Joi.boolean().required(),
-      volume: Joi.number().min(0),
+      volume: Joi.number().min(0).required(),
       waterUndertaker: Joi.boolean().required(),
       regime: Joi.string().required() // needed to determine which endpoints to call in the rules service
     })
