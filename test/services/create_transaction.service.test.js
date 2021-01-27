@@ -138,7 +138,7 @@ describe('Create Transaction service', () => {
       })
     })
 
-    describe.only('because the request is for a duplicate transaction', () => {
+    describe("because the request is for a duplicate transaction (matching clientId's)", () => {
       let billRun
 
       beforeEach(async () => {
