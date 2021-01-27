@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const Sinon = require('sinon')
 const Nock = require('nock')
 
-const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
