@@ -137,5 +137,28 @@ describe('Create Transaction service', () => {
         expect(err).to.be.an.error()
       })
     })
+
+    describe.only('because the request is for a duplicate transaction', () => {
+      let billRun
+
+      beforeEach(async () => {
+        Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
+        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      })
+
+      it('throws an error', async () => {
+        payload.clientId = 'DOUBLEIMPACT'
+
+        // Add the first transaction
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+
+        // Attempt to add a transaction with a duplicate clientId
+        const err = await expect(
+          CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        ).to.reject()
+
+        expect(err).to.be.an.error()
+      })
+    })
   })
 })
