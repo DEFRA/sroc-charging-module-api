@@ -61,15 +61,29 @@ describe('Create Bill Run service', () => {
   })
 
   describe('When the data is invalid', () => {
-    describe("because 'payload' is invalid", () => {
-      const invalidPayload = {
-        region: 'Z'
-      }
+    describe("because the 'payload'", () => {
+      describe('contains an unrecognised region', () => {
+        const invalidPayload = {
+          region: 'Z'
+        }
 
-      it('throws an error', async () => {
-        const err = await expect(CreateBillRunService.go(invalidPayload, authorisedSystem, regime)).to.reject(ValidationError)
+        it('throws an error', async () => {
+          const err = await expect(CreateBillRunService.go(invalidPayload, authorisedSystem, regime)).to.reject(ValidationError)
 
-        expect(err).to.be.an.error()
+          expect(err).to.be.an.error()
+        })
+      })
+
+      describe('contains an empty region', () => {
+        const invalidPayload = {
+          region: ''
+        }
+
+        it('throws an error', async () => {
+          const err = await expect(CreateBillRunService.go(invalidPayload, authorisedSystem, regime)).to.reject(ValidationError)
+
+          expect(err).to.be.an.error()
+        })
       })
     })
 

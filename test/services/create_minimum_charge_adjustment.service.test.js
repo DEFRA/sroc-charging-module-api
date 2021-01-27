@@ -90,8 +90,8 @@ describe('Create Minimum Charge Adjustment service', () => {
       expect(minimumChargeAdjustment.chargeCredit).to.equal(chargeCredit)
     })
 
-    it('has newLicence set to true', async () => {
-      expect(minimumChargeAdjustment.newLicence).to.equal(true)
+    it('has subjectToMinimumCharge set to true', async () => {
+      expect(minimumChargeAdjustment.subjectToMinimumCharge).to.equal(true)
     })
 
     it('reads data from another transaction within the licence', async () => {

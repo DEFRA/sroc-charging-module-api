@@ -17,7 +17,7 @@ class TransactionTranslator extends BaseTranslator {
       chargeElementId: Joi.string().allow('', null),
       areaCode: Joi.string().uppercase().valid(...this._validAreas()),
       lineDescription: Joi.string().max(240).required(),
-      newLicence: Joi.boolean().default(false),
+      subjectToMinimumCharge: Joi.boolean().default(false),
       clientId: Joi.string().allow('', null),
       // Set a new field called ruleset. This will identify which ruleset the transaction and it's charge relates to
       ruleset: Joi.string().default('presroc')
@@ -34,7 +34,7 @@ class TransactionTranslator extends BaseTranslator {
       customerReference: 'customerReference',
       periodStart: 'chargePeriodStart',
       periodEnd: 'chargePeriodEnd',
-      newLicence: 'newLicence',
+      subjectToMinimumCharge: 'subjectToMinimumCharge',
       clientId: 'clientId',
       credit: 'chargeCredit',
       areaCode: 'lineAreaCode',

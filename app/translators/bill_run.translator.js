@@ -17,7 +17,7 @@ class BillRunTranslator extends BaseTranslator {
     return Joi.object({
       authorisedSystemId: Joi.string().required(),
       regimeId: Joi.string().required(),
-      region: Joi.string().uppercase().valid(...this._validRegions()),
+      region: Joi.string().uppercase().valid(...this._validRegions()).required(),
       status: Joi.string().default('initialised')
     })
   }
