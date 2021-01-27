@@ -22,8 +22,19 @@ class CalculateMinimumChargeService {
     return this._createAdjustmentTransactions(licences)
   }
 
+  /**
+   * The bill run we receive will have one or more invoices, each of which will contain one or more licences.
+   * Minimum charge is applied at a licence level so we need to fetch these from the database.
+   *
+   * We start by pulling the invoices related to the bill run from the database using .$relatedQuery('invoices').
+   * We use .modify('minimumCharge') to select only those invoices where minimum charge applies (see InvoiceModel for
+   *  details on how the modifier works).
+   * We use .withGraphFetched('licences') to also pull the licences connected to each invoice.
+   * We use .select('') so that nothing else about the invoice is retrieved from the database, just the linked licences.
+   * We therefore return an array of InvoiceModel objects, each of which contains just a key containing the linked
+   * licences.
+   */
   static async _retrieveMinimumChargeInvoices (billRun) {
-    // We .select('') so that only the licences list of each invoice is returned
     return billRun.$relatedQuery('invoices')
       .modify('minimumCharge')
       .withGraphFetched('licences')
@@ -31,7 +42,8 @@ class CalculateMinimumChargeService {
   }
 
   /**
-   * Return a flattened array of licences under the invoice array passed to the function
+   * At this stage we have an array of invoices, each of which contains an array of licences. This function returns a
+   * flattened array of all the licences within the invoice array.
    */
   static _extractLicences (invoices) {
     return invoices.map(invoice => invoice.licences).flat()

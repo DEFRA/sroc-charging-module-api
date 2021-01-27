@@ -25,6 +25,8 @@ const { CreateTransactionService } = require('../../app/services')
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
 
+const { rulesService: rulesServiceResponse } = chargeFixtures.simple
+
 const MINIMUM_CHARGE_LIMIT = 2500
 
 // Thing under test
@@ -35,16 +37,14 @@ describe('Calculate Minimum Charge service', () => {
   let regime
   let payload
 
-  before(async () => {
+  beforeEach(async () => {
     // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
     // the interception rather than remove it after the first request
     Nock(RulesServiceHelper.url)
       .post(() => true)
-      .reply(200, chargeFixtures.simple.rulesService)
+      .reply(200, rulesServiceResponse)
       .persist()
-  })
 
-  beforeEach(async () => {
     await DatabaseHelper.clean()
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
@@ -56,9 +56,6 @@ describe('Calculate Minimum Charge service', () => {
 
   afterEach(async () => {
     Sinon.restore()
-  })
-
-  after(async () => {
     Nock.cleanAll()
   })
 
@@ -102,8 +99,8 @@ describe('Calculate Minimum Charge service', () => {
     })
 
     it('correctly calculates both a credit and debit if required', async () => {
-      const creditTransaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
-      const debitTransaction = await CreateTransactionService.go({ ...payload, credit: true }, billRun.id, authorisedSystem, regime)
+      const creditTransaction = await CreateTransactionService.go({ ...payload, credit: true }, billRun.id, authorisedSystem, regime)
+      const debitTransaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
       const creditTransactionRecord = await TransactionModel.query().findById(creditTransaction.transaction.id)
       const debitTransactionRecord = await TransactionModel.query().findById(debitTransaction.transaction.id)
 
@@ -124,14 +121,22 @@ describe('Calculate Minimum Charge service', () => {
     beforeEach(async () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
       payload.subjectToMinimumCharge = true
+
+      // We change the rules service mocking so that a large transaction value is returned.
+      Nock.cleanAll()
+      Nock(RulesServiceHelper.url)
+        .post(() => true)
+        .reply(200, {
+          ...rulesServiceResponse,
+          WRLSChargingResponse: {
+            ...rulesServiceResponse.WRLSChargingResponse,
+            chargeValue: 5000
+          }
+        })
+        .persist()
     })
 
     it('returns an empty array', async () => {
-      // Create 5 transactions to ensure we are over the minimum charge limit
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
       await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
 
       const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
