@@ -56,8 +56,13 @@ class CalculateMinimumChargeService {
   }
 
   static async _adjustment (licence, value, credit) {
-    if (value === 0) { return null }
-    if (value >= MINIMUM_CHARGE_LIMIT) { return null }
+    if (value === 0) {
+      return null
+    }
+
+    if (value >= MINIMUM_CHARGE_LIMIT) {
+      return null
+    }
 
     const adjustmentValue = MINIMUM_CHARGE_LIMIT - value
     return CreateMinimumChargeAdjustmentService.go(licence, adjustmentValue, credit)
