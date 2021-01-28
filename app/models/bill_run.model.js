@@ -71,6 +71,13 @@ class BillRunModel extends BaseModel {
   $generating () {
     return this.status === 'generating'
   }
+
+  /**
+   * Returns true if no transactions have been added to this bill run
+   */
+  $empty () {
+    return (this.creditCount === 0 && this.debitCount === 0 && this.zeroCount === 0)
+  }
 }
 
 module.exports = BillRunModel
