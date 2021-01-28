@@ -159,7 +159,7 @@ describe('Presroc Bill Runs controller', () => {
     })
 
     describe('When the request is valid', () => {
-      describe('When the summary has not yet been generated', () => {
+      describe('because the summary has not yet been generated', () => {
         it('returns success status 204', async () => {
           const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
 
@@ -171,7 +171,7 @@ describe('Presroc Bill Runs controller', () => {
     })
 
     describe('When the request is invalid', () => {
-      describe('When the summary has already been generated', () => {
+      describe('because the summary has already been generated', () => {
         it('returns error status 409', async () => {
           const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
           const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, requestPayload.region, 'generating')
