@@ -4,18 +4,30 @@
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
+const Nock = require('nock')
 
 const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, BillRunHelper, DatabaseHelper, GeneralHelper, InvoiceHelper, RegimeHelper } = require('../support/helpers')
-const { InvoiceModel } = require('../../app/models')
+const {
+  AuthorisedSystemHelper,
+  BillRunHelper,
+  DatabaseHelper,
+  GeneralHelper,
+  InvoiceHelper,
+  RegimeHelper,
+  RulesServiceHelper
+} = require('../support/helpers')
+
+const { BillRunModel, InvoiceModel } = require('../../app/models')
 
 const { CreateTransactionService } = require('../../app/services')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
+
+const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
 // Things we need to stub
 const { RulesService } = require('../../app/services')
@@ -32,6 +44,13 @@ describe('Generate Bill Run Summary service', () => {
   let payload
 
   beforeEach(async () => {
+    // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
+    // the interception rather than remove it after the first request
+    Nock(RulesServiceHelper.url)
+      .post(() => true)
+      .reply(200, rulesServiceResponse)
+      .persist()
+
     await DatabaseHelper.clean()
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
@@ -113,6 +132,17 @@ describe('Generate Bill Run Summary service', () => {
 
           expect(result.summarised).to.equal(false)
         })
+      })
+    })
+
+    describe('When minimum charge applies', () => {
+      it('saves the adjustment transaction to the db', async () => {
+        await GenerateBillRunService.go(billRun.id)
+
+        console.log(await BillRunModel.query().findById(billRun.id))
+
+        // const result = await TransactionModel.query().findById(transaction.id)
+        // expect(result.summarised).to.equal(true)
       })
     })
   })

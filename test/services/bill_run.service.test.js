@@ -179,4 +179,32 @@ describe('Bill Run service', () => {
       })
     })
   })
+
+  describe("When the bill run status is 'generating'", () => {
+    let transaction
+
+    beforeEach(async () => {
+      billRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId, 'A', 'generating')
+      transaction = { ...dummyTransaction, billRunId: billRun.id }
+    })
+
+    describe('and the service is called from within bill run generation', () => {
+      it('allows the bill run to be generated', async () => {
+        const result = await BillRunService.go(transaction, true)
+
+        expect(result.id).to.equal(billRun.id)
+      })
+    })
+
+    describe('and the service is called from outside bill run generation', () => {
+      it('throws an error', async () => {
+        const err = await expect(BillRunService.go(transaction)).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message)
+          .to
+          .equal(`Bill run ${billRun.id} cannot be edited because its status is generating.`)
+      })
+    })
+  })
 })

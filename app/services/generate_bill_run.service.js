@@ -7,9 +7,12 @@
 const Boom = require('@hapi/boom')
 
 // Files in the same folder cannot be destructured from index.js so have to be required directly
-const CreateMinimumChargeAdjustmentService = require('./create_minimum_charge_adjustment.service')
+const BillRunService = require('./bill_run.service')
+const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')
+const InvoiceService = require('./invoice.service')
+const LicenceService = require('./licence.service')
 
-const { BillRunModel } = require('../models')
+const { BillRunModel, TransactionModel } = require('../models')
 
 class GenerateBillRunService {
   /**
@@ -20,14 +23,13 @@ class GenerateBillRunService {
   */
   static async go (billRunId) {
     const billRun = await BillRunModel.query().findById(billRunId)
-
     await this._validateBillRun(billRun, billRunId)
 
-    const minimumValueTransactions = await CreateMinimumChargeAdjustmentService.go(billRun)
+    const minimumValueAdjustments = await CalculateMinimumChargeService.go(billRun)
 
     await BillRunModel.transaction(async trx => {
       await this._setGeneratingStatus(billRun, trx)
-      await this._saveTransactions(minimumValueTransactions, trx)
+      await this._saveTransactions(minimumValueAdjustments, trx)
       await this._summariseBillRun(billRun, trx)
     })
 
@@ -58,7 +60,45 @@ class GenerateBillRunService {
   }
 
   static async _saveTransactions (transactions, trx) {
+    const allSavedTransactions = []
 
+    for (const transaction of transactions) {
+      const billRun = await this._billRun(transaction)
+      const invoice = await this._invoice(transaction)
+      const licence = await this._licence({ ...transaction, invoiceId: invoice.id })
+
+      const savedTransaction = await TransactionModel.query(trx)
+        .insert({
+          ...transaction,
+          invoiceId: invoice.id,
+          licenceId: licence.id
+        })
+        .returning('*')
+
+      allSavedTransactions.push(savedTransaction)
+
+      await invoice.$query(trx).patch()
+      await licence.$query(trx).patch()
+      await billRun.$query(trx).patch()
+    }
+
+    return allSavedTransactions
+  }
+
+  static async _billRun (translator) {
+    /**
+     * We pass true to BillRunService to indicate we're calling it as part of the bill run generation process; this
+     * tells it that it's okay to update the summary even though its state is $generating.
+     */
+    return BillRunService.go(translator, true)
+  }
+
+  static async _invoice (translator) {
+    return InvoiceService.go(translator)
+  }
+
+  static async _licence (translator) {
+    return LicenceService.go(translator)
   }
 
   static async _summariseBillRun (billRun, trx) {
