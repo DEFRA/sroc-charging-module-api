@@ -29,6 +29,31 @@ class GeneralHelper {
   static cloneObject (thingToBeCloned) {
     return Hoek.clone(thingToBeCloned)
   }
+
+  /**
+   * Generate a {@link https://www.ietf.org/rfc/rfc4122.txt|RFC4122} compliant UUID
+   *
+   * We use UUID's as record ids in our database. PostgreSQL handles generating these for us when we insert a record.
+   * Some of our models have a requirement that linked item ID's are also populated. For example, a `transaction`
+   * expects its `invoice_id` and `licence_id` fields to be populated.
+   *
+   * When testing though there are times we want to create a record without also having to create its dependents. We
+   * just need to populate a foreign key field with a valid UUID. For those times you can use this to generate a valid
+   * UUID v4 ID just like we use in the database.
+   *
+   * **WARNING!** The UUIDs this generates would not be safe for production usage. They depend on JavaScript's
+   * `Math.random()` which isn't seen as _random enough_ for generating non-clashing UUIDs.
+   *
+   * Credits: https://stackoverflow.com/a/2117523/6117745
+   */
+  static uuid4 () {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0
+      const v = c === 'x' ? r : (r & 0x3 | 0x8)
+
+      return v.toString(16)
+    })
+  }
 }
 
 module.exports = GeneralHelper
