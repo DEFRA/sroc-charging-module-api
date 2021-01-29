@@ -14,7 +14,8 @@ const {
   BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
-  RegimeHelper
+  RegimeHelper,
+  TransactionHelper
 } = require('../support/helpers')
 const { TransactionModel } = require('../../app/models')
 const { ValidationError } = require('joi')
@@ -150,7 +151,7 @@ describe('Create Transaction service', () => {
         payload.clientId = 'DOUBLEIMPACT'
 
         // Add the first transaction
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await TransactionHelper.addTransaction(billRun.id, { regimeId: regime.id, clientId: 'DOUBLEIMPACT' })
 
         // Attempt to add a transaction with a duplicate clientId
         const err = await expect(
