@@ -3,31 +3,72 @@
 // Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
+const Sinon = require('sinon')
+const Nock = require('nock')
 
-const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { BillRunHelper, DatabaseHelper, GeneralHelper, InvoiceHelper } = require('../support/helpers')
-const { InvoiceModel } = require('../../app/models')
+const {
+  AuthorisedSystemHelper,
+  BillRunHelper,
+  DatabaseHelper,
+  GeneralHelper,
+  InvoiceHelper,
+  RegimeHelper,
+  RulesServiceHelper
+} = require('../support/helpers')
+
+const { BillRunModel, InvoiceModel } = require('../../app/models')
+
+const { CreateTransactionService } = require('../../app/services')
+
+const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
+const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
+
+const { rulesService: rulesServiceResponse } = chargeFixtures.simple
+
+// Things we need to stub
+const { RulesService } = require('../../app/services')
 
 // Thing under test
 const { GenerateBillRunService } = require('../../app/services')
 
 describe('Generate Bill Run Summary service', () => {
-  const authorisedSystemId = GeneralHelper.uuid4()
-  const regimeId = GeneralHelper.uuid4()
   const customerReference = 'A11111111A'
 
   let billRun
+  let authorisedSystem
+  let regime
+  let payload
 
   beforeEach(async () => {
+    // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
+    // the interception rather than remove it after the first request
+    Nock(RulesServiceHelper.url)
+      .post(() => true)
+      .reply(200, rulesServiceResponse)
+      .persist()
+
     await DatabaseHelper.clean()
+    regime = await RegimeHelper.addRegime('wrls', 'WRLS')
+    authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
+
+    // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
+    // the valid tests we can use it straight as
+    payload = GeneralHelper.cloneObject(requestFixtures.simple)
+  })
+
+  afterEach(async () => {
+    Sinon.restore()
   })
 
   describe('When a valid bill run ID is supplied', () => {
     beforeEach(async () => {
-      billRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId)
+      Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
     })
 
     it("sets the bill run status to 'generating'", async () => {
@@ -93,6 +134,23 @@ describe('Generate Bill Run Summary service', () => {
         })
       })
     })
+
+    describe('When minimum charge applies', () => {
+      it('saves the adjustment transaction to the db', async () => {
+        await GenerateBillRunService.go(billRun.id)
+
+        const { transactions } = await BillRunModel.query()
+          .findById(billRun.id)
+          .withGraphFetched('invoices')
+          .withGraphFetched('transactions')
+
+        const adjustmentTransactions = transactions.filter((transaction) => {
+          return transaction.minimumChargeAdjustment
+        })
+
+        expect(adjustmentTransactions.length).to.equal(1)
+      })
+    })
   })
 
   describe('When an invalid bill run ID is supplied', () => {
@@ -109,7 +167,7 @@ describe('Generate Bill Run Summary service', () => {
 
     describe('because the bill run is already generating', () => {
       it('throws an error', async () => {
-        const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId, 'A', 'generating')
+        const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'generating')
         const err = await expect(GenerateBillRunService.go(generatingBillRun.id)).to.reject()
 
         expect(err).to.be.an.error()
@@ -120,7 +178,7 @@ describe('Generate Bill Run Summary service', () => {
     describe('because the bill run is not editable', () => {
       it('throws an error', async () => {
         const notEditableStatus = 'NOT_EDITABLE'
-        const notEditableBillRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId, 'A', notEditableStatus)
+        const notEditableBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', notEditableStatus)
         const err = await expect(GenerateBillRunService.go(notEditableBillRun.id)).to.reject()
 
         expect(err).to.be.an.error()

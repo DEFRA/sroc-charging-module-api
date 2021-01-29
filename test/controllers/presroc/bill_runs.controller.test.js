@@ -24,6 +24,8 @@ const {
   SequenceCounterHelper
 } = require('../../support/helpers')
 
+const { CreateTransactionService } = require('../../../app/services')
+
 const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
 
@@ -170,7 +172,10 @@ describe('Presroc Bill Runs controller', () => {
     describe('When the request is valid', () => {
       describe('because the summary has not yet been generated', () => {
         it('returns success status 204', async () => {
-          const response = await server.inject(options(authToken, payload, billRun.id))
+          const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
+          await CreateTransactionService.go(requestPayload, billRun.id, authorisedSystem, regime)
+
+          const response = await server.inject(options(authToken, requestPayload, billRun.id))
 
           expect(response.statusCode).to.equal(204)
         })
