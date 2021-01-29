@@ -105,6 +105,93 @@ describe('Calculate Charge translator', () => {
     })
   })
 
+  describe('handling of date formats', () => {
+    describe("when period start and end are formatted as 'DD-MMM-YYYY'", () => {
+      it('parses them correctly', async () => {
+        const result = new CalculateChargeTranslator(data(payload))
+
+        expect(result.chargePeriodStart).to.be.a.date()
+
+        expect(result.chargePeriodStart.getDate()).to.equal(1)
+        // Months are zero based, for example, January is 0 and December is 11
+        expect(result.chargePeriodStart.getMonth()).to.equal(3)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2020)
+      })
+    })
+
+    describe("when period start and end are formatted as 'DD-MM-YYYY'", () => {
+      it('parses them correctly', async () => {
+        const dateFormatPayload = {
+          ...payload,
+          periodStart: '01-04-2020',
+          periodEnd: '31-03-2021'
+        }
+        const result = new CalculateChargeTranslator(data(dateFormatPayload))
+
+        expect(result.chargePeriodStart).to.be.a.date()
+
+        expect(result.chargePeriodStart.getDate()).to.equal(1)
+        // Months are zero based, for example, January is 0 and December is 11
+        expect(result.chargePeriodStart.getMonth()).to.equal(3)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2020)
+      })
+    })
+
+    describe("when period start and end are formatted as 'YYYY-MM-DD'", () => {
+      it('parses them correctly', async () => {
+        const dateFormatPayload = {
+          ...payload,
+          periodStart: '2020-04-01',
+          periodEnd: '2021-03-31'
+        }
+        const result = new CalculateChargeTranslator(data(dateFormatPayload))
+
+        expect(result.chargePeriodStart).to.be.a.date()
+
+        expect(result.chargePeriodStart.getDate()).to.equal(1)
+        // Months are zero based, for example, January is 0 and December is 11
+        expect(result.chargePeriodStart.getMonth()).to.equal(3)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2020)
+      })
+    })
+
+    describe("when period start and end are formatted as 'DD/MM/YYYY'", () => {
+      it('parses them correctly', async () => {
+        const dateFormatPayload = {
+          ...payload,
+          periodStart: '01/04/2020',
+          periodEnd: '31/03/2021'
+        }
+        const result = new CalculateChargeTranslator(data(dateFormatPayload))
+
+        expect(result.chargePeriodStart).to.be.a.date()
+
+        expect(result.chargePeriodStart.getDate()).to.equal(1)
+        // Months are zero based, for example, January is 0 and December is 11
+        expect(result.chargePeriodStart.getMonth()).to.equal(3)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2020)
+      })
+    })
+
+    describe("when period start and end are formatted as 'YYYY/MM/DD'", () => {
+      it('parses them correctly', async () => {
+        const dateFormatPayload = {
+          ...payload,
+          periodStart: '2020/04/01',
+          periodEnd: '2021/03/31'
+        }
+        const result = new CalculateChargeTranslator(data(dateFormatPayload))
+
+        expect(result.chargePeriodStart).to.be.a.date()
+
+        expect(result.chargePeriodStart.getDate()).to.equal(1)
+        // Months are zero based, for example, January is 0 and December is 11
+        expect(result.chargePeriodStart.getMonth()).to.equal(3)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2020)
+      })
+    })
+  })
+
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
