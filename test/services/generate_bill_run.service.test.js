@@ -156,7 +156,7 @@ describe('Generate Bill Run Summary service', () => {
   describe('When an invalid bill run ID is supplied', () => {
     describe('because no matching bill run exists', () => {
       it('throws an error', async () => {
-        const unknownBillRunId = '05f32bd9-7bce-42c2-8d6a-b14a8e26d531'
+        const unknownBillRunId = GeneralHelper.uuid4()
 
         const err = await expect(GenerateBillRunService.go(unknownBillRunId)).to.reject()
 

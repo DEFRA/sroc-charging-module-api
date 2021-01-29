@@ -8,15 +8,15 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { BillRunHelper, DatabaseHelper } = require('../support/helpers')
+const { BillRunHelper, DatabaseHelper, GeneralHelper } = require('../support/helpers')
 const { BillRunModel } = require('../../app/models')
 
 // Thing under test
 const { BillRunService } = require('../../app/services')
 
 describe('Bill Run service', () => {
-  const authorisedSystemId = '6fd613d8-effb-4bcd-86c7-b0025d121692'
-  const regimeId = '4206994c-5db9-4539-84a6-d4b6a671e2ba'
+  const authorisedSystemId = GeneralHelper.uuid4()
+  const regimeId = GeneralHelper.uuid4()
   const dummyTransaction = {
     customerReference: 'CUSTOMER_REFERENCE',
     region: 'A',
@@ -132,7 +132,7 @@ describe('Bill Run service', () => {
   })
 
   describe('When an invalid bill run ID is supplied', () => {
-    const unknownBillRunId = '05f32bd9-7bce-42c2-8d6a-b14a8e26d531'
+    const unknownBillRunId = GeneralHelper.uuid4()
 
     describe('because no matching bill run exists', () => {
       it('throws an error', async () => {
