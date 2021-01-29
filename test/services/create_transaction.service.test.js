@@ -29,7 +29,7 @@ const { RulesService } = require('../../app/services')
 const { CreateTransactionService } = require('../../app/services')
 
 describe('Create Transaction service', () => {
-  const billRunId = 'b976d8e4-3644-11eb-adc1-0242ac120002'
+  const billRunId = GeneralHelper.uuid4()
   let authorisedSystem
   let regime
   let payload

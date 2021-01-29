@@ -12,7 +12,12 @@ const { expect } = Code
 const { deployment } = require('../../../server')
 
 // Test helpers
-const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper } = require('../../support/helpers')
+const {
+  AuthorisationHelper,
+  AuthorisedSystemHelper,
+  DatabaseHelper,
+  GeneralHelper
+} = require('../../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -102,7 +107,7 @@ describe('Authorised systems controller', () => {
 
     describe('When the authorised system does not exist', () => {
       it("returns a 404 'not found' response", async () => {
-        const id = 'f0d3b4dc-2cae-11eb-adc1-0242ac120002'
+        const id = GeneralHelper.uuid4()
         const response = await server.inject(options(id, authToken))
 
         const payload = JSON.parse(response.payload)
