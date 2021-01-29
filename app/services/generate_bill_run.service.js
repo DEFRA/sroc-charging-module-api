@@ -24,11 +24,11 @@ class GenerateBillRunService {
   static async go (billRunId) {
     const billRun = await BillRunModel.query().findById(billRunId)
     await this._validateBillRun(billRun, billRunId)
+    await this._setGeneratingStatus(billRun)
 
     const minimumValueAdjustments = await CalculateMinimumChargeService.go(billRun)
 
     await BillRunModel.transaction(async trx => {
-      await this._setGeneratingStatus(billRun, trx)
       await this._saveTransactions(minimumValueAdjustments, trx)
       await this._summariseBillRun(billRun, trx)
     })
@@ -54,8 +54,8 @@ class GenerateBillRunService {
     }
   }
 
-  static async _setGeneratingStatus (billRun, trx) {
-    await billRun.$query(trx)
+  static async _setGeneratingStatus (billRun) {
+    await billRun.$query()
       .patch({ status: 'generating' })
   }
 
