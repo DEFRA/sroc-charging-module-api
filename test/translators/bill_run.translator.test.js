@@ -9,6 +9,7 @@ const { expect } = Code
 
 // Test helpers
 const { ValidationError } = require('joi')
+const { GeneralHelper } = require('../support/helpers')
 
 // Thing under test
 const { BillRunTranslator } = require('../../app/translators')
@@ -20,8 +21,8 @@ describe('Bill Run translator', () => {
 
   const data = (
     payload,
-    regimeId = 'ff75f82d-d56f-4807-9cad-12f23d6b29a8',
-    authorisedSystemId = 'e46b816a-3fe8-438a-a3f9-7a1a8eb525ce'
+    regimeId = GeneralHelper.uuid4(),
+    authorisedSystemId = GeneralHelper.uuid4()
   ) => {
     return {
       regimeId,
