@@ -107,6 +107,8 @@ describe('Presroc Bill Runs controller', () => {
   })
 
   describe('Add a bill run transaction: POST /v2/{regimeId}/bill-runs/{billRunId}/transactions', () => {
+    let payload
+
     const options = (token, payload, billRunId) => {
       return {
         method: 'POST',
@@ -118,13 +120,15 @@ describe('Presroc Bill Runs controller', () => {
 
     beforeEach(async () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+
+      // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
+      // the valid tests we can use it straight as
+      payload = GeneralHelper.cloneObject(requestFixtures.simple)
     })
 
     describe('When the request is valid', () => {
       it("returns the 'id' of the new transaction", async () => {
-        const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
-
-        const response = await server.inject(options(authToken, requestPayload, billRun.id))
+        const response = await server.inject(options(authToken, payload, billRun.id))
         const responsePayload = JSON.parse(response.payload)
 
         expect(response.statusCode).to.equal(201)
@@ -134,10 +138,9 @@ describe('Presroc Bill Runs controller', () => {
 
     describe('When the request is invalid', () => {
       it('returns an error', async () => {
-        const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
-        requestPayload.periodStart = '01-APR-2021'
+        payload.periodStart = '01-APR-2021'
 
-        const response = await server.inject(options(authToken, requestPayload, billRun.id))
+        const response = await server.inject(options(authToken, payload, billRun.id))
 
         expect(response.statusCode).to.equal(422)
       })
@@ -145,6 +148,8 @@ describe('Presroc Bill Runs controller', () => {
   })
 
   describe('Generate a bill run summary: POST /v2/{regimeId}/bill-runs/{billRunId}/generate', () => {
+    let payload
+
     const options = (token, payload, billRunId) => {
       return {
         method: 'POST',
@@ -156,14 +161,16 @@ describe('Presroc Bill Runs controller', () => {
 
     beforeEach(async () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+
+      // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
+      // the valid tests we can use it straight as
+      payload = GeneralHelper.cloneObject(requestFixtures.simple)
     })
 
     describe('When the request is valid', () => {
-      describe('When the summary has not yet been generated', () => {
+      describe('because the summary has not yet been generated', () => {
         it('returns success status 204', async () => {
-          const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
-
-          const response = await server.inject(options(authToken, requestPayload, billRun.id))
+          const response = await server.inject(options(authToken, payload, billRun.id))
 
           expect(response.statusCode).to.equal(204)
         })
@@ -171,12 +178,11 @@ describe('Presroc Bill Runs controller', () => {
     })
 
     describe('When the request is invalid', () => {
-      describe('When the summary has already been generated', () => {
+      describe('because the summary has already been generated', () => {
         it('returns error status 409', async () => {
-          const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
-          const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, requestPayload.region, 'generating')
+          const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, payload.region, 'generating')
 
-          const response = await server.inject(options(authToken, requestPayload, generatingBillRun.id))
+          const response = await server.inject(options(authToken, payload, generatingBillRun.id))
           const responsePayload = JSON.parse(response.payload)
 
           expect(response.statusCode).to.equal(409)
