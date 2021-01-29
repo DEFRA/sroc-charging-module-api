@@ -10,6 +10,7 @@ const RegimeHelper = require('./regime.helper')
 const RouteHelper = require('./route.helper')
 const RulesServiceHelper = require('./rules_service.helper')
 const SequenceCounterHelper = require('./sequence_counter.helper')
+const TransactionHelper = require('./transaction.helper')
 
 module.exports = {
   AuthorisationHelper,
@@ -21,5 +22,6 @@ module.exports = {
   RegimeHelper,
   RouteHelper,
   RulesServiceHelper,
-  SequenceCounterHelper
+  SequenceCounterHelper,
+  TransactionHelper
 }
