@@ -135,14 +135,20 @@ describe('Generate Bill Run Summary service', () => {
       })
     })
 
-    describe('When minimum charge applies', () => {
+    describe.only('When minimum charge applies', () => {
       it('saves the adjustment transaction to the db', async () => {
         await GenerateBillRunService.go(billRun.id)
 
-        console.log(await BillRunModel.query().findById(billRun.id))
+        const { transactions } = await BillRunModel.query()
+          .findById(billRun.id)
+          .withGraphFetched('invoices')
+          .withGraphFetched('transactions')
 
-        // const result = await TransactionModel.query().findById(transaction.id)
-        // expect(result.summarised).to.equal(true)
+        const adjustmentTransactions = transactions.filter((transaction) => {
+          return transaction.minimumChargeAdjustment
+        })
+
+        expect(adjustmentTransactions.length).to.equal(1)
       })
     })
   })
