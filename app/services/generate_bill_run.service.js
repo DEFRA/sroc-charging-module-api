@@ -60,29 +60,22 @@ class GenerateBillRunService {
   }
 
   static async _saveTransactions (transactions, trx) {
-    const allSavedTransactions = []
-
     for (const transaction of transactions) {
       const billRun = await this._billRun(transaction)
       const invoice = await this._invoice(transaction)
       const licence = await this._licence({ ...transaction, invoiceId: invoice.id })
 
-      const savedTransaction = await TransactionModel.query(trx)
+      await TransactionModel.query(trx)
         .insert({
           ...transaction,
           invoiceId: invoice.id,
           licenceId: licence.id
         })
-        .returning('*')
-
-      allSavedTransactions.push(savedTransaction)
 
       await invoice.$query(trx).patch()
       await licence.$query(trx).patch()
       await billRun.$query(trx).patch()
     }
-
-    return allSavedTransactions
   }
 
   static async _billRun (translator) {
