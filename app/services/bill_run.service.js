@@ -16,7 +16,7 @@ class BillRunService {
   * Note that the updated stats are _not_ saved back to the database; it is up to the caller to do this.
   *
   * @param {Object} transaction translator belonging to the bill run to find and assess
-  * @param {boolean} requestFromGenerateBillRun [false] If true then we are updating the summary within the 'generate bill run'
+  * @param {boolean} [requestFromGenerateBillRun=false] If true then we are updating the summary within the 'generate bill run'
   *  process and we should therefore expect the bill run to be in $generating state
   * @returns {module:BillRunModel} a `BillRunModel` if found else it will throw a `Boom` error
   */
@@ -34,12 +34,7 @@ class BillRunService {
       throw Boom.badData(`Bill run ${transaction.billRunId} is unknown.`)
     }
 
-    /**
-     * Test if the bill run is $editable, or if it's being called as part of the bill run generation process, and
-     * reject if it isn't.
-     */
-    const partOfBillRunGeneration = this._partOfBillRunGeneration(billRun, requestFromGenerateBillRun)
-    if (!billRun.$editable() && !partOfBillRunGeneration) {
+    if (!this._updateable(billRun, requestFromGenerateBillRun)) {
       throw Boom.badData(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
     }
 
@@ -51,11 +46,13 @@ class BillRunService {
   }
 
   /**
-   * We know that the service has been called as part of the bill run generation process if requestFromGenerateBillRun
-   * has been passed in as true and the bill run state is $generating.
+   * The bill run can be updated in the following circumstances:
+   *  - The bill run state is $editable;
+   *  - The bill run state is $generating and the service has been called as part of the bill run generation process
+   *     (which will pass requestFromGenerateBillRun as true)
    */
-  static _partOfBillRunGeneration (billRun, requestFromGenerateBillRun) {
-    return requestFromGenerateBillRun && billRun.$generating()
+  static _updateable (billRun, requestFromGenerateBillRun) {
+    return billRun.$editable() || (billRun.$generating() && requestFromGenerateBillRun)
   }
 
   static _updateStats (object, transaction) {
