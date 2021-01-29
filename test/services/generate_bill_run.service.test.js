@@ -135,7 +135,7 @@ describe('Generate Bill Run Summary service', () => {
       })
     })
 
-    describe.only('When minimum charge applies', () => {
+    describe('When minimum charge applies', () => {
       it('saves the adjustment transaction to the db', async () => {
         await GenerateBillRunService.go(billRun.id)
 
