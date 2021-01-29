@@ -16,7 +16,7 @@ class BillRunService {
   * Note that the updated stats are _not_ saved back to the database; it is up to the caller to do this.
   *
   * @param {Object} transaction translator belonging to the bill run to find and assess
-  * @param {boolean} [requestFromGenerateBillRun=false] If true then we are updating the summary within the 'generate bill run'
+  * @param {boolean} [requestFromGenerateBillRun=false] If `true` then we are updating the summary within the 'generate bill run'
   *  process and we should therefore expect the bill run to be in $generating state
   * @returns {module:BillRunModel} a `BillRunModel` if found else it will throw a `Boom` error
   */
