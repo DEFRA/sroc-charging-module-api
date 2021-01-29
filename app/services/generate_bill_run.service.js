@@ -54,8 +54,8 @@ class GenerateBillRunService {
     }
   }
 
-  static async _setGeneratingStatus (billRun) {
-    await billRun.$query()
+  static async _setGeneratingStatus (billRun, trx) {
+    await billRun.$query(trx)
       .patch({ status: 'generating' })
   }
 
