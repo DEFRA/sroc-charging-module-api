@@ -5,7 +5,7 @@
  */
 
 const BaseTranslator = require('./base.translator')
-const Joi = require('joi')
+const Joi = require('joi').extend(require('@joi/date'))
 const Boom = require('@hapi/boom')
 
 class CalculateChargeTranslator extends BaseTranslator {
@@ -36,6 +36,8 @@ class CalculateChargeTranslator extends BaseTranslator {
   }
 
   _schema () {
+    const validDateFormats = ['DD-MMM-YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD', 'DD/MM/YYYY', 'YYYY/MM/DD']
+
     return Joi.object({
       authorisedDays: Joi.number().integer().min(0).max(366).required(),
       billableDays: Joi.number().integer().min(0).max(366).required(),
@@ -44,8 +46,8 @@ class CalculateChargeTranslator extends BaseTranslator {
       // validated in the rules service
       eiucSource: Joi.when('compensationCharge', { is: true, then: Joi.string().required() }),
       loss: Joi.string().required(), // validated in rules service
-      periodStart: Joi.date().less(Joi.ref('periodEnd')).min('01-APR-2014').required(),
-      periodEnd: Joi.date().required(),
+      periodStart: Joi.date().format(validDateFormats).less(Joi.ref('periodEnd')).min('01-APR-2014').required(),
+      periodEnd: Joi.date().format(validDateFormats).required(),
       regionalChargingArea: Joi.string().required(), // validated in the rules service
       // Set a new field called ruleset. This will be used to determine which ruleset to query in the rules service. If
       // the data comes from a calculate charge request we deafult it. If the data comes from a create transaction
