@@ -8,7 +8,12 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, DatabaseHelper, RegimeHelper } = require('../support/helpers')
+const {
+  AuthorisedSystemHelper,
+  DatabaseHelper,
+  GeneralHelper,
+  RegimeHelper
+} = require('../support/helpers')
 const RegimeModel = require('../../app/models/regime.model')
 const { DataError } = require('objection')
 
@@ -44,7 +49,7 @@ describe('Show Regime service', () => {
 
   describe('When there is no matching regime', () => {
     it('returns throws an error', async () => {
-      const id = 'f0d3b4dc-2cae-11eb-adc1-0242ac120002'
+      const id = GeneralHelper.uuid4()
       const err = await expect(ShowRegimeService.go(id)).to.reject(Error, `No regime found with id ${id}`)
 
       expect(err).to.be.an.error()

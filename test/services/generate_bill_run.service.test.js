@@ -8,15 +8,15 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { BillRunHelper, DatabaseHelper, InvoiceHelper } = require('../support/helpers')
+const { BillRunHelper, DatabaseHelper, GeneralHelper, InvoiceHelper } = require('../support/helpers')
 const { InvoiceModel } = require('../../app/models')
 
 // Thing under test
 const { GenerateBillRunService } = require('../../app/services')
 
 describe('Generate Bill Run Summary service', () => {
-  const authorisedSystemId = '6fd613d8-effb-4bcd-86c7-b0025d121692'
-  const regimeId = '4206994c-5db9-4539-84a6-d4b6a671e2ba'
+  const authorisedSystemId = GeneralHelper.uuid4()
+  const regimeId = GeneralHelper.uuid4()
   const customerReference = 'A11111111A'
 
   let billRun
@@ -98,7 +98,7 @@ describe('Generate Bill Run Summary service', () => {
   describe('When an invalid bill run ID is supplied', () => {
     describe('because no matching bill run exists', () => {
       it('throws an error', async () => {
-        const unknownBillRunId = '05f32bd9-7bce-42c2-8d6a-b14a8e26d531'
+        const unknownBillRunId = GeneralHelper.uuid4()
 
         const err = await expect(GenerateBillRunService.go(unknownBillRunId)).to.reject()
 
