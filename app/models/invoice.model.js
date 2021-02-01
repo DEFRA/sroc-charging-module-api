@@ -79,8 +79,35 @@ class InvoiceModel extends BaseModel {
         query
           .where('subjectToMinimumChargeCreditValue', '<', MINIMUM_CHARGE_LIMIT)
           .orWhere('subjectToMinimumChargeDebitValue', '<', MINIMUM_CHARGE_LIMIT)
+      },
+
+      /**
+       * credit modifier selects all invoices which are credits
+       */
+      credit (query) {
+        query
+          .whereRaw('credit_value > debit_value')
+      },
+
+      /**
+       * debit modifier selects all invoices which are debits
+       */
+      debit (query) {
+        query
+          .whereRaw('debit_value > credit_value')
       }
     }
+  }
+
+  static get virtualAttributes () {
+    return ['netTotal']
+  }
+
+  /**
+       * zeroValue modifier selects all invoices which are zero value.
+       */
+  netTotal () {
+    return this.debitValue - this.creditValue
   }
 }
 
