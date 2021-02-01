@@ -11,7 +11,7 @@ const { ValidationError } = require('joi')
 // Thing under test
 const { CalculateChargeTranslator } = require('../../app/translators')
 
-describe.only('Calculate Charge translator', () => {
+describe('Calculate Charge translator', () => {
   const payload = {
     periodStart: '01-APR-2020',
     periodEnd: '31-MAR-2021',
@@ -200,7 +200,7 @@ describe.only('Calculate Charge translator', () => {
         expect(result).to.not.be.an.error()
       })
 
-      describe.only("if 'compensationCharge' is true", () => {
+      describe("if 'compensationCharge' is true", () => {
         describe("and 'eiucSource' is missing", () => {
           it('still does not throw an error', async () => {
             const validPayload = {
