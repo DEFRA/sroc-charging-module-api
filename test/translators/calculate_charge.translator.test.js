@@ -200,14 +200,15 @@ describe.only('Calculate Charge translator', () => {
         expect(result).to.not.be.an.error()
       })
 
-      describe("if 'compensationCharge' is true", () => {
-        describe("and 'eiucSource' is empty", () => {
+      describe.only("if 'compensationCharge' is true", () => {
+        describe("and 'eiucSource' is missing", () => {
           it('still does not throw an error', async () => {
             const validPayload = {
               ...payload,
-              compensationCharge: false,
-              eiucSource: ''
+              compensationCharge: false
             }
+            delete validPayload.eiucSource
+
             const result = new CalculateChargeTranslator(data(validPayload))
 
             expect(result).to.not.be.an.error()
