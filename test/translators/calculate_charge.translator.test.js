@@ -214,6 +214,20 @@ describe('Calculate Charge translator', () => {
             expect(result).to.not.be.an.error()
           })
         })
+
+        describe("and 'waterUndertaker' is missing", () => {
+          it('still does not throw an error', async () => {
+            const validPayload = {
+              ...payload,
+              compensationCharge: false
+            }
+            delete validPayload.waterUndertaker
+
+            const result = new CalculateChargeTranslator(data(validPayload))
+
+            expect(result).to.not.be.an.error()
+          })
+        })
       })
     })
 
@@ -261,6 +275,18 @@ describe('Calculate Charge translator', () => {
               compensationCharge: true
             }
             delete invalidPayload.eiucSource
+
+            expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe("and 'waterUndertaker' is missing", () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              compensationCharge: true
+            }
+            delete invalidPayload.waterUndertaker
 
             expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
