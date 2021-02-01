@@ -59,6 +59,13 @@ class GenerateBillRunService {
       .patch({ status: 'generating' })
   }
 
+  static _calculateInvoices (invoices) {
+    return {
+      count: invoices.length,
+      value: invoices.reduce((sum, invoice) => sum + invoice.toJSON().netTotal, 0)
+    }
+  }
+
   static async _saveTransactions (transactions, trx) {
     for (const transaction of transactions) {
       const billRun = await this._billRun(transaction)
@@ -95,14 +102,43 @@ class GenerateBillRunService {
   }
 
   static async _summariseBillRun (billRun, trx) {
+    await this._summariseDebitInvoices(billRun, trx)
+    await this._summariseCreditInvoices(billRun, trx)
     await this._summariseZeroValueInvoices(billRun, trx)
     await this._summariseDeminimisInvoices(billRun, trx)
   }
 
+  static async _summariseDebitInvoices (billRun, trx) {
+    const { count: invoiceCount, value: invoiceValue } = await this._calculateInvoices(
+      await billRun.$relatedQuery('invoices').modify('debit')
+    )
+
+    await billRun.$query(trx)
+      .patch({
+        invoiceCount,
+        invoiceValue
+      })
+  }
+
+  static async _summariseCreditInvoices (billRun, trx) {
+    const { count: creditNoteCount, value: creditNoteValue } = await this._calculateInvoices(
+      await billRun.$relatedQuery('invoices').modify('credit')
+    )
+
+    await billRun.$query(trx)
+      .patch({
+        creditNoteCount,
+        creditNoteValue
+      })
+  }
+
   static async _summariseZeroValueInvoices (billRun, trx) {
-    return billRun.$relatedQuery('invoices', trx)
+    const zeroCount = await billRun.$relatedQuery('invoices', trx)
       .modify('zeroValue')
       .patch({ summarised: true })
+
+    await billRun.$query(trx)
+      .patch({ zeroCount })
   }
 
   static async _summariseDeminimisInvoices (billRun, trx) {
