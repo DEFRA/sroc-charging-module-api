@@ -51,7 +51,7 @@ const addDockerTagHeader = response => {
 const VersionInfoPlugin = {
   name: 'version_info',
   register: (server, _options) => {
-    server.ext('onPreResponse', (request, h) => {
+    server.ext('onPreResponse', (request, _h) => {
       const response = request.response
 
       addGitCommitHeader(response)
