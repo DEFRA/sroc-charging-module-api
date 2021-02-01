@@ -254,13 +254,13 @@ describe('Calculate Charge translator', () => {
       })
 
       describe("because 'compensationCharge' is true", () => {
-        describe("and 'eiucSource' is empty", () => {
+        describe("and 'eiucSource' is missing", () => {
           it('throws an error', async () => {
             const invalidPayload = {
               ...payload,
-              compensationCharge: true,
-              eiucSource: ''
+              compensationCharge: true
             }
+            delete invalidPayload.eiucSource
 
             expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
