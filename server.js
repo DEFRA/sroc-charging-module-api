@@ -7,6 +7,7 @@ const {
   AirbrakePlugin,
   AuthorisationPlugin,
   BlippPlugin,
+  DbErrorsPlugin,
   HpalDebugPlugin,
   HapiNowAuthPlugin,
   HapiPinoPlugin,
@@ -35,6 +36,7 @@ exports.deployment = async start => {
   await server.register(MissingPayloadPlugin)
   await server.register(InvalidCharactersPlugin)
   await server.register(PayloadCleanerPlugin)
+  await server.register(DbErrorsPlugin)
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
 
   // Register non-production plugins
