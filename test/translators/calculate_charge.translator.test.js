@@ -11,7 +11,7 @@ const { ValidationError } = require('joi')
 // Thing under test
 const { CalculateChargeTranslator } = require('../../app/translators')
 
-describe('Calculate Charge translator', () => {
+describe.only('Calculate Charge translator', () => {
   const payload = {
     periodStart: '01-APR-2020',
     periodEnd: '31-MAR-2021',
@@ -199,6 +199,21 @@ describe('Calculate Charge translator', () => {
 
         expect(result).to.not.be.an.error()
       })
+
+      describe("if 'compensationCharge' is true", () => {
+        describe("and 'eiucSource' is empty", () => {
+          it('still does not throw an error', async () => {
+            const validPayload = {
+              ...payload,
+              compensationCharge: false,
+              eiucSource: ''
+            }
+            const result = new CalculateChargeTranslator(data(validPayload))
+
+            expect(result).to.not.be.an.error()
+          })
+        })
+      })
     })
 
     describe('when the data is not valid', () => {
@@ -225,15 +240,17 @@ describe('Calculate Charge translator', () => {
         })
       })
 
-      describe("because 'eiucSource' is empty when 'compensationCharge' is true", () => {
-        it('throws an error', async () => {
-          const invalidPayload = {
-            ...payload,
-            compensationCharge: true,
-            eiucSource: ''
-          }
+      describe("because 'compensationCharge' is true", () => {
+        describe("and 'eiucSource' is empty", () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              compensationCharge: true,
+              eiucSource: ''
+            }
 
-          expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
         })
       })
 
