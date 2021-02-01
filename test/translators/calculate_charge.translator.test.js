@@ -241,6 +241,18 @@ describe('Calculate Charge translator', () => {
         })
       })
 
+      describe("because 'periodStart' and 'periodEnd' are not in the same financial year", () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            periodStart: '01-APR-2021',
+            periodEnd: '01-APR-2022'
+          }
+
+          expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
       describe("because 'compensationCharge' is true", () => {
         describe("and 'eiucSource' is empty", () => {
           it('throws an error', async () => {
@@ -252,18 +264,6 @@ describe('Calculate Charge translator', () => {
 
             expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
-        })
-      })
-
-      describe("because 'periodStart' and 'periodEnd' are not in the same financial year", () => {
-        it('throws an error', async () => {
-          const invalidPayload = {
-            ...payload,
-            periodStart: '01-APR-2021',
-            periodEnd: '01-APR-2022'
-          }
-
-          expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
     })
