@@ -16,7 +16,6 @@ class BillRunsController {
   }
 
   static async generate (req, h) {
-    // TODO: confirm whether await is needed here
     await GenerateBillRunService.go(req.params.billRunId)
 
     return h.response().code(204)

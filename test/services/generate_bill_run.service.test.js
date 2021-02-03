@@ -65,7 +65,6 @@ describe('Generate Bill Run Summary service', () => {
 
     it("sets the bill run status to 'generating'", async () => {
       const spy = Sinon.spy(BillRunModel, 'query')
-
       await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
       await GenerateBillRunService.go(billRun.id)
 
@@ -93,6 +92,9 @@ describe('Generate Bill Run Summary service', () => {
       await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
       await GenerateBillRunService.go(billRun.id)
 
+      // Small delay to ensure the bill run has been generated
+      await sleep(150)
+
       const result = await BillRunModel.query().findById(billRun.id)
 
       expect(result.status).to.equal('generated')
@@ -104,6 +106,9 @@ describe('Generate Bill Run Summary service', () => {
       await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
 
       await GenerateBillRunService.go(billRun.id)
+
+      // Small delay to ensure the bill run has been generated
+      await sleep(150)
 
       const result = await BillRunModel.query().findById(billRun.id)
 
@@ -118,6 +123,9 @@ describe('Generate Bill Run Summary service', () => {
 
       await GenerateBillRunService.go(billRun.id)
 
+      // Small delay to ensure the bill run has been generated
+      await sleep(150)
+
       const result = await BillRunModel.query().findById(billRun.id)
 
       expect(result.creditNoteCount).to.equal(1)
@@ -129,6 +137,9 @@ describe('Generate Bill Run Summary service', () => {
         await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 0, 0, 0, 0, 1)
         await GenerateBillRunService.go(billRun.id)
+
+        // Small delay to ensure the bill run has been generated
+        await sleep(150)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -142,6 +153,9 @@ describe('Generate Bill Run Summary service', () => {
 
         await GenerateBillRunService.go(billRun.id)
 
+        // Small delay to ensure the bill run has been generated
+        await sleep(150)
+
         const result = await BillRunModel.query().findById(billRun.id)
 
         expect(result.zeroCount).to.equal(1)
@@ -153,6 +167,9 @@ describe('Generate Bill Run Summary service', () => {
           await InvoiceHelper.addInvoice(billRun.id, customerReference, 2020, 0, 0, 0, 0, 1)
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 200, 1)
           await GenerateBillRunService.go(billRun.id)
+
+          // Small delay to ensure the bill run has been generated
+          await sleep(150)
 
           const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -167,6 +184,9 @@ describe('Generate Bill Run Summary service', () => {
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 600, 1, 300, 0)
         await GenerateBillRunService.go(billRun.id)
 
+        // Small delay to ensure the bill run has been generated
+        await sleep(150)
+
         const result = await InvoiceModel.query().findById(invoice.id)
 
         expect(result.deminimisInvoice).to.equal(true)
@@ -180,6 +200,9 @@ describe('Generate Bill Run Summary service', () => {
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 900, 1, 300, 0)
           await GenerateBillRunService.go(billRun.id)
 
+          // Small delay to ensure the bill run has been generated
+          await sleep(150)
+
           const result = await InvoiceModel.query().findById(invoice.id)
 
           expect(result.deminimisInvoice).to.equal(false)
@@ -192,6 +215,9 @@ describe('Generate Bill Run Summary service', () => {
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 100, 1, 300, 0)
           await GenerateBillRunService.go(billRun.id)
 
+          // Small delay to ensure the bill run has been generated
+          await sleep(150)
+
           const result = await InvoiceModel.query().findById(invoice.id)
 
           expect(result.deminimisInvoice).to.equal(false)
@@ -203,6 +229,9 @@ describe('Generate Bill Run Summary service', () => {
       it('saves the adjustment transaction to the db', async () => {
         await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun.id)
+
+        // Small delay to ensure the bill run has been generated
+        await sleep(150)
 
         const { transactions } = await BillRunModel.query()
           .findById(billRun.id)
@@ -251,4 +280,8 @@ describe('Generate Bill Run Summary service', () => {
       })
     })
   })
+
+  function sleep (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 })

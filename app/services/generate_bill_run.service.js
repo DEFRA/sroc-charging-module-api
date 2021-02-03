@@ -24,16 +24,12 @@ class GenerateBillRunService {
   static async go (billRunId) {
     const billRun = await BillRunModel.query().findById(billRunId)
     await this._validateBillRun(billRun, billRunId)
-    await this._setGeneratingStatus(billRun)
 
-    const minimumValueAdjustments = await CalculateMinimumChargeService.go(billRun)
-
-    await BillRunModel.transaction(async trx => {
-      await this._saveTransactions(minimumValueAdjustments, trx)
-      await this._summariseBillRun(billRun, trx)
-    })
-
-    return billRun
+    /**
+     * We don't await _validateBillRun as the calling controller doesn't wait for the result of the generation.
+     * This is in contrast to _validateBillRun, where we do want to await the outcome before we return a response.
+     */
+    this._generateBillRun(billRun)
   }
 
   static _validateBillRun (billRun, billRunId) {
@@ -52,6 +48,17 @@ class GenerateBillRunService {
     if (billRun.$empty()) {
       throw Boom.badData(`Summary for bill run ${billRun.id} cannot be generated because it has no transactions.`)
     }
+  }
+
+  static async _generateBillRun (billRun) {
+    await this._setGeneratingStatus(billRun)
+
+    const minimumValueAdjustments = await CalculateMinimumChargeService.go(billRun)
+
+    await BillRunModel.transaction(async trx => {
+      await this._saveTransactions(minimumValueAdjustments, trx)
+      await this._summariseBillRun(billRun, trx)
+    })
   }
 
   static async _setGeneratingStatus (billRun) {
