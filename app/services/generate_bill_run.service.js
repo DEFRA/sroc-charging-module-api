@@ -60,19 +60,18 @@ class GenerateBillRunService {
   }
 
   static _calculateInvoices (invoices) {
-    /**
-     * $netTotal (used by _sumInvoices) returns a negative value for credit invoices -- this is fine when we want the
-     * overall net total of an invoice, but when persisting credit note values we only ever want positive values. Hence
-     * the use of Math.abs to enforce this.
-     */
     return {
       count: invoices.length,
-      value: Math.abs(this._sumInvoices(invoices))
+      value: this._sumInvoices(invoices)
     }
   }
 
   static _sumInvoices (invoices) {
-    return invoices.reduce((sum, invoice) => sum + invoice.$netTotal(), 0)
+  /**
+   * We only ever persist positive values -- however the net total of credit invoices is always negative so we use
+   * $absoluteNetTotal to enforce this.
+   */
+    return invoices.reduce((sum, invoice) => sum + invoice.$absoluteNetTotal(), 0)
   }
 
   static async _saveTransactions (transactions, trx) {

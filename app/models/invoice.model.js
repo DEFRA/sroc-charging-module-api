@@ -100,10 +100,17 @@ class InvoiceModel extends BaseModel {
   }
 
   /**
-   * zeroValue modifier selects all invoices which are zero value.
+   * netTotal method provides the net total of the invoice (debit value - credit value)
    */
   $netTotal () {
     return this.debitValue - this.creditValue
+  }
+
+  /**
+   * absoluteNetTotal method provides the net total of the invoice as a positive value
+   */
+  $absoluteNetTotal () {
+    return Math.abs(this.debitValue - this.creditValue)
   }
 }
 
