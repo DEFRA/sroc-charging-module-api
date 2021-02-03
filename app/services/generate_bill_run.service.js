@@ -62,7 +62,7 @@ class GenerateBillRunService {
   static _calculateInvoices (invoices) {
     return {
       count: invoices.length,
-      value: invoices.reduce((sum, invoice) => sum + invoice.toJSON().netTotal, 0)
+      value: invoices.reduce((sum, invoice) => sum + invoice.$netTotal(), 0)
     }
   }
 
@@ -106,6 +106,7 @@ class GenerateBillRunService {
     await this._summariseCreditInvoices(billRun, trx)
     await this._summariseZeroValueInvoices(billRun, trx)
     await this._summariseDeminimisInvoices(billRun, trx)
+    await this._setGeneratedStatus(billRun, trx)
   }
 
   static async _summariseDebitInvoices (billRun, trx) {
@@ -145,6 +146,11 @@ class GenerateBillRunService {
     return billRun.$relatedQuery('invoices', trx)
       .modify('deminimis')
       .patch({ summarised: true })
+  }
+
+  static async _setGeneratedStatus (billRun, trx) {
+    await billRun.$query(trx)
+      .patch({ status: 'generated' })
   }
 }
 

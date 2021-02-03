@@ -99,14 +99,10 @@ class InvoiceModel extends BaseModel {
     }
   }
 
-  static get virtualAttributes () {
-    return ['netTotal']
-  }
-
   /**
-       * zeroValue modifier selects all invoices which are zero value.
-       */
-  netTotal () {
+   * zeroValue modifier selects all invoices which are zero value.
+   */
+  $netTotal () {
     return this.debitValue - this.creditValue
   }
 }
