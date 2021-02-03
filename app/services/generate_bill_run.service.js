@@ -16,10 +16,10 @@ const { BillRunModel, TransactionModel } = require('../models')
 
 class GenerateBillRunService {
   /**
-  * Initiates the generation of a bill run summary.
+  * Initiates bill run generation. Note that nothing is returned from the service -- the intention is that it will be
+  * called and left to run.
   *
-  * @param
-  * @returns
+  * @param {string} billRunId The id of the bill run to be generated.
   */
   static async go (billRunId) {
     const billRun = await BillRunModel.query().findById(billRunId)
