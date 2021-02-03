@@ -144,7 +144,7 @@ class GenerateBillRunService {
   static async _summariseZeroValueInvoices (billRun, trx) {
     const zeroCount = await billRun.$relatedQuery('invoices', trx)
       .modify('zeroValue')
-      .patch({ summarised: true })
+      .patch({ zeroValueInvoice: true })
 
     await billRun.$query(trx)
       .patch({ zeroCount })
@@ -153,7 +153,7 @@ class GenerateBillRunService {
   static async _summariseDeminimisInvoices (billRun, trx) {
     return billRun.$relatedQuery('invoices', trx)
       .modify('deminimis')
-      .patch({ summarised: true })
+      .patch({ deminimisInvoice: true })
   }
 
   static async _setGeneratedStatus (billRun, trx) {

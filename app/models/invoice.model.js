@@ -49,7 +49,7 @@ class InvoiceModel extends BaseModel {
    *
    * return billRun.$relatedQuery('invoices')
    *   .modify('zeroValue')
-   *   .patch({ summarised: true })
+   *   .patch({ zeroValueInvoice: true })
    */
   static get modifiers () {
     return {

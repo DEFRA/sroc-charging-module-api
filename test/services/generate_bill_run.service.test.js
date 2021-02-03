@@ -125,14 +125,14 @@ describe('Generate Bill Run Summary service', () => {
     })
 
     describe('When there is a zero value invoice', () => {
-      it("sets the 'summarised' flag to true", async () => {
+      it("sets the 'zeroValueInvoice' flag to true", async () => {
         await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 0, 0, 0, 0, 1)
         await GenerateBillRunService.go(billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
-        expect(result.summarised).to.equal(true)
+        expect(result.zeroValueInvoice).to.equal(true)
       })
 
       it('correctly summarises zero value invoices', async () => {
@@ -148,7 +148,7 @@ describe('Generate Bill Run Summary service', () => {
       })
 
       describe('and there is also a non-zero value invoice', () => {
-        it("leaves the 'summarised' flag of the non-zero value invoice as false", async () => {
+        it("leaves the 'zeroValueInvoice' flag of the non-zero value invoice as false", async () => {
           await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
           await InvoiceHelper.addInvoice(billRun.id, customerReference, 2020, 0, 0, 0, 0, 1)
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 200, 1)
@@ -156,45 +156,45 @@ describe('Generate Bill Run Summary service', () => {
 
           const result = await InvoiceModel.query().findById(invoice.id)
 
-          expect(result.summarised).to.equal(false)
+          expect(result.zeroValueInvoice).to.equal(false)
         })
       })
     })
 
     describe('When deminimis applies', () => {
-      it("sets the 'summarised' flag to true", async () => {
+      it("sets the 'deminimisInvoice' flag to true", async () => {
         await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 600, 1, 300, 0)
         await GenerateBillRunService.go(billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
-        expect(result.summarised).to.equal(true)
+        expect(result.deminimisInvoice).to.equal(true)
       })
     })
 
     describe('When deminimis does not apply', () => {
       describe('Because the invoice net value is over 500', () => {
-        it("leaves the 'summarised' flag as false", async () => {
+        it("leaves the 'deminimisInvoice' flag as false", async () => {
           await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 900, 1, 300, 0)
           await GenerateBillRunService.go(billRun.id)
 
           const result = await InvoiceModel.query().findById(invoice.id)
 
-          expect(result.summarised).to.equal(false)
+          expect(result.deminimisInvoice).to.equal(false)
         })
       })
 
       describe('Because the invoice net value is under 0', () => {
-        it("leaves the 'summarised' flag as false", async () => {
+        it("leaves the 'deminimisInvoice' flag as false", async () => {
           await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 100, 1, 300, 0)
           await GenerateBillRunService.go(billRun.id)
 
           const result = await InvoiceModel.query().findById(invoice.id)
 
-          expect(result.summarised).to.equal(false)
+          expect(result.deminimisInvoice).to.equal(false)
         })
       })
     })
