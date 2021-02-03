@@ -6,6 +6,9 @@ exports.seed = async function (knex) {
   await knex('authorised_systems').del()
   await knex('authorised_systems_regimes').del()
 
+  // Utilized by PostgreSQL, the returning method specifies which column should be returned by the insert method.
+  // It always returns an array which is way we return it to `result` before then setting `adminUserId` to `result[0]`.
+  // http://knexjs.org/#Builder-returning
   const result = await knex('authorised_systems')
     .returning('id')
     .insert({
