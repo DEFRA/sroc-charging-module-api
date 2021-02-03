@@ -64,52 +64,29 @@ describe('Generate Bill Run Summary service', () => {
     })
 
     it("sets the bill run status to 'generating'", async () => {
-      /**
-       * We want to know that the status changes during generation. To test this while assuming no knowledge about how
-       * it works (ie. mocking services it calls to introduce a delay) we read the initial bill run status, start
-       * GenerateBillRunService running, then monitor the status until it changes then test that the new status matches
-       * the expected result. We then wait until the status changes again to ensure that the process has finished before
-       * moving to the next test.
-       */
-
-      // const initialStatus = billRun.status
-
-      // GenerateBillRunService.go(billRun.id)
-
-      // let newStatus
-      // do {
-      //   const result = await BillRunModel.query().findById(billRun.id)
-      //   newStatus = result.status
-      // } while (newStatus === initialStatus)
-      // expect(newStatus).to.equal('generating')
-
-      // let endStatus
-      // do {
-      //   const result = await BillRunModel.query().findById(billRun.id)
-      //   endStatus = result.status
-      // } while (endStatus === newStatus)
-
-      // ----------------------------------------
-
       const spy = Sinon.spy(BillRunModel, 'query')
 
       await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
       await GenerateBillRunService.go(billRun.id)
 
-      // Iterate over each query call and put the raw SQL text into an array:
-      //   .getCall gives us the given call
-      //   The Objection function we spy on returns a query object so we get the returnValue
-      //   .toKnexQuery() gives us the underlying Knex query
-      //   .toString() gives us the SQL query as a string
+      /**
+       * Iterate over each query call to get the underlying SQL query:
+       *   .getCall gives us the given call
+       *   The Objection function we spy on returns a query object so we get the returnValue
+       *   .toKnexQuery() gives us the underlying Knex query
+       *   .toString() gives us the SQL query as a string
+       *
+       * Finally, we push query strings to the queries array if they set the status to 'generating'.
+       */
       const queries = []
       for (let call = 0; call < spy.callCount; call++) {
         const queryString = spy.getCall(call).returnValue.toKnexQuery().toString()
-        queries.push(queryString)
+        if (queryString.includes('set "status" = \'generating\'')) {
+          queries.push(queryString)
+        }
       }
 
-      // Filter out any that don't set the status to generating and we should end up with 1 query
-      const generatingQueries = queries.filter(query => query.includes('set "status" = \'generating\''))
-      expect(generatingQueries.length).to.equal(1)
+      expect(queries.length).to.equal(1)
     })
 
     it("sets the bill run status to 'generated' on completion", async () => {
