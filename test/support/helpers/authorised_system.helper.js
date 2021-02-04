@@ -3,6 +3,8 @@
 const { AuthenticationConfig } = require('../../../config')
 const { AuthorisedSystemModel } = require('../../../app/models')
 
+const RegimeHelper = require('./regime.helper')
+
 /**
  * Use to help with creating `AuthorisedSystem` records
  *
@@ -24,8 +26,9 @@ class AuthorisedSystemHelper {
    */
   static async addAdminSystem (clientId, name = 'admin', status = 'active') {
     const systemId = clientId || AuthenticationConfig.adminClientId
+    const regime = await RegimeHelper.addRegime('wrls', 'water')
 
-    return this._insertSystem(systemId, name, true, status)
+    return this._insertSystem(systemId, name, true, status, [regime])
   }
 
   /**

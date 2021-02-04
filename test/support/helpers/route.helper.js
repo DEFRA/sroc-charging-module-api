@@ -84,8 +84,8 @@ class RouteHelper {
     server.route({
       method: 'GET',
       path: '/test/{regimeId}/system',
-      handler: (_request, _h) => {
-        return { type: 'wrls' }
+      handler: (request, _h) => {
+        return { type: request.app.regime.slug }
       },
       options: {
         auth: {
