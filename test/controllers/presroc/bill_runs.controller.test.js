@@ -21,7 +21,8 @@ const {
   GeneralHelper,
   RegimeHelper,
   RulesServiceHelper,
-  SequenceCounterHelper
+  SequenceCounterHelper,
+  TransactionHelper
 } = require('../../support/helpers')
 
 const { CreateTransactionService } = require('../../../app/services')
@@ -139,12 +140,28 @@ describe('Presroc Bill Runs controller', () => {
     })
 
     describe('When the request is invalid', () => {
-      it('returns an error', async () => {
-        payload.periodStart = '01-APR-2021'
+      describe('because it contains invalid data', () => {
+        it('returns an error', async () => {
+          payload.periodStart = '01-APR-2021'
 
-        const response = await server.inject(options(authToken, payload, billRun.id))
+          const response = await server.inject(options(authToken, payload, billRun.id))
 
-        expect(response.statusCode).to.equal(422)
+          expect(response.statusCode).to.equal(422)
+        })
+      })
+
+      describe("because the request is for a duplicate transaction (matching clientId's)", () => {
+        it('returns an error', async () => {
+          // Add the first transaction
+          await TransactionHelper.addTransaction(billRun.id, { regimeId: regime.id, clientId: 'DOUBLEIMPACT' })
+
+          payload.clientId = 'DOUBLEIMPACT'
+
+          // Attempt to add the second
+          const response = await server.inject(options(authToken, payload, billRun.id))
+
+          expect(response.statusCode).to.equal(409)
+        })
       })
     })
   })
