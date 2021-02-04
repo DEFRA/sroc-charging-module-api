@@ -92,9 +92,6 @@ describe('Generate Bill Run Summary service', () => {
       await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
       await GenerateBillRunService.go(billRun.id)
 
-      // Small delay to ensure the bill run has been generated
-      await sleep(150)
-
       const result = await BillRunModel.query().findById(billRun.id)
 
       expect(result.status).to.equal('generated')
@@ -106,9 +103,6 @@ describe('Generate Bill Run Summary service', () => {
       await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
 
       await GenerateBillRunService.go(billRun.id)
-
-      // Small delay to ensure the bill run has been generated
-      await sleep(150)
 
       const result = await BillRunModel.query().findById(billRun.id)
 
@@ -123,9 +117,6 @@ describe('Generate Bill Run Summary service', () => {
 
       await GenerateBillRunService.go(billRun.id)
 
-      // Small delay to ensure the bill run has been generated
-      await sleep(150)
-
       const result = await BillRunModel.query().findById(billRun.id)
 
       expect(result.creditNoteCount).to.equal(1)
@@ -137,9 +128,6 @@ describe('Generate Bill Run Summary service', () => {
         await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 0, 0, 0, 0, 1)
         await GenerateBillRunService.go(billRun.id)
-
-        // Small delay to ensure the bill run has been generated
-        await sleep(150)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -153,9 +141,6 @@ describe('Generate Bill Run Summary service', () => {
 
         await GenerateBillRunService.go(billRun.id)
 
-        // Small delay to ensure the bill run has been generated
-        await sleep(150)
-
         const result = await BillRunModel.query().findById(billRun.id)
 
         expect(result.zeroCount).to.equal(1)
@@ -167,9 +152,6 @@ describe('Generate Bill Run Summary service', () => {
           await InvoiceHelper.addInvoice(billRun.id, customerReference, 2020, 0, 0, 0, 0, 1)
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 200, 1)
           await GenerateBillRunService.go(billRun.id)
-
-          // Small delay to ensure the bill run has been generated
-          await sleep(150)
 
           const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -184,9 +166,6 @@ describe('Generate Bill Run Summary service', () => {
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 600, 1, 300, 0)
         await GenerateBillRunService.go(billRun.id)
 
-        // Small delay to ensure the bill run has been generated
-        await sleep(150)
-
         const result = await InvoiceModel.query().findById(invoice.id)
 
         expect(result.deminimisInvoice).to.equal(true)
@@ -200,9 +179,6 @@ describe('Generate Bill Run Summary service', () => {
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 900, 1, 300, 0)
           await GenerateBillRunService.go(billRun.id)
 
-          // Small delay to ensure the bill run has been generated
-          await sleep(150)
-
           const result = await InvoiceModel.query().findById(invoice.id)
 
           expect(result.deminimisInvoice).to.equal(false)
@@ -215,9 +191,6 @@ describe('Generate Bill Run Summary service', () => {
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 100, 1, 300, 0)
           await GenerateBillRunService.go(billRun.id)
 
-          // Small delay to ensure the bill run has been generated
-          await sleep(150)
-
           const result = await InvoiceModel.query().findById(invoice.id)
 
           expect(result.deminimisInvoice).to.equal(false)
@@ -229,9 +202,6 @@ describe('Generate Bill Run Summary service', () => {
       it('saves the adjustment transaction to the db', async () => {
         await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun.id)
-
-        // Small delay to ensure the bill run has been generated
-        await sleep(150)
 
         const { transactions } = await BillRunModel.query()
           .findById(billRun.id)
@@ -246,42 +216,4 @@ describe('Generate Bill Run Summary service', () => {
       })
     })
   })
-
-  describe('When an invalid bill run ID is supplied', () => {
-    describe('because no matching bill run exists', () => {
-      it('throws an error', async () => {
-        const unknownBillRunId = GeneralHelper.uuid4()
-
-        const err = await expect(GenerateBillRunService.go(unknownBillRunId)).to.reject()
-
-        expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
-      })
-    })
-
-    describe('because the bill run is already generating', () => {
-      it('throws an error', async () => {
-        const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'generating')
-        const err = await expect(GenerateBillRunService.go(generatingBillRun.id)).to.reject()
-
-        expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal(`Summary for bill run ${generatingBillRun.id} is already being generated`)
-      })
-    })
-
-    describe('because the bill run is not editable', () => {
-      it('throws an error', async () => {
-        const notEditableStatus = 'NOT_EDITABLE'
-        const notEditableBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', notEditableStatus)
-        const err = await expect(GenerateBillRunService.go(notEditableBillRun.id)).to.reject()
-
-        expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal(`Bill run ${notEditableBillRun.id} cannot be edited because its status is ${notEditableStatus}.`)
-      })
-    })
-  })
-
-  function sleep (ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
 })
