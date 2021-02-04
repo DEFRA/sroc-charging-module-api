@@ -4,8 +4,6 @@
  * @module GenerateBillRunService
  */
 
-const Boom = require('@hapi/boom')
-
 // Files in the same folder cannot be destructured from index.js so have to be required directly
 const BillRunService = require('./bill_run.service')
 const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')

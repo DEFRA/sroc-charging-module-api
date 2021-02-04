@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module GenerateBillRunService
+ * @module ValidateBillRunService
  */
 
 const Boom = require('@hapi/boom')

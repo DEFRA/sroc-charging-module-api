@@ -14,12 +14,8 @@ const {
   BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
-  InvoiceHelper,
-  RegimeHelper,
-  RulesServiceHelper
+  RegimeHelper
 } = require('../support/helpers')
-
-const { BillRunModel, InvoiceModel } = require('../../app/models')
 
 const { CreateTransactionService } = require('../../app/services')
 
@@ -35,13 +31,10 @@ const { RulesService } = require('../../app/services')
 const { ValidateBillRunService } = require('../../app/services')
 
 describe('Validate Bill Run Summary service', () => {
-  const customerReference = 'A11111111A'
-
   let billRun
   let authorisedSystem
   let regime
   let payload
-  let rulesServiceStub
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -59,7 +52,7 @@ describe('Validate Bill Run Summary service', () => {
 
   describe('When a valid bill run ID is supplied', () => {
     beforeEach(async () => {
-      rulesServiceStub = Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
+      Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
     })
 
