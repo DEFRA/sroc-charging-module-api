@@ -48,10 +48,8 @@ class GenerateBillRunService {
   }
 
   static _sumInvoices (invoices) {
-  /**
-   * We only ever persist positive values -- however the net total of credit invoices is always negative so we use
-   * $absoluteNetTotal to enforce this.
-   */
+    // We only ever persist positive values -- however the net total of credit invoices is always negative so we use
+    // $absoluteNetTotal to enforce this.
     return invoices.reduce((sum, invoice) => sum + invoice.$absoluteNetTotal(), 0)
   }
 
@@ -75,10 +73,8 @@ class GenerateBillRunService {
   }
 
   static async _billRun (translator) {
-    /**
-     * We pass true to BillRunService to indicate we're calling it as part of the bill run generation process; this
-     * tells it that it's okay to update the summary even though its state is $generating.
-     */
+    // We pass true to BillRunService to indicate we're calling it as part of the bill run generation process; this
+    // tells it that it's okay to update the summary even though its state is $generating.
     return BillRunService.go(translator, true)
   }
 
@@ -123,12 +119,9 @@ class GenerateBillRunService {
   }
 
   static async _summariseZeroValueInvoices (billRun, trx) {
-    const zeroCount = await billRun.$relatedQuery('invoices', trx)
+    await billRun.$relatedQuery('invoices', trx)
       .modify('zeroValue')
       .patch({ zeroValueInvoice: true })
-
-    await billRun.$query(trx)
-      .patch({ zeroCount })
   }
 
   static async _summariseDeminimisInvoices (billRun, trx) {

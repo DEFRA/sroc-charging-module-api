@@ -26,10 +26,6 @@ class BillRunsController {
 
     return h.response().code(204)
   }
-
-  static async _startBillRunGeneration (billRunId) {
-    await GenerateBillRunService.go(billRunId)
-  }
 }
 
 module.exports = BillRunsController

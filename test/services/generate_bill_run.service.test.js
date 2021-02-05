@@ -123,7 +123,7 @@ describe('Generate Bill Run Summary service', () => {
       expect(result.creditNoteValue).to.equal(50000)
     })
 
-    describe('When there is a zero value invoice', () => {
+    describe('When there are zero value invoices', () => {
       it("sets the 'zeroValueInvoice' flag to true", async () => {
         await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 0, 0, 0, 0, 1)
@@ -137,13 +137,17 @@ describe('Generate Bill Run Summary service', () => {
       it('correctly summarises zero value invoices', async () => {
         rulesServiceStub.restore()
         RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 0)
+
+        // We add 2 zero value transactions so we can ensure the bill run contains the number of zero value transactions
+        // rather than invoices
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
 
         await GenerateBillRunService.go(billRun.id)
 
         const result = await BillRunModel.query().findById(billRun.id)
 
-        expect(result.zeroCount).to.equal(1)
+        expect(result.zeroCount).to.equal(2)
       })
 
       describe('and there is also a non-zero value invoice', () => {

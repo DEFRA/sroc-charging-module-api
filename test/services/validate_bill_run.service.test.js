@@ -97,5 +97,15 @@ describe('Validate Bill Run Summary service', () => {
         expect(err.output.payload.message).to.equal(`Bill run ${notEditableBillRun.id} cannot be edited because its status is ${notEditableStatus}.`)
       })
     })
+
+    describe('because the bill run is empty', () => {
+      it('throws an error', async () => {
+        const empty = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A')
+        const err = await expect(ValidateBillRunService.go(empty.id)).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal(`Summary for bill run ${empty.id} cannot be generated because it has no transactions.`)
+      })
+    })
   })
 })
