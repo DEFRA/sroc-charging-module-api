@@ -57,12 +57,12 @@ describe('Authorisation service', () => {
     })
 
     describe("and an 'admin' user", () => {
-      it("returns 'authorised' with no regime", async () => {
+      it("returns 'authorised' with a regime", async () => {
         const user = await AuthorisedSystemHelper.addAdminSystem()
         const result = await AuthorisationService.go(user, 'wrls')
 
         expect(result.authorised).to.equal(true)
-        expect(result.regime).to.equal(null)
+        expect(result.regime).to.contain('id')
       })
     })
 

@@ -66,20 +66,14 @@ describe('Regimes controller', () => {
 
         const payload = JSON.parse(response.payload)
 
+        // In order to authenticate we need to have an admin authorised system so we call
+        // `AuthorisedSystemHelper.addAdminSystem()` in the `beforeEach` block. To reflect the fact an admin user will
+        // always be seeded with authorisations for the existing regimes the helper automatically creates 'wrls' and
+        // links the admin user to it. This is why though it looks like only 3 have been added, we get 4 regimes back
+        // the first of which is 'wrls'
         expect(response.statusCode).to.equal(200)
-        expect(payload.length).to.equal(3)
-        expect(payload[0].slug).to.equal('ice')
-      })
-    })
-
-    describe('When there are no regimes', () => {
-      it('returns an empty list', async () => {
-        const response = await server.inject(options(authToken))
-
-        const payload = JSON.parse(response.payload)
-
-        expect(response.statusCode).to.equal(200)
-        expect(payload.length).to.equal(0)
+        expect(payload.length).to.equal(4)
+        expect(payload[1].slug).to.equal('ice')
       })
     })
   })
