@@ -15,7 +15,7 @@ class TransactionTranslator extends BaseTranslator {
       licenceNumber: Joi.string().max(150).required(),
       chargePeriod: Joi.string().required(),
       chargeElementId: Joi.string().allow('', null),
-      areaCode: Joi.string().uppercase().valid(...this._validAreas()),
+      areaCode: Joi.string().uppercase().valid(...this._validAreas()).required(),
       lineDescription: Joi.string().max(240).required(),
       subjectToMinimumCharge: Joi.boolean().default(false),
       clientId: Joi.string().allow('', null),
