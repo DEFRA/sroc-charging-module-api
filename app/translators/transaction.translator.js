@@ -9,7 +9,7 @@ class TransactionTranslator extends BaseTranslator {
       billRunId: Joi.string().required(),
       regimeId: Joi.string().required(),
       authorisedSystemId: Joi.string().required(),
-      region: Joi.string().uppercase().valid(...this._validRegions()),
+      region: Joi.string().uppercase().valid(...this._validRegions()).required(),
       customerReference: Joi.string().uppercase().max(12).required(),
       batchNumber: Joi.string().allow('', null),
       licenceNumber: Joi.string().max(150).required(),
