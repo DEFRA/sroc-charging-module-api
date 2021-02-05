@@ -79,14 +79,27 @@ describe('Transaction translator', () => {
     })
 
     describe.only('when the data is not valid', () => {
-      describe("because 'region' is not a valid region", () => {
-        it('throws an error', async () => {
-          const invalidPayload = {
-            ...payload,
-            region: 'INVALID_REGION'
-          }
+      describe("because 'region'", () => {
+        describe('is not a valid region', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              region: 'INVALID_REGION'
+            }
 
-          expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload
+            }
+            delete invalidPayload.region
+
+            expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
         })
       })
 
