@@ -78,7 +78,7 @@ describe('Transaction translator', () => {
       })
     })
 
-    describe.only('when the data is not valid', () => {
+    describe('when the data is not valid', () => {
       describe("because 'region'", () => {
         describe('is not a valid region', () => {
           it('throws an error', async () => {
