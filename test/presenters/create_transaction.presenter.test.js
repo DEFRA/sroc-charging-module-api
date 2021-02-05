@@ -35,9 +35,9 @@ describe('Create Transaction presenter', () => {
       expect(result.transaction.clientId).to.equal(data.clientId)
     })
 
-    describe("even if the 'clientId' is empty", () => {
+    describe("even if the 'clientId' is 'null'", () => {
       it('correctly generates a response', () => {
-        data.clientId = ''
+        data.clientId = null
         const presenter = new CreateTransactionPresenter(data)
         const result = presenter.go()
 
