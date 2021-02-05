@@ -78,7 +78,7 @@ describe('Transaction translator', () => {
       })
     })
 
-    describe('when the data is not valid', () => {
+    describe.only('when the data is not valid', () => {
       describe("because 'region' is not a valid region", () => {
         it('throws an error', async () => {
           const invalidPayload = {
@@ -90,14 +90,27 @@ describe('Transaction translator', () => {
         })
       })
 
-      describe("because 'areaCode' is not a valid area", () => {
-        it('throws an error', async () => {
-          const invalidPayload = {
-            ...payload,
-            areaCode: 'INVALID_AREA'
-          }
+      describe("because 'areaCode'", () => {
+        describe('is not a valid area', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              areaCode: 'INVALID_AREA'
+            }
 
-          expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload
+            }
+            delete invalidPayload.areaCode
+
+            expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
         })
       })
     })
