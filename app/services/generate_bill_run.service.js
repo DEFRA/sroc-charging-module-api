@@ -119,7 +119,7 @@ class GenerateBillRunService {
   }
 
   static async _summariseZeroValueInvoices (billRun, trx) {
-    await billRun.$relatedQuery('invoices', trx)
+    return billRun.$relatedQuery('invoices', trx)
       .modify('zeroValue')
       .patch({ zeroValueInvoice: true })
   }
