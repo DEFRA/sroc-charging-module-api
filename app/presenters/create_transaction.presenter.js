@@ -13,7 +13,8 @@ class CreateTransactionPresenter extends BasePresenter {
   _presentation (data) {
     return {
       transaction: {
-        id: data.id
+        id: data.id,
+        clientId: data.clientId
       }
     }
   }
