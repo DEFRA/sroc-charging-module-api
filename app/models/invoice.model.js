@@ -49,7 +49,7 @@ class InvoiceModel extends BaseModel {
    *
    * return billRun.$relatedQuery('invoices')
    *   .modify('zeroValue')
-   *   .patch({ summarised: true })
+   *   .patch({ zeroValueInvoice: true })
    */
   static get modifiers () {
     return {
@@ -79,8 +79,38 @@ class InvoiceModel extends BaseModel {
         query
           .where('subjectToMinimumChargeCreditValue', '<', MINIMUM_CHARGE_LIMIT)
           .orWhere('subjectToMinimumChargeDebitValue', '<', MINIMUM_CHARGE_LIMIT)
+      },
+
+      /**
+       * credit modifier selects all invoices which are credits
+       */
+      credit (query) {
+        query
+          .whereRaw('credit_value > debit_value')
+      },
+
+      /**
+       * debit modifier selects all invoices which are debits
+       */
+      debit (query) {
+        query
+          .whereRaw('debit_value > credit_value')
       }
     }
+  }
+
+  /**
+   * netTotal method provides the net total of the invoice (debit value - credit value)
+   */
+  $netTotal () {
+    return this.debitValue - this.creditValue
+  }
+
+  /**
+   * absoluteNetTotal method provides the net total of the invoice as a positive value
+   */
+  $absoluteNetTotal () {
+    return Math.abs(this.debitValue - this.creditValue)
   }
 }
 

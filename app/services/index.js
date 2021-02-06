@@ -21,6 +21,7 @@ const ObjectCleaningService = require('./object_cleaning.service')
 const RulesService = require('./rules.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
 const ShowRegimeService = require('./show_regime.service')
+const ValidateBillRunService = require('./validate_bill_run.service')
 
 module.exports = {
   AuthorisationService,
@@ -43,5 +44,6 @@ module.exports = {
   RulesService,
   NextBillRunNumberService,
   ShowAuthorisedSystemService,
-  ShowRegimeService
+  ShowRegimeService,
+  ValidateBillRunService
 }

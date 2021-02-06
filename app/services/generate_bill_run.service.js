@@ -4,8 +4,6 @@
  * @module GenerateBillRunService
  */
 
-const Boom = require('@hapi/boom')
-
 // Files in the same folder cannot be destructured from index.js so have to be required directly
 const BillRunService = require('./bill_run.service')
 const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')
@@ -16,14 +14,17 @@ const { BillRunModel, TransactionModel } = require('../models')
 
 class GenerateBillRunService {
   /**
-  * Initiates the generation of a bill run summary.
+  * Initiates bill run generation. Note that nothing is returned from the service -- the intention is that it will be
+  * called and left to run.
   *
-  * @param
-  * @returns
+  * @param {string} billRunId The id of the bill run to be generated.
   */
   static async go (billRunId) {
     const billRun = await BillRunModel.query().findById(billRunId)
-    await this._validateBillRun(billRun, billRunId)
+    await this._generateBillRun(billRun)
+  }
+
+  static async _generateBillRun (billRun) {
     await this._setGeneratingStatus(billRun)
 
     const minimumValueAdjustments = await CalculateMinimumChargeService.go(billRun)
@@ -32,31 +33,24 @@ class GenerateBillRunService {
       await this._saveTransactions(minimumValueAdjustments, trx)
       await this._summariseBillRun(billRun, trx)
     })
-
-    return billRun
-  }
-
-  static _validateBillRun (billRun, billRunId) {
-    if (!billRun) {
-      throw Boom.badData(`Bill run ${billRunId} is unknown.`)
-    }
-
-    if (billRun.$generating()) {
-      throw Boom.conflict(`Summary for bill run ${billRun.id} is already being generated`)
-    }
-
-    if (!billRun.$editable()) {
-      throw Boom.badData(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
-    }
-
-    if (billRun.$empty()) {
-      throw Boom.badData(`Summary for bill run ${billRun.id} cannot be generated because it has no transactions.`)
-    }
   }
 
   static async _setGeneratingStatus (billRun) {
     await billRun.$query()
       .patch({ status: 'generating' })
+  }
+
+  static _calculateInvoices (invoices) {
+    return {
+      count: invoices.length,
+      value: this._sumInvoices(invoices)
+    }
+  }
+
+  static _sumInvoices (invoices) {
+    // We only ever persist positive values -- however the net total of credit invoices is always negative so we use
+    // $absoluteNetTotal to enforce this.
+    return invoices.reduce((sum, invoice) => sum + invoice.$absoluteNetTotal(), 0)
   }
 
   static async _saveTransactions (transactions, trx) {
@@ -79,10 +73,8 @@ class GenerateBillRunService {
   }
 
   static async _billRun (translator) {
-    /**
-     * We pass true to BillRunService to indicate we're calling it as part of the bill run generation process; this
-     * tells it that it's okay to update the summary even though its state is $generating.
-     */
+    // We pass true to BillRunService to indicate we're calling it as part of the bill run generation process; this
+    // tells it that it's okay to update the summary even though its state is $generating.
     return BillRunService.go(translator, true)
   }
 
@@ -95,20 +87,52 @@ class GenerateBillRunService {
   }
 
   static async _summariseBillRun (billRun, trx) {
+    await this._summariseDebitInvoices(billRun, trx)
+    await this._summariseCreditInvoices(billRun, trx)
     await this._summariseZeroValueInvoices(billRun, trx)
     await this._summariseDeminimisInvoices(billRun, trx)
+    await this._setGeneratedStatus(billRun, trx)
+  }
+
+  static async _summariseDebitInvoices (billRun, trx) {
+    const { count: invoiceCount, value: invoiceValue } = await this._calculateInvoices(
+      await billRun.$relatedQuery('invoices').modify('debit')
+    )
+
+    await billRun.$query(trx)
+      .patch({
+        invoiceCount,
+        invoiceValue
+      })
+  }
+
+  static async _summariseCreditInvoices (billRun, trx) {
+    const { count: creditNoteCount, value: creditNoteValue } = await this._calculateInvoices(
+      await billRun.$relatedQuery('invoices').modify('credit')
+    )
+
+    await billRun.$query(trx)
+      .patch({
+        creditNoteCount,
+        creditNoteValue
+      })
   }
 
   static async _summariseZeroValueInvoices (billRun, trx) {
     return billRun.$relatedQuery('invoices', trx)
       .modify('zeroValue')
-      .patch({ summarised: true })
+      .patch({ zeroValueInvoice: true })
   }
 
   static async _summariseDeminimisInvoices (billRun, trx) {
     return billRun.$relatedQuery('invoices', trx)
       .modify('deminimis')
-      .patch({ summarised: true })
+      .patch({ deminimisInvoice: true })
+  }
+
+  static async _setGeneratedStatus (billRun, trx) {
+    await billRun.$query(trx)
+      .patch({ status: 'generated' })
   }
 }
 

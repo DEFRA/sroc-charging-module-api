@@ -4,7 +4,6 @@
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
-const Nock = require('nock')
 
 const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
@@ -42,15 +41,9 @@ describe('Generate Bill Run Summary service', () => {
   let authorisedSystem
   let regime
   let payload
+  let rulesServiceStub
 
   beforeEach(async () => {
-    // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
-    // the interception rather than remove it after the first request
-    Nock(RulesServiceHelper.url)
-      .post(() => true)
-      .reply(200, rulesServiceResponse)
-      .persist()
-
     await DatabaseHelper.clean()
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
@@ -66,77 +59,152 @@ describe('Generate Bill Run Summary service', () => {
 
   describe('When a valid bill run ID is supplied', () => {
     beforeEach(async () => {
-      Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
+      rulesServiceStub = Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
     })
 
     it("sets the bill run status to 'generating'", async () => {
-      const result = await GenerateBillRunService.go(billRun.id)
+      const spy = Sinon.spy(BillRunModel, 'query')
+      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+      await GenerateBillRunService.go(billRun.id)
 
-      expect(result.status).to.equal('generating')
+      /**
+       * Iterate over each query call to get the underlying SQL query:
+       *   .getCall gives us the given call
+       *   The Objection function we spy on returns a query object so we get the returnValue
+       *   .toKnexQuery() gives us the underlying Knex query
+       *   .toString() gives us the SQL query as a string
+       *
+       * Finally, we push query strings to the queries array if they set the status to 'generating'.
+       */
+      const queries = []
+      for (let call = 0; call < spy.callCount; call++) {
+        const queryString = spy.getCall(call).returnValue.toKnexQuery().toString()
+        if (queryString.includes('set "status" = \'generating\'')) {
+          queries.push(queryString)
+        }
+      }
+
+      expect(queries.length).to.equal(1)
     })
 
-    describe('When there is a zero value invoice', () => {
-      it("sets the 'summarised' flag to true", async () => {
+    it("sets the bill run status to 'generated' on completion", async () => {
+      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+      await GenerateBillRunService.go(billRun.id)
+
+      const result = await BillRunModel.query().findById(billRun.id)
+
+      expect(result.status).to.equal('generated')
+    })
+
+    it('correctly summarises debit invoices', async () => {
+      rulesServiceStub.restore()
+      RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 500)
+      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+
+      await GenerateBillRunService.go(billRun.id)
+
+      const result = await BillRunModel.query().findById(billRun.id)
+
+      expect(result.invoiceCount).to.equal(1)
+      expect(result.invoiceValue).to.equal(50000)
+    })
+
+    it('correctly summarises credit invoices', async () => {
+      rulesServiceStub.restore()
+      RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 500)
+      await CreateTransactionService.go({ ...payload, credit: true }, billRun.id, authorisedSystem, regime)
+
+      await GenerateBillRunService.go(billRun.id)
+
+      const result = await BillRunModel.query().findById(billRun.id)
+
+      expect(result.creditNoteCount).to.equal(1)
+      expect(result.creditNoteValue).to.equal(50000)
+    })
+
+    describe('When there are zero value invoices', () => {
+      it("sets the 'zeroValueInvoice' flag to true", async () => {
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 0, 0, 0, 0, 1)
         await GenerateBillRunService.go(billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
-        expect(result.summarised).to.equal(true)
+        expect(result.zeroValueInvoice).to.equal(true)
+      })
+
+      it('correctly summarises zero value invoices', async () => {
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 0)
+
+        // We add 2 zero value transactions so we can ensure the bill run contains the number of zero value transactions
+        // rather than invoices
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+
+        await GenerateBillRunService.go(billRun.id)
+
+        const result = await BillRunModel.query().findById(billRun.id)
+
+        expect(result.zeroCount).to.equal(2)
       })
 
       describe('and there is also a non-zero value invoice', () => {
-        it("leaves the 'summarised' flag of the non-zero value invoice as false", async () => {
+        it("leaves the 'zeroValueInvoice' flag of the non-zero value invoice as false", async () => {
+          await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
           await InvoiceHelper.addInvoice(billRun.id, customerReference, 2020, 0, 0, 0, 0, 1)
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 200, 1)
           await GenerateBillRunService.go(billRun.id)
 
           const result = await InvoiceModel.query().findById(invoice.id)
 
-          expect(result.summarised).to.equal(false)
+          expect(result.zeroValueInvoice).to.equal(false)
         })
       })
     })
 
     describe('When deminimis applies', () => {
-      it("sets the 'summarised' flag to true", async () => {
+      it("sets the 'deminimisInvoice' flag to true", async () => {
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 600, 1, 300, 0)
         await GenerateBillRunService.go(billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
-        expect(result.summarised).to.equal(true)
+        expect(result.deminimisInvoice).to.equal(true)
       })
     })
 
     describe('When deminimis does not apply', () => {
       describe('Because the invoice net value is over 500', () => {
-        it("leaves the 'summarised' flag as false", async () => {
+        it("leaves the 'deminimisInvoice' flag as false", async () => {
+          await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 900, 1, 300, 0)
           await GenerateBillRunService.go(billRun.id)
 
           const result = await InvoiceModel.query().findById(invoice.id)
 
-          expect(result.summarised).to.equal(false)
+          expect(result.deminimisInvoice).to.equal(false)
         })
       })
 
       describe('Because the invoice net value is under 0', () => {
-        it("leaves the 'summarised' flag as false", async () => {
+        it("leaves the 'deminimisInvoice' flag as false", async () => {
+          await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 100, 1, 300, 0)
           await GenerateBillRunService.go(billRun.id)
 
           const result = await InvoiceModel.query().findById(invoice.id)
 
-          expect(result.summarised).to.equal(false)
+          expect(result.deminimisInvoice).to.equal(false)
         })
       })
     })
 
     describe('When minimum charge applies', () => {
       it('saves the adjustment transaction to the db', async () => {
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun.id)
 
         const { transactions } = await BillRunModel.query()
@@ -149,40 +217,6 @@ describe('Generate Bill Run Summary service', () => {
         })
 
         expect(adjustmentTransactions.length).to.equal(1)
-      })
-    })
-  })
-
-  describe('When an invalid bill run ID is supplied', () => {
-    describe('because no matching bill run exists', () => {
-      it('throws an error', async () => {
-        const unknownBillRunId = GeneralHelper.uuid4()
-
-        const err = await expect(GenerateBillRunService.go(unknownBillRunId)).to.reject()
-
-        expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
-      })
-    })
-
-    describe('because the bill run is already generating', () => {
-      it('throws an error', async () => {
-        const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'generating')
-        const err = await expect(GenerateBillRunService.go(generatingBillRun.id)).to.reject()
-
-        expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal(`Summary for bill run ${generatingBillRun.id} is already being generated`)
-      })
-    })
-
-    describe('because the bill run is not editable', () => {
-      it('throws an error', async () => {
-        const notEditableStatus = 'NOT_EDITABLE'
-        const notEditableBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', notEditableStatus)
-        const err = await expect(GenerateBillRunService.go(notEditableBillRun.id)).to.reject()
-
-        expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal(`Bill run ${notEditableBillRun.id} cannot be edited because its status is ${notEditableStatus}.`)
       })
     })
   })

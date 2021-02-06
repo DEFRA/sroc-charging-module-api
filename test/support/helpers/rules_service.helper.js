@@ -21,6 +21,23 @@ class RulesServiceHelper {
 
     return `${applicationPath}/${rulesetPath}`
   }
+
+  /**
+   * Mock the rules service to return a specific charge value.
+   *
+   * @param {object} Sinon The instance of Sinon used in test.
+   * @param {object} rulesServiceResponse The rules service response fixture used in test.
+   * @param {integer} chargeValue The charge value to be returned from the rules service.
+   */
+  static mockValue (Sinon, RulesService, rulesServiceResponse, chargeValue) {
+    Sinon.stub(RulesService, 'go').returns({
+      ...rulesServiceResponse,
+      WRLSChargingResponse: {
+        ...rulesServiceResponse.WRLSChargingResponse,
+        chargeValue
+      }
+    })
+  }
 }
 
 module.exports = RulesServiceHelper
