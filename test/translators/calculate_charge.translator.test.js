@@ -199,6 +199,36 @@ describe('Calculate Charge translator', () => {
 
         expect(result).to.not.be.an.error()
       })
+
+      describe("if 'compensationCharge' is true", () => {
+        describe("and 'eiucSource' is missing", () => {
+          it('still does not throw an error', async () => {
+            const validPayload = {
+              ...payload,
+              compensationCharge: false
+            }
+            delete validPayload.eiucSource
+
+            const result = new CalculateChargeTranslator(data(validPayload))
+
+            expect(result).to.not.be.an.error()
+          })
+        })
+
+        describe("and 'waterUndertaker' is missing", () => {
+          it('still does not throw an error', async () => {
+            const validPayload = {
+              ...payload,
+              compensationCharge: false
+            }
+            delete validPayload.waterUndertaker
+
+            const result = new CalculateChargeTranslator(data(validPayload))
+
+            expect(result).to.not.be.an.error()
+          })
+        })
+      })
     })
 
     describe('when the data is not valid', () => {
@@ -225,18 +255,6 @@ describe('Calculate Charge translator', () => {
         })
       })
 
-      describe("because 'eiucSource' is empty when 'compensationCharge' is true", () => {
-        it('throws an error', async () => {
-          const invalidPayload = {
-            ...payload,
-            compensationCharge: true,
-            eiucSource: ''
-          }
-
-          expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
-        })
-      })
-
       describe("because 'periodStart' and 'periodEnd' are not in the same financial year", () => {
         it('throws an error', async () => {
           const invalidPayload = {
@@ -246,6 +264,32 @@ describe('Calculate Charge translator', () => {
           }
 
           expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
+      describe("because 'compensationCharge' is true", () => {
+        describe("and 'eiucSource' is missing", () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              compensationCharge: true
+            }
+            delete invalidPayload.eiucSource
+
+            expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe("and 'waterUndertaker' is missing", () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              compensationCharge: true
+            }
+            delete invalidPayload.waterUndertaker
+
+            expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
         })
       })
     })
