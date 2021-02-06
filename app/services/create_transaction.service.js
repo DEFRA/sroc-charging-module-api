@@ -50,8 +50,8 @@ class CreateTransactionService {
    *
    * The translator represents our transaction until we persist it. A transaction encompasses properties we get from the
    * client making the request and the results we get back from the charge service. This is why we assign the calculated
-   * charge to the translator. It gives us a complete representation of the transaction ready for persisting to the
-   * database.
+   * charge to the translator. It gives us a complete representation of the transaction, fully validated and parsed
+   * ready for persisting to the database.
    */
   static _applyCalculatedCharge (translator, calculatedCharge) {
     Object.assign(translator, calculatedCharge)
