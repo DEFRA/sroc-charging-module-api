@@ -39,7 +39,7 @@
 class AuthorisationService {
   static async go (user = null, regimeSlug = null) {
     const result = { authorised: false, regime: null }
-    if (this._endpointHasNoRegime(regimeSlug) || this._userIsAnAdmin(user)) {
+    if (this._endpointHasNoRegime(regimeSlug)) {
       result.authorised = true
     } else {
       const regime = await this._userAuthorisedRegime(user, regimeSlug)

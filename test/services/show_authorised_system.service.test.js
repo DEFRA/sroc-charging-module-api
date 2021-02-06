@@ -22,14 +22,16 @@ describe('Show Authorised System service', () => {
 
   describe('When there is a matching authorised system', () => {
     describe("and it's the 'admin'", () => {
-      it('returns a result with no related regimes', async () => {
-        // Add a regime to give assurance the result is not based on the table being empty
-        await RegimeHelper.addRegime('ice', 'Ice')
+      it('returns a result that includes a list of related regimes', async () => {
         const authorisedSystem = await AuthorisedSystemHelper.addAdminSystem()
 
         const result = await ShowAuthorisedSystemService.go(authorisedSystem.id)
 
-        expect(result.regimes.length).to.equal(0)
+        // The admin user's authorisations are created when it's seeded into the db. So, the AuthorisedSystemHelper
+        // automatically handles creating the regime as part of `addAdminSystem()` to replicate how the system would
+        // be setup.
+        expect(result.regimes.length).to.equal(1)
+        expect(result.regimes[0].slug).to.equal('wrls')
       })
     })
 
