@@ -15,7 +15,8 @@ const {
   MissingPayloadPlugin,
   PayloadCleanerPlugin,
   RouterPlugin,
-  StopPlugin
+  StopPlugin,
+  VersionInfoPlugin
 } = require('./app/plugins')
 
 exports.deployment = async start => {
@@ -37,6 +38,7 @@ exports.deployment = async start => {
   await server.register(InvalidCharactersPlugin)
   await server.register(PayloadCleanerPlugin)
   await server.register(DbErrorsPlugin)
+  await server.register(VersionInfoPlugin)
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
 
   // Register non-production plugins

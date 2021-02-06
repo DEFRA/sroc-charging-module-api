@@ -12,6 +12,7 @@ const MissingPayloadPlugin = require('./missing_payload.plugin')
 const PayloadCleanerPlugin = require('./payload_cleaner.plugin')
 const RouterPlugin = require('./router.plugin')
 const StopPlugin = require('./stop.plugin')
+const VersionInfoPlugin = require('./version_info.plugin')
 
 // These plugins are only used when the app is running in NODE_ENV=development. This means we don't want them or their
 // dependencies available in production. The problem is when we build the image any dev dependencies won't be installed.
@@ -39,5 +40,6 @@ module.exports = {
   MissingPayloadPlugin,
   PayloadCleanerPlugin,
   RouterPlugin,
-  StopPlugin
+  StopPlugin,
+  VersionInfoPlugin
 }
