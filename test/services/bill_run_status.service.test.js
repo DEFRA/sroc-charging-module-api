@@ -35,7 +35,7 @@ describe('Bill run status service', () => {
   describe("When there is no matching 'bill run'", () => {
     it('throws an error', async () => {
       const unknownBillRunId = GeneralHelper.uuid4()
-      const err = await BillRunStatusService.go(unknownBillRunId)
+      const err = await expect(BillRunStatusService.go(unknownBillRunId)).to.reject()
 
       expect(err).to.be.an.error()
       expect(err.output.payload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)

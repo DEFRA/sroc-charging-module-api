@@ -4,6 +4,8 @@
  * @module BillRunStatusService
  */
 
+const Boom = require('@hapi/boom')
+
 const { BillRunModel } = require('../models')
 
 /**
@@ -25,7 +27,13 @@ class BillRunStatusService {
   }
 
   static async _billRun (billRunId) {
-    return BillRunModel.query().findById(billRunId)
+    const billRun = await BillRunModel.query().findById(billRunId)
+
+    if (billRun) {
+      return billRun
+    }
+
+    throw Boom.notFound(`Bill run ${billRunId} is unknown.`)
   }
 
   static _response (billRun) {
