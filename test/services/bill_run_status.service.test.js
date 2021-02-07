@@ -31,4 +31,14 @@ describe('Bill run status service', () => {
       expect(result.status).to.equal(billRun.status)
     })
   })
+
+  describe("When there is no matching 'bill run'", () => {
+    it('throws an error', async () => {
+      const unknownBillRunId = GeneralHelper.uuid4()
+      const err = await BillRunStatusService.go(unknownBillRunId)
+
+      expect(err).to.be.an.error()
+      expect(err.output.payload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
+    })
+  })
 })
