@@ -228,14 +228,12 @@ describe('Presroc Bill Runs controller', () => {
     })
 
     describe('When the request is valid', () => {
-      describe('because the summary has not yet been generated', () => {
-        it("returns success status 200 and 'endpoint not implemented'", async () => {
-          const response = await server.inject(options(authToken, billRun.id))
-          const responsePayload = JSON.parse(response.payload)
+      it("returns success status 200 and 'endpoint not implemented'", async () => {
+        const response = await server.inject(options(authToken, billRun.id))
+        const responsePayload = JSON.parse(response.payload)
 
-          expect(response.statusCode).to.equal(200)
-          expect(responsePayload.status).to.equal('endpoint not implemented')
-        })
+        expect(response.statusCode).to.equal(200)
+        expect(responsePayload.status).to.equal('endpoint not implemented')
       })
     })
   })
