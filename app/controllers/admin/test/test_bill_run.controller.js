@@ -51,10 +51,8 @@ class TestBillRunController {
           customerReference: customerReference,
           periodStart: '01-APR-2018',
           periodEnd: '31-MAR-2019',
-          licences: [{
-            licenceNumber: licenceNumber,
-            type: options.type
-          }]
+          licenceNumber: licenceNumber,
+          type: options.type
         })
       }
     })
@@ -63,16 +61,13 @@ class TestBillRunController {
   }
 
   static async _invoiceEngine (invoice, authorisedSystem, regime) {
-    for (let i = 0; i < invoice.licences.length; i++) {
-      const licence = invoice.licences[i]
-      if (licence.type === 'mixed') {
-        let data = TestBillRunController._simpleDebitTransaction(invoice, licence)
-        await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
-        await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
+    if (invoice.type === 'mixed') {
+      let data = TestBillRunController._simpleDebitTransaction(invoice)
+      await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
+      await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
 
-        data = TestBillRunController._simpleCreditTransaction(invoice, licence)
-        await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
-      }
+      data = TestBillRunController._simpleCreditTransaction(invoice)
+      await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
     }
   }
 
@@ -90,18 +85,18 @@ class TestBillRunController {
     }
   }
 
-  static _simpleDebitTransaction (invoice, licence) {
-    return TestBillRunController._baseTransaction(invoice, licence, '50.22', 91.82)
+  static _simpleDebitTransaction (invoice) {
+    return TestBillRunController._baseTransaction(invoice, '50.22', 91.82)
   }
 
-  static _simpleCreditTransaction (invoice, licence) {
-    return TestBillRunController._baseTransaction(invoice, licence, '20.5865', 44.32, true)
+  static _simpleCreditTransaction (invoice) {
+    return TestBillRunController._baseTransaction(invoice, '20.5865', 44.32, true)
   }
 
-  static _baseTransaction (invoice, licence, volume, chargeValue, credit = false) {
+  static _baseTransaction (invoice, volume, chargeValue, credit = false) {
     const result = {
       payload: {
-        ...TestBillRunController._basePayload(invoice, licence),
+        ...TestBillRunController._basePayload(invoice),
         credit,
         volume
       },
@@ -114,7 +109,7 @@ class TestBillRunController {
     return result
   }
 
-  static _basePayload (invoice, licence) {
+  static _basePayload (invoice) {
     return {
       ...requestFixtures.simple,
       region: invoice.region,
@@ -122,7 +117,7 @@ class TestBillRunController {
       periodStart: invoice.periodStart,
       periodEnd: invoice.periodEnd,
       chargePeriod: `${invoice.periodStart} - ${invoice.periodEnd}`,
-      licenceNumber: licence.licenceNumber
+      licenceNumber: invoice.licenceNumber
     }
   }
 
