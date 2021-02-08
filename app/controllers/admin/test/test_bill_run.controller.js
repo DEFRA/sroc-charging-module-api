@@ -11,23 +11,29 @@ class TestBillRunController {
   static async generate (req, h) {
     const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
 
-    TestBillRunController._generateBillRun(result.billRun.id, req.payload.region, req.auth.credentials.user, req.app.regime)
+    TestBillRunController._generateBillRun(
+      result.billRun.id,
+      req.payload.region,
+      req.auth.credentials.user,
+      req.app.regime,
+      2
+    )
     return h.response(result).code(201)
   }
 
-  static async _generateBillRun (billRunId, region, user, regime) {
-    const invoices = await TestBillRunController._invoiceGenerator(billRunId, region)
+  static async _generateBillRun (billRunId, region, user, regime, invoiceCount) {
+    const invoices = await TestBillRunController._invoiceGenerator(billRunId, region, invoiceCount)
 
     for (let i = 0; i < invoices.length; i++) {
       await TestBillRunController._invoiceEngine(invoices[i], user, regime)
     }
   }
 
-  static _invoiceGenerator (billRunId, region) {
+  static _invoiceGenerator (billRunId, region, invoiceCount) {
     const invoices = []
     let customerIndex = 0
 
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < invoiceCount; i++) {
       customerIndex += 1
       const customerReference = `CM${customerIndex.toString().padStart(9, '0')}`
       const licenceReference = `SROC/TF${i.toString().padStart(4, '0')}`
