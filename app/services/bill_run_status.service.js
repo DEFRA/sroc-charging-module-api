@@ -7,6 +7,7 @@
 const Boom = require('@hapi/boom')
 
 const { BillRunModel } = require('../models')
+const { BillRunStatusPresenter } = require('../presenters')
 
 /**
  * Use to locate a bill run, grab its status and return a simple response that contains it.
@@ -37,9 +38,9 @@ class BillRunStatusService {
   }
 
   static _response (billRun) {
-    return {
-      status: billRun.status
-    }
+    const presenter = new BillRunStatusPresenter(billRun)
+
+    return presenter.go()
   }
 }
 
