@@ -26,6 +26,12 @@ class BillRunsController {
 
     return h.response().code(204)
   }
+
+  static async status (_req, h) {
+    const result = { status: 'endpoint not implemented' }
+
+    return h.response(result).code(200)
+  }
 }
 
 module.exports = BillRunsController
