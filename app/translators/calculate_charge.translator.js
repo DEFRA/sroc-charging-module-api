@@ -18,6 +18,7 @@ class CalculateChargeTranslator extends BaseTranslator {
     // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year
     this._validateFinancialYear()
 
+    // Additional post-getter validation to ensure section126Factor has no more than 3 decimal places
     this._validateSection126Factor()
   }
 
@@ -37,6 +38,23 @@ class CalculateChargeTranslator extends BaseTranslator {
     }
   }
 
+  /**
+   * Validate `section126Factor` precision is no more than 3 decimal places
+   *
+   * When we export this value to the transaction file we generate for SOP, it must match an agreed format of no more
+   * than 3 decimal places. This precision is enforced on us, and it's our responsibility to ensure the file is correct.
+   *
+   * We could have automatically rounded the the value sent by the client by using `Joi.number.precision()` in our
+   * main schema for `section126Factor`. But then we would be responsible for amending a value used to generate a
+   * charge to a customer.
+   *
+   * So, instead we believe it's important to reject the request and ask the client system to provide a value rounded to
+   * 3 decimal places. The only way we can get `Joi.number.precision()` to error instead of round a value is to also
+   * tell Joi not to convert values as part of the validation. This is why we need this custom validator, so we can
+   * pass in `{ convert: false }` when the validation is performed.
+   *
+   * @throws {ValidationError}
+   */
   _validateSection126Factor () {
     const schema = Joi.object({
       section126Factor: Joi.number().precision(3)
