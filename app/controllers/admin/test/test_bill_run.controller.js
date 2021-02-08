@@ -10,7 +10,7 @@ const { presroc: chargeFixtures } = require('../../../../test/support/fixtures/c
 class TestBillRunController {
   static async generate (req, h) {
     const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
-    const licenceMix = [
+    const invoiceMix = [
       {
         type: 'mixed',
         count: 2
@@ -22,57 +22,44 @@ class TestBillRunController {
       req.payload.region,
       req.auth.credentials.user,
       req.app.regime,
-      2,
-      licenceMix
+      invoiceMix
     )
     return h.response(result).code(201)
   }
 
-  static async _generateBillRun (billRunId, region, user, regime, invoiceCount, licenceMix) {
-    const invoices = await TestBillRunController._invoiceGenerator(billRunId, region, invoiceCount, licenceMix)
+  static async _generateBillRun (billRunId, region, user, regime, invoiceMix) {
+    const invoices = await TestBillRunController._invoiceGenerator(billRunId, region, invoiceMix)
 
     for (let i = 0; i < invoices.length; i++) {
       await TestBillRunController._invoiceEngine(invoices[i], user, regime)
     }
   }
 
-  static _invoiceGenerator (billRunId, region, invoiceCount, licenceMix) {
+  static _invoiceGenerator (billRunId, region, invoiceMix) {
     const invoices = []
     let customerIndex = 0
 
-    for (let i = 0; i < invoiceCount; i++) {
-      customerIndex += 1
-      const customerReference = `CM${customerIndex.toString().padStart(9, '0')}`
+    invoiceMix.forEach(options => {
+      for (let i = 0; i < options.count; i++) {
+        customerIndex += 1
+        const customerReference = `CM${customerIndex.toString().padStart(9, '0')}`
+        const licenceNumber = `SROC/TF${customerIndex.toString().padStart(4, '0')}/01`
 
-      invoices.push({
-        billRunId,
-        region,
-        customerReference: customerReference,
-        periodStart: '01-APR-2018',
-        periodEnd: '31-MAR-2019',
-        licences: TestBillRunController._licenceGenerator(customerIndex, licenceMix)
-      })
-    }
-
-    return invoices
-  }
-
-  static _licenceGenerator (customerIndex, licenceMix) {
-    const licenceReference = `SROC/TF${customerIndex.toString().padStart(4, '0')}`
-    const licences = []
-
-    licenceMix.forEach((licence) => {
-      for (let j = 0; j < licence.count; j++) {
-        const licenceIndex = (j + 1).toString().padStart(2, 0)
-
-        licences.push({
-          licenceNumber: `${licenceReference}/${licenceIndex}`,
-          type: licence.type
+        invoices.push({
+          billRunId,
+          region,
+          customerReference: customerReference,
+          periodStart: '01-APR-2018',
+          periodEnd: '31-MAR-2019',
+          licences: [{
+            licenceNumber: licenceNumber,
+            type: options.type
+          }]
         })
       }
     })
 
-    return licences
+    return invoices
   }
 
   static async _invoiceEngine (invoice, authorisedSystem, regime) {
@@ -80,6 +67,7 @@ class TestBillRunController {
       const licence = invoice.licences[i]
       if (licence.type === 'mixed') {
         let data = TestBillRunController._simpleDebitTransaction(invoice, licence)
+        await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
         await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
 
         data = TestBillRunController._simpleCreditTransaction(invoice, licence)
