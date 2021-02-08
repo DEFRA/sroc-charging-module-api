@@ -30,6 +30,11 @@ const routes = [
     method: 'POST',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/generate',
     handler: PresrocBillRunsController.generate
+  },
+  {
+    method: 'GET',
+    path: '/v2/{regimeId}/bill-runs/{billRunId}/status',
+    handler: PresrocBillRunsController.status
   }
 ]
 

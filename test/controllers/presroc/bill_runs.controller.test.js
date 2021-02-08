@@ -213,4 +213,28 @@ describe('Presroc Bill Runs controller', () => {
       })
     })
   })
+
+  describe('Get bill run status: GET /v2/{regimeId}/bill-runs/{billRunId}/status', () => {
+    const options = (token, billRunId) => {
+      return {
+        method: 'GET',
+        url: `/v2/wrls/bill-runs/${billRunId}/status`,
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    beforeEach(async () => {
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    })
+
+    describe('When the request is valid', () => {
+      it("returns success status 200 and 'endpoint not implemented'", async () => {
+        const response = await server.inject(options(authToken, billRun.id))
+        const responsePayload = JSON.parse(response.payload)
+
+        expect(response.statusCode).to.equal(200)
+        expect(responsePayload.status).to.equal('endpoint not implemented')
+      })
+    })
+  })
 })
