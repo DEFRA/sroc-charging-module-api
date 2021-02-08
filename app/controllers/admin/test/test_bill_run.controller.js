@@ -25,38 +25,26 @@ class TestBillRunController {
 
   static _invoiceGenerator (billRunId, region) {
     const invoices = []
+    let customerIndex = 0
 
-    for (let i = 1; i <= 2; i++) {
+    for (let i = 0; i < 2; i++) {
+      customerIndex += 1
+      const customerReference = `CM${customerIndex.toString().padStart(9, '0')}`
+      const licenceReference = `SROC/TF${i.toString().padStart(4, '0')}`
+
       invoices.push({
         billRunId,
         region,
-        customerReference: `CM${i.toString().padStart(9, '0')}`,
-        periodStart: '01-APR-2017',
-        periodEnd: '31-MAR-2018',
-        licences: [
-          {
-            licenceNumber: `SROC/TF${i.toString().padStart(4, '0')}/01`,
-            type: 'mixed'
-          },
-          {
-            licenceNumber: `SROC/TF${i.toString().padStart(4, '0')}/02`,
-            type: 'mixed'
-          }
-        ]
-      })
-      invoices.push({
-        billRunId,
-        region,
-        customerReference: `CM${i.toString().padStart(9, '0')}`,
+        customerReference: customerReference,
         periodStart: '01-APR-2018',
         periodEnd: '31-MAR-2019',
         licences: [
           {
-            licenceNumber: `SROC/TF${i.toString().padStart(4, '0')}/01`,
+            licenceNumber: `${licenceReference}/01`,
             type: 'mixed'
           },
           {
-            licenceNumber: `SROC/TF${i.toString().padStart(4, '0')}/02`,
+            licenceNumber: `${licenceReference}/02`,
             type: 'mixed'
           }
         ]
@@ -70,7 +58,10 @@ class TestBillRunController {
     for (let i = 0; i < invoice.licences.length; i++) {
       const licence = invoice.licences[i]
       if (licence.type === 'mixed') {
-        const data = TestBillRunController._debitTransaction(invoice, licence)
+        let data = TestBillRunController._simpleDebitTransaction(invoice, licence)
+        await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
+
+        data = TestBillRunController._simpleCreditTransaction(invoice, licence)
         await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
       }
     }
@@ -90,28 +81,49 @@ class TestBillRunController {
     }
   }
 
-  static _debitTransaction (invoice, licence) {
+  static _simpleDebitTransaction (invoice, licence) {
+    return TestBillRunController._baseTransaction(invoice, licence, '50.22', 91.82)
+  }
+
+  static _simpleCreditTransaction (invoice, licence) {
+    return TestBillRunController._baseTransaction(invoice, licence, '20.5865', 44.32, true)
+  }
+
+  static _baseTransaction (invoice, licence, volume, chargeValue, credit = false) {
     const result = {
       payload: {
-        ...requestFixtures.simple,
-        region: invoice.region,
-        customerReference: invoice.customerReference,
-        periodStart: invoice.periodStart,
-        periodEnd: invoice.periodEnd,
-        chargePeriod: `${invoice.periodStart} - ${invoice.periodEnd}`,
-        licenceNumber: licence.licenceNumber,
-        volume: '50.22'
+        ...TestBillRunController._basePayload(invoice, licence),
+        credit,
+        volume
       },
       response: {
-        ...chargeFixtures.simple.rulesService,
-        WRLSChargingResponse: {
-          ...chargeFixtures.simple.rulesService.WRLSChargingResponse,
-          chargeValue: 91.82
-        }
+        ...TestBillRunController._baseResponse()
       }
     }
+    result.response.WRLSChargingResponse.chargeValue = chargeValue
 
     return result
+  }
+
+  static _basePayload (invoice, licence) {
+    return {
+      ...requestFixtures.simple,
+      region: invoice.region,
+      customerReference: invoice.customerReference,
+      periodStart: invoice.periodStart,
+      periodEnd: invoice.periodEnd,
+      chargePeriod: `${invoice.periodStart} - ${invoice.periodEnd}`,
+      licenceNumber: licence.licenceNumber
+    }
+  }
+
+  static _baseResponse () {
+    return {
+      ...chargeFixtures.simple.rulesService,
+      WRLSChargingResponse: {
+        ...chargeFixtures.simple.rulesService.WRLSChargingResponse
+      }
+    }
   }
 }
 
