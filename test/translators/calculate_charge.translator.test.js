@@ -292,6 +292,17 @@ describe('Calculate Charge translator', () => {
           })
         })
       })
+
+      describe("because 'section126Factor' has more than 3 decimal places", () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            section126Factor: 1.1234
+          }
+
+          expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
     })
   })
 })
