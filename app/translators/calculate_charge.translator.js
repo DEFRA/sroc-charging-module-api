@@ -38,15 +38,18 @@ class CalculateChargeTranslator extends BaseTranslator {
   }
 
   _validateSection126Factor () {
-    // The property defaults to 1.0 if not set in the request. There is no point converting the object to a string and
-    // then testing it if the value matches the default.
-    if (this.regimeValue11 !== 1.0) {
-      const valueAsString = this.regimeValue11.toString()
-      const regex = new RegExp(/^\d+\.\d{0,3}$/)
+    const schema = Joi.object({
+      section126Factor: Joi.number().precision(3)
+    })
 
-      if (!regex.test(valueAsString)) {
-        throw Boom.badData(`section126Factor value of ${valueAsString} has a precision greater than 3`)
-      }
+    const data = {
+      section126Factor: this.regimeValue11
+    }
+
+    const { error } = schema.validate(data, { convert: false })
+
+    if (error) {
+      throw Boom.badData(error)
     }
   }
 

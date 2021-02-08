@@ -297,7 +297,7 @@ describe('Calculate Charge translator', () => {
         it('throws an error', async () => {
           const invalidPayload = {
             ...payload,
-            section126Factor: 1.1234
+            section126Factor: 1.1239
           }
 
           expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
