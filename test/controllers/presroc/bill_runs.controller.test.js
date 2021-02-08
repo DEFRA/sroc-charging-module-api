@@ -223,17 +223,28 @@ describe('Presroc Bill Runs controller', () => {
       }
     }
 
-    beforeEach(async () => {
-      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-    })
-
     describe('When the request is valid', () => {
-      it("returns success status 200 and 'endpoint not implemented'", async () => {
+      it('returns success status 200', async () => {
+        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+
         const response = await server.inject(options(authToken, billRun.id))
         const responsePayload = JSON.parse(response.payload)
 
         expect(response.statusCode).to.equal(200)
-        expect(responsePayload.status).to.equal('endpoint not implemented')
+        expect(responsePayload.status).to.equal(billRun.status)
+      })
+    })
+
+    describe('When the request is invalid', () => {
+      describe('because the bill run does not exist', () => {
+        it('returns error status 404', async () => {
+          const unknownBillRunId = GeneralHelper.uuid4()
+          const response = await server.inject(options(authToken, unknownBillRunId))
+          const responsePayload = JSON.parse(response.payload)
+
+          expect(response.statusCode).to.equal(404)
+          expect(responsePayload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
+        })
       })
     })
   })
