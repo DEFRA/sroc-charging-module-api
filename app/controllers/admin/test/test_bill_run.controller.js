@@ -13,7 +13,8 @@ class TestBillRunController {
     const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
     const invoiceMix = [
       { type: 'mixed-invoice', count: 2 },
-      { type: 'mixed-credit', count: 2 }
+      { type: 'mixed-credit', count: 2 },
+      { type: 'zero-value', count: 2 }
     ]
 
     TestBillRunController._generateBillRun(
@@ -73,6 +74,9 @@ class TestBillRunController {
       case 'mixed-credit':
         await TestBillRunController._mixedCredit(invoiceData)
         break
+      case 'zero-value':
+        await TestBillRunController._zeroValueInvoice(invoiceData)
+        break
       default:
         throw Boom.badRequest(`Unknown invoice type '${invoice.type}'`)
     }
@@ -95,6 +99,19 @@ class TestBillRunController {
     } finally {
       Nock.cleanAll()
     }
+  }
+
+  static async _zeroValueInvoice (invoiceData) {
+    const transactionData = [
+      invoiceData.invoice,
+      '0',
+      0
+    ]
+
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, false)
+    await TestBillRunController._addTransaction(invoiceData)
+    await TestBillRunController._addTransaction(invoiceData)
+    await TestBillRunController._addTransaction(invoiceData)
   }
 
   static async _mixedInvoice (invoiceData) {
