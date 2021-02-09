@@ -77,8 +77,14 @@ class InvoiceModel extends BaseModel {
        */
       minimumCharge (query) {
         query
-          .where('subjectToMinimumChargeCreditValue', '<', MINIMUM_CHARGE_LIMIT)
-          .orWhere('subjectToMinimumChargeDebitValue', '<', MINIMUM_CHARGE_LIMIT)
+          .where(() => {
+            this.where('subjectToMinimumChargeCreditValue', '>', 0)
+              .where('subjectToMinimumChargeCreditValue', '<', MINIMUM_CHARGE_LIMIT)
+          })
+          .orWhere(() => {
+            this.where('subjectToMinimumChargeDebitValue', '>', 0)
+              .where('subjectToMinimumChargeDebitValue', '<', MINIMUM_CHARGE_LIMIT)
+          })
       },
 
       /**
