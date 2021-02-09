@@ -31,10 +31,10 @@ describe.only('Invoice Model', () => {
 
         beforeEach(async () => {
           deminimisInvoice = await InvoiceHelper.addInvoice(billRunId, 'CMA0000001', 2020, 0, 0, 1, 350, 0)
-          await InvoiceHelper.addInvoice(billRunId, 'CMA0000002', 2020, 0, 0, 1, 501, 0)
-          await InvoiceHelper.addInvoice(billRunId, 'CMA0000003', 2020, 1, 350, 0, 0, 0)
-          await InvoiceHelper.addInvoice(billRunId, 'CMA0000004', 2020, 1, 501, 0, 0, 0)
-          await InvoiceHelper.addInvoice(billRunId, 'CMA0000005', 2020, 0, 0, 0, 0, 1)
+          await InvoiceHelper.addInvoice(billRunId, 'CMA0000002', 2020, 0, 0, 1, 501, 0) // debit more than 500
+          await InvoiceHelper.addInvoice(billRunId, 'CMA0000003', 2020, 1, 350, 0, 0, 0) // credit less than 500
+          await InvoiceHelper.addInvoice(billRunId, 'CMA0000004', 2020, 1, 501, 0, 0, 0) // credit more than 500
+          await InvoiceHelper.addInvoice(billRunId, 'CMA0000005', 2020, 0, 0, 0, 0, 1) // zero value invoice
         })
 
         it("only returns those which are 'deminimis'", async () => {
@@ -47,10 +47,10 @@ describe.only('Invoice Model', () => {
 
       describe('when there no matching invoices', () => {
         beforeEach(async () => {
-          await InvoiceHelper.addInvoice(billRunId, 'CMA0000002', 2020, 0, 0, 1, 501, 0)
-          await InvoiceHelper.addInvoice(billRunId, 'CMA0000003', 2020, 1, 350, 0, 0, 0)
-          await InvoiceHelper.addInvoice(billRunId, 'CMA0000004', 2020, 1, 501, 0, 0, 0)
-          await InvoiceHelper.addInvoice(billRunId, 'CMA0000005', 2020, 0, 0, 0, 0, 1)
+          await InvoiceHelper.addInvoice(billRunId, 'CMA0000002', 2020, 0, 0, 1, 501, 0) // debit more than 500
+          await InvoiceHelper.addInvoice(billRunId, 'CMA0000003', 2020, 1, 350, 0, 0, 0) // credit less than 500
+          await InvoiceHelper.addInvoice(billRunId, 'CMA0000004', 2020, 1, 501, 0, 0, 0) // credit more than 500
+          await InvoiceHelper.addInvoice(billRunId, 'CMA0000005', 2020, 0, 0, 0, 0, 1) // zero value invoice
         })
 
         it('returns nothing', async () => {
