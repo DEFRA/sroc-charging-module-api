@@ -27,7 +27,7 @@ const routes = [
     handler: PresrocBillRunsController.createTransaction
   },
   {
-    method: 'POST',
+    method: 'PATCH',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/generate',
     handler: PresrocBillRunsController.generate
   },
