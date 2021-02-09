@@ -56,7 +56,7 @@ class CalculateMinimumChargeService {
     const adjustments = []
 
     // Generate credit and debit adjustments if needed and add them to the adjustments array.
-    // In some scenarios null be added to the array -- we will filter these out before we return.
+    // In some scenarios null will be added to the array -- we will filter these out before we return.
     for (const licence of licences) {
       if (licence.subjectToMinimumChargeCreditValue) {
         adjustments.push(await this._adjustment(licence, licence.creditValue, true))
