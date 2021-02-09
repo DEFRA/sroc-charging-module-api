@@ -204,7 +204,7 @@ describe('Generate Bill Run Summary service', () => {
 
     describe('When minimum charge applies', () => {
       it('saves the adjustment transaction to the db', async () => {
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go({ ...payload, subjectToMinimumCharge: true }, billRun.id, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun.id)
 
         const { transactions } = await BillRunModel.query()
