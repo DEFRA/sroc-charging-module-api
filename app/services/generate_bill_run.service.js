@@ -27,12 +27,16 @@ class GenerateBillRunService {
     const billRun = await BillRunModel.query().findById(billRunId)
     await this._generateBillRun(billRun)
 
-    // If a logger object was passed in, measure how long we took and use it to log the time
+    // If a logger object was passed in, calculate the time taken and log it
     if (logger) {
-      const endTime = process.hrtime(startTime)
-      const timeInMs = this._formatTime(endTime)
-      this._logTime(timeInMs, logger)
+      await this._calculateAndLogTime(startTime, logger)
     }
+  }
+
+  static async _calculateAndLogTime (startTime, logger) {
+    const endTime = process.hrtime(startTime)
+    const timeInMs = this._formatTime(endTime)
+    this._logTime(timeInMs, logger)
   }
 
   /**
