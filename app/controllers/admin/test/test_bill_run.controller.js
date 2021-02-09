@@ -11,10 +11,7 @@ class TestBillRunController {
   static async generate (req, h) {
     const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
     const invoiceMix = [
-      {
-        type: 'mixed',
-        count: 2
-      }
+      { type: 'mixed-invoice', count: 2 }
     ]
 
     TestBillRunController._generateBillRun(
@@ -62,18 +59,12 @@ class TestBillRunController {
 
   static async _invoiceEngine (invoice, authorisedSystem, regime) {
     const invoiceData = {
-      data: null,
       invoice,
       authorisedSystem,
       regime
     }
-    if (invoice.type === 'mixed') {
-      invoiceData.data = TestBillRunController._simpleDebitTransaction(invoice)
-      await TestBillRunController._addTransaction(invoiceData)
-      await TestBillRunController._addTransaction(invoiceData)
-
-      invoiceData.data = TestBillRunController._simpleCreditTransaction(invoice)
-      await TestBillRunController._addTransaction(invoiceData)
+    if (invoice.type === 'mixed-invoice') {
+      await TestBillRunController._mixedInvoice(invoiceData)
     }
   }
 
@@ -94,6 +85,15 @@ class TestBillRunController {
     } finally {
       Nock.cleanAll()
     }
+  }
+
+  static async _mixedInvoice (invoiceData) {
+    invoiceData.data = TestBillRunController._simpleDebitTransaction(invoiceData.invoice)
+    await TestBillRunController._addTransaction(invoiceData)
+    await TestBillRunController._addTransaction(invoiceData)
+
+    invoiceData.data = TestBillRunController._simpleCreditTransaction(invoiceData.invoice)
+    await TestBillRunController._addTransaction(invoiceData)
   }
 
   static _simpleDebitTransaction (invoice) {
