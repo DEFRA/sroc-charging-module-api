@@ -61,25 +61,36 @@ class TestBillRunController {
   }
 
   static async _invoiceEngine (invoice, authorisedSystem, regime) {
+    const invoiceData = {
+      data: null,
+      invoice,
+      authorisedSystem,
+      regime
+    }
     if (invoice.type === 'mixed') {
-      let data = TestBillRunController._simpleDebitTransaction(invoice)
-      await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
-      await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
+      invoiceData.data = TestBillRunController._simpleDebitTransaction(invoice)
+      await TestBillRunController._addTransaction(invoiceData)
+      await TestBillRunController._addTransaction(invoiceData)
 
-      data = TestBillRunController._simpleCreditTransaction(invoice)
-      await TestBillRunController._addTransaction(invoice.billRunId, authorisedSystem, regime, data)
+      invoiceData.data = TestBillRunController._simpleCreditTransaction(invoice)
+      await TestBillRunController._addTransaction(invoiceData)
     }
   }
 
-  static async _addTransaction (billRunId, authorisedSystem, regime, data) {
+  static async _addTransaction (invoiceData) {
     try {
       // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
       // the interception rather than remove it after the first request
       Nock(RulesServiceHelper.url)
         .post(() => true)
-        .reply(200, data.response)
+        .reply(200, invoiceData.data.response)
         .persist()
-      await CreateTransactionService.go(data.payload, billRunId, authorisedSystem, regime)
+      await CreateTransactionService.go(
+        invoiceData.data.payload,
+        invoiceData.invoice.billRunId,
+        invoiceData.authorisedSystem,
+        invoiceData.regime
+      )
     } finally {
       Nock.cleanAll()
     }
