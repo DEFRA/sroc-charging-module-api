@@ -99,7 +99,7 @@ describe('Generate Bill Run Summary service', () => {
 
     it('correctly summarises debit invoices', async () => {
       rulesServiceStub.restore()
-      RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 500)
+      RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 50000)
       await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
 
       await GenerateBillRunService.go(billRun.id)
@@ -112,7 +112,7 @@ describe('Generate Bill Run Summary service', () => {
 
     it('correctly summarises credit invoices', async () => {
       rulesServiceStub.restore()
-      RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 500)
+      RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 50000)
       await CreateTransactionService.go({ ...payload, credit: true }, billRun.id, authorisedSystem, regime)
 
       await GenerateBillRunService.go(billRun.id)
