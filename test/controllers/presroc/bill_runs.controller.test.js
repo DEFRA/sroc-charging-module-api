@@ -166,15 +166,14 @@ describe('Presroc Bill Runs controller', () => {
     })
   })
 
-  describe('Generate a bill run summary: POST /v2/{regimeId}/bill-runs/{billRunId}/generate', () => {
+  describe('Generate a bill run summary: PATCH /v2/{regimeId}/bill-runs/{billRunId}/generate', () => {
     let payload
 
-    const options = (token, payload, billRunId) => {
+    const options = (token, billRunId) => {
       return {
-        method: 'POST',
+        method: 'PATCH',
         url: `/v2/wrls/bill-runs/${billRunId}/generate`,
-        headers: { authorization: `Bearer ${token}` },
-        payload: payload
+        headers: { authorization: `Bearer ${token}` }
       }
     }
 
@@ -192,7 +191,7 @@ describe('Presroc Bill Runs controller', () => {
           const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
           await CreateTransactionService.go(requestPayload, billRun.id, authorisedSystem, regime)
 
-          const response = await server.inject(options(authToken, requestPayload, billRun.id))
+          const response = await server.inject(options(authToken, billRun.id))
 
           expect(response.statusCode).to.equal(204)
         })
@@ -204,7 +203,7 @@ describe('Presroc Bill Runs controller', () => {
         it('returns error status 409', async () => {
           const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, payload.region, 'generating')
 
-          const response = await server.inject(options(authToken, payload, generatingBillRun.id))
+          const response = await server.inject(options(authToken, generatingBillRun.id))
           const responsePayload = JSON.parse(response.payload)
 
           expect(response.statusCode).to.equal(409)
