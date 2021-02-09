@@ -68,8 +68,10 @@ class InvoiceModel extends BaseModel {
        */
       deminimis (query) {
         query
-          .whereRaw('credit_value - debit_value > 0')
-          .whereRaw('credit_value - debit_value < ?', DEMINIMIS_LIMIT)
+          .whereRaw('debit_value - credit_value > 0')
+          .whereRaw('debit_value - credit_value < ?', DEMINIMIS_LIMIT)
+          .whereRaw('subject_to_minimum_charge_credit_value = 0')
+          .whereRaw('subject_to_minimum_charge_debit_value = 0')
       },
 
       /**
