@@ -2,6 +2,7 @@
 
 const { CreateBillRunService, CreateTransactionService } = require('../../../services')
 
+const Boom = require('@hapi/boom')
 const Nock = require('nock')
 const { RulesServiceHelper } = require('../../../../test/support/helpers')
 const { presroc: requestFixtures } = require('../../../../test/support/fixtures/create_transaction')
@@ -11,7 +12,8 @@ class TestBillRunController {
   static async generate (req, h) {
     const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
     const invoiceMix = [
-      { type: 'mixed-invoice', count: 2 }
+      { type: 'mixed-invoice', count: 2 },
+      { type: 'mixed-credit', count: 2 }
     ]
 
     TestBillRunController._generateBillRun(
@@ -63,8 +65,16 @@ class TestBillRunController {
       authorisedSystem,
       regime
     }
-    if (invoice.type === 'mixed-invoice') {
-      await TestBillRunController._mixedInvoice(invoiceData)
+
+    switch (invoice.type) {
+      case 'mixed-invoice':
+        await TestBillRunController._mixedInvoice(invoiceData)
+        break
+      case 'mixed-credit':
+        await TestBillRunController._mixedCredit(invoiceData)
+        break
+      default:
+        throw Boom.badRequest(`Unknown invoice type '${invoice.type}'`)
     }
   }
 
@@ -88,20 +98,25 @@ class TestBillRunController {
   }
 
   static async _mixedInvoice (invoiceData) {
-    invoiceData.data = TestBillRunController._simpleDebitTransaction(invoiceData.invoice)
+    invoiceData.data = TestBillRunController._simpleTransaction(invoiceData.invoice)
     await TestBillRunController._addTransaction(invoiceData)
     await TestBillRunController._addTransaction(invoiceData)
 
-    invoiceData.data = TestBillRunController._simpleCreditTransaction(invoiceData.invoice)
+    invoiceData.data = TestBillRunController._simpleTransaction(invoiceData.invoice, true)
     await TestBillRunController._addTransaction(invoiceData)
   }
 
-  static _simpleDebitTransaction (invoice) {
-    return TestBillRunController._baseTransaction(invoice, '50.22', 91.82)
+  static async _mixedCredit (invoiceData) {
+    invoiceData.data = TestBillRunController._simpleTransaction(invoiceData.invoice, true)
+    await TestBillRunController._addTransaction(invoiceData)
+    await TestBillRunController._addTransaction(invoiceData)
+
+    invoiceData.data = TestBillRunController._simpleTransaction(invoiceData.invoice)
+    await TestBillRunController._addTransaction(invoiceData)
   }
 
-  static _simpleCreditTransaction (invoice) {
-    return TestBillRunController._baseTransaction(invoice, '20.5865', 44.32, true)
+  static _simpleTransaction (invoice, credit = false) {
+    return TestBillRunController._baseTransaction(invoice, '50.22', 91.82, credit)
   }
 
   static _baseTransaction (invoice, volume, chargeValue, credit = false) {
