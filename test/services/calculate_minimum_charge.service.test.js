@@ -134,7 +134,7 @@ describe('Calculate Minimum Charge service', () => {
       })
     })
 
-    describe('because minimum charge doesn\'t apply to this transaction', () => {
+    describe("because minimum charge doesn't apply to this transaction", () => {
       it('returns an empty array', async () => {
         await CreateTransactionService.go({ ...payload, subjectToMinimumCharge: false }, billRun.id, authorisedSystem, regime)
 
