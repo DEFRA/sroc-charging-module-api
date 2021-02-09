@@ -98,28 +98,36 @@ class TestBillRunController {
   }
 
   static async _mixedInvoice (invoiceData) {
-    invoiceData.data = TestBillRunController._simpleTransaction(invoiceData.invoice)
+    const transactionData = [
+      invoiceData.invoice,
+      '50.22',
+      91.82
+    ]
+
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, false)
     await TestBillRunController._addTransaction(invoiceData)
     await TestBillRunController._addTransaction(invoiceData)
 
-    invoiceData.data = TestBillRunController._simpleTransaction(invoiceData.invoice, true)
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, true)
     await TestBillRunController._addTransaction(invoiceData)
   }
 
   static async _mixedCredit (invoiceData) {
-    invoiceData.data = TestBillRunController._simpleTransaction(invoiceData.invoice, true)
+    const transactionData = [
+      invoiceData.invoice,
+      '50.22',
+      91.82
+    ]
+
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, true)
     await TestBillRunController._addTransaction(invoiceData)
     await TestBillRunController._addTransaction(invoiceData)
 
-    invoiceData.data = TestBillRunController._simpleTransaction(invoiceData.invoice)
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, false)
     await TestBillRunController._addTransaction(invoiceData)
   }
 
-  static _simpleTransaction (invoice, credit = false) {
-    return TestBillRunController._baseTransaction(invoice, '50.22', 91.82, credit)
-  }
-
-  static _baseTransaction (invoice, volume, chargeValue, credit = false) {
+  static _transactionData (invoice, volume, chargeValue, credit) {
     const result = {
       payload: {
         ...TestBillRunController._basePayload(invoice),
