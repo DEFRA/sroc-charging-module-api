@@ -220,7 +220,7 @@ describe('Generate Bill Run Summary service', () => {
       })
     })
 
-    it.only('calls the info method of the provided logger', async () => {
+    it('calls the info method of the provided logger', async () => {
       const loggerFake = { info: Sinon.fake() }
       await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
 
