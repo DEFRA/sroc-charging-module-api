@@ -14,7 +14,8 @@ class TestBillRunController {
     const invoiceMix = [
       { type: 'mixed-invoice', count: 2 },
       { type: 'mixed-credit', count: 2 },
-      { type: 'zero-value', count: 2 }
+      { type: 'zero-value', count: 2 },
+      { type: 'deminimis', count: 2 }
     ]
 
     TestBillRunController._generateBillRun(
@@ -77,6 +78,9 @@ class TestBillRunController {
       case 'zero-value':
         await TestBillRunController._zeroValueInvoice(invoiceData)
         break
+      case 'deminimis':
+        await TestBillRunController._deminimisInvoice(invoiceData)
+        break
       default:
         throw Boom.badRequest(`Unknown invoice type '${invoice.type}'`)
     }
@@ -106,6 +110,19 @@ class TestBillRunController {
       invoiceData.invoice,
       '0',
       0
+    ]
+
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, false)
+    await TestBillRunController._addTransaction(invoiceData)
+    await TestBillRunController._addTransaction(invoiceData)
+    await TestBillRunController._addTransaction(invoiceData)
+  }
+
+  static async _deminimisInvoice (invoiceData) {
+    const transactionData = [
+      invoiceData.invoice,
+      '0.5865',
+      1.26
     ]
 
     invoiceData.data = TestBillRunController._transactionData(...transactionData, false)
