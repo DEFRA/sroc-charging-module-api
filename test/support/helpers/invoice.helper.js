@@ -14,6 +14,11 @@ class InvoiceHelper {
    * @param {integer} [debitCount] Number of debits in the invoice.
    * @param {integer} [debitValue] Total value of debits in the invoice.
    * @param {integer} [zeroCount] Number of zero value transactions in the invoice.
+   * @param {integer} [subjectToMinimumChargeCount] Number of transactions flagged as 'miniumum charge' in the invoice.
+   * @param {integer} [subjectToMinimumChargeCreditValue] Total value of minimum charge credit transactions in the
+   *  invoice.
+   * @param {integer} [subjectToMinimumChargeDebitValue] Total value of minimum charge debit transactions in the
+   *  invoice.
    *
    * @returns {module:InvoiceModel} The newly created instance of `InvoiceModel`.
    */
@@ -25,7 +30,10 @@ class InvoiceHelper {
     creditValue = 0,
     debitCount = 0,
     debitValue = 0,
-    zeroCount = 0
+    zeroCount = 0,
+    subjectToMinimumChargeCount = 0,
+    subjectToMinimumChargeCreditValue = 0,
+    subjectToMinimumChargeDebitValue = 0
   ) {
     return InvoiceModel.query()
       .insert({
@@ -36,7 +44,10 @@ class InvoiceHelper {
         creditValue,
         debitCount,
         debitValue,
-        zeroCount
+        zeroCount,
+        subjectToMinimumChargeCount,
+        subjectToMinimumChargeCreditValue,
+        subjectToMinimumChargeDebitValue
       })
       .returning('*')
   }
