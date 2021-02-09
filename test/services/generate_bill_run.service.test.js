@@ -219,5 +219,14 @@ describe('Generate Bill Run Summary service', () => {
         expect(adjustmentTransactions.length).to.equal(1)
       })
     })
+
+    it.only('calls the info method of the provided logger', async () => {
+      const loggerFake = { info: Sinon.fake() }
+      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+
+      await GenerateBillRunService.go(billRun.id, loggerFake)
+
+      expect(loggerFake.info.callCount).to.equal(1)
+    })
   })
 })
