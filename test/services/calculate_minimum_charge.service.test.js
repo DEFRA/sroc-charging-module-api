@@ -4,7 +4,6 @@
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
-const Nock = require('nock')
 
 const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
@@ -27,6 +26,9 @@ const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charg
 
 const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
+// Things we need to stub
+const { RulesService } = require('../../app/services')
+
 const MINIMUM_CHARGE_LIMIT = 2500
 
 // Thing under test
@@ -36,27 +38,24 @@ describe('Calculate Minimum Charge service', () => {
   let authorisedSystem
   let regime
   let payload
+  let rulesServiceStub
 
   beforeEach(async () => {
-    // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
-    // the interception rather than remove it after the first request
-    Nock(RulesServiceHelper.url)
-      .post(() => true)
-      .reply(200, rulesServiceResponse)
-      .persist()
+    rulesServiceStub = RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 500)
 
     await DatabaseHelper.clean()
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
 
-    // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
-    // the valid tests we can use it straight as
-    payload = GeneralHelper.cloneObject(requestFixtures.simple)
+    // Clone the request fixture and add subjectToMinimumCharge: true to reduce setup in tests
+    payload = {
+      ...GeneralHelper.cloneObject(requestFixtures.simple),
+      subjectToMinimumCharge: true
+    }
   })
 
   afterEach(async () => {
     Sinon.restore()
-    Nock.cleanAll()
   })
 
   describe('When a minimum charge adjustment is required', () => {
@@ -120,29 +119,30 @@ describe('Calculate Minimum Charge service', () => {
 
     beforeEach(async () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-      payload.subjectToMinimumCharge = true
-
-      // We change the rules service mocking so that a large transaction value is returned.
-      Nock.cleanAll()
-      Nock(RulesServiceHelper.url)
-        .post(() => true)
-        .reply(200, {
-          ...rulesServiceResponse,
-          WRLSChargingResponse: {
-            ...rulesServiceResponse.WRLSChargingResponse,
-            chargeValue: 5000
-          }
-        })
-        .persist()
     })
 
-    it('returns an empty array', async () => {
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+    describe('because the value is over the minimum charge limit', () => {
+      it('returns an empty array', async () => {
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
 
-      const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
+        const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
 
-      expect(calculatedMinimumCharges).to.be.be.an.instanceof(Array)
-      expect(calculatedMinimumCharges).to.be.empty()
+        expect(calculatedMinimumCharges).to.be.be.an.instanceof(Array)
+        expect(calculatedMinimumCharges).to.be.empty()
+      })
+    })
+
+    describe("because minimum charge doesn't apply to this transaction", () => {
+      it('returns an empty array', async () => {
+        await CreateTransactionService.go({ ...payload, subjectToMinimumCharge: false }, billRun.id, authorisedSystem, regime)
+
+        const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
+
+        expect(calculatedMinimumCharges).to.be.be.an.instanceof(Array)
+        expect(calculatedMinimumCharges).to.be.empty()
+      })
     })
   })
 

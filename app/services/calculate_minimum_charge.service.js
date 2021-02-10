@@ -55,15 +55,19 @@ class CalculateMinimumChargeService {
   static async _createAdjustmentTransactions (licences) {
     const adjustments = []
 
-    /**
-     * Generate credit and debit adjustments and add them to the adjustments array.
-     * If no adjustment is needed then null will be added -- we will filter these out before we return.
-     */
+    // Generate credit and debit adjustments if needed and add them to the adjustments array.
+    // In some scenarios null will be added to the array -- we will filter these out before we return.
     for (const licence of licences) {
-      adjustments.push(await this._adjustment(licence, licence.creditValue, true))
-      adjustments.push(await this._adjustment(licence, licence.debitValue, false))
+      if (licence.subjectToMinimumChargeCreditValue) {
+        adjustments.push(await this._adjustment(licence, licence.creditValue, true))
+      }
+
+      if (licence.subjectToMinimumChargeDebitValue) {
+        adjustments.push(await this._adjustment(licence, licence.debitValue, false))
+      }
     }
 
+    // Filter null from the adjustments array and return
     return adjustments.filter(transaction => transaction)
   }
 
