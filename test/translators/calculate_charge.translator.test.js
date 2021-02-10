@@ -293,6 +293,18 @@ describe('Calculate Charge translator', () => {
         })
       })
 
+      describe("because 'waterUndertaker' is not a boolean", () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            compensationCharge: false,
+            waterUndertaker: 'boom'
+          }
+
+          expect(() => new CalculateChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
       describe("because 'section126Factor' has more than 3 decimal places", () => {
         it('throws an error', async () => {
           const invalidPayload = {
