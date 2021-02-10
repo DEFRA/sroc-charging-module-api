@@ -1,6 +1,7 @@
 'use strict'
 
 const {
+  BillRunStatusService,
   CreateBillRunService,
   CreateTransactionService,
   GenerateBillRunService,
@@ -27,8 +28,8 @@ class BillRunsController {
     return h.response().code(204)
   }
 
-  static async status (_req, h) {
-    const result = { status: 'endpoint not implemented' }
+  static async status (req, h) {
+    const result = await BillRunStatusService.go(req.params.billRunId)
 
     return h.response(result).code(200)
   }
