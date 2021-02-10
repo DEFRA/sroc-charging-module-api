@@ -27,14 +27,16 @@ class RulesServiceHelper {
    *
    * @param {object} Sinon The instance of Sinon used in test.
    * @param {object} rulesServiceResponse The rules service response fixture used in test.
-   * @param {integer} chargeValue The charge value to be returned from the rules service.
+   * @param {integer} chargeValue The charge value in pence to be returned from the rules service.
+   *
+   * @returns {module:Sinon} A Sinon stub object
    */
   static mockValue (Sinon, RulesService, rulesServiceResponse, chargeValue) {
-    Sinon.stub(RulesService, 'go').returns({
+    return Sinon.stub(RulesService, 'go').returns({
       ...rulesServiceResponse,
       WRLSChargingResponse: {
         ...rulesServiceResponse.WRLSChargingResponse,
-        chargeValue
+        chargeValue: chargeValue / 100
       }
     })
   }
