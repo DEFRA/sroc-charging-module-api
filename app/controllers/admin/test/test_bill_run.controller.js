@@ -15,7 +15,8 @@ class TestBillRunController {
       { type: 'mixed-invoice', count: 2 },
       { type: 'mixed-credit', count: 2 },
       { type: 'zero-value', count: 2 },
-      { type: 'deminimis', count: 2 }
+      { type: 'deminimis', count: 2 },
+      { type: 'minimum-charge', count: 2 }
     ]
 
     TestBillRunController._generateBillRun(
@@ -23,17 +24,31 @@ class TestBillRunController {
       req.payload.region,
       req.auth.credentials.user,
       req.app.regime,
-      invoiceMix
+      invoiceMix,
+      req.server.logger
     )
     return h.response(result).code(201)
   }
 
-  static async _generateBillRun (billRunId, region, user, regime, invoiceMix) {
+  static async _generateBillRun (billRunId, region, user, regime, invoiceMix, logger) {
+    // Mark the start time for later logging
+    const startTime = process.hrtime.bigint()
+
     const invoices = await TestBillRunController._invoiceGenerator(billRunId, region, invoiceMix)
 
     for (let i = 0; i < invoices.length; i++) {
       await TestBillRunController._invoiceEngine(invoices[i], user, regime)
     }
+
+    await this._calculateAndLogTime(logger, billRunId, startTime)
+  }
+
+  static async _calculateAndLogTime (logger, billRunId, startTime) {
+    const endTime = process.hrtime.bigint()
+    const timeTakenNs = endTime - startTime
+    const timeTakenMs = timeTakenNs / 1000000n
+
+    logger.info(`Time taken to auto-create bill run '${billRunId}': ${timeTakenMs}ms`)
   }
 
   static _invoiceGenerator (billRunId, region, invoiceMix) {
@@ -81,6 +96,9 @@ class TestBillRunController {
       case 'deminimis':
         await TestBillRunController._deminimisInvoice(invoiceData)
         break
+      case 'minimum-charge':
+        await TestBillRunController._minimumChargeInvoice(invoiceData)
+        break
       default:
         throw Boom.badRequest(`Unknown invoice type '${invoice.type}'`)
     }
@@ -112,7 +130,7 @@ class TestBillRunController {
       0
     ]
 
-    invoiceData.data = TestBillRunController._transactionData(...transactionData, false)
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, false, false)
     await TestBillRunController._addTransaction(invoiceData)
     await TestBillRunController._addTransaction(invoiceData)
     await TestBillRunController._addTransaction(invoiceData)
@@ -125,9 +143,24 @@ class TestBillRunController {
       1.26
     ]
 
-    invoiceData.data = TestBillRunController._transactionData(...transactionData, false)
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, false, false)
     await TestBillRunController._addTransaction(invoiceData)
     await TestBillRunController._addTransaction(invoiceData)
+    await TestBillRunController._addTransaction(invoiceData)
+  }
+
+  static async _minimumChargeInvoice (invoiceData) {
+    const transactionData = [
+      invoiceData.invoice,
+      '0.5865',
+      1.26
+    ]
+
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, false, true)
+    await TestBillRunController._addTransaction(invoiceData)
+    await TestBillRunController._addTransaction(invoiceData)
+
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, true, true)
     await TestBillRunController._addTransaction(invoiceData)
   }
 
@@ -138,11 +171,11 @@ class TestBillRunController {
       91.82
     ]
 
-    invoiceData.data = TestBillRunController._transactionData(...transactionData, false)
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, false, false)
     await TestBillRunController._addTransaction(invoiceData)
     await TestBillRunController._addTransaction(invoiceData)
 
-    invoiceData.data = TestBillRunController._transactionData(...transactionData, true)
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, true, false)
     await TestBillRunController._addTransaction(invoiceData)
   }
 
@@ -153,20 +186,21 @@ class TestBillRunController {
       91.82
     ]
 
-    invoiceData.data = TestBillRunController._transactionData(...transactionData, true)
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, true, false)
     await TestBillRunController._addTransaction(invoiceData)
     await TestBillRunController._addTransaction(invoiceData)
 
-    invoiceData.data = TestBillRunController._transactionData(...transactionData, false)
+    invoiceData.data = TestBillRunController._transactionData(...transactionData, false, false)
     await TestBillRunController._addTransaction(invoiceData)
   }
 
-  static _transactionData (invoice, volume, chargeValue, credit) {
+  static _transactionData (invoice, volume, chargeValue, credit, subjectToMinimumCharge) {
     const result = {
       payload: {
         ...TestBillRunController._basePayload(invoice),
         credit,
-        volume
+        volume,
+        subjectToMinimumCharge
       },
       response: {
         ...TestBillRunController._baseResponse()
