@@ -5,21 +5,14 @@ const { BillRunGenerator } = require('../../../../test/support/generators')
 
 class TestBillRunController {
   static async generate (req, h) {
-    const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
-
-    const payload = {
-      region: req.payload.region,
-      mix: [
-        { type: 'mixed-invoice', count: 2 },
-        { type: 'mixed-credit', count: 2 },
-        { type: 'zero-value', count: 2 },
-        { type: 'deminimis', count: 2 },
-        { type: 'minimum-charge', count: 2 }
-      ]
-    }
+    const result = await CreateBillRunService.go(
+      { region: req.payload.region },
+      req.auth.credentials.user,
+      req.app.regime
+    )
 
     BillRunGenerator.go(
-      payload,
+      req.payload,
       result.billRun.id,
       req.auth.credentials.user,
       req.app.regime,
