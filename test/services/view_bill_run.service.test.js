@@ -31,7 +31,7 @@ const { RulesService } = require('../../app/services')
 // Thing under test
 const { ViewBillRunService } = require('../../app/services')
 
-describe.only('View bill run service', () => {
+describe('View bill run service', () => {
   let billRun
   let payload
   let regime
