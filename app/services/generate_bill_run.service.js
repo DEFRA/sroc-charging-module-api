@@ -37,10 +37,10 @@ class GenerateBillRunService {
   static async _generateBillRun (billRun) {
     await this._setGeneratingStatus(billRun)
 
-    const minimumValueAdjustments = await CalculateMinimumChargeService.go(billRun)
+    const minimumChargeAdjustments = await CalculateMinimumChargeService.go(billRun)
 
     await BillRunModel.transaction(async trx => {
-      await this._saveTransactions(minimumValueAdjustments, trx)
+      await this._saveTransactions(minimumChargeAdjustments, trx)
       await this._summariseBillRun(billRun, trx)
     })
   }
