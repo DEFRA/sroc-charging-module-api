@@ -22,50 +22,16 @@ class GenerateBillRunService {
   */
   static async go (billRunId, logger = '') {
     // Mark the start time for later logging
-    const startTime = process.hrtime()
+    const startTime = process.hrtime.bigint()
 
     const billRun = await BillRunModel.query().findById(billRunId)
     await this._generateBillRun(billRun)
 
-    // If a logger object was passed in, calculate the time taken and log it
     if (logger) {
-      await this._calculateAndLogTime(startTime, logger)
+      const endTime = process.hrtime.bigint()
+      const timeInMs = this._calculateTime(startTime, endTime)
+      await this._logTime(timeInMs, logger)
     }
-  }
-
-  static async _calculateAndLogTime (startTime, logger) {
-    const endTime = process.hrtime(startTime)
-    const timeInMs = this._formatTime(endTime)
-    this._logTime(timeInMs, logger)
-  }
-
-  /**
-   * Format the time returned from process.hrtime() to milliseconds
-   *
-   * process.hrtime() returns an array t of 2 numbers: t[0] is seconds and t[1] is nanoseconds. We could just log the
-   * seconds taken but for consistency and accuracy we convert it all to milliseconds:
-   *   (t[0] * 1e9 + t[1]) / 1e6
-   *
-   * We multiply t[0] by 1e9 to convert to nanoseconds, add t[1] to get the total time in nanoseconds, then divide by
-   * 1e6 to get the total time in milliseconds, which we then round to the nearest integer.
-   *
-   * @param {array} time The time array returned by process.hrtime()
-   *
-   * @returns {integer} The time converted to milliseconds
-   */
-  static _formatTime (timeArray) {
-    const timeInMs = (timeArray[0] * 1e9 + timeArray[1]) / 1e6
-    return Math.round(timeInMs)
-  }
-
-  /**
-   * Use a passed-in logger to log the time taken to generate the bill run
-   *
-   * @param {integer} time Time to log in ms
-   * @param {function} logger Logger with an 'info' method we use to log the time taken
-   */
-  static _logTime (time, logger) {
-    logger.info(`Time taken to generate bill run: ${time}ms`)
   }
 
   static async _generateBillRun (billRun) {
@@ -177,6 +143,22 @@ class GenerateBillRunService {
   static async _setGeneratedStatus (billRun, trx) {
     await billRun.$query(trx)
       .patch({ status: 'generated' })
+  }
+
+  static _calculateTime (startTime, endTime) {
+    const nanoseconds = endTime - startTime
+    const milliseconds = nanoseconds / 1000000n
+    return milliseconds
+  }
+
+  /**
+   * Use a passed-in logger to log the time taken to generate the bill run
+   *
+   * @param {integer} time Time to log in ms
+   * @param {function} logger Logger with an 'info' method we use to log the time taken
+   */
+  static async _logTime (time, logger) {
+    logger.info(`Time taken to generate bill run: ${time}ms`)
   }
 }
 
