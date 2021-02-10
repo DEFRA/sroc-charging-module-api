@@ -19,7 +19,7 @@ const {
   RulesServiceHelper
 } = require('../support/helpers')
 
-const { BillRunModel, InvoiceModel } = require('../../app/models')
+const { BillRunModel, InvoiceModel, TransactionModel } = require('../../app/models')
 
 const { CreateTransactionService } = require('../../app/services')
 
@@ -166,38 +166,54 @@ describe('Generate Bill Run Summary service', () => {
 
     describe('When deminimis applies', () => {
       it("sets the 'deminimisInvoice' flag to true", async () => {
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
-        const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 600, 1, 300, 0)
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 499)
+        let result = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun.id)
 
-        const result = await InvoiceModel.query().findById(invoice.id)
+        result = await TransactionModel.query().select('invoiceId').findById(result.transaction.id)
+        const invoice = await InvoiceModel.query().findById(result.invoiceId)
 
-        expect(result.deminimisInvoice).to.equal(true)
+        expect(invoice.deminimisInvoice).to.equal(true)
       })
     })
 
     describe('When deminimis does not apply', () => {
-      describe('Because the invoice net value is over 500', () => {
+      describe('because the invoice net value is over 500', () => {
         it("leaves the 'deminimisInvoice' flag as false", async () => {
-          await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
-          const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 900, 1, 300, 0)
+          let result = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
           await GenerateBillRunService.go(billRun.id)
 
-          const result = await InvoiceModel.query().findById(invoice.id)
+          result = await TransactionModel.query().select('invoiceId').findById(result.transaction.id)
+          const invoice = await InvoiceModel.query().findById(result.invoiceId)
 
-          expect(result.deminimisInvoice).to.equal(false)
+          expect(invoice.deminimisInvoice).to.equal(false)
         })
       })
 
-      describe('Because the invoice net value is under 0', () => {
+      describe('because the invoice net value is under 0', () => {
         it("leaves the 'deminimisInvoice' flag as false", async () => {
-          await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
-          const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 100, 1, 300, 0)
+          payload.credit = true
+          let result = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
           await GenerateBillRunService.go(billRun.id)
 
-          const result = await InvoiceModel.query().findById(invoice.id)
+          result = await TransactionModel.query().select('invoiceId').findById(result.transaction.id)
+          const invoice = await InvoiceModel.query().findById(result.invoiceId)
 
-          expect(result.deminimisInvoice).to.equal(false)
+          expect(invoice.deminimisInvoice).to.equal(false)
+        })
+      })
+
+      describe('because the invoice is subject to minimum charge', () => {
+        it("leaves the 'deminimisInvoice' flag as false", async () => {
+          payload.subjectToMinimumCharge = true
+          let result = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+          await GenerateBillRunService.go(billRun.id)
+
+          result = await TransactionModel.query().select('invoiceId').findById(result.transaction.id)
+          const invoice = await InvoiceModel.query().findById(result.invoiceId)
+
+          expect(invoice.deminimisInvoice).to.equal(false)
         })
       })
     })
