@@ -18,10 +18,20 @@ class GenerateBillRunService {
   * called and left to run.
   *
   * @param {string} billRunId The id of the bill run to be generated.
+  * @param {object} [logger] Server logger object. If passed in then logger.info will be called to log the time taken.
   */
-  static async go (billRunId) {
+  static async go (billRunId, logger = '') {
+    // Mark the start time for later logging
+    const startTime = process.hrtime.bigint()
+
     const billRun = await BillRunModel.query().findById(billRunId)
     await this._generateBillRun(billRun)
+
+    if (logger) {
+      const endTime = process.hrtime.bigint()
+      const timeInMs = this._calculateTime(startTime, endTime)
+      await this._logTime(timeInMs, logger)
+    }
   }
 
   static async _generateBillRun (billRun) {
@@ -133,6 +143,22 @@ class GenerateBillRunService {
   static async _setGeneratedStatus (billRun, trx) {
     await billRun.$query(trx)
       .patch({ status: 'generated' })
+  }
+
+  static _calculateTime (startTime, endTime) {
+    const nanoseconds = endTime - startTime
+    const milliseconds = nanoseconds / 1000000n
+    return milliseconds
+  }
+
+  /**
+   * Use a passed-in logger to log the time taken to generate the bill run
+   *
+   * @param {integer} time Time to log in ms
+   * @param {function} logger Logger with an 'info' method we use to log the time taken
+   */
+  static async _logTime (time, logger) {
+    logger.info(`Time taken to generate bill run: ${time}ms`)
   }
 }
 
