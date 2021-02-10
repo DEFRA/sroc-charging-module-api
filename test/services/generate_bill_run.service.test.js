@@ -166,7 +166,8 @@ describe('Generate Bill Run Summary service', () => {
 
     describe('When deminimis applies', () => {
       it("sets the 'deminimisInvoice' flag to true", async () => {
-        payload.volume = '1.22' // should result in a charge of 223
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 499)
         let result = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun.id)
 
