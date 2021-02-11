@@ -21,6 +21,7 @@ class ViewBillRunService {
    * @returns {Object}
    */
   static async go (billRunId) {
+    // TODO: Create test for the presenter
     const billRun = await this._billRun(billRunId)
 
     return this._billRunResponse(billRun)
