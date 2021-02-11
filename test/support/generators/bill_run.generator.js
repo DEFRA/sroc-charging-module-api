@@ -15,16 +15,20 @@ const { presroc: chargeFixtures } = require('../fixtures/calculate_charge')
 
 class BillRunGenerator {
   static async go (payload, billRunId, authorisedSystem, regime, logger = null) {
-    // Mark the start time for later logging
-    const startTime = process.hrtime.bigint()
+    try {
+      // Mark the start time for later logging
+      const startTime = process.hrtime.bigint()
 
-    const invoices = await this._invoiceGenerator(billRunId, payload)
+      const invoices = await this._invoiceGenerator(billRunId, payload)
 
-    for (const i in invoices) {
-      await this._invoiceEngine(invoices[i], authorisedSystem, regime)
+      for (const i in invoices) {
+        await this._invoiceEngine(invoices[i], authorisedSystem, regime)
+      }
+
+      await this._calculateAndLogTime(logger, billRunId, startTime)
+    } catch (error) {
+      this._logError(logger, error)
     }
-
-    await this._calculateAndLogTime(logger, billRunId, startTime)
   }
 
   static _invoiceGenerator (billRunId, payload) {
@@ -217,7 +221,15 @@ class BillRunGenerator {
     const timeTakenNs = endTime - startTime
     const timeTakenMs = timeTakenNs / 1000000n
 
-    logger.info(`Time taken to auto-create bill run '${billRunId}': ${timeTakenMs}ms`)
+    logger.info(`Time taken to generate bill run '${billRunId}': ${timeTakenMs}ms`)
+  }
+
+  static async _logError (logger, error) {
+    if (!logger) {
+      return
+    }
+
+    logger.info(`Generate bill run failed: ${error.message} - ${error}`)
   }
 }
 
