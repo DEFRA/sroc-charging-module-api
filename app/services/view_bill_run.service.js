@@ -10,18 +10,17 @@ const { BillRunModel } = require('../models')
 const { ViewBillRunPresenter } = require('../presenters')
 
 /**
- * Locates a bill run and returns the available details.
+ * Locates a bill run and returns the available details
  */
 class ViewBillRunService {
   /**
-   *
+   * Fetches a bill run based on its id and returns the data needed by the View Bill Run endpoint
    *
    * @param {string} billRunId The id of the bill run we want to view
    *
-   * @returns {Object}
+   * @returns {Object} The requested bill run data
    */
   static async go (billRunId) {
-    // TODO: Create test for the presenter
     const billRun = await this._billRun(billRunId)
 
     return this._billRunResponse(billRun)
@@ -32,6 +31,7 @@ class ViewBillRunService {
       .findById(billRunId)
       .withGraphFetched('invoices')
 
+    // The net total is not persisted in the db so we add in the result of the BillRunModel.$netTotal() method
     if (billRun) {
       return {
         ...billRun,

@@ -87,32 +87,6 @@ describe('View bill run service', () => {
       expect(result.billRun.debitLineValue).to.equal(debitValue)
       expect(result.billRun.netTotal).to.equal(debitValue - creditValue)
     })
-
-    describe('When the bill run has not been generated', () => {
-      it("doesn't return invoice-level info", async () => {
-        const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, payload.region, 'NOT_GENERATED')
-
-        const result = await ViewBillRunService.go(generatingBillRun.id)
-
-        expect(result.billRun.creditNoteCount).to.not.exist()
-        expect(result.billRun.creditNoteValue).to.not.exist()
-        expect(result.billRun.invoiceCount).to.not.exist()
-        expect(result.billRun.invoiceValue).to.not.exist()
-      })
-    })
-
-    describe('When the bill run has been generated', () => {
-      it('returns invoice-level info', async () => {
-        const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, payload.region, 'generated')
-
-        const result = await ViewBillRunService.go(generatingBillRun.id)
-
-        expect(result.billRun.creditNoteCount).to.exist()
-        expect(result.billRun.creditNoteValue).to.exist()
-        expect(result.billRun.invoiceCount).to.exist()
-        expect(result.billRun.invoiceValue).to.exist()
-      })
-    })
   })
 
   describe('When there is no matching bill run', () => {
