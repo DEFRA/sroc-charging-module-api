@@ -20,7 +20,7 @@ class BillRunGenerator {
 
     const invoices = await this._invoiceGenerator(billRunId, payload)
 
-    for (let i = 0; i < invoices.length; i++) {
+    for (const i in invoices) {
       await this._invoiceEngine(invoices[i], authorisedSystem, regime)
     }
 
