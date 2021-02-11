@@ -84,20 +84,11 @@ describe('Test Bill Run Controller', () => {
       // them
       //
       // So, the only way we could see to keep a test for this endpoint was to add in an arbitrary delay. In this case
-      // we keep querying the bill run record until its numbers tell us all transactions have been added. Just in case,
-      // we also have a quit control to kill the loop should something go wrong.
-      let finished = false
-      let quitCount = 0
-      let billRun
-      do {
-        billRun = await BillRunModel.query().findById(responsePayload.billRun.id)
-        if (billRun.debitCount + billRun.creditCount + billRun.zeroCount === 15) {
-          finished = true
-        }
-        quitCount += 1
-      } while (!finished || quitCount > 1000)
+      // we 'sleep' for 1 second (the generate process takes approx 300ms) and then continue. It seems any larger sleep
+      // value causes the tests to through a timeout error.
+      await sleep(1000)
 
-      billRun = await BillRunModel.query().findById(responsePayload.billRun.id)
+      const billRun = await BillRunModel.query().findById(responsePayload.billRun.id)
       const invoices = await billRun.$relatedQuery('invoices')
       const transactions = await billRun.$relatedQuery('transactions')
 
@@ -111,4 +102,8 @@ describe('Test Bill Run Controller', () => {
       expect(transactions.filter(tran => tran.subjectToMinimumCharge).length).to.equal(3)
     })
   })
+
+  function sleep (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 })
