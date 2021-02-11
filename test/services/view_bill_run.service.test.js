@@ -18,7 +18,7 @@ const {
   RulesServiceHelper
 } = require('../support/helpers')
 
-const { CreateTransactionService } = require('../../app/services')
+const { CreateTransactionService, GenerateBillRunService } = require('../../app/services')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
@@ -37,6 +37,8 @@ describe('View bill run service', () => {
   let regime
   let authorisedSystem
   let rulesServiceStub
+  let creditValue
+  let debitValue
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -67,25 +69,63 @@ describe('View bill run service', () => {
       expect(result.billRun.status).to.equal(billRun.status)
     })
 
-    it('returns correct credit/debit values', async () => {
-      const creditValue = 1000
-      const debitValue = 5000
+    describe('when transactions are added to the bill run', () => {
+      beforeEach(async () => {
+        creditValue = 1000
+        debitValue = 5000
 
-      rulesServiceStub.restore()
-      RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, creditValue)
-      await CreateTransactionService.go({ ...payload, credit: true }, billRun.id, authorisedSystem, regime)
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, creditValue)
+        await CreateTransactionService.go({
+          ...payload,
+          customerReference: 'CREDIT',
+          credit: true
+        }, billRun.id, authorisedSystem, regime)
 
-      rulesServiceStub.restore()
-      RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, debitValue)
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, debitValue)
+        await CreateTransactionService.go({
+          ...payload,
+          customerReference: 'DEBIT'
+        }, billRun.id, authorisedSystem, regime)
 
-      const result = await ViewBillRunService.go(billRun.id)
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 0)
+        await CreateTransactionService.go({
+          ...payload,
+          customerReference: 'ZERO'
+        }, billRun.id, authorisedSystem, regime)
+      })
 
-      expect(result.billRun.creditLineCount).to.equal(1)
-      expect(result.billRun.creditLineValue).to.equal(creditValue)
-      expect(result.billRun.debitLineCount).to.equal(1)
-      expect(result.billRun.debitLineValue).to.equal(debitValue)
-      expect(result.billRun.netTotal).to.equal(debitValue - creditValue)
+      it('returns correct credit/debit values', async () => {
+        const result = await ViewBillRunService.go(billRun.id)
+
+        expect(result.billRun.creditLineCount).to.equal(1)
+        expect(result.billRun.creditLineValue).to.equal(creditValue)
+        expect(result.billRun.debitLineCount).to.equal(1)
+        expect(result.billRun.debitLineValue).to.equal(debitValue)
+        expect(result.billRun.zeroValueLineCount).to.equal(1)
+        expect(result.billRun.netTotal).to.equal(debitValue - creditValue)
+      })
+
+      it('returns the invoices', async () => {
+        const result = await ViewBillRunService.go(billRun.id)
+
+        expect(result.billRun.invoices.length).to.equal(3)
+      })
+
+      describe('when the bill run is generated', () => {
+        it('returns correct invoice-level values', async () => {
+          await GenerateBillRunService.go(billRun.id)
+
+          const result = await ViewBillRunService.go(billRun.id)
+
+          expect(result.billRun.creditNoteCount).to.equal(1)
+          expect(result.billRun.creditNoteValue).to.equal(creditValue)
+          expect(result.billRun.invoiceCount).to.equal(1)
+          expect(result.billRun.invoiceValue).to.equal(debitValue)
+        })
+      })
     })
   })
 
