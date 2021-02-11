@@ -14,7 +14,7 @@ const { presroc: requestFixtures } = require('../fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../fixtures/calculate_charge')
 
 class BillRunGenerator {
-  static async go (payload, billRunId, authorisedSystem, regime, logger) {
+  static async go (payload, billRunId, authorisedSystem, regime, logger = null) {
     // Mark the start time for later logging
     const startTime = process.hrtime.bigint()
 
@@ -209,6 +209,10 @@ class BillRunGenerator {
   }
 
   static async _calculateAndLogTime (logger, billRunId, startTime) {
+    if (!logger) {
+      return
+    }
+
     const endTime = process.hrtime.bigint()
     const timeTakenNs = endTime - startTime
     const timeTakenMs = timeTakenNs / 1000000n
