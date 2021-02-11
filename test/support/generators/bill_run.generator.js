@@ -82,7 +82,7 @@ class BillRunGenerator {
 
   static async _addTransaction (invoiceData) {
     try {
-      // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
+      // Intercept all requests in this generator as we don't actually want to call the service. Tell Nock to persist()
       // the interception rather than remove it after the first request
       Nock(RulesServiceHelper.url)
         .post(() => true)
