@@ -51,7 +51,7 @@ class ViewBillRunPresenter extends BasePresenter {
         invoiceCount: data.invoiceCount,
         invoiceValue: data.invoiceValue
       }
-      : ''
+      : {}
   }
 }
 
