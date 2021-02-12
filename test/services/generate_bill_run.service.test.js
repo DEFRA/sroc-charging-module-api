@@ -260,7 +260,7 @@ describe('Generate Bill Run Summary service', () => {
 
           expect(minimumChargeBill.debitCount).to.equal(2)
           expect(minimumChargeBill.creditCount).to.equal(2)
-          expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(2)
+          expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(4)
           expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(2500)
           expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2500)
 
