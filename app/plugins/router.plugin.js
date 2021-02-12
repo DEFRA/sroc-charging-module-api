@@ -18,6 +18,7 @@ const {
   DatabaseRoutes,
   RegimeRoutes,
   RootRoutes,
+  TestRoutes,
   TransactionRoutes,
   CalculateChargeRoutes
 } = require('../routes')
@@ -28,6 +29,7 @@ const routes = [
   ...AuthorisedSystemRoutes,
   ...BillRunRoutes,
   ...DatabaseRoutes,
+  ...TestRoutes,
   ...TransactionRoutes,
   ...RegimeRoutes,
   ...CalculateChargeRoutes
