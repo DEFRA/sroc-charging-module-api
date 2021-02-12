@@ -78,6 +78,13 @@ class BillRunModel extends BaseModel {
   $empty () {
     return (this.creditCount === 0 && this.debitCount === 0 && this.zeroCount === 0)
   }
+
+  /**
+   * netTotal method provides the net total of the invoice (debit value - credit value)
+   */
+  $netTotal () {
+    return this.debitValue - this.creditValue
+  }
 }
 
 module.exports = BillRunModel
