@@ -114,6 +114,24 @@ describe('View bill run service', () => {
         expect(result.billRun.invoices.length).to.equal(3)
       })
 
+      it('returns the licences under the invoices', async () => {
+        const result = await ViewBillRunService.go(billRun.id)
+
+        const licences = result.billRun.invoices.map(invoice => invoice.licences).flat()
+
+        expect(licences.length).to.equal(3)
+      })
+
+      it('only returns the licence id and number', async () => {
+        const result = await ViewBillRunService.go(billRun.id)
+
+        const licences = result.billRun.invoices.map(invoice => invoice.licences).flat()
+
+        licences.forEach(licence => {
+          expect(licence).to.only.include(['id', 'licenceNumber'])
+        })
+      })
+
       describe('when the bill run is generated', () => {
         it('returns correct invoice-level values', async () => {
           await GenerateBillRunService.go(billRun.id)

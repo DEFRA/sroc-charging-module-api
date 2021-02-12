@@ -29,7 +29,10 @@ class ViewBillRunService {
   static async _billRun (billRunId) {
     const billRun = await BillRunModel.query()
       .findById(billRunId)
-      .withGraphFetched('invoices')
+      .withGraphFetched('invoices.licences')
+      .modifyGraph('invoices.licences', (builder) => {
+        builder.select('id', 'licenceNumber')
+      })
 
     // The net total is not persisted in the db so we add in the result of the BillRunModel.$netTotal() method
     if (billRun) {
