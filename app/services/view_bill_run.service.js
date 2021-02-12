@@ -47,7 +47,7 @@ class ViewBillRunService {
         'invoiceCount',
         'invoiceValue'
       )
-      .withGraphFetched('invoices')
+      .withGraphFetched('invoices.licences')
       .modifyGraph('invoices', (builder) => {
         builder.select(
           'id',
@@ -62,7 +62,6 @@ class ViewBillRunService {
           'zeroValueInvoice'
         )
       })
-      .withGraphFetched('invoices.licences')
       .modifyGraph('invoices.licences', (builder) => {
         builder.select(
           'id',
