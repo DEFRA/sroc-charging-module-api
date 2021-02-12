@@ -30,6 +30,14 @@ class BillRunModel extends BaseModel {
           to: 'invoices.billRunId'
         }
       },
+      licences: {
+        relation: Model.HasManyRelation,
+        modelClass: 'licence.model',
+        join: {
+          from: 'billRuns.id',
+          to: 'licences.billRunId'
+        }
+      },
       regime: {
         relation: Model.BelongsToOneRelation,
         modelClass: 'regime.model',
