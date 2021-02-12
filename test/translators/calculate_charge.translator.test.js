@@ -204,7 +204,7 @@ describe('Calculate Charge translator', () => {
 
         const result = new CalculateChargeTranslator(data(lowercasePayload))
 
-        expect(result.regimeValue8).to.equal('Loss')
+        expect(result.regimeValue8).to.equal('Low')
         expect(result.regimeValue7).to.equal('Summer')
         expect(result.regimeValue6).to.equal('Supported')
       })

@@ -20,6 +20,11 @@ class CalculateChargeTranslator extends BaseTranslator {
 
     // Additional post-getter validation to ensure section126Factor has no more than 3 decimal places
     this._validateSection126Factor()
+
+    // Additional post-getter parser to ensure that loss, season and source are all in the right 'case'
+    this.regimeValue6 = this._titleCaseStringValue(this.regimeValue6)
+    this.regimeValue7 = this._titleCaseStringValue(this.regimeValue7)
+    this.regimeValue8 = this._titleCaseStringValue(this.regimeValue8)
   }
 
   _validateFinancialYear () {
@@ -69,6 +74,30 @@ class CalculateChargeTranslator extends BaseTranslator {
     if (error) {
       throw Boom.badData(error)
     }
+  }
+
+  /**
+   * Use to title case a string value
+   *
+   * Title case is where the first character is a capital and the rest is lower case. Our testing of the rules service
+   * has highlighted that it will only calculate the charge correctly if the values for the `loss`, `season`, and
+   * `source` in the request are in title case. Anything else and it fails to match them to resulting in a 0 charge.
+   *
+   * Note, it is assumed this method will only be used for parsing those fields, and they are only expected to contain
+   * single words. It won't fail if you pass in more than one word, but it would only do the following
+   *
+   * ```javascript
+   *  this._titleCaseStringValue('heLLo, World') // Hello, world
+   * ```
+   *
+   * @param {string} value String value to be converted to title case
+   *
+   * @returns {string} The string value converted to title case
+   */
+  _titleCaseStringValue (value) {
+    const lowerCase = value.toLowerCase()
+
+    return lowerCase[0].toUpperCase() + lowerCase.substring(1)
   }
 
   _schema () {
