@@ -66,7 +66,7 @@ class GenerateBillRunService {
 
   static async _saveTransactions (transactions, trx) {
     for (const transaction of transactions) {
-      const billRunPatch = await this._billRunPatch(transaction)
+      const minimumChargePatch = await this._minimumChargePatch(transaction)
       const invoice = await this._invoice(transaction)
       const licence = await this._licence({ ...transaction, invoiceId: invoice.id })
 
@@ -79,11 +79,11 @@ class GenerateBillRunService {
 
       await invoice.$query(trx).patch()
       await licence.$query(trx).patch()
-      await BillRunModel.query(trx).findById(transaction.billRunId).patch(billRunPatch)
+      await BillRunModel.query(trx).findById(transaction.billRunId).patch(minimumChargePatch)
     }
   }
 
-  static async _billRunPatch (translator) {
+  static async _minimumChargePatch (translator) {
     let update = {
       subjectToMinimumChargeCount: raw('subject_to_minimum_charge_count + 1')
     }
