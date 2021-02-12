@@ -19,6 +19,10 @@ class ViewBillRunPresenter extends BasePresenter {
         status: data.status,
         approvedForBilling: false,
         ruleset: 'presroc',
+        creditNoteCount: data.creditNoteCount,
+        creditNoteValue: data.creditNoteValue,
+        invoiceCount: data.invoiceCount,
+        invoiceValue: data.invoiceValue,
         creditLineCount: data.creditCount,
         creditLineValue: data.creditValue,
         debitLineCount: data.debitCount,
@@ -26,11 +30,7 @@ class ViewBillRunPresenter extends BasePresenter {
         zeroValueLineCount: data.zeroCount,
         netTotal: data.netTotal,
         transactionFileReference: '',
-        invoices: data.invoices,
-        creditNoteCount: data.creditNoteCount,
-        creditNoteValue: data.creditNoteValue,
-        invoiceCount: data.invoiceCount,
-        invoiceValue: data.invoiceValue
+        invoices: data.invoices
       }
     }
   }
