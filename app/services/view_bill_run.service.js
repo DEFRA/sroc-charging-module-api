@@ -29,16 +29,53 @@ class ViewBillRunService {
   static async _billRun (billRunId) {
     const billRun = await BillRunModel.query()
       .findById(billRunId)
+      .select(
+        'id',
+        'region',
+        'status',
+        'billRunNumber',
+        'creditCount',
+        'creditValue',
+        'debitCount',
+        'debitValue',
+        'zeroCount',
+        'subjectToMinimumChargeCount',
+        'subjectToMinimumChargeCreditValue',
+        'subjectToMinimumChargeDebitValue',
+        'creditNoteCount',
+        'creditNoteValue',
+        'invoiceCount',
+        'invoiceValue'
+      )
+      .withGraphFetched('invoices')
+      .modifyGraph('invoices', (builder) => {
+        builder.select(
+          'id',
+          'customerReference',
+          'financialYear',
+          'creditCount',
+          'creditValue',
+          'debitCount',
+          'debitValue',
+          'zeroCount',
+          'deminimisInvoice',
+          'zeroValueInvoice'
+        )
+      })
       .withGraphFetched('invoices.licences')
       .modifyGraph('invoices.licences', (builder) => {
-        builder.select('id', 'licenceNumber')
+        builder.select(
+          'id',
+          'licenceNumber'
+        )
       })
 
     // The net total is not persisted in the db so we add in the result of the BillRunModel.$netTotal() method
     if (billRun) {
       return {
         ...billRun,
-        netTotal: billRun.$netTotal()
+        netTotal: billRun.$netTotal(),
+        invoices: this._addNetTotalToInvoices(billRun.invoices)
       }
     }
 
@@ -49,6 +86,18 @@ class ViewBillRunService {
     const presenter = new ViewBillRunPresenter(billRun)
 
     return presenter.go()
+  }
+
+  /**
+   * Take an array of invoices and add invoice.$netTotal() to each one then return the resulting array
+   */
+  static _addNetTotalToInvoices (invoices) {
+    return invoices.map(invoice => {
+      return {
+        ...invoice,
+        netTotal: invoice.$netTotal()
+      }
+    })
   }
 }
 
