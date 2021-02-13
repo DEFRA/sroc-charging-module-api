@@ -6,9 +6,8 @@
 
 // Files in the same folder cannot be destructured from index.js so have to be required directly
 const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')
-const LicenceService = require('./licence.service')
 
-const { BillRunModel, InvoiceModel, TransactionModel } = require('../models')
+const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
 const { raw } = require('../models/base.model')
 
 class GenerateBillRunService {
@@ -65,17 +64,12 @@ class GenerateBillRunService {
   static async _saveTransactions (transactions, trx) {
     for (const transaction of transactions) {
       const minimumChargePatch = await this._minimumChargePatch(transaction)
-      const licence = await this._licence(transaction)
 
-      await TransactionModel.query(trx)
-        .insert({
-          ...transaction,
-          licenceId: licence.id
-        })
+      await TransactionModel.query(trx).insert(transaction)
 
-      await InvoiceModel.query(trx).findById(transaction.invoiceId).patch(minimumChargePatch)
-      await licence.$query(trx).patch()
       await BillRunModel.query(trx).findById(transaction.billRunId).patch(minimumChargePatch)
+      await InvoiceModel.query(trx).findById(transaction.invoiceId).patch(minimumChargePatch)
+      await LicenceModel.query(trx).findById(transaction.licenceId).patch(minimumChargePatch)
     }
   }
 
@@ -100,10 +94,6 @@ class GenerateBillRunService {
       }
     }
     return update
-  }
-
-  static async _licence (translator) {
-    return LicenceService.go(translator)
   }
 
   static async _summariseBillRun (billRun, trx) {

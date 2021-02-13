@@ -28,7 +28,8 @@ class CreateMinimumChargeAdjustmentService {
         'lineDescription',
         'ruleset',
         'chargeFinancialYear',
-        'invoiceId')
+        'invoiceId',
+        'licenceId')
       .limit(1)
       .first()
 
