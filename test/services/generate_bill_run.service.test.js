@@ -253,10 +253,12 @@ describe('Generate Bill Run Summary service', () => {
           expect(adjustmentTransactions.length).to.equal(2)
         })
 
-        it('updates the bill run and invoice as expected', async () => {
+        it('updates the bill run, invoice and licence as expected', async () => {
           const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
           const invoices = await minimumChargeBill.$relatedQuery('invoices')
+          const licences = await minimumChargeBill.$relatedQuery('licences')
           const minimumChargeInvoice = invoices[0]
+          const minimumChargeLicence = licences[0]
 
           expect(minimumChargeBill.debitCount).to.equal(2)
           expect(minimumChargeBill.creditCount).to.equal(2)
@@ -269,6 +271,12 @@ describe('Generate Bill Run Summary service', () => {
           expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(4)
           expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2500)
           expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2500)
+
+          expect(minimumChargeLicence.debitCount).to.equal(2)
+          expect(minimumChargeLicence.creditCount).to.equal(2)
+          expect(minimumChargeLicence.subjectToMinimumChargeCount).to.equal(4)
+          expect(minimumChargeLicence.subjectToMinimumChargeDebitValue).to.equal(2500)
+          expect(minimumChargeLicence.subjectToMinimumChargeCreditValue).to.equal(2500)
         })
       })
 
