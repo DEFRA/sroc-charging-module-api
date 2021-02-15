@@ -5,12 +5,10 @@
  */
 
 // Files in the same folder cannot be destructured from index.js so have to be required directly
-const BillRunService = require('./bill_run.service')
 const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')
-const InvoiceService = require('./invoice.service')
-const LicenceService = require('./licence.service')
 
-const { BillRunModel, TransactionModel } = require('../models')
+const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
+const { raw } = require('../models/base.model')
 
 class GenerateBillRunService {
   /**
@@ -65,35 +63,37 @@ class GenerateBillRunService {
 
   static async _saveTransactions (transactions, trx) {
     for (const transaction of transactions) {
-      const billRun = await this._billRun(transaction)
-      const invoice = await this._invoice(transaction)
-      const licence = await this._licence({ ...transaction, invoiceId: invoice.id })
+      const minimumChargePatch = await this._minimumChargePatch(transaction)
 
-      await TransactionModel.query(trx)
-        .insert({
-          ...transaction,
-          invoiceId: invoice.id,
-          licenceId: licence.id
-        })
+      await TransactionModel.query(trx).insert(transaction)
 
-      await invoice.$query(trx).patch()
-      await licence.$query(trx).patch()
-      await billRun.$query(trx).patch()
+      await BillRunModel.query(trx).findById(transaction.billRunId).patch(minimumChargePatch)
+      await InvoiceModel.query(trx).findById(transaction.invoiceId).patch(minimumChargePatch)
+      await LicenceModel.query(trx).findById(transaction.licenceId).patch(minimumChargePatch)
     }
   }
 
-  static async _billRun (translator) {
-    // We pass true to BillRunService to indicate we're calling it as part of the bill run generation process; this
-    // tells it that it's okay to update the summary even though its state is $generating.
-    return BillRunService.go(translator, true)
-  }
+  static async _minimumChargePatch (translator) {
+    let update = {
+      subjectToMinimumChargeCount: raw('subject_to_minimum_charge_count + 1')
+    }
 
-  static async _invoice (translator) {
-    return InvoiceService.go(translator)
-  }
-
-  static async _licence (translator) {
-    return LicenceService.go(translator)
+    if (translator.chargeCredit) {
+      update = {
+        ...update,
+        creditCount: raw('credit_count + 1'),
+        creditValue: raw(`credit_value + ${translator.chargeValue}`),
+        subjectToMinimumChargeCreditValue: raw(`subject_to_minimum_charge_credit_value + ${translator.chargeValue}`)
+      }
+    } else {
+      update = {
+        ...update,
+        debitCount: raw('debit_count + 1'),
+        debitValue: raw(`debit_value + ${translator.chargeValue}`),
+        subjectToMinimumChargeDebitValue: raw(`subject_to_minimum_charge_debit_value + ${translator.chargeValue}`)
+      }
+    }
+    return update
   }
 
   static async _summariseBillRun (billRun, trx) {
