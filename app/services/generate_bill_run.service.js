@@ -28,7 +28,7 @@ class GenerateBillRunService {
 
       await this._calculateAndLogTime(logger, billRunId, startTime)
     } catch (error) {
-      this._logError(logger, error)
+      this._logError(logger, billRunId, error)
     }
   }
 
