@@ -5,12 +5,10 @@
  */
 
 // Files in the same folder cannot be destructured from index.js so have to be required directly
-const BillRunService = require('./bill_run.service')
 const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')
-const InvoiceService = require('./invoice.service')
-const LicenceService = require('./licence.service')
 
-const { BillRunModel, TransactionModel } = require('../models')
+const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
+const { raw } = require('../models/base.model')
 
 class GenerateBillRunService {
   /**
@@ -65,47 +63,37 @@ class GenerateBillRunService {
 
   static async _saveMinimumChargeTransactions (transactions, trx) {
     for (const transaction of transactions) {
-      const billRun = await this._billRun(transaction)
-      const invoice = await this._minimumChargeInvoice(transaction)
-      const licence = await this._licence({ ...transaction, invoiceId: invoice.id })
+      const minimumChargePatch = await this._minimumChargePatch(transaction)
 
-      await TransactionModel.query(trx)
-        .insert({
-          ...transaction,
-          invoiceId: invoice.id,
-          licenceId: licence.id
-        })
+      await TransactionModel.query(trx).insert(transaction)
 
-      await invoice.$query(trx).patch()
-      await licence.$query(trx).patch()
-      await billRun.$query(trx).patch()
+      await BillRunModel.query(trx).findById(transaction.billRunId).patch(minimumChargePatch)
+      await InvoiceModel.query(trx).findById(transaction.invoiceId).patch(minimumChargePatch)
+      await LicenceModel.query(trx).findById(transaction.licenceId).patch(minimumChargePatch)
     }
   }
 
-  static async _billRun (translator) {
-    // We pass true to BillRunService to indicate we're calling it as part of the bill run generation process; this
-    // tells it that it's okay to update the summary even though its state is $generating.
-    return BillRunService.go(translator, true)
-  }
+  static async _minimumChargePatch (translator) {
+    let update = {
+      subjectToMinimumChargeCount: raw('subject_to_minimum_charge_count + 1')
+    }
 
-  /**
-   *
-   * InvoiceService returns the invoice of the transaction we pass to it. Since we only ever call it here as part of the
-   * process of saving minimum charge transactions, we set the invoice's minimumChargeInvoice flag to true before we
-   * return it. This means we don't need the separate step afterwards of identifying minimum charge invoices and
-   * patching their flag to true.
-   *
-   * Note that we can't just return { ...invoice, minimumChargeInvoice: true } as this would no longer be an Objection
-   * object.
-   */
-  static async _minimumChargeInvoice (translator) {
-    const invoice = await InvoiceService.go(translator)
-    Object.assign(invoice, { minimumChargeInvoice: true })
-    return invoice
-  }
-
-  static async _licence (translator) {
-    return LicenceService.go(translator)
+    if (translator.chargeCredit) {
+      update = {
+        ...update,
+        creditCount: raw('credit_count + 1'),
+        creditValue: raw(`credit_value + ${translator.chargeValue}`),
+        subjectToMinimumChargeCreditValue: raw(`subject_to_minimum_charge_credit_value + ${translator.chargeValue}`)
+      }
+    } else {
+      update = {
+        ...update,
+        debitCount: raw('debit_count + 1'),
+        debitValue: raw(`debit_value + ${translator.chargeValue}`),
+        subjectToMinimumChargeDebitValue: raw(`subject_to_minimum_charge_debit_value + ${translator.chargeValue}`)
+      }
+    }
+    return update
   }
 
   static async _summariseBillRun (billRun, trx) {
