@@ -40,7 +40,7 @@ class GenerateBillRunService {
     const minimumChargeAdjustments = await CalculateMinimumChargeService.go(billRun)
 
     await BillRunModel.transaction(async trx => {
-      await this._saveTransactions(minimumChargeAdjustments, trx)
+      await this._saveMinimumChargeTransactions(minimumChargeAdjustments, trx)
       await this._summariseBillRun(billRun, trx)
     })
   }
@@ -63,10 +63,10 @@ class GenerateBillRunService {
     return invoices.reduce((sum, invoice) => sum + invoice.$absoluteNetTotal(), 0)
   }
 
-  static async _saveTransactions (transactions, trx) {
+  static async _saveMinimumChargeTransactions (transactions, trx) {
     for (const transaction of transactions) {
       const billRun = await this._billRun(transaction)
-      const invoice = await this._invoice(transaction)
+      const invoice = await this._minimumChargeInvoice(transaction)
       const licence = await this._licence({ ...transaction, invoiceId: invoice.id })
 
       await TransactionModel.query(trx)
@@ -88,8 +88,20 @@ class GenerateBillRunService {
     return BillRunService.go(translator, true)
   }
 
-  static async _invoice (translator) {
-    return InvoiceService.go(translator)
+  /**
+   *
+   * InvoiceService returns the invoice of the transaction we pass to it. Since we only ever call it here as part of the
+   * process of saving minimum charge transactions, we set the invoice's minimumChargeInvoice flag to true before we
+   * return it. This means we don't need the separate step afterwards of identifying minimum charge invoices and
+   * patching their flag to true.
+   *
+   * Note that we can't just return { ...invoice, minimumChargeInvoice: true } as this would no longer be an Objection
+   * object.
+   */
+  static async _minimumChargeInvoice (translator) {
+    const invoice = await InvoiceService.go(translator)
+    Object.assign(invoice, { minimumChargeInvoice: true })
+    return invoice
   }
 
   static async _licence (translator) {
@@ -99,8 +111,8 @@ class GenerateBillRunService {
   static async _summariseBillRun (billRun, trx) {
     await this._summariseDebitInvoices(billRun, trx)
     await this._summariseCreditInvoices(billRun, trx)
-    await this._summariseZeroValueInvoices(billRun, trx)
-    await this._summariseDeminimisInvoices(billRun, trx)
+    await this._setZeroValueInvoiceFlags(billRun, trx)
+    await this._setDeminimisInvoiceFlags(billRun, trx)
     await this._setGeneratedStatus(billRun, trx)
   }
 
@@ -128,13 +140,13 @@ class GenerateBillRunService {
       })
   }
 
-  static async _summariseZeroValueInvoices (billRun, trx) {
+  static async _setZeroValueInvoiceFlags (billRun, trx) {
     return billRun.$relatedQuery('invoices', trx)
       .modify('zeroValue')
       .patch({ zeroValueInvoice: true })
   }
 
-  static async _summariseDeminimisInvoices (billRun, trx) {
+  static async _setDeminimisInvoiceFlags (billRun, trx) {
     return billRun.$relatedQuery('invoices', trx)
       .modify('deminimis')
       .patch({ deminimisInvoice: true })
