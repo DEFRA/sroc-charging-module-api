@@ -238,7 +238,7 @@ describe('Generate Bill Run Summary service', () => {
         expect(adjustmentTransactions.length).to.equal(1)
       })
 
-      it('sets the minimumChargeInvoice flag', async () => {
+      it('sets the minimumChargeInvoice flag to true', async () => {
         await CreateTransactionService.go({ ...payload, subjectToMinimumCharge: true }, billRun.id, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun.id)
 
@@ -270,7 +270,7 @@ describe('Generate Bill Run Summary service', () => {
         expect(adjustmentTransactions.length).to.equal(0)
       })
 
-      it('sets the minimumChargeInvoice flag', async () => {
+      it('does not set the minimumChargeInvoice flag to true', async () => {
         await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun.id)
 
