@@ -213,7 +213,7 @@ class BillRunGenerator {
   }
 
   /**
-   * Log the time taken to generate the bill run using the passed in logger
+   * Log the time taken to auto-generate the bill run using the passed in logger
    *
    * If `logger` is not set then it will do nothing. If it is set this will get the current time and then calculate the
    * difference from `startTime`. This and the `billRunId` are then used to generate a log message.
@@ -221,8 +221,8 @@ class BillRunGenerator {
    * @param {function} logger Logger with an 'info' method we use to log the time taken (assumed to be the one added to
    * the Hapi server instance by hapi-pino)
    * @param {string} billRunId Id of the bill run currently being 'generated'
-   * @param {BigInt} startTime The time the generate process kicked off. It is expected to be the result of a call to
-   * `process.hrtime.bigint()`
+   * @param {BigInt} startTime The time the auto-generate process kicked off. It is expected to be the result of a call
+   * to `process.hrtime.bigint()`
    */
   static async _calculateAndLogTime (logger, billRunId, startTime) {
     if (!logger) {
@@ -233,11 +233,11 @@ class BillRunGenerator {
     const timeTakenNs = endTime - startTime
     const timeTakenMs = timeTakenNs / 1000000n
 
-    logger.info(`Time taken to generate bill run '${billRunId}': ${timeTakenMs}ms`)
+    logger.info(`Time taken to auto-generate bill run '${billRunId}': ${timeTakenMs}ms`)
   }
 
   /**
-   * Log an error if the generate process fails
+   * Log an error if the auto-generate process fails
    *
    * If `logger` is not set then it will do nothing. If it is set this will log an error message based on the
    * `billRunId` and error provided.
@@ -252,7 +252,7 @@ class BillRunGenerator {
       return
     }
 
-    logger.info(`Generate bill run '${billRunId}' failed: ${error.message} - ${error}`)
+    logger.info(`Auto-generate bill run '${billRunId}' failed: ${error.message} - ${error}`)
   }
 }
 
