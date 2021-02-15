@@ -27,7 +27,7 @@ class BillRunGenerator {
 
       await this._calculateAndLogTime(logger, billRunId, startTime)
     } catch (error) {
-      this._logError(logger, error)
+      this._logError(logger, billRunId, error)
     }
   }
 
@@ -212,6 +212,18 @@ class BillRunGenerator {
     }
   }
 
+  /**
+   * Log the time taken to generate the bill run using the passed in logger
+   *
+   * If `logger` is not set then it will do nothing. If it is set this will get the current time and then calculate the
+   * difference from `startTime`. This and the `billRunId` are then used to generate a log message.
+   *
+   * @param {function} logger Logger with an 'info' method we use to log the time taken (assumed to be the one added to
+   * the Hapi server instance by hapi-pino)
+   * @param {string} billRunId Id of the bill run currently being 'generated'
+   * @param {BigInt} startTime The time the generate process kicked off. It is expected to be the result of a call to
+   * `process.hrtime.bigint()`
+   */
   static async _calculateAndLogTime (logger, billRunId, startTime) {
     if (!logger) {
       return
@@ -224,12 +236,23 @@ class BillRunGenerator {
     logger.info(`Time taken to generate bill run '${billRunId}': ${timeTakenMs}ms`)
   }
 
-  static async _logError (logger, error) {
+  /**
+   * Log an error if the generate process fails
+   *
+   * If `logger` is not set then it will do nothing. If it is set this will log an error message based on the
+   * `billRunId` and error provided.
+   *
+   * @param {function} logger Logger with an 'info' method we use to log the error (assumed to be the one added to
+   * the Hapi server instance by hapi-pino)
+   * @param {string} billRunId Id of the bill run currently being 'generated'
+   * @param {Object} error The error that was thrown
+   */
+  static async _logError (logger, billRunId, error) {
     if (!logger) {
       return
     }
 
-    logger.info(`Generate bill run failed: ${error.message} - ${error}`)
+    logger.info(`Generate bill run '${billRunId}' failed: ${error.message} - ${error}`)
   }
 }
 
