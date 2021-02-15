@@ -42,11 +42,15 @@ describe('Generate Bill Run Summary service', () => {
   let regime
   let payload
   let rulesServiceStub
+  let loggerFake
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
+
+    // Create a fake for use in tests that want to know if the service attempted to log anything
+    loggerFake = { info: Sinon.fake() }
 
     // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
     // the valid tests we can use it straight as
@@ -55,6 +59,7 @@ describe('Generate Bill Run Summary service', () => {
 
   afterEach(async () => {
     Sinon.restore()
+    Sinon.resetHistory()
   })
 
   describe('When a valid bill run ID is supplied', () => {
@@ -124,7 +129,6 @@ describe('Generate Bill Run Summary service', () => {
     })
 
     it('calls the info method of the provided logger', async () => {
-      const loggerFake = { info: Sinon.fake() }
       await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
 
       await GenerateBillRunService.go(billRun.id, loggerFake)
@@ -388,6 +392,20 @@ describe('Generate Bill Run Summary service', () => {
           expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2501)
         })
       })
+    })
+  })
+
+  describe('If an error is thrown', () => {
+    beforeEach(async () => {
+      Sinon.stub(BillRunModel, 'query').throws()
+    })
+
+    it("gets logged but is not allowed to 'bubble' up", async () => {
+      const spy = Sinon.spy(GenerateBillRunService, '_logError')
+
+      await expect(GenerateBillRunService.go(GeneralHelper.uuid4(), loggerFake)).not.to.reject()
+      expect(loggerFake.info.callCount).to.equal(1)
+      expect(spy.calledOnce).to.be.true()
     })
   })
 })
