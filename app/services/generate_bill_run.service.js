@@ -65,10 +65,17 @@ class GenerateBillRunService {
     for (const transaction of transactions) {
       const minimumChargePatch = await this._minimumChargePatch(transaction)
 
+      // Since we're only patching invoices which have a minimum charge adjustment transaction, we can set the
+      // minimumChargeInvoice flag to true at this stage rather than doing it as a separate step in _summariseBillRun.
+      const invoicePatch = {
+        ...minimumChargePatch,
+        minimumChargeInvoice: true
+      }
+
       await TransactionModel.query(trx).insert(transaction)
 
       await BillRunModel.query(trx).findById(transaction.billRunId).patch(minimumChargePatch)
-      await InvoiceModel.query(trx).findById(transaction.invoiceId).patch(minimumChargePatch)
+      await InvoiceModel.query(trx).findById(transaction.invoiceId).patch(invoicePatch)
       await LicenceModel.query(trx).findById(transaction.licenceId).patch(minimumChargePatch)
     }
   }
@@ -94,6 +101,13 @@ class GenerateBillRunService {
       }
     }
     return update
+  }
+
+  static _invoicePatch (minimumChargePatch) {
+    return {
+      ...minimumChargePatch,
+      minimumChargeInvoice: true
+    }
   }
 
   static async _summariseBillRun (billRun, trx) {
