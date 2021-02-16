@@ -6,6 +6,7 @@
 
 const Got = require('got')
 const Tunnel = require('tunnel')
+const Boom = require('@hapi/boom')
 
 const { RulesServiceConfig } = require('../../config')
 
@@ -37,14 +38,52 @@ class RulesService {
    *
    * @returns {Object} The `response.body` provided after calling the rules service
    */
-  static go (presenter) {
+  static async go (presenter) {
     const { url, username, password, httpProxy } = RulesServiceConfig
     const { ruleset, regime, financialYear, chargeParams } = presenter
     const path = this._makeRulesPath(ruleset, regime, financialYear)
     const requestOptions = this._requestOptions(url, chargeParams, username, password)
     const proxyOptions = httpProxy ? this._proxyOptions(httpProxy) : ''
 
-    return this._callRulesService(path, requestOptions, proxyOptions)
+    try {
+      const response = await this._callRulesService(path, requestOptions, proxyOptions)
+      await this._handleMessages(response)
+      return response
+    } catch (error) {
+      await this._handleErrors(error)
+    }
+  }
+
+  /**
+   * Sending certain incorrect parameters will cause the rules service to return an invalid response -- this is
+   * indicated by WRLSChargingResponse.messages being populated with one or more error messages, but in all other
+   * respects the response looks like a valid one. Therefore we need to check if the messages array is populated so we
+   * can throw an error if it is.
+   */
+  static async _handleMessages (response) {
+    if (response.WRLSChargingResponse && response.WRLSChargingResponse.messages) {
+      const { messages } = response.WRLSChargingResponse
+      if (messages.length) {
+        throw Boom.badData(`Rules service returned the following: ${messages.join(', ')}`)
+      }
+    }
+  }
+
+  static async _handleErrors (error) {
+    console.log(error)
+
+    // Handle rules service error:
+    if (error.name === 'HTTPError') {
+      throw Boom.badRequest(`Rules service error: ${error.message}`)
+    }
+
+    // Handle network error:
+    if (error.name === 'RequestError') {
+      throw Boom.badRequest(`Error communicating with the rules service: ${error.code}`)
+    }
+
+    // Handle everything else:
+    throw Boom.boomify(error)
   }
 
   /**
@@ -66,8 +105,22 @@ class RulesService {
   }
 
   static async _callRulesService (path, requestOptions, proxyOptions) {
-    const response = await Got.post(path, { ...requestOptions, ...proxyOptions })
+    const response = await Got.post(path, {
+      ...requestOptions,
+      ...proxyOptions,
+      hooks: {
+        beforeError: [
+          error => {
+            const { response } = error
+            if (response && response.body) {
+              error.message = `${response.body.message} (${response.statusCode})`
+            }
 
+            return error
+          }
+        ]
+      }
+    })
     return response.body
   }
 

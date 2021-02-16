@@ -12,6 +12,10 @@ const { expect } = Code
 // Test helpers
 const { RulesServiceHelper } = require('../support/helpers')
 
+const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
+
+const { rulesService: rulesServiceResponse } = chargeFixtures.simple
+
 // Things we need to stub
 const Got = require('got')
 
@@ -29,9 +33,9 @@ const dummyPresenter = (regime, financialYear, ruleset, chargeParams = {}) => {
 }
 
 describe('Rules service', () => {
-  describe('when calling the rule service', () => {
+  describe('when calling the rule service succeeds', () => {
     before(async () => {
-      // Use a spy to confirm what endpoint we try to call onn the rules service
+      // Use a spy to confirm what endpoint we try to call on the rules service
       Sinon.spy(Got, 'post')
 
       // Intercept all requests in this test suite as we don't actually want to call the service. We're just looking to
@@ -232,6 +236,78 @@ describe('Rules service', () => {
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'sroc')}_2020_21`)
           })
         })
+      })
+    })
+  })
+
+  describe('when calling the rule service fails', () => {
+    afterEach(async () => {
+      Sinon.restore()
+      Nock.cleanAll()
+    })
+
+    describe('because the service returned messages', () => {
+      before(async () => {
+        const response = {
+          ...rulesServiceResponse,
+          WRLSChargingResponse: {
+            ...rulesServiceResponse.WRLSChargingResponse,
+            messages: ['ERROR1', 'ERROR2']
+          }
+        }
+
+        Nock(RulesServiceHelper.url)
+          .post(() => true)
+          .reply(500, response)
+          .persist()
+      })
+
+      it('throws an error and presents the messages to the user', async () => {
+        const presenter = dummyPresenter('wrls', 2019, 'presroc')
+
+        const err = await expect(RulesService.go(presenter)).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal('Rules service returned the following: ERROR1, ERROR2')
+      })
+    })
+
+    describe('because an error was returned', () => {
+      it.only('handles the error', async () => {
+        Nock(RulesServiceHelper.url)
+          .post(() => true)
+          .replyWithError({
+            code: 500,
+            message: 'An error occurred during the execution of the ruleset. Make sure that the request is valid, and review the ruleset and execution object model if applicable.',
+            details: "Error when extracting the ruleset parameter value from the request.\nUnexpected character ('\"' (code 34)): was expecting comma to separate Object entries\n at [Source: com.ibm.ws.webcontainer31.srt.SRTInputStream31@2688941c; line: 16, column: 7]\n",
+            errorCode: 'GBRXH0504E'
+          })
+          .persist()
+
+        const presenter = dummyPresenter('wrls', 2019, 'presroc')
+
+        const err = await expect(RulesService.go(presenter)).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.statusCode).to.equal(400)
+        expect(err.output.payload.message).to.equal('Rules service error: AWOOGA')
+      })
+    })
+
+    describe('because of a network error', () => {
+      it('handles the error', async () => {
+        Nock(RulesServiceHelper.url)
+          .post(() => true)
+          .replyWithError({ code: 'ECONNRESET' })
+          .persist()
+
+        const presenter = dummyPresenter('wrls', 2019, 'presroc')
+
+        const err = await expect(RulesService.go(presenter)).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.statusCode).to.equal(400)
+        expect(err.output.payload.message).to.equal('Error communicating with the rules service: ECONNRESET')
       })
     })
   })

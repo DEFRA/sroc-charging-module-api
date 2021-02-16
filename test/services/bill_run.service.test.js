@@ -172,6 +172,9 @@ describe('Bill Run service', () => {
 
         const err = await expect(BillRunService.go(transaction)).to.reject()
 
+        console.log('---err---')
+        console.log(err)
+        console.log('---err---')
         expect(err).to.be.an.error()
         expect(err.output.payload.message)
           .to
