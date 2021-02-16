@@ -79,4 +79,24 @@ describe('Invoice Model', () => {
       })
     })
   })
+
+  describe('$transactionType method', () => {
+    const billRunId = GeneralHelper.uuid4()
+
+    it('returns C for a credit', async () => {
+      const credit = await InvoiceHelper.addInvoice(billRunId, 'CRD0000001', 2020, 1, 500, 0, 0, 0)
+
+      const result = credit.$transactionType()
+
+      expect(result).to.equal('C')
+    })
+
+    it('returns I for an invoice/debit', async () => {
+      const debit = await InvoiceHelper.addInvoice(billRunId, 'INV0000001', 2020, 0, 0, 1, 500, 0)
+
+      const result = debit.$transactionType()
+
+      expect(result).to.equal('I')
+    })
+  })
 })
