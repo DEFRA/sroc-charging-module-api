@@ -38,7 +38,7 @@ class GenerateBillRunService {
     const minimumChargeAdjustments = await CalculateMinimumChargeService.go(billRun)
 
     await BillRunModel.transaction(async trx => {
-      await this._saveTransactions(minimumChargeAdjustments, trx)
+      await this._saveMinimumChargeTransactions(minimumChargeAdjustments, trx)
       await this._summariseBillRun(billRun, trx)
     })
   }
@@ -61,14 +61,21 @@ class GenerateBillRunService {
     return invoices.reduce((sum, invoice) => sum + invoice.$absoluteNetTotal(), 0)
   }
 
-  static async _saveTransactions (transactions, trx) {
+  static async _saveMinimumChargeTransactions (transactions, trx) {
     for (const transaction of transactions) {
       const minimumChargePatch = await this._minimumChargePatch(transaction)
+
+      // Since we're only patching invoices which have a minimum charge adjustment transaction, we can set the
+      // minimumChargeInvoice flag to true at this stage rather than doing it as a separate step in _summariseBillRun.
+      const invoicePatch = {
+        ...minimumChargePatch,
+        minimumChargeInvoice: true
+      }
 
       await TransactionModel.query(trx).insert(transaction)
 
       await BillRunModel.query(trx).findById(transaction.billRunId).patch(minimumChargePatch)
-      await InvoiceModel.query(trx).findById(transaction.invoiceId).patch(minimumChargePatch)
+      await InvoiceModel.query(trx).findById(transaction.invoiceId).patch(invoicePatch)
       await LicenceModel.query(trx).findById(transaction.licenceId).patch(minimumChargePatch)
     }
   }
@@ -99,8 +106,8 @@ class GenerateBillRunService {
   static async _summariseBillRun (billRun, trx) {
     await this._summariseDebitInvoices(billRun, trx)
     await this._summariseCreditInvoices(billRun, trx)
-    await this._summariseZeroValueInvoices(billRun, trx)
-    await this._summariseDeminimisInvoices(billRun, trx)
+    await this._setZeroValueInvoiceFlags(billRun, trx)
+    await this._setDeminimisInvoiceFlags(billRun, trx)
     await this._setGeneratedStatus(billRun, trx)
   }
 
@@ -128,13 +135,13 @@ class GenerateBillRunService {
       })
   }
 
-  static async _summariseZeroValueInvoices (billRun, trx) {
+  static async _setZeroValueInvoiceFlags (billRun, trx) {
     return billRun.$relatedQuery('invoices', trx)
       .modify('zeroValue')
       .patch({ zeroValueInvoice: true })
   }
 
-  static async _summariseDeminimisInvoices (billRun, trx) {
+  static async _setDeminimisInvoiceFlags (billRun, trx) {
     return billRun.$relatedQuery('invoices', trx)
       .modify('deminimis')
       .patch({ deminimisInvoice: true })
