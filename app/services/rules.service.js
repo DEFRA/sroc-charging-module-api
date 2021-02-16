@@ -70,11 +70,9 @@ class RulesService {
   }
 
   static async _handleErrors (error) {
-    console.log(error)
-
-    // Handle rules service error:
+    // Handle rules service error resulting from incorrect data
     if (error.name === 'HTTPError') {
-      throw Boom.badRequest(`Rules service error: ${error.message}`)
+      throw Boom.badData(`Rules service error: ${error.message}`)
     }
 
     // Handle network error:
@@ -109,19 +107,31 @@ class RulesService {
       ...requestOptions,
       ...proxyOptions,
       hooks: {
-        beforeError: [
-          error => {
-            const { response } = error
-            if (response && response.body) {
-              error.message = `${response.body.message} (${response.statusCode})`
-            }
-
-            return error
-          }
-        ]
+        beforeError: this._assignBodyMessageToErrorMessage()
       }
     })
     return response.body
+  }
+
+  /**
+   * In some circumstances (eg. a 404 error is returned due to invalid periodStart/periodEnd values) the error message
+   * we want to return to the user is returned to us in response.body.message rather than error.message. Adding a
+   * beforeError hook allows us to capture it and assign it to the error message.
+   *
+   * Adapated from the sample hook in the Got docs:
+   * https://github.com/sindresorhus/got/#hooksbeforeerror
+   */
+  static _assignBodyMessageToErrorMessage () {
+    return [
+      error => {
+        const { response } = error
+        if (response && response.body) {
+          error.message = `${response.body.message}`
+        }
+
+        return error
+      }
+    ]
   }
 
   /**
