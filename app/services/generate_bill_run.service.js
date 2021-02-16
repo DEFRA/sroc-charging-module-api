@@ -19,13 +19,17 @@ class GenerateBillRunService {
   * @param {object} [logger] Server logger object. If passed in then logger.info will be called to log the time taken.
   */
   static async go (billRunId, logger = '') {
-    // Mark the start time for later logging
-    const startTime = process.hrtime.bigint()
+    try {
+      // Mark the start time for later logging
+      const startTime = process.hrtime.bigint()
 
-    const billRun = await BillRunModel.query().findById(billRunId)
-    await this._generateBillRun(billRun)
+      const billRun = await BillRunModel.query().findById(billRunId)
+      await this._generateBillRun(billRun)
 
-    await this._calculateAndLogTime(logger, billRunId, startTime)
+      await this._calculateAndLogTime(logger, billRunId, startTime)
+    } catch (error) {
+      this._logError(logger, billRunId, error)
+    }
   }
 
   static async _generateBillRun (billRun) {
@@ -170,6 +174,25 @@ class GenerateBillRunService {
     const timeTakenMs = timeTakenNs / 1000000n
 
     logger.info(`Time taken to generate bill run '${billRunId}': ${timeTakenMs}ms`)
+  }
+
+  /**
+   * Log an error if the generate process fails
+   *
+   * If `logger` is not set then it will do nothing. If it is set this will log an error message based on the
+   * `billRunId` and error provided.
+   *
+   * @param {function} logger Logger with an 'info' method we use to log the error (assumed to be the one added to
+   * the Hapi server instance by hapi-pino)
+   * @param {string} billRunId Id of the bill run currently being 'generated'
+   * @param {Object} error The error that was thrown
+   */
+  static async _logError (logger, billRunId, error) {
+    if (!logger) {
+      return
+    }
+
+    logger.info(`Generate bill run '${billRunId}' failed: ${error.message} - ${error}`)
   }
 }
 
