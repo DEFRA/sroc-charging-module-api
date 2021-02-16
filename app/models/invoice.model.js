@@ -120,6 +120,13 @@ class InvoiceModel extends BaseModel {
   $absoluteNetTotal () {
     return Math.abs(this.debitValue - this.creditValue)
   }
+
+  /**
+   * transactionType method returns C if this is a credit (ie. net total < 0) or I if it's an invoice/debit
+   */
+  $transactionType () {
+    return this.$netTotal() < 0 ? 'C' : 'I'
+  }
 }
 
 module.exports = InvoiceModel
