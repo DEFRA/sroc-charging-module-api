@@ -245,6 +245,9 @@ describe('Generate Bill Run Summary service', () => {
         })
 
         it('saves both adjustment transactions to the db', async () => {
+        // Note that we would normally use .withGraphFetched('invoices.transactions') to pull the invoices and nested
+        // transactions from the bill run. However this way of doing it makes it easier to get to the transaction we
+        // want to test without having to dig through the object.
           const { transactions } = await BillRunModel.query()
             .findById(billRun.id)
             .withGraphFetched('invoices')
@@ -277,6 +280,7 @@ describe('Generate Bill Run Summary service', () => {
           expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(4)
           expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2500)
           expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2500)
+          expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
         })
 
         it('updates the licence as expected', async () => {
@@ -340,6 +344,7 @@ describe('Generate Bill Run Summary service', () => {
           expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(3)
           expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2501)
           expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2500)
+          expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
         })
       })
 
@@ -390,7 +395,37 @@ describe('Generate Bill Run Summary service', () => {
           expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(3)
           expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2500)
           expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2501)
+          expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
         })
+      })
+    })
+
+    describe('When minimum charge does not apply', () => {
+      it('does not save an adjustment transaction to the db', async () => {
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await GenerateBillRunService.go(billRun.id)
+
+        const { transactions } = await BillRunModel.query()
+          .findById(billRun.id)
+          .withGraphFetched('invoices')
+          .withGraphFetched('transactions')
+
+        const adjustmentTransactions = transactions.filter((transaction) => {
+          return transaction.minimumChargeAdjustment
+        })
+
+        expect(adjustmentTransactions.length).to.equal(0)
+      })
+
+      it('does not set the minimumChargeInvoice flag to true', async () => {
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await GenerateBillRunService.go(billRun.id)
+
+        const { invoices } = await BillRunModel.query()
+          .findById(billRun.id)
+          .withGraphFetched('invoices')
+
+        expect(invoices[0].minimumChargeInvoice).to.equal(false)
       })
     })
   })
