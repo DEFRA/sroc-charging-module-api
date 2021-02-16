@@ -99,13 +99,6 @@ class GenerateBillRunService {
     return update
   }
 
-  static _invoicePatch (minimumChargePatch) {
-    return {
-      ...minimumChargePatch,
-      minimumChargeInvoice: true
-    }
-  }
-
   static async _summariseBillRun (billRun, trx) {
     await this._summariseDebitInvoices(billRun, trx)
     await this._summariseCreditInvoices(billRun, trx)
