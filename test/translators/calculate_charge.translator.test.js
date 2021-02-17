@@ -248,6 +248,20 @@ describe('Calculate Charge translator', () => {
           })
         })
       })
+
+      describe("when 'periodStartDate' is the same as 'periodEndDate'", () => {
+        it('still does not throw an error', async () => {
+          const validPayload = {
+            ...payload,
+            periodStart: '01-APR-2020',
+            periodEnd: '01-APR-2020'
+          }
+
+          const result = new CalculateChargeTranslator(data(validPayload))
+
+          expect(result).to.not.be.an.error()
+        })
+      })
     })
 
     describe('when the data is not valid', () => {
