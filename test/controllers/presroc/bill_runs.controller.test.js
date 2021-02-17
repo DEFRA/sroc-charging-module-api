@@ -304,7 +304,7 @@ describe('Presroc Bill Runs controller', () => {
         const responsePayload = JSON.parse(response.payload)
 
         expect(response.statusCode).to.equal(200)
-        expect(responsePayload.status).to.equal('endpoint not implemented')
+        expect(responsePayload.transaction.id).to.equal(transaction.id)
       })
     })
   })

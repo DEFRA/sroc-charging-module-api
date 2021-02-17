@@ -40,6 +40,11 @@ const routes = [
     method: 'GET',
     path: '/v2/{regimeId}/bill-runs/{billRunId}',
     handler: PresrocBillRunsController.view
+  },
+  {
+    method: 'GET',
+    path: '/v2/{regimeId}/bill-runs/{billRunId}/transactions/{transactionId}',
+    handler: PresrocBillRunsController.viewTransaction
   }
 ]
 
