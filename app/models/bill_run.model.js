@@ -30,6 +30,14 @@ class BillRunModel extends BaseModel {
           to: 'invoices.billRunId'
         }
       },
+      licences: {
+        relation: Model.HasManyRelation,
+        modelClass: 'licence.model',
+        join: {
+          from: 'billRuns.id',
+          to: 'licences.billRunId'
+        }
+      },
       regime: {
         relation: Model.BelongsToOneRelation,
         modelClass: 'regime.model',
@@ -77,6 +85,13 @@ class BillRunModel extends BaseModel {
    */
   $empty () {
     return (this.creditCount === 0 && this.debitCount === 0 && this.zeroCount === 0)
+  }
+
+  /**
+   * netTotal method provides the net total of the invoice (debit value - credit value)
+   */
+  $netTotal () {
+    return this.debitValue - this.creditValue
   }
 }
 

@@ -16,25 +16,23 @@ class BillRunService {
   * Note that the updated stats are _not_ saved back to the database; it is up to the caller to do this.
   *
   * @param {Object} transaction translator belonging to the bill run to find and assess
-  * @param {boolean} [requestFromGenerateBillRun=false] If `true` then we are updating the summary within the 'generate bill run'
-  *  process and we should therefore expect the bill run to be in $generating state
   * @returns {module:BillRunModel} a `BillRunModel` if found else it will throw a `Boom` error
   */
-  static async go (transaction, requestFromGenerateBillRun = false) {
+  static async go (transaction) {
     const billRun = await BillRunModel.query().findById(transaction.billRunId)
 
-    this._validateBillRun(billRun, transaction, requestFromGenerateBillRun)
+    this._validateBillRun(billRun, transaction)
     this._updateStats(billRun, transaction)
 
     return billRun
   }
 
-  static _validateBillRun (billRun, transaction, requestFromGenerateBillRun) {
+  static _validateBillRun (billRun, transaction) {
     if (!billRun) {
       throw Boom.badData(`Bill run ${transaction.billRunId} is unknown.`)
     }
 
-    if (!this._updateable(billRun, requestFromGenerateBillRun)) {
+    if (!billRun.$editable()) {
       throw Boom.badData(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
     }
 
@@ -43,16 +41,6 @@ class BillRunService {
         `Bill run ${billRun.id} is for region ${billRun.region} but transaction is for region ${transaction.region}.`
       )
     }
-  }
-
-  /**
-   * The bill run can be updated in the following circumstances:
-   *  - The bill run state is $editable;
-   *  - The bill run state is $generating and the service has been called as part of the bill run generation process
-   *     (which will pass requestFromGenerateBillRun as true)
-   */
-  static _updateable (billRun, requestFromGenerateBillRun) {
-    return billRun.$editable() || (billRun.$generating() && requestFromGenerateBillRun)
   }
 
   static _updateStats (object, transaction) {
