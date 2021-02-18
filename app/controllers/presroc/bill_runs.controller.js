@@ -40,6 +40,16 @@ class BillRunsController {
 
     return h.response(result).code(200)
   }
+
+  static async viewTransaction (req, h) {
+    const result = {
+      transaction: {
+        id: req.params.transactionId
+      }
+    }
+
+    return h.response(result).code(200)
+  }
 }
 
 module.exports = BillRunsController
