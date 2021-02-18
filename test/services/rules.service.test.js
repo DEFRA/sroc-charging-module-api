@@ -18,6 +18,7 @@ const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
 // Things we need to stub
 const Got = require('got')
+const { RulesServiceConfig } = require('../../config')
 
 // Thing under test
 const { RulesService } = require('../../app/services')
@@ -312,11 +313,17 @@ describe('Rules service', () => {
     })
 
     describe('because of a network error:', () => {
-      describe('timeout error', () => {
-        it('handles the error', { timeout: 20000 }, async () => {
+      // We increase the timeout value for this test because Got leaves ~1000ms between retry attempts
+      describe('timeout error', { timeout: 5000 }, () => {
+        before(async () => {
+          // Set the timeout value to 50ms for these tests
+          Sinon.replace(RulesServiceConfig, 'timeout', 50)
+        })
+
+        it('handles the error', async () => {
           Nock(RulesServiceHelper.url)
             .post(() => true)
-            .delay(50000)
+            .delay(100)
             .reply(200)
             .persist()
 
@@ -329,11 +336,11 @@ describe('Rules service', () => {
           expect(err.output.payload.message).to.equal('Error communicating with the rules service: ETIMEDOUT')
         })
 
-        it('retries before erroring', { timeout: 10000 }, async () => {
+        it('retries before erroring', async () => {
           // The first response will time out, the second response will return OK
           Nock(RulesServiceHelper.url)
             .post(() => true)
-            .delay(6000)
+            .delay(100)
             .reply(200)
             .post(() => true)
             .reply(200)
