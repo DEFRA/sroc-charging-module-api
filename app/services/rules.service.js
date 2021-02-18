@@ -39,15 +39,15 @@ class RulesService {
    * @returns {Object} The `response.body` provided after calling the rules service
    */
   static async go (presenter) {
-    const { url, username, password, httpProxy } = RulesServiceConfig
+    const { url, username, password, httpProxy, timeout } = RulesServiceConfig
     const { ruleset, regime, financialYear, chargeParams } = presenter
     const path = this._makeRulesPath(ruleset, regime, financialYear)
-    const requestOptions = this._requestOptions(url, chargeParams, username, password)
+    const requestOptions = this._requestOptions(url, chargeParams, timeout, username, password)
     const proxyOptions = httpProxy ? this._proxyOptions(httpProxy) : ''
 
     try {
       const response = await this._callRulesService(path, requestOptions, proxyOptions)
-      await this._handleMessages(response)
+      await this._throwErrorIfMessagesReceived(response)
       return response
     } catch (error) {
       await this._handleErrors(error)
@@ -60,7 +60,7 @@ class RulesService {
    * respects the response looks like a valid one. Therefore we need to check if the messages array is populated so we
    * can throw an error if it is.
    */
-  static async _handleMessages (response) {
+  static async _throwErrorIfMessagesReceived (response) {
     if (response.WRLSChargingResponse && response.WRLSChargingResponse.messages) {
       const { messages } = response.WRLSChargingResponse
       if (messages.length) {
@@ -70,19 +70,27 @@ class RulesService {
   }
 
   static async _handleErrors (error) {
-    // TODO: handle 404 error so it returns a message along the lines of "ruleset not found, check periodStart"
+    // If the rules service returns a 404 error then we assume this is caused by an invalid date being sent
+    if (error.response && error.response.statusCode === 404) {
+      throw Boom.badData('Ruleset not found, please check periodStart value.')
+    }
+
+    // If the rules service returns a 500 error then convert it to a 400 error
+    if (error.response && error.response.statusCode === 500) {
+      throw Boom.badRequest(`Rules service error: ${error.response.body.message}`)
+    }
 
     // Handle rules service error resulting from incorrect data
     if (error.name === 'HTTPError') {
       throw Boom.badData(`Rules service error: ${error.message}`)
     }
 
-    // Handle network error:
-    if (error.name === 'RequestError') {
+    // Handle network errors
+    if (error.name === 'RequestError' || error.name === 'TimeoutError') {
       throw Boom.badRequest(`Error communicating with the rules service: ${error.code}`)
     }
 
-    // Handle everything else:
+    // Handle everything else. This includes any errors thrown by _throwErrorIfMessagesReceived()
     throw Boom.boomify(error)
   }
 
@@ -108,33 +116,8 @@ class RulesService {
     const response = await Got.post(path, {
       ...requestOptions,
       ...proxyOptions
-      // ...proxyOptions,
-      // hooks: {
-      //   beforeError: this._assignBodyMessageToErrorMessage()
-      // }
     })
     return response.body
-  }
-
-  /**
-   * In some circumstances (eg. a 404 error is returned due to invalid periodStart/periodEnd values) the error message
-   * we want to return to the user is returned to us in response.body.message rather than error.message. Adding a
-   * beforeError hook allows us to capture it and assign it to the error message.
-   *
-   * Adapated from the sample hook in the Got docs:
-   * https://github.com/sindresorhus/got/#hooksbeforeerror
-   */
-  static _assignBodyMessageToErrorMessage () {
-    return [
-      error => {
-        const { response } = error
-        if (response && response.body) {
-          error.message = `${response.body.message}`
-        }
-
-        return error
-      }
-    ]
   }
 
   /**
@@ -158,12 +141,17 @@ class RulesService {
     return `_${year}_${nextYearDigits}`
   }
 
-  static _requestOptions (url, chargeParams, username, password) {
+  static _requestOptions (url, chargeParams, timeout, username, password) {
     return {
       prefixUrl: url,
       json: chargeParams,
       responseType: 'json',
-      timeout: 5000,
+      timeout,
+      retry: {
+        methods: ['GET', 'POST'],
+        errorCodes: ['ETIMEDOUT'],
+        statusCodes: []
+      },
       username,
       password
     }
