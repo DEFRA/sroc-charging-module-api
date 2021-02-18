@@ -49,7 +49,7 @@ EXPOSE $PORT 9229 9230
 
 # Install dependencies first, in a different location for easier app bind mounting for local development. To do this we
 # first copy just the package*.json files from the host
-COPY package.json package-lock.json* ./
+COPY --chown=node:node package.json package-lock.json* ./
 
 RUN npm install
 
@@ -99,7 +99,7 @@ EXPOSE $PORT
 
 # Install dependencies first, in a different location for easier app bind mounting for local development. To do this we
 # first copy just the package*.json files from the host
-COPY package.json package-lock.json* ./
+COPY --chown=node:node package.json package-lock.json* ./
 
 RUN npm install
 
