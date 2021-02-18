@@ -70,6 +70,8 @@ class RulesService {
   }
 
   static async _handleErrors (error) {
+    // TODO: handle 404 error so it returns a message along the lines of "ruleset not found, check periodStart"
+
     // Handle rules service error resulting from incorrect data
     if (error.name === 'HTTPError') {
       throw Boom.badData(`Rules service error: ${error.message}`)
@@ -105,10 +107,11 @@ class RulesService {
   static async _callRulesService (path, requestOptions, proxyOptions) {
     const response = await Got.post(path, {
       ...requestOptions,
-      ...proxyOptions,
-      hooks: {
-        beforeError: this._assignBodyMessageToErrorMessage()
-      }
+      ...proxyOptions
+      // ...proxyOptions,
+      // hooks: {
+      //   beforeError: this._assignBodyMessageToErrorMessage()
+      // }
     })
     return response.body
   }
