@@ -148,8 +148,10 @@ class RulesService {
       responseType: 'json',
       timeout,
       retry: {
-        methods: ['GET', 'POST'],
+        methods: ['POST'],
+        // We ensure that the only network errors Got retries are timeout errors
         errorCodes: ['ETIMEDOUT'],
+        // We set statusCodes as an empty array to ensure that 4xx, 5xx etc. errors are not retried
         statusCodes: []
       },
       username,
