@@ -49,7 +49,9 @@ EXPOSE $PORT 9229 9230
 
 # Install dependencies first, in a different location for easier app bind mounting for local development. To do this we
 # first copy just the package*.json files from the host
-COPY package.json package-lock.json* ./
+# Note. COPY is always run as the root user in Docker. So, to avoid permission issues we immediately make the node user
+# owner of the copied files
+COPY --chown=node:node package.json package-lock.json* ./
 
 RUN npm install
 
@@ -99,7 +101,9 @@ EXPOSE $PORT
 
 # Install dependencies first, in a different location for easier app bind mounting for local development. To do this we
 # first copy just the package*.json files from the host
-COPY package.json package-lock.json* ./
+# Note. COPY is always run as the root user in Docker. So, to avoid permission issues we immediately make the node user
+# owner of the copied files
+COPY --chown=node:node package.json package-lock.json* ./
 
 RUN npm install
 

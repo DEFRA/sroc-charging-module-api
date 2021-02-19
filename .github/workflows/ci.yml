@@ -32,6 +32,7 @@ jobs:
       WRLS_RULESET: wrls_RuleSet
       WRLS_SROC_APP: TEST_WRLS_SRoC_RuleApp
       WRLS_SROC_RULESET: WRLS_SRoC_RuleSet
+      RULES_SERVICE_TIMEOUT: 1000
 
     # Service containers to run with `runner-job`
     services:
