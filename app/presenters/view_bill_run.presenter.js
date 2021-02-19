@@ -18,7 +18,6 @@ class ViewBillRunPresenter extends BasePresenter {
         region: data.region,
         status: data.status,
         approvedForBilling: false,
-        ruleset: 'presroc',
         creditNoteCount: data.creditNoteCount,
         creditNoteValue: data.creditNoteValue,
         invoiceCount: data.invoiceCount,
