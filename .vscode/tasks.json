@@ -97,7 +97,7 @@
       "label": "Run sroc-cma dev seeds",
       "detail": "Will run the seeds for the main db",
       "type": "shell",
-      "command": "docker-compose exec app npx knex seed:run",
+      "command": "docker-compose exec app npm run seeddb",
       "group": "test",
       "presentation": {
         "echo": true,

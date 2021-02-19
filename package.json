@@ -13,6 +13,7 @@
     "createdbtest": "NODE_ENV=test node db/create_database.js",
     "migratedb": "knex migrate:latest",
     "migratedbtest": "NODE_ENV=test knex migrate:latest",
+    "seeddb": "knex seed:run",
     "unit-test": "lab --silent-skips --shuffle"
   },
   "repository": {
