@@ -15,6 +15,7 @@ const { deployment } = require('../../../server')
 const {
   AuthorisationHelper,
   AuthorisedSystemHelper,
+  DatabaseHelper,
   RegimeHelper
 } = require('../../support/helpers')
 
@@ -37,6 +38,8 @@ describe('Presroc Invoices controller', () => {
   })
 
   beforeEach(async () => {
+    await DatabaseHelper.clean()
+
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
   })
