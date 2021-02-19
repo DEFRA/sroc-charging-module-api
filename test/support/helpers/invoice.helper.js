@@ -9,11 +9,11 @@ class InvoiceHelper {
    * @param {string} billRunId Id to use for the `bill_run_id` field
    * @param {string} customerReference Customer reference to use.
    * @param {integer} financialYear Financial year to use.
-   * @param {integer} [creditCount] Number of credits in the invoice.
-   * @param {integer} [creditValue] Total value of credits in the invoice.
-   * @param {integer} [debitCount] Number of debits in the invoice.
-   * @param {integer} [debitValue] Total value of debits in the invoice.
-   * @param {integer} [zeroCount] Number of zero value transactions in the invoice.
+   * @param {integer} [creditLineCount] Number of credits in the invoice.
+   * @param {integer} [creditLineValue] Total value of credits in the invoice.
+   * @param {integer} [debitLineCount] Number of debits in the invoice.
+   * @param {integer} [debitLineValue] Total value of debits in the invoice.
+   * @param {integer} [zeroLineCount] Number of zero value transactions in the invoice.
    * @param {integer} [subjectToMinimumChargeCount] Number of transactions flagged as 'miniumum charge' in the invoice.
    * @param {integer} [subjectToMinimumChargeCreditValue] Total value of minimum charge credit transactions in the
    *  invoice.
@@ -26,11 +26,11 @@ class InvoiceHelper {
     billRunId,
     customerReference,
     financialYear,
-    creditCount = 0,
-    creditValue = 0,
-    debitCount = 0,
-    debitValue = 0,
-    zeroCount = 0,
+    creditLineCount = 0,
+    creditLineValue = 0,
+    debitLineCount = 0,
+    debitLineValue = 0,
+    zeroLineCount = 0,
     subjectToMinimumChargeCount = 0,
     subjectToMinimumChargeCreditValue = 0,
     subjectToMinimumChargeDebitValue = 0
@@ -40,11 +40,11 @@ class InvoiceHelper {
         billRunId,
         customerReference,
         financialYear,
-        creditCount,
-        creditValue,
-        debitCount,
-        debitValue,
-        zeroCount,
+        creditLineCount,
+        creditLineValue,
+        debitLineCount,
+        debitLineValue,
+        zeroLineCount,
         subjectToMinimumChargeCount,
         subjectToMinimumChargeCreditValue,
         subjectToMinimumChargeDebitValue

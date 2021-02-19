@@ -54,8 +54,8 @@ describe('Invoice service', () => {
     it('correctly calculates the summary', async () => {
       const invoice = await InvoiceService.go(transaction)
 
-      expect(invoice.debitCount).to.equal(1)
-      expect(invoice.debitValue).to.equal(transaction.chargeValue)
+      expect(invoice.debitLineCount).to.equal(1)
+      expect(invoice.debitLineValue).to.equal(transaction.chargeValue)
     })
   })
 
@@ -64,8 +64,8 @@ describe('Invoice service', () => {
       transaction.chargeCredit = true
       const invoice = await InvoiceService.go(transaction)
 
-      expect(invoice.creditCount).to.equal(1)
-      expect(invoice.creditValue).to.equal(transaction.chargeValue)
+      expect(invoice.creditLineCount).to.equal(1)
+      expect(invoice.creditLineValue).to.equal(transaction.chargeValue)
     })
   })
 
@@ -74,7 +74,7 @@ describe('Invoice service', () => {
       transaction.chargeValue = 0
       const invoice = await InvoiceService.go(transaction)
 
-      expect(invoice.zeroCount).to.equal(1)
+      expect(invoice.zeroLineCount).to.equal(1)
     })
   })
 
@@ -124,8 +124,8 @@ describe('Invoice service', () => {
 
       const secondInvoice = await InvoiceService.go(transaction)
 
-      expect(secondInvoice.debitCount).to.equal(2)
-      expect(secondInvoice.debitValue).to.equal(transaction.chargeValue * 2)
+      expect(secondInvoice.debitLineCount).to.equal(2)
+      expect(secondInvoice.debitLineValue).to.equal(transaction.chargeValue * 2)
     })
   })
 })

@@ -88,15 +88,15 @@ class GenerateBillRunService {
     if (translator.chargeCredit) {
       update = {
         ...update,
-        creditCount: raw('credit_count + 1'),
-        creditValue: raw(`credit_value + ${translator.chargeValue}`),
+        creditLineCount: raw('credit_line_count + 1'),
+        creditLineValue: raw(`credit_line_value + ${translator.chargeValue}`),
         subjectToMinimumChargeCreditValue: raw(`subject_to_minimum_charge_credit_value + ${translator.chargeValue}`)
       }
     } else {
       update = {
         ...update,
-        debitCount: raw('debit_count + 1'),
-        debitValue: raw(`debit_value + ${translator.chargeValue}`),
+        debitLineCount: raw('debit_line_count + 1'),
+        debitLineValue: raw(`debit_Line_value + ${translator.chargeValue}`),
         subjectToMinimumChargeDebitValue: raw(`subject_to_minimum_charge_debit_value + ${translator.chargeValue}`)
       }
     }
