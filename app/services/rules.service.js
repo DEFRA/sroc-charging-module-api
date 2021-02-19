@@ -6,6 +6,7 @@
 
 const Got = require('got')
 const Tunnel = require('tunnel')
+const Boom = require('@hapi/boom')
 
 const { RulesServiceConfig } = require('../../config')
 
@@ -37,14 +38,63 @@ class RulesService {
    *
    * @returns {Object} The `response.body` provided after calling the rules service
    */
-  static go (presenter) {
-    const { url, username, password, httpProxy } = RulesServiceConfig
+  static async go (presenter) {
+    const { url, username, password, httpProxy, timeout } = RulesServiceConfig
     const { ruleset, regime, financialYear, chargeParams } = presenter
     const path = this._makeRulesPath(ruleset, regime, financialYear)
-    const requestOptions = this._requestOptions(url, chargeParams, username, password)
+    const requestOptions = this._requestOptions(url, chargeParams, timeout, username, password)
     const proxyOptions = httpProxy ? this._proxyOptions(httpProxy) : ''
 
-    return this._callRulesService(path, requestOptions, proxyOptions)
+    let response
+
+    try {
+      response = await this._callRulesService(path, requestOptions, proxyOptions)
+      await this._throwErrorIfMessagesReceived(response)
+    } catch (error) {
+      await this._handleErrors(error)
+    }
+
+    return response
+  }
+
+  /**
+   * Sending certain incorrect parameters will cause the rules service to return an invalid response -- this is
+   * indicated by WRLSChargingResponse.messages being populated with one or more error messages, but in all other
+   * respects the response looks like a valid one. Therefore we need to check if the messages array is populated so we
+   * can throw an error if it is.
+   */
+  static async _throwErrorIfMessagesReceived (response) {
+    if (response.WRLSChargingResponse && response.WRLSChargingResponse.messages) {
+      const { messages } = response.WRLSChargingResponse
+      if (messages.length) {
+        throw Boom.badData(`Rules service returned the following: ${messages.join(', ')}`)
+      }
+    }
+  }
+
+  static async _handleErrors (error) {
+    // If the rules service returns a 404 error then we assume this is caused by an invalid date being sent
+    if (error.response && error.response.statusCode === 404) {
+      throw Boom.badData('Ruleset not found, please check periodStart value.')
+    }
+
+    // If the rules service returns a 500 error then convert it to a 400 error
+    if (error.response && error.response.statusCode === 500) {
+      throw Boom.badRequest(`Rules service error: ${error.response.body.message}`)
+    }
+
+    // Handle rules service error resulting from incorrect data
+    if (error.name === 'HTTPError') {
+      throw Boom.badData(`Rules service error: ${error.message}`)
+    }
+
+    // Handle network errors
+    if (error.name === 'RequestError' || error.name === 'TimeoutError') {
+      throw Boom.badRequest(`Error communicating with the rules service: ${error.code}`)
+    }
+
+    // Handle everything else. This includes any errors thrown by _throwErrorIfMessagesReceived()
+    throw Boom.boomify(error)
   }
 
   /**
@@ -66,8 +116,10 @@ class RulesService {
   }
 
   static async _callRulesService (path, requestOptions, proxyOptions) {
-    const response = await Got.post(path, { ...requestOptions, ...proxyOptions })
-
+    const response = await Got.post(path, {
+      ...requestOptions,
+      ...proxyOptions
+    })
     return response.body
   }
 
@@ -92,12 +144,19 @@ class RulesService {
     return `_${year}_${nextYearDigits}`
   }
 
-  static _requestOptions (url, chargeParams, username, password) {
+  static _requestOptions (url, chargeParams, timeout, username, password) {
     return {
       prefixUrl: url,
       json: chargeParams,
       responseType: 'json',
-      timeout: 5000,
+      retry: {
+        methods: ['POST'],
+        // We ensure that the only network errors Got retries are timeout errors
+        errorCodes: ['ETIMEDOUT'],
+        // We set statusCodes as an empty array to ensure that 4xx, 5xx etc. errors are not retried
+        statusCodes: []
+      },
+      timeout,
       username,
       password
     }

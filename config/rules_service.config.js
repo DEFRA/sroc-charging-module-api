@@ -57,7 +57,8 @@ const config = {
         }
       }
     }
-  }
+  },
+  timeout: parseInt(process.env.RULES_SERVICE_TIMEOUT)
 }
 
 module.exports = config
