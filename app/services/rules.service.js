@@ -45,13 +45,16 @@ class RulesService {
     const requestOptions = this._requestOptions(url, chargeParams, timeout, username, password)
     const proxyOptions = httpProxy ? this._proxyOptions(httpProxy) : ''
 
+    let response
+
     try {
-      const response = await this._callRulesService(path, requestOptions, proxyOptions)
+      response = await this._callRulesService(path, requestOptions, proxyOptions)
       await this._throwErrorIfMessagesReceived(response)
-      return response
     } catch (error) {
       await this._handleErrors(error)
     }
+
+    return response
   }
 
   /**
@@ -146,7 +149,6 @@ class RulesService {
       prefixUrl: url,
       json: chargeParams,
       responseType: 'json',
-      timeout,
       retry: {
         methods: ['POST'],
         // We ensure that the only network errors Got retries are timeout errors
@@ -154,6 +156,7 @@ class RulesService {
         // We set statusCodes as an empty array to ensure that 4xx, 5xx etc. errors are not retried
         statusCodes: []
       },
+      timeout,
       username,
       password
     }
