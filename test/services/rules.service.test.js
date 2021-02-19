@@ -274,7 +274,7 @@ describe('Rules service', () => {
     })
 
     describe('because an error was returned', () => {
-      it('handles the error', async () => {
+      before(async () => {
         Nock(RulesServiceHelper.url)
           .post(() => true)
           .reply(500, () => {
@@ -285,7 +285,9 @@ describe('Rules service', () => {
               errorCode: 'ERROR_CODE'
             }
           })
+      })
 
+      it('returns a 400 error with the error message', async () => {
         const presenter = dummyPresenter('wrls', 2019, 'presroc')
 
         const err = await expect(RulesService.go(presenter)).to.reject()
@@ -297,7 +299,13 @@ describe('Rules service', () => {
     })
 
     describe('because an incorrect date was sent', () => {
-      it('handles the error', async () => {
+      before(async () => {
+        Nock(RulesServiceHelper.url)
+          .post(() => true)
+          .reply(404)
+      })
+
+      it('returns a 404 error and an appropriate message', async () => {
         Nock(RulesServiceHelper.url)
           .post(() => true)
           .reply(404)
@@ -320,7 +328,7 @@ describe('Rules service', () => {
           Sinon.replace(RulesServiceConfig, 'timeout', 50)
         })
 
-        it('handles the error', async () => {
+        it('returns a 400 error with the error code', async () => {
           Nock(RulesServiceHelper.url)
             .post(() => true)
             .delay(100)
@@ -354,11 +362,13 @@ describe('Rules service', () => {
       })
 
       describe('other network error', () => {
-        it('handles the error', async () => {
+        before(async () => {
           Nock(RulesServiceHelper.url)
             .post(() => true)
             .replyWithError({ code: 'ECONNRESET' })
+        })
 
+        it('returns a 400 error with the error type', async () => {
           const presenter = dummyPresenter('wrls', 2019, 'presroc')
 
           const err = await expect(RulesService.go(presenter)).to.reject()
