@@ -56,8 +56,8 @@ describe('Licence service', () => {
     it('correctly calculates the summary', async () => {
       const licence = await LicenceService.go(transaction)
 
-      expect(licence.debitCount).to.equal(1)
-      expect(licence.debitValue).to.equal(transaction.chargeValue)
+      expect(licence.debitLineCount).to.equal(1)
+      expect(licence.debitLineValue).to.equal(transaction.chargeValue)
     })
   })
 
@@ -66,8 +66,8 @@ describe('Licence service', () => {
       transaction.chargeCredit = true
       const licence = await LicenceService.go(transaction)
 
-      expect(licence.creditCount).to.equal(1)
-      expect(licence.creditValue).to.equal(transaction.chargeValue)
+      expect(licence.creditLineCount).to.equal(1)
+      expect(licence.creditLineValue).to.equal(transaction.chargeValue)
     })
   })
 
@@ -76,7 +76,7 @@ describe('Licence service', () => {
       transaction.chargeValue = 0
       const licence = await LicenceService.go(transaction)
 
-      expect(licence.zeroCount).to.equal(1)
+      expect(licence.zeroLineCount).to.equal(1)
     })
   })
 
@@ -135,8 +135,8 @@ describe('Licence service', () => {
 
       const secondLicence = await LicenceService.go(transaction)
 
-      expect(secondLicence.debitCount).to.equal(2)
-      expect(secondLicence.debitValue).to.equal(transaction.chargeValue * 2)
+      expect(secondLicence.debitLineCount).to.equal(2)
+      expect(secondLicence.debitLineValue).to.equal(transaction.chargeValue * 2)
     })
   })
 })

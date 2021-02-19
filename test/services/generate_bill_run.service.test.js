@@ -160,7 +160,7 @@ describe('Generate Bill Run Summary service', () => {
 
         const result = await BillRunModel.query().findById(billRun.id)
 
-        expect(result.zeroCount).to.equal(2)
+        expect(result.zeroLineCount).to.equal(2)
       })
 
       describe('and there is also a non-zero value invoice', () => {
@@ -263,8 +263,8 @@ describe('Generate Bill Run Summary service', () => {
         it('updates the bill run as expected', async () => {
           const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
 
-          expect(minimumChargeBill.debitCount).to.equal(2)
-          expect(minimumChargeBill.creditCount).to.equal(2)
+          expect(minimumChargeBill.debitLineCount).to.equal(2)
+          expect(minimumChargeBill.creditLineCount).to.equal(2)
           expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(4)
           expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(2500)
           expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2500)
@@ -275,8 +275,8 @@ describe('Generate Bill Run Summary service', () => {
           const invoices = await minimumChargeBill.$relatedQuery('invoices')
           const minimumChargeInvoice = invoices[0]
 
-          expect(minimumChargeInvoice.debitCount).to.equal(2)
-          expect(minimumChargeInvoice.creditCount).to.equal(2)
+          expect(minimumChargeInvoice.debitLineCount).to.equal(2)
+          expect(minimumChargeInvoice.creditLineCount).to.equal(2)
           expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(4)
           expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2500)
           expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2500)
@@ -288,8 +288,8 @@ describe('Generate Bill Run Summary service', () => {
           const licences = await minimumChargeBill.$relatedQuery('licences')
           const minimumChargeLicence = licences[0]
 
-          expect(minimumChargeLicence.debitCount).to.equal(2)
-          expect(minimumChargeLicence.creditCount).to.equal(2)
+          expect(minimumChargeLicence.debitLineCount).to.equal(2)
+          expect(minimumChargeLicence.creditLineCount).to.equal(2)
           expect(minimumChargeLicence.subjectToMinimumChargeCount).to.equal(4)
           expect(minimumChargeLicence.subjectToMinimumChargeDebitValue).to.equal(2500)
           expect(minimumChargeLicence.subjectToMinimumChargeCreditValue).to.equal(2500)
@@ -333,14 +333,14 @@ describe('Generate Bill Run Summary service', () => {
           const invoices = await minimumChargeBill.$relatedQuery('invoices')
           const minimumChargeInvoice = invoices[0]
 
-          expect(minimumChargeBill.debitCount).to.equal(1)
-          expect(minimumChargeBill.creditCount).to.equal(2)
+          expect(minimumChargeBill.debitLineCount).to.equal(1)
+          expect(minimumChargeBill.creditLineCount).to.equal(2)
           expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(3)
           expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(2501)
           expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2500)
 
-          expect(minimumChargeInvoice.debitCount).to.equal(1)
-          expect(minimumChargeInvoice.creditCount).to.equal(2)
+          expect(minimumChargeInvoice.debitLineCount).to.equal(1)
+          expect(minimumChargeInvoice.creditLineCount).to.equal(2)
           expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(3)
           expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2501)
           expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2500)
@@ -384,14 +384,14 @@ describe('Generate Bill Run Summary service', () => {
           const invoices = await minimumChargeBill.$relatedQuery('invoices')
           const minimumChargeInvoice = invoices[0]
 
-          expect(minimumChargeBill.debitCount).to.equal(2)
-          expect(minimumChargeBill.creditCount).to.equal(1)
+          expect(minimumChargeBill.debitLineCount).to.equal(2)
+          expect(minimumChargeBill.creditLineCount).to.equal(1)
           expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(3)
           expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(2500)
           expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2501)
 
-          expect(minimumChargeInvoice.debitCount).to.equal(2)
-          expect(minimumChargeInvoice.creditCount).to.equal(1)
+          expect(minimumChargeInvoice.debitLineCount).to.equal(2)
+          expect(minimumChargeInvoice.creditLineCount).to.equal(1)
           expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(3)
           expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2500)
           expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2501)

@@ -59,11 +59,11 @@ class CalculateMinimumChargeService {
     // In some scenarios null will be added to the array -- we will filter these out before we return.
     for (const licence of licences) {
       if (licence.subjectToMinimumChargeCreditValue) {
-        adjustments.push(await this._adjustment(licence, licence.creditValue, true))
+        adjustments.push(await this._adjustment(licence, licence.creditLineValue, true))
       }
 
       if (licence.subjectToMinimumChargeDebitValue) {
-        adjustments.push(await this._adjustment(licence, licence.debitValue, false))
+        adjustments.push(await this._adjustment(licence, licence.debitLineValue, false))
       }
     }
 

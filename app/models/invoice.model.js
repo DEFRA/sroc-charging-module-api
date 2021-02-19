@@ -58,9 +58,9 @@ class InvoiceModel extends BaseModel {
        */
       zeroValue (query) {
         query
-          .where('creditCount', 0)
-          .where('debitCount', 0)
-          .where('zeroCount', '>', 0)
+          .where('creditLineCount', 0)
+          .where('debitLineCount', 0)
+          .where('zeroLineCount', '>', 0)
       },
 
       /**
@@ -68,8 +68,8 @@ class InvoiceModel extends BaseModel {
        */
       deminimis (query) {
         query
-          .whereRaw('debit_value - credit_value > 0')
-          .whereRaw('debit_value - credit_value < ?', DEMINIMIS_LIMIT)
+          .whereRaw('debit_line_value - credit_line_value > 0')
+          .whereRaw('debit_line_value - credit_line_value < ?', DEMINIMIS_LIMIT)
           .where('subjectToMinimumChargeCreditValue', '=', 0)
           .where('subjectToMinimumChargeDebitValue', '=', 0)
       },
@@ -94,7 +94,7 @@ class InvoiceModel extends BaseModel {
        */
       credit (query) {
         query
-          .whereRaw('credit_value > debit_value')
+          .whereRaw('credit_line_value > debit_line_value')
       },
 
       /**
@@ -102,7 +102,7 @@ class InvoiceModel extends BaseModel {
        */
       debit (query) {
         query
-          .whereRaw('debit_value > credit_value')
+          .whereRaw('debit_line_value > credit_line_value')
       }
     }
   }
@@ -111,14 +111,14 @@ class InvoiceModel extends BaseModel {
    * netTotal method provides the net total of the invoice (debit value - credit value)
    */
   $netTotal () {
-    return this.debitValue - this.creditValue
+    return this.debitLineValue - this.creditLineValue
   }
 
   /**
    * absoluteNetTotal method provides the net total of the invoice as a positive value
    */
   $absoluteNetTotal () {
-    return Math.abs(this.debitValue - this.creditValue)
+    return Math.abs(this.debitLineValue - this.creditLineValue)
   }
 
   /**
