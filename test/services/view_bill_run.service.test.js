@@ -37,8 +37,8 @@ describe('View bill run service', () => {
   let regime
   let authorisedSystem
   let rulesServiceStub
-  let creditValue
-  let debitValue
+  let creditLineValue
+  let debitLineValue
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -71,11 +71,11 @@ describe('View bill run service', () => {
 
     describe('when transactions are added to the bill run', () => {
       beforeEach(async () => {
-        creditValue = 1000
-        debitValue = 5000
+        creditLineValue = 1000
+        debitLineValue = 5000
 
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, creditValue)
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, creditLineValue)
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'CREDIT',
@@ -83,7 +83,7 @@ describe('View bill run service', () => {
         }, billRun.id, authorisedSystem, regime)
 
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, debitValue)
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, debitLineValue)
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'DEBIT'
@@ -101,11 +101,11 @@ describe('View bill run service', () => {
         const result = await ViewBillRunService.go(billRun.id)
 
         expect(result.billRun.creditLineCount).to.equal(1)
-        expect(result.billRun.creditLineValue).to.equal(creditValue)
+        expect(result.billRun.creditLineValue).to.equal(creditLineValue)
         expect(result.billRun.debitLineCount).to.equal(1)
-        expect(result.billRun.debitLineValue).to.equal(debitValue)
+        expect(result.billRun.debitLineValue).to.equal(debitLineValue)
         expect(result.billRun.zeroValueLineCount).to.equal(1)
-        expect(result.billRun.netTotal).to.equal(debitValue - creditValue)
+        expect(result.billRun.netTotal).to.equal(debitLineValue - creditLineValue)
       })
 
       it('returns the invoices', async () => {
@@ -139,9 +139,9 @@ describe('View bill run service', () => {
           const result = await ViewBillRunService.go(billRun.id)
 
           expect(result.billRun.creditNoteCount).to.equal(1)
-          expect(result.billRun.creditNoteValue).to.equal(creditValue)
+          expect(result.billRun.creditNoteValue).to.equal(creditLineValue)
           expect(result.billRun.invoiceCount).to.equal(1)
-          expect(result.billRun.invoiceValue).to.equal(debitValue)
+          expect(result.billRun.invoiceValue).to.equal(debitLineValue)
         })
       })
     })

@@ -48,8 +48,8 @@ describe('Bill Run service', () => {
       it('correctly calculates the summary', async () => {
         const result = await BillRunService.go(transaction)
 
-        expect(result.debitCount).to.equal(1)
-        expect(result.debitValue).to.equal(transaction.chargeValue)
+        expect(result.debitLineCount).to.equal(1)
+        expect(result.debitLineValue).to.equal(transaction.chargeValue)
       })
     })
 
@@ -59,8 +59,8 @@ describe('Bill Run service', () => {
 
         const result = await BillRunService.go(transaction)
 
-        expect(result.creditCount).to.equal(1)
-        expect(result.creditValue).to.equal(transaction.chargeValue)
+        expect(result.creditLineCount).to.equal(1)
+        expect(result.creditLineValue).to.equal(transaction.chargeValue)
       })
     })
 
@@ -70,7 +70,7 @@ describe('Bill Run service', () => {
 
         const result = await BillRunService.go(transaction)
 
-        expect(result.zeroCount).to.equal(1)
+        expect(result.zeroLineCount).to.equal(1)
       })
     })
 
@@ -125,8 +125,8 @@ describe('Bill Run service', () => {
 
         const secondResult = await BillRunService.go(transaction)
 
-        expect(secondResult.debitCount).to.equal(2)
-        expect(secondResult.debitValue).to.equal(transaction.chargeValue * 2)
+        expect(secondResult.debitLineCount).to.equal(2)
+        expect(secondResult.debitLineValue).to.equal(transaction.chargeValue * 2)
       })
     })
   })

@@ -84,14 +84,14 @@ class BillRunModel extends BaseModel {
    * Returns true if no transactions have been added to this bill run
    */
   $empty () {
-    return (this.creditCount === 0 && this.debitCount === 0 && this.zeroCount === 0)
+    return (this.creditLineCount === 0 && this.debitLineCount === 0 && this.zeroLineCount === 0)
   }
 
   /**
    * netTotal method provides the net total of the invoice (debit value - credit value)
    */
   $netTotal () {
-    return this.debitValue - this.creditValue
+    return this.debitLineValue - this.creditLineValue
   }
 }
 

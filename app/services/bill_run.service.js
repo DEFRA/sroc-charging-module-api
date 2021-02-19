@@ -45,14 +45,14 @@ class BillRunService {
 
   static _updateStats (object, transaction) {
     if (transaction.chargeCredit) {
-      object.creditCount += 1
-      object.creditValue += transaction.chargeValue
+      object.creditLineCount += 1
+      object.creditLineValue += transaction.chargeValue
       object.subjectToMinimumChargeCreditValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
     } else if (transaction.chargeValue === 0) {
-      object.zeroCount += 1
+      object.zeroLineCount += 1
     } else {
-      object.debitCount += 1
-      object.debitValue += transaction.chargeValue
+      object.debitLineCount += 1
+      object.debitLineValue += transaction.chargeValue
       object.subjectToMinimumChargeDebitValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
     }
 
