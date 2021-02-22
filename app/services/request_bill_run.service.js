@@ -1,10 +1,10 @@
 'use strict'
 
 /**
- * @module CheckBillRunService
+ * @module RequestBillRunService
  */
 
-class CheckBillRunService {
+class RequestBillRunService {
   static async go (path) {
     return this._billRunRelated(path)
   }
@@ -16,4 +16,4 @@ class CheckBillRunService {
   }
 }
 
-module.exports = CheckBillRunService
+module.exports = RequestBillRunService

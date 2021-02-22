@@ -10,12 +10,12 @@ const { expect } = Code
 // Test helpers
 
 // Thing under test
-const { CheckBillRunService } = require('../../app/services')
+const { RequestBillRunService } = require('../../app/services')
 
-describe('Check bill run service', () => {
+describe.only('Request bill run service', () => {
   describe("When the request is 'bill run' related", () => {
     it("returns 'true'", async () => {
-      const result = await CheckBillRunService.go('/test/wrls/bill-runs/12345')
+      const result = await RequestBillRunService.go('/test/wrls/bill-runs/12345')
 
       expect(result).to.be.true()
     })
@@ -23,7 +23,7 @@ describe('Check bill run service', () => {
 
   describe("When the request is 'bill run' related", () => {
     it("returns 'false'", async () => {
-      const result = await CheckBillRunService.go('/test/wrls/invoice-runs/12345')
+      const result = await RequestBillRunService.go('/test/wrls/invoice-runs/12345')
 
       expect(result).to.be.false()
     })
