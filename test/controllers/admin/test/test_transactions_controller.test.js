@@ -24,7 +24,7 @@ const {
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
-describe('Test transactions controller', () => {
+describe.only('Test transactions controller', () => {
   let server
   let authToken
   let billRun
@@ -69,7 +69,7 @@ describe('Test transactions controller', () => {
       })
     })
 
-    describe('When the regime does not exist', () => {
+    describe('When the transaction does not exist', () => {
       it("returns a 404 'not found' response", async () => {
         const id = GeneralHelper.uuid4()
         const response = await server.inject(options(id, authToken))
