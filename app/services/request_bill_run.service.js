@@ -4,6 +4,8 @@
  * @module RequestBillRunService
  */
 
+const Boom = require('@hapi/boom')
+
 const { BillRunModel } = require('../models')
 
 class RequestBillRunService {
@@ -13,6 +15,8 @@ class RequestBillRunService {
     }
 
     const billRun = await this._billRun(billRunId)
+    this._validateBillRun(billRun, billRunId)
+
     return billRun
   }
 
@@ -24,6 +28,12 @@ class RequestBillRunService {
 
   static async _billRun (billRunId) {
     return await BillRunModel.query().findById(billRunId)
+  }
+
+  static _validateBillRun (billRun, billRunId) {
+    if (!billRun) {
+      throw Boom.notFound(`Bill run ${billRunId} is unknown.`)
+    }
   }
 }
 
