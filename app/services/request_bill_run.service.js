@@ -38,6 +38,10 @@ class RequestBillRunService {
     if (billRun.regimeId !== regime.id) {
       throw Boom.badData(`Bill run ${billRunId} is not linked to regime ${regime.slug}.`)
     }
+
+    if (!billRun.$editable() && method !== 'get') {
+      throw Boom.badData(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
+    }
   }
 }
 
