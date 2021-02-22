@@ -5,6 +5,7 @@ const BillRunService = require('./bill_run.service')
 const BillRunStatusService = require('./bill_run_status.service')
 const CalculateChargeService = require('./calculate_charge.service')
 const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')
+const CheckBillRunService = require('./check_bill_run.service')
 const CognitoJwtToPemService = require('./cognito_jwt_to_pem.service')
 const CreateAuthorisedSystemService = require('./create_authorised_system.service')
 const CreateBillRunService = require('./create_bill_run.service')
@@ -31,6 +32,7 @@ module.exports = {
   BillRunStatusService,
   CalculateChargeService,
   CalculateMinimumChargeService,
+  CheckBillRunService,
   CognitoJwtToPemService,
   CreateAuthorisedSystemService,
   CreateMinimumChargeAdjustmentService,
