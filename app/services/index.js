@@ -12,6 +12,7 @@ const CreateMinimumChargeAdjustmentService = require('./create_minimum_charge_ad
 const CreateTransactionService = require('./create_transaction.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
 const DbErrorsService = require('./db_errors.service')
+const DeleteInvoiceService = require('./delete_invoice.service')
 const GenerateBillRunService = require('./generate_bill_run.service')
 const InvoiceService = require('./invoice.service')
 const LicenceService = require('./licence.service')
@@ -38,6 +39,7 @@ module.exports = {
   CreateTransactionService,
   DatabaseHealthCheckService,
   DbErrorsService,
+  DeleteInvoiceService,
   GenerateBillRunService,
   InvoiceService,
   LicenceService,
