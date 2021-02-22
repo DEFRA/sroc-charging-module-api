@@ -5,7 +5,6 @@ const BillRunService = require('./bill_run.service')
 const BillRunStatusService = require('./bill_run_status.service')
 const CalculateChargeService = require('./calculate_charge.service')
 const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')
-const CheckBillRunService = require('./check_bill_run.service')
 const CognitoJwtToPemService = require('./cognito_jwt_to_pem.service')
 const CreateAuthorisedSystemService = require('./create_authorised_system.service')
 const CreateBillRunService = require('./create_bill_run.service')
@@ -20,6 +19,7 @@ const ListAuthorisedSystemsService = require('./list_authorised_systems.service'
 const ListRegimesService = require('./list_regimes.service')
 const NextBillRunNumberService = require('./next_bill_run_number.service')
 const ObjectCleaningService = require('./object_cleaning.service')
+const RequestBillRunService = require('./request_bill_run.service')
 const RulesService = require('./rules.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
 const ShowRegimeService = require('./show_regime.service')
@@ -32,7 +32,6 @@ module.exports = {
   BillRunStatusService,
   CalculateChargeService,
   CalculateMinimumChargeService,
-  CheckBillRunService,
   CognitoJwtToPemService,
   CreateAuthorisedSystemService,
   CreateMinimumChargeAdjustmentService,
@@ -46,6 +45,7 @@ module.exports = {
   ListAuthorisedSystemsService,
   ListRegimesService,
   ObjectCleaningService,
+  RequestBillRunService,
   RulesService,
   NextBillRunNumberService,
   ShowAuthorisedSystemService,
