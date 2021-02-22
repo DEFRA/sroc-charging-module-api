@@ -10,7 +10,7 @@ const { expect } = Code
 
 // Test helpers
 const { AuthorisedSystemHelper, BillRunHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = require('../support/helpers')
-const { BillRunModel, InvoiceModel } = require('../../app/models')
+const { BillRunModel, InvoiceModel, LicenceModel } = require('../../app/models')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
@@ -50,7 +50,7 @@ describe.only('Delete Invoice service', () => {
   })
 
   describe('When a valid invoice is supplied', () => {
-    it.only('deletes the invoice', async () => {
+    it('deletes the invoice', async () => {
       const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
       await DeleteInvoiceService.go(invoice.id)
@@ -60,7 +60,7 @@ describe.only('Delete Invoice service', () => {
       expect(result).to.not.exist()
     })
 
-    it.only('update the billrun values', async () => {
+    it('updates the billrun values', async () => {
       // TODO: Tidy and improve test
       await CreateTransactionService.go({ ...payload, customerReference: 'CUSTOMER_2' }, billRun.id, authorisedSystem, regime)
       const billRunBefore = await BillRunModel.query().findById(billRun.id)
@@ -73,6 +73,15 @@ describe.only('Delete Invoice service', () => {
       const billRunAfter = await BillRunModel.query().findById(billRun.id)
       const valuesAfter = billRunValues(billRunAfter)
       expect(valuesAfter).to.not.equal(valuesBefore)
+    })
+
+    it('deletes the invoice licences', async () => {
+      const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
+
+      await DeleteInvoiceService.go(invoice.id)
+
+      const licences = await LicenceModel.query().select().where({ billRunId: billRun.id })
+      expect(licences).to.be.empty()
     })
 
     function billRunValues (billRun) {
