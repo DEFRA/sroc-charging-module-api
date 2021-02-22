@@ -37,6 +37,14 @@ describe('Request bill run service', () => {
 
         expect(result.id).to.equal(billRun.id)
       })
+
+      describe('that can be edited', () => {
+        it('returns the matching bill run', async () => {
+          const result = await RequestBillRunService.go(billRunPath(billRun.id), 'post', regime, billRun.id)
+
+          expect(result.id).to.equal(billRun.id)
+        })
+      })
     })
 
     describe("but is for an invalid 'bill run'", () => {
