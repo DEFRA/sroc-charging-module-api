@@ -16,6 +16,10 @@ const { RequestBillRunService } = require('../../app/services')
 describe('Request bill run service', () => {
   let billRun
 
+  const billRunPath = id => {
+    return `/test/wrls/bill-runs/${id}`
+  }
+
   beforeEach(async () => {
     await DatabaseHelper.clean()
   })
@@ -27,9 +31,21 @@ describe('Request bill run service', () => {
       })
 
       it('returns the matching bill run', async () => {
-        const result = await RequestBillRunService.go(`/test/wrls/bill-runs/${billRun.id}`, billRun.id)
+        const result = await RequestBillRunService.go(billRunPath(billRun.id), billRun.id)
 
         expect(result.id).to.equal(billRun.id)
+      })
+    })
+
+    describe("but is for an invalid 'bill run'", () => {
+      describe('because no matching bill run exists', () => {
+        it('throws an error', async () => {
+          const unknownBillRunId = GeneralHelper.uuid4()
+          const err = await expect(RequestBillRunService.go(billRunPath(unknownBillRunId), unknownBillRunId)).to.reject()
+
+          expect(err).to.be.an.error()
+          expect(err.output.payload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
+        })
       })
     })
   })
