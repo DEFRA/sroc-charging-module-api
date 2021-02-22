@@ -9,13 +9,13 @@ const Boom = require('@hapi/boom')
 const { BillRunModel } = require('../models')
 
 class RequestBillRunService {
-  static async go (path, regime, billRunId) {
+  static async go (path, method, regime, billRunId) {
     if (!this._billRunRelated(path)) {
       return null
     }
 
     const billRun = await this._billRun(billRunId)
-    this._validateBillRun(billRun, billRunId, regime)
+    this._validateBillRun(billRun, billRunId, regime, method)
 
     return billRun
   }
@@ -30,7 +30,7 @@ class RequestBillRunService {
     return await BillRunModel.query().findById(billRunId)
   }
 
-  static _validateBillRun (billRun, billRunId, regime) {
+  static _validateBillRun (billRun, billRunId, regime, method) {
     if (!billRun) {
       throw Boom.notFound(`Bill run ${billRunId} is unknown.`)
     }
