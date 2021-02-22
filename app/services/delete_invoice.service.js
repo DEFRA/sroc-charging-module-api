@@ -6,23 +6,31 @@
 
 const Boom = require('@hapi/boom')
 
-const { InvoiceModel } = require('../models')
-const InvoiceService = require('./invoice.service')
+const { BillRunModel, InvoiceModel } = require('../models')
+const { raw } = require('../models/base.model')
 
 class DeleteInvoiceService {
+  /**
+   * Deletes an invoice and its transactions, and updates the figures of the bill run that the invoice belongs to.
+   *
+   * @param {string} invoiceId The id of the invoice to be deleted.
+   */
   static async go (invoiceId) {
-    // Validate that the invoice exists
     const invoice = await this._invoice(invoiceId)
 
-    // TODO: Get billrun values
+    const billRunPatch = this._billRunPatch(invoice)
 
-    // Within a single db transaction:
-    // * Delete the invoice
-    // * TODO: Tell the db to update the fields based on the billrun values
+    await InvoiceModel.transaction(async trx => {
+      // TODO: Delete transactions as well -- cascade or similar
+      await InvoiceModel
+        .query()
+        .deleteById(invoiceId)
 
-    await InvoiceModel.query().deleteById(invoiceId)
-
-    return true
+      await BillRunModel
+        .query(trx)
+        .findById(invoice.billRunId)
+        .patch(billRunPatch)
+    })
   }
 
   static async _invoice (invoiceId) {
@@ -33,6 +41,27 @@ class DeleteInvoiceService {
     }
 
     throw Boom.notFound(`Invoice ${invoiceId} is unknown.`)
+  }
+
+  /**
+   * Create an update patch to be applied to a bill run which subtracts the counts and values of the passed-in invoice.
+   *
+   * @param {module:InvoiceModel} invoice The invoice which is to have its values subtracted from a bill run.
+   */
+  static _billRunPatch (invoice) {
+    // TODO: Confirm behaviour of creditNoteCount/Value and invoiceCount/Value
+    const update = {
+      creditLineCount: raw('credit_line_count - ?', invoice.creditLineCount),
+      creditLineValue: raw('credit_line_value - ?', invoice.creditLineValue),
+      debitLineCount: raw('debit_line_count - ?', invoice.debitLineCount),
+      debitLineValue: raw('debit_line_value - ?', invoice.debitLineValue),
+      zeroLineCount: raw('zero_line_count - ?', invoice.zeroLineCount),
+      subjectToMinimumChargeCount: raw('subject_to_minimum_charge_count - ?', invoice.subjectToMinimumChargeCount),
+      subjectToMinimumChargeCreditValue: raw('subject_to_minimum_charge_credit_value - ?', invoice.subjectToMinimumChargeCreditValue),
+      subjectToMinimumChargeDebitValue: raw('subject_to_minimum_charge_debit_value - ?', invoice.subjectToMinimumChargeDebitValue)
+    }
+
+    return update
   }
 }
 

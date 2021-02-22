@@ -9,13 +9,15 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, BillRunHelper, DatabaseHelper, GeneralHelper, InvoiceHelper, RegimeHelper } = require('../support/helpers')
-const { InvoiceModel } = require('../../app/models')
+const { AuthorisedSystemHelper, BillRunHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = require('../support/helpers')
+const { BillRunModel, InvoiceModel } = require('../../app/models')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
 
 const { rulesService: rulesServiceResponse } = chargeFixtures.simple
+
+const { CreateTransactionService } = require('../../app/services')
 
 // Things we need to stub
 const { RulesService } = require('../../app/services')
@@ -28,16 +30,19 @@ describe.only('Delete Invoice service', () => {
   let authorisedSystem
   let regime
   let payload
-  let rulesServiceStub
-  let loggerFake
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
-
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
-    rulesServiceStub = Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
+
+    // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
+    // the valid tests we can use it straight as
+    payload = GeneralHelper.cloneObject(requestFixtures.simple)
+
+    Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
     billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
   })
 
   afterEach(async () => {
@@ -45,8 +50,8 @@ describe.only('Delete Invoice service', () => {
   })
 
   describe('When a valid invoice is supplied', () => {
-    it('deletes the invoice', async () => {
-      const invoice = await InvoiceHelper.addInvoice(billRun.id, 'CUSTOMER_REF', 2021, 0, 0, 1, 5000)
+    it.only('deletes the invoice', async () => {
+      const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
       await DeleteInvoiceService.go(invoice.id)
 
@@ -54,6 +59,34 @@ describe.only('Delete Invoice service', () => {
 
       expect(result).to.not.exist()
     })
+
+    it.only('update the billrun values', async () => {
+      // TODO: Tidy and improve test
+      await CreateTransactionService.go({ ...payload, customerReference: 'CUSTOMER_2' }, billRun.id, authorisedSystem, regime)
+      const billRunBefore = await BillRunModel.query().findById(billRun.id)
+      console.log(billRunBefore)
+      const valuesBefore = billRunValues(billRunBefore)
+      const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
+
+      await DeleteInvoiceService.go(invoice.id)
+
+      const billRunAfter = await BillRunModel.query().findById(billRun.id)
+      const valuesAfter = billRunValues(billRunAfter)
+      expect(valuesAfter).to.not.equal(valuesBefore)
+    })
+
+    function billRunValues (billRun) {
+      return {
+        creditLineCount: billRun.creditLineCount,
+        creditLineValue: billRun.creditLineValue,
+        debitLineCount: billRun.debitLineCount,
+        debitLineValue: billRun.debitLineValue,
+        zeroLineCount: billRun.zeroLineCount,
+        subjectToMinimumChargeCount: billRun.subjectToMinimumChargeCount,
+        subjectToMinimumChargeCreditValue: billRun.subjectToMinimumChargeCreditValue,
+        subjectToMinimumChargeDebitValue: billRun.subjectToMinimumChargeDebitValue
+      }
+    }
   })
 
   describe('When there is no matching invoice', () => {
