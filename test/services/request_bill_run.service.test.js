@@ -114,7 +114,7 @@ describe('Request bill run service', () => {
 
     describe("because it's to create a new 'bill run", () => {
       it("returns 'null'", async () => {
-        const result = await RequestBillRunService.go('/test/wrls/bill-runs', 'get', regime, null)
+        const result = await RequestBillRunService.go('/test/wrls/bill-runs', 'post', regime, null)
 
         expect(result).to.be.null()
       })
