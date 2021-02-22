@@ -40,7 +40,7 @@ class RequestBillRunService {
     }
 
     if (!billRun.$editable() && method !== 'get') {
-      throw Boom.badData(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
+      throw Boom.conflict(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
     }
   }
 }
