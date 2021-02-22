@@ -26,7 +26,7 @@ const {
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
-describe('Checking bill runs in requests', () => {
+describe('Finding and validating bill runs in requests', () => {
   let server
   let billRun
   let authToken
@@ -75,6 +75,26 @@ describe('Checking bill runs in requests', () => {
 
         expect(response.statusCode).to.equal(200)
         expect(responsePayload.id).to.equal(billRun.id)
+      })
+    })
+
+    describe('but the request is invalid', () => {
+      const options = id => {
+        return {
+          method: 'GET',
+          url: `/test/wrls/bill-runs/${id}`,
+          headers: { authorization: `Bearer ${authToken}` }
+        }
+      }
+
+      it('rejects the request with the appropriate error message', async () => {
+        const unknownBillRunId = GeneralHelper.uuid4()
+
+        const response = await server.inject(options(unknownBillRunId))
+        const responsePayload = JSON.parse(response.payload)
+
+        expect(response.statusCode).to.equal(404)
+        expect(responsePayload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
       })
     })
   })
