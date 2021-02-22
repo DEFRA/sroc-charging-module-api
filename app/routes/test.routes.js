@@ -1,7 +1,8 @@
 'use strict'
 
 const {
-  TestBillRunController
+  TestBillRunController,
+  TestTransactionsController
 } = require('../controllers')
 
 const routes = [
@@ -11,6 +12,17 @@ const routes = [
     handler: TestBillRunController.generate,
     options: {
       description: 'Used by the delivery team to automatically generate bill runs for testing.',
+      auth: {
+        scope: ['admin']
+      }
+    }
+  },
+  {
+    method: 'GET',
+    path: '/admin/test/transactions/{id}',
+    handler: TestTransactionsController.show,
+    options: {
+      description: "Used by the delivery team to check all a transaction's data.",
       auth: {
         scope: ['admin']
       }
