@@ -77,10 +77,20 @@ describe('Request bill run service', () => {
   })
 
   describe("When the request isn't 'bill run' related", () => {
-    it("returns 'null'", async () => {
-      const result = await RequestBillRunService.go('/test/wrls/invoice-runs/12345', regime, '12345')
+    describe("because it's nothing to do with bill runs", () => {
+      it("returns 'null'", async () => {
+        const result = await RequestBillRunService.go('/test/wrls/invoice-runs/12345', regime, '12345')
 
-      expect(result).to.be.null()
+        expect(result).to.be.null()
+      })
+    })
+
+    describe("because it's to create a new 'bill run", () => {
+      it("returns 'null'", async () => {
+        const result = await RequestBillRunService.go('/test/wrls/bill-runs', regime, null)
+
+        expect(result).to.be.null()
+      })
     })
   })
 })
