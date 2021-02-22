@@ -24,7 +24,7 @@ const {
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
-describe.only('Test transactions controller', () => {
+describe('Test transactions controller', () => {
   let server
   let authToken
   let billRun
