@@ -21,7 +21,7 @@ class RequestBillRunService {
   }
 
   static _billRunRelated (path) {
-    const billRunRegex = new RegExp(/\/bill-runs\//i)
+    const billRunRegex = new RegExp(/^(?=.*\/bill-runs\/)(?!^\/admin\/).*/i)
 
     return billRunRegex.test(path)
   }
