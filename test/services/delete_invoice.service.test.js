@@ -9,8 +9,20 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, BillRunHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = require('../support/helpers')
-const { BillRunModel, InvoiceModel, LicenceModel } = require('../../app/models')
+const {
+  AuthorisedSystemHelper,
+  BillRunHelper,
+  DatabaseHelper,
+  GeneralHelper,
+  RegimeHelper
+} = require('../support/helpers')
+
+const {
+  BillRunModel,
+  InvoiceModel,
+  LicenceModel,
+  TransactionModel
+} = require('../../app/models')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
@@ -82,6 +94,15 @@ describe.only('Delete Invoice service', () => {
 
       const licences = await LicenceModel.query().select().where({ billRunId: billRun.id })
       expect(licences).to.be.empty()
+    })
+
+    it.only('deletes the invoice transactions', async () => {
+      const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
+
+      await DeleteInvoiceService.go(invoice.id)
+
+      const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
+      expect(transactions).to.be.empty()
     })
 
     function billRunValues (billRun) {
