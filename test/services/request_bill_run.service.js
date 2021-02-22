@@ -27,7 +27,7 @@ describe('Request bill run service', () => {
       })
 
       it('returns the matching bill run', async () => {
-        const result = await RequestBillRunService.go(`/test/wrls/bill-runs/${billRun.id}`)
+        const result = await RequestBillRunService.go(`/test/wrls/bill-runs/${billRun.id}`, billRun.id)
 
         expect(result.id).to.equal(billRun.id)
       })
