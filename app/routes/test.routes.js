@@ -7,8 +7,8 @@ const {
 const routes = [
   {
     method: 'POST',
-    path: '/admin/test/{regimeId}/bill-runs/generate',
-    handler: TestBillRunController.generate,
+    path: '/admin/test/{regimeId}/bill-runs',
+    handler: TestBillRunController.create,
     options: {
       description: 'Used by the delivery team to automatically generate bill runs for testing.',
       auth: {

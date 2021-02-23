@@ -4,7 +4,7 @@ const { CreateBillRunService } = require('../../../services')
 const { BillRunGenerator } = require('../../../../test/support/generators')
 
 class TestBillRunController {
-  static async generate (req, h) {
+  static async create (req, h) {
     const result = await CreateBillRunService.go(
       { region: req.payload.region },
       req.auth.credentials.user,

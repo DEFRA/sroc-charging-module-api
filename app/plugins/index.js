@@ -4,6 +4,7 @@ const { ServerConfig } = require('../../config')
 
 const AirbrakePlugin = require('./airbrake.plugin')
 const AuthorisationPlugin = require('./authorisation.plugin')
+const BillRunPlugin = require('./bill_run.plugin')
 const DbErrorsPlugin = require('./db_errors.plugin')
 const HapiNowAuthPlugin = require('./hapi_now_auth.plugin')
 const HapiPinoPlugin = require('./hapi_pino.plugin')
@@ -31,6 +32,7 @@ if (ServerConfig.environment === 'development') {
 module.exports = {
   AirbrakePlugin,
   AuthorisationPlugin,
+  BillRunPlugin,
   BlippPlugin,
   DbErrorsPlugin,
   HpalDebugPlugin,
