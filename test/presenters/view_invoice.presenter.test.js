@@ -11,9 +11,9 @@ const { expect } = Code
 const { GeneralHelper } = require('../support/helpers')
 
 // Thing under test
-const { InvoicePresenter } = require('../../app/presenters')
+const { ViewInvoicePresenter } = require('../../app/presenters')
 
-describe('Invoice Presenter', () => {
+describe('View Invoice Presenter', () => {
   const data = {
     id: GeneralHelper.uuid4(),
     billRunId: GeneralHelper.uuid4(),
@@ -61,7 +61,7 @@ describe('Invoice Presenter', () => {
   }
 
   it("returns the 'invoice' details", () => {
-    const presenter = new InvoicePresenter(data)
+    const presenter = new ViewInvoicePresenter(data)
     const result = presenter.go()
 
     // Remove the licences to make it easier to check only the invoice level properties
@@ -82,7 +82,7 @@ describe('Invoice Presenter', () => {
   })
 
   it("returns the 'licences' linked to the 'invoice'", () => {
-    const presenter = new InvoicePresenter(data)
+    const presenter = new ViewInvoicePresenter(data)
     const result = presenter.go()
 
     expect(result.licences).to.be.an.array()
@@ -94,7 +94,7 @@ describe('Invoice Presenter', () => {
   })
 
   it("returns the 'transactions' linked to the 'licences' linked to the 'invoice'", () => {
-    const presenter = new InvoicePresenter(data)
+    const presenter = new ViewInvoicePresenter(data)
     const result = presenter.go()
 
     expect(result.licences[0].transactions).to.be.an.array()

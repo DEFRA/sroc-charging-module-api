@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module InvoicePresenter
+ * @module ViewInvoicePresenter
  */
 
 const BasePresenter = require('./base.presenter')
@@ -9,7 +9,7 @@ const BasePresenter = require('./base.presenter')
 /**
  * Handles formatting the data into the response we send to clients after a request to view an invoice
  */
-class InvoicePresenter extends BasePresenter {
+class ViewInvoicePresenter extends BasePresenter {
   _presentation (data) {
     return {
       id: data.id,
@@ -31,4 +31,4 @@ class InvoicePresenter extends BasePresenter {
   }
 }
 
-module.exports = InvoicePresenter
+module.exports = ViewInvoicePresenter
