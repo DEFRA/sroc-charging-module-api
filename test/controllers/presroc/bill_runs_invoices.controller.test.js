@@ -23,7 +23,7 @@ const {
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
-describe.only('Presroc Invoices controller', () => {
+describe('Presroc Invoices controller', () => {
   const clientID = '1234546789'
   let server
   let authToken
