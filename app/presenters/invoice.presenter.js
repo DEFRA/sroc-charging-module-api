@@ -12,7 +12,21 @@ const BasePresenter = require('./base.presenter')
 class InvoicePresenter extends BasePresenter {
   _presentation (data) {
     return {
-      id: data.id
+      id: data.id,
+      billRunId: data.billRunId,
+      customerReference: data.customerReference,
+      financialYear: data.financialYear,
+      creditLineCount: data.creditLineCount,
+      creditLineValue: data.creditLineValue,
+      debitLineCount: data.debitLineCount,
+      debitLineValue: data.debitLineValue,
+      zeroLineCount: data.zeroLineCount,
+      deminimisInvoice: data.deminimisInvoice,
+      zeroValueInvoice: data.zeroValueInvoice,
+      minimumChargeInvoice: data.minimumChargeInvoice,
+      transactionReference: data.transactionReference,
+      netTotal: data.netTotal,
+      licences: data.licences
     }
   }
 }

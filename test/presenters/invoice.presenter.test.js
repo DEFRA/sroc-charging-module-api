@@ -19,26 +19,27 @@ describe('Invoice Presenter', () => {
     billRunId: GeneralHelper.uuid4(),
     customerReference: 'CUSTOMER_REFERENCE',
     financialYear: 2018,
-    creditLineCount: 2,
-    creditLineValue: 4186,
-    debitLineCount: 0,
-    debitLineValue: 0,
+    creditLineCount: 0,
+    creditLineValue: 0,
+    debitLineCount: 1,
+    debitLineValue: 2093,
     zeroLineCount: 0,
     deminimisInvoice: false,
     zeroValueInvoice: false,
     minimumChargeInvoice: false,
     transactionReference: null,
+    netTotal: 2093,
     licences: [
       {
         id: GeneralHelper.uuid4(),
         licenceNumber: 'LICENCE_NUMBER',
         creditLineCount: 0,
-        creditLineValue: 4186,
-        debitLineCount: 2,
-        debitLineValue: 0,
+        creditLineValue: 0,
+        debitLineCount: 1,
+        debitLineValue: 2093,
         zeroLineCount: 0,
         subjectToMinimumChargeCount: 0,
-        netTotal: 4186,
+        netTotal: 2093,
         transactions: [
           {
             id: GeneralHelper.uuid4(),
@@ -63,7 +64,10 @@ describe('Invoice Presenter', () => {
     const presenter = new InvoicePresenter(data)
     const result = presenter.go()
 
-    // This isn't every field but it is the critical ones. Includes `netTotal` which doesn't come from the DB
+    // Remove the licences to make it easier to check only the invoice level properties
+    delete result.licences
+
+    // This isn't every field but it is the critical ones
     expect(result).to.include([
       'id',
       'billRunId',
@@ -94,15 +98,14 @@ describe('Invoice Presenter', () => {
     const result = presenter.go()
 
     expect(result.licences[0].transactions).to.be.an.array()
-    // This isn't every field but it is the critical ones. Includes `credit` and `newLicence` to confirm we do rename
-    // fields if needed
+    // This isn't every field but it is the critical ones
     expect(result.licences[0].transactions[0]).to.include([
       'id',
       'clientId',
       'chargeValue',
-      'credit',
+      'chargeCredit',
       'status',
-      'newLicence',
+      'subjectToMinimumCharge',
       'minimumChargeAdjustment',
       'chargeCalculation'
     ])
