@@ -4,6 +4,7 @@
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
+const Nock = require('nock')
 
 const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
@@ -19,10 +20,12 @@ const {
   DatabaseHelper,
   GeneralHelper,
   RegimeHelper,
+  RulesServiceHelper,
   TransactionHelper
 } = require('../../support/helpers')
 
 const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
+const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -54,6 +57,7 @@ describe('Presroc Bill runs transactions controller', () => {
 
   after(async () => {
     Sinon.restore()
+    Nock.cleanAll()
   })
 
   describe('Create a bill run transaction: POST /v2/{regimeId}/bill-runs/{billRunId}/transactions', () => {
@@ -69,6 +73,13 @@ describe('Presroc Bill runs transactions controller', () => {
     }
 
     beforeEach(async () => {
+      // Intercept all requests in this group as we don't actually want to call the service. Tell Nock to persist()
+      // the interception rather than remove it after the first request
+      Nock(RulesServiceHelper.url)
+        .post(() => true)
+        .reply(200, chargeFixtures.simple.rulesService)
+        .persist()
+
       // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
       // the valid tests we can use it straight as
       payload = GeneralHelper.cloneObject(requestFixtures.simple)
