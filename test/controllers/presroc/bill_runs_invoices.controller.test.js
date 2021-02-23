@@ -15,6 +15,7 @@ const { deployment } = require('../../../server')
 const {
   AuthorisationHelper,
   AuthorisedSystemHelper,
+  BillRunHelper,
   DatabaseHelper,
   RegimeHelper
 } = require('../../support/helpers')
@@ -27,6 +28,7 @@ describe('Presroc Invoices controller', () => {
   let server
   let authToken
   let regime
+  let billRun
 
   before(async () => {
     server = await deployment()
@@ -41,24 +43,25 @@ describe('Presroc Invoices controller', () => {
     await DatabaseHelper.clean()
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
+    const authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
+    billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
   })
 
   after(async () => {
     Sinon.restore()
   })
 
-  describe('Delete an invoice: DELETE /v2/{regimeId}/invoices/{invoiceId}', () => {
-    const options = (token, invoiceId) => {
+  describe('Delete an invoice: DELETE /v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}', () => {
+    const options = (token, billRunId, invoiceId) => {
       return {
         method: 'DELETE',
-        url: `/v2/wrls/invoices/${invoiceId}`,
+        url: `/v2/wrls/bill-runs/${billRunId}/invoices/${invoiceId}`,
         headers: { authorization: `Bearer ${token}` }
       }
     }
 
     it('returns a 200 response', async () => {
-      const response = await server.inject(options(authToken, 'INVOICE_ID'))
+      const response = await server.inject(options(authToken, billRun.id, 'INVOICE_ID'))
 
       expect(response.statusCode).to.equal(200)
     })
