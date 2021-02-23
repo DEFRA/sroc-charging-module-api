@@ -28,12 +28,12 @@ class LicenceHelper {
       .insert({
         billRunId,
         licenceNumber,
-        invoiceId: await this._invoice(invoiceId, billRunId, customerReference, financialYear)
+        invoiceId: await this._invoiceId(invoiceId, billRunId, customerReference, financialYear)
       })
       .returning('*')
   }
 
-  static async _invoice (invoiceId, billRunId, customerReference, financialYear) {
+  static async _invoiceId (invoiceId, billRunId, customerReference, financialYear) {
     if (invoiceId) {
       return invoiceId
     }
