@@ -1,14 +1,14 @@
 'use strict'
 
 /**
- * @module ValidateBillRunService
+ * @module GenerateBillRunValidationService
  */
 
 const Boom = require('@hapi/boom')
 
 const { BillRunModel } = require('../models')
 
-class ValidateBillRunService {
+class GenerateBillRunValidationService {
   /**
   * Validates that the bill run exists and is in a state where it can be generated.
   *
@@ -40,4 +40,4 @@ class ValidateBillRunService {
   }
 }
 
-module.exports = ValidateBillRunService
+module.exports = GenerateBillRunValidationService

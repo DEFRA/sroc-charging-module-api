@@ -28,7 +28,7 @@ const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 const { RulesService } = require('../../app/services')
 
 // Thing under test
-const { ValidateBillRunService } = require('../../app/services')
+const { GenerateBillRunValidationService } = require('../../app/services')
 
 describe('Validate Bill Run Summary service', () => {
   let billRun
@@ -59,7 +59,7 @@ describe('Validate Bill Run Summary service', () => {
     it('returns true', async () => {
       await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
 
-      const result = await ValidateBillRunService.go(billRun.id)
+      const result = await GenerateBillRunValidationService.go(billRun.id)
 
       expect(result).to.equal(true)
     })
@@ -70,7 +70,7 @@ describe('Validate Bill Run Summary service', () => {
       it('throws an error', async () => {
         const unknownBillRunId = GeneralHelper.uuid4()
 
-        const err = await expect(ValidateBillRunService.go(unknownBillRunId)).to.reject()
+        const err = await expect(GenerateBillRunValidationService.go(unknownBillRunId)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
@@ -80,7 +80,7 @@ describe('Validate Bill Run Summary service', () => {
     describe('because the bill run is already generating', () => {
       it('throws an error', async () => {
         const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'generating')
-        const err = await expect(ValidateBillRunService.go(generatingBillRun.id)).to.reject()
+        const err = await expect(GenerateBillRunValidationService.go(generatingBillRun.id)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(`Summary for bill run ${generatingBillRun.id} is already being generated`)
@@ -91,7 +91,7 @@ describe('Validate Bill Run Summary service', () => {
       it('throws an error', async () => {
         const notEditableStatus = 'NOT_EDITABLE'
         const notEditableBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', notEditableStatus)
-        const err = await expect(ValidateBillRunService.go(notEditableBillRun.id)).to.reject()
+        const err = await expect(GenerateBillRunValidationService.go(notEditableBillRun.id)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(`Bill run ${notEditableBillRun.id} cannot be edited because its status is ${notEditableStatus}.`)
@@ -101,7 +101,7 @@ describe('Validate Bill Run Summary service', () => {
     describe('because the bill run is empty', () => {
       it('throws an error', async () => {
         const empty = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A')
-        const err = await expect(ValidateBillRunService.go(empty.id)).to.reject()
+        const err = await expect(GenerateBillRunValidationService.go(empty.id)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(`Summary for bill run ${empty.id} cannot be generated because it has no transactions.`)

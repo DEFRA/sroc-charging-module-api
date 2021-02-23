@@ -13,6 +13,7 @@ const CreateTransactionService = require('./create_transaction.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
 const DbErrorsService = require('./db_errors.service')
 const GenerateBillRunService = require('./generate_bill_run.service')
+const GenerateBillRunValidationService = require('./generate_bill_run_validation.service')
 const InvoiceService = require('./invoice.service')
 const LicenceService = require('./licence.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
@@ -24,7 +25,6 @@ const RulesService = require('./rules.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
 const ShowRegimeService = require('./show_regime.service')
 const ShowTransactionService = require('./show_transaction.service')
-const ValidateBillRunService = require('./validate_bill_run.service')
 const ViewBillRunService = require('./view_bill_run.service')
 
 module.exports = {
@@ -41,6 +41,7 @@ module.exports = {
   DatabaseHealthCheckService,
   DbErrorsService,
   GenerateBillRunService,
+  GenerateBillRunValidationService,
   InvoiceService,
   LicenceService,
   ListAuthorisedSystemsService,
@@ -52,6 +53,5 @@ module.exports = {
   ShowAuthorisedSystemService,
   ShowRegimeService,
   ShowTransactionService,
-  ValidateBillRunService,
   ViewBillRunService
 }
