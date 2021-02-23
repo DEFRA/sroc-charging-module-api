@@ -119,6 +119,28 @@ class RouteHelper {
       }
     })
   }
+
+  /**
+   * Adds a route to a Hapi server instance which mocks a bill run `GET`.
+   *
+   * Intended to mimic routes such as `/v1/{regimeId}/bill-runs/{billRunId}`.
+   *
+   * @param {Object} server A Hapi server instance
+   */
+  static addBillRunGetRoute (server) {
+    server.route({
+      method: 'GET',
+      path: '/test/{regimeId}/bill-runs/{billRunId}',
+      handler: (request, _h) => {
+        return { id: request.app.billRun.id }
+      },
+      options: {
+        auth: {
+          scope: ['system']
+        }
+      }
+    })
+  }
 }
 
 module.exports = RouteHelper
