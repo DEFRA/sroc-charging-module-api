@@ -38,11 +38,11 @@ describe('View Transaction Presenter', () => {
       'id',
       'clientId',
       'chargeValue',
-      'chargeCredit',
+      'credit',
       'status',
       'subjectToMinimumCharge',
       'minimumChargeAdjustment',
-      'chargeCalculation'
+      'calculation'
     ])
   })
 })

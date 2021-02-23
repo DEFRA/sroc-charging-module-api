@@ -12,7 +12,18 @@ const BasePresenter = require('./base.presenter')
 class ViewTransactionPresenter extends BasePresenter {
   _presentation (data) {
     return {
-      id: data.id
+      id: data.id,
+      clientId: data.clientId,
+      chargeValue: data.chargeValue,
+      credit: data.chargeCredit,
+      status: data.status,
+      subjectToMinimumCharge: data.subjectToMinimumCharge,
+      minimumChargeAdjustment: data.minimumChargeAdjustment,
+      lineDescription: data.lineDescription,
+      periodStart: data.chargePeriodStart,
+      periodEnd: data.chargePeriodEnd,
+      compensationCharge: data.regimeValue17,
+      calculation: data.chargeCalculation
     }
   }
 }
