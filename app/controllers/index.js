@@ -6,7 +6,7 @@ const RegimesController = require('./admin/regimes.controller')
 const AuthorisedSystemsController = require('./admin/authorised_systems.controller')
 const AirbrakeController = require('./admin/health/airbrake.controller')
 const DatabaseController = require('./admin/health/database.controller')
-const TestBillRunController = require('./admin/test/test_bill_run.controller')
+const TestBillRunsController = require('./admin/test/test_bill_runs.controller')
 const TestTransactionsController = require('./admin/test/test_transactions.controller')
 const NotSupportedController = require('./not_supported.controller')
 const PresrocBillRunsController = require('./presroc/bill_runs.controller')
@@ -19,7 +19,7 @@ module.exports = {
   AirbrakeController,
   AuthorisedSystemsController,
   DatabaseController,
-  TestBillRunController,
+  TestBillRunsController,
   TestTransactionsController,
   PresrocBillRunsController,
   PresrocCalculateChargeController,
