@@ -103,11 +103,11 @@ describe('View Invoice Presenter', () => {
       'id',
       'clientId',
       'chargeValue',
-      'chargeCredit',
+      'credit',
       'status',
       'subjectToMinimumCharge',
       'minimumChargeAdjustment',
-      'chargeCalculation'
+      'calculation'
     ])
   })
 })

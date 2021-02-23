@@ -5,6 +5,7 @@
  */
 
 const BasePresenter = require('./base.presenter')
+const ViewLicencePresenter = require('./view_licence.presenter')
 
 /**
  * Handles formatting the data into the response we send to clients after a request to view an invoice
@@ -26,7 +27,10 @@ class ViewInvoicePresenter extends BasePresenter {
       minimumChargeInvoice: data.minimumChargeInvoice,
       transactionReference: data.transactionReference,
       netTotal: data.netTotal,
-      licences: data.licences
+      licences: data.licences.map(licence => {
+        const presenter = new ViewLicencePresenter(licence)
+        return presenter.go()
+      })
     }
   }
 }
