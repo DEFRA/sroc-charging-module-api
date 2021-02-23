@@ -8,8 +8,9 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { DatabaseHelper, GeneralHelper } = require('../support/helpers')
+const { AuthorisedSystemHelper, BillRunHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = require('../support/helpers')
 const { LicenceModel } = require('../../app/models')
+const { InvoiceService } = require('../../app/services')
 
 // Thing under test
 const { LicenceService } = require('../../app/services')
@@ -18,8 +19,6 @@ describe('Licence service', () => {
   let transaction
 
   const dummyTransaction = {
-    invoiceId: 'f0d3b4dc-2cae-11eb-adc1-0242ac120002',
-    billRunId: 'f0d3b4dc-2cae-11eb-adc1-0242ac120002',
     lineAttr1: 'LICENCE_NUMBER',
     customerReference: 'CUSTOMER_REFERENCE',
     chargeFinancialYear: 2021,
@@ -30,9 +29,15 @@ describe('Licence service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
-    // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
-    // the valid tests we can use it straight as
-    transaction = GeneralHelper.cloneObject(dummyTransaction)
+    // Create a bill run and invoice as we can't create a licence without a corresponding invoice
+    const regime = await RegimeHelper.addRegime('wrls', 'WRLS')
+    const authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
+    const billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    const invoice = await InvoiceService.go({ ...dummyTransaction, billRunId: billRun.id })
+
+    // We clone the request fixture as our payload so we have it available for modification in the invalid tests, and
+    // add in the id of the bill run and invoice we just created
+    transaction = GeneralHelper.cloneObject({ ...dummyTransaction, billRunId: billRun.id, invoiceId: invoice.id })
   })
 
   describe('When a valid transaction is supplied', () => {
