@@ -1,0 +1,48 @@
+'use strict'
+
+/**
+ * @module ShowTransactionService
+ */
+
+const Boom = require('@hapi/boom')
+
+const { TransactionModel } = require('../models')
+const { JsonPresenter } = require('../presenters')
+
+/**
+ * Returns the transaction with matching Id
+ *
+ * If no matching transaction is found it will throw a `Boom.notFound()` error (404)
+ *
+ * @param {string} id Id of the transaction to find
+ *
+ * @returns {module:TransactionModel} an instance `TransactionModel` if found else it will throw a `Boom.notFound()`
+ * error (404)
+ */
+class ShowTransactionService {
+  static async go (id) {
+    const transaction = await this._transaction(id)
+
+    if (!transaction) {
+      throw Boom.notFound(`No transaction found with id ${id}`)
+    }
+
+    return this._response(transaction)
+  }
+
+  static _transaction (id) {
+    return TransactionModel.query()
+      .findById(id)
+      .withGraphFetched('billRun')
+      .withGraphFetched('invoice')
+      .withGraphFetched('licence')
+  }
+
+  static _response (transaction) {
+    const presenter = new JsonPresenter(transaction)
+
+    return presenter.go()
+  }
+}
+
+module.exports = ShowTransactionService

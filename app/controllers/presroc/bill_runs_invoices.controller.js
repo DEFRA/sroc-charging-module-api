@@ -1,9 +1,9 @@
 'use strict'
 
-class InvoicesController {
+class BillRunsInvoicesController {
   static async delete (req, h) {
     return h.response().code(200)
   }
 }
 
-module.exports = InvoicesController
+module.exports = BillRunsInvoicesController
