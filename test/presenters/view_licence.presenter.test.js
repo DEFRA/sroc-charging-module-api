@@ -56,7 +56,7 @@ describe('View Licence Presenter', () => {
     ])
   })
 
-  it.only("returns the 'transactions' linked to the 'licence'", () => {
+  it("returns the 'transactions' linked to the 'licence'", () => {
     const presenter = new ViewLicencePresenter(data)
     const result = presenter.go()
 
