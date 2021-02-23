@@ -12,7 +12,8 @@ const {
   AuthorisedSystemHelper,
   BillRunHelper,
   DatabaseHelper,
-  RegimeHelper
+  RegimeHelper,
+  TransactionHelper
 } = require('../support/helpers')
 const { TransactionModel } = require('../../app/models')
 
@@ -20,18 +21,6 @@ describe('Handling BigInts', () => {
   let authorisedSystem
   let regime
   let billRun
-
-  const dummyTransaction = (regimeId, createdBy, billRunId) => {
-    return {
-      chargeValue: 2547483647,
-      ruleset: 'presroc',
-      invoiceId: 'f0d3b4dc-2cae-11eb-adc1-0242ac120002',
-      licenceId: 'f0d3b4dc-2cae-11eb-adc1-0242ac120002',
-      regimeId,
-      createdBy,
-      billRunId
-    }
-  }
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -45,8 +34,7 @@ describe('Handling BigInts', () => {
     let transaction
 
     beforeEach(async () => {
-      transaction = await TransactionModel.query()
-        .insert(dummyTransaction(regime.id, authorisedSystem.id, billRun.id))
+      transaction = await TransactionHelper.addTransaction(billRun.id, { regimeId: regime.id, chargeValue: 2547483647 })
     })
 
     describe('When a transaction is added', () => {
