@@ -6,6 +6,7 @@ const BillRunHelper = require('./bill_run.helper')
 const DatabaseHelper = require('./database.helper')
 const GeneralHelper = require('./general.helper')
 const InvoiceHelper = require('./invoice.helper')
+const LicenceHelper = require('./licence.helper')
 const RegimeHelper = require('./regime.helper')
 const RouteHelper = require('./route.helper')
 const RulesServiceHelper = require('./rules_service.helper')
@@ -19,6 +20,7 @@ module.exports = {
   DatabaseHelper,
   GeneralHelper,
   InvoiceHelper,
+  LicenceHelper,
   RegimeHelper,
   RouteHelper,
   RulesServiceHelper,
