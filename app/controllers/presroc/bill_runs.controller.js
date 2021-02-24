@@ -3,7 +3,6 @@
 const {
   BillRunStatusService,
   CreateBillRunService,
-  CreateTransactionService,
   GenerateBillRunService,
   GenerateBillRunValidationService,
   ViewBillRunService
@@ -16,10 +15,10 @@ class BillRunsController {
     return h.response(result).code(201)
   }
 
-  static async createTransaction (req, h) {
-    const result = await CreateTransactionService.go(req.payload, req.params.billRunId, req.auth.credentials.user, req.app.regime)
+  static async view (req, h) {
+    const result = await ViewBillRunService.go(req.params.billRunId)
 
-    return h.response(result).code(201)
+    return h.response(result).code(200)
   }
 
   static async generate (req, h) {
@@ -31,22 +30,6 @@ class BillRunsController {
 
   static async status (req, h) {
     const result = await BillRunStatusService.go(req.app.billRun)
-
-    return h.response(result).code(200)
-  }
-
-  static async view (req, h) {
-    const result = await ViewBillRunService.go(req.params.billRunId)
-
-    return h.response(result).code(200)
-  }
-
-  static async viewTransaction (req, h) {
-    const result = {
-      transaction: {
-        id: req.params.transactionId
-      }
-    }
 
     return h.response(result).code(200)
   }
