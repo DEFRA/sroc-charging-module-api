@@ -25,6 +25,7 @@ const RulesService = require('./rules.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
 const ShowRegimeService = require('./show_regime.service')
 const ShowTransactionService = require('./show_transaction.service')
+const ValidateBillRunInvoiceService = require('./validate_bill_run_invoice.service')
 const ViewBillRunService = require('./view_bill_run.service')
 
 module.exports = {
@@ -53,5 +54,6 @@ module.exports = {
   ShowAuthorisedSystemService,
   ShowRegimeService,
   ShowTransactionService,
+  ValidateBillRunInvoiceService,
   ViewBillRunService
 }
