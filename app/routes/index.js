@@ -3,8 +3,9 @@
 const AirbrakeRoutes = require('./airbrake.routes')
 const AuthorisedSystemRoutes = require('./authorised_system.routes')
 const BillRunRoutes = require('./bill_run.routes')
+const BillRunInvoiceRoutes = require('./bill_run_invoice.routes')
+const BillRunTransactionRoutes = require('./bill_run_transaction.routes')
 const DatabaseRoutes = require('./database.routes')
-const InvoiceRoutes = require('./invoice.routes')
 const RegimeRoutes = require('./regime.routes')
 const RootRoutes = require('./root.routes')
 const TestRoutes = require('./test.routes')
@@ -15,8 +16,9 @@ module.exports = {
   AirbrakeRoutes,
   AuthorisedSystemRoutes,
   BillRunRoutes,
+  BillRunInvoiceRoutes,
+  BillRunTransactionRoutes,
   DatabaseRoutes,
-  InvoiceRoutes,
   RegimeRoutes,
   RootRoutes,
   TestRoutes,

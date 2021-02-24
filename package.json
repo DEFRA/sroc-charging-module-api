@@ -1,8 +1,8 @@
 {
-  "name": "charging-module-explore",
-  "version": "1.0.0",
-  "description": "Project that allows us to explore alternative patterns for the Charging Module API",
-  "homepage": "https://https://gitlab-dev.aws-int.defra.cloud/sroc/charging-module-explore",
+  "name": "sroc-charging-module-api",
+  "version": "0.2.0",
+  "description": "Provides an interface for calculating charges, queuing transactions and generating transaction files used to produce invoices",
+  "homepage": "https://github.com/DEFRA/sroc-service-team",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -18,9 +18,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://https://gitlab-dev.aws-int.defra.cloud/sroc/charging-module-explore"
+    "url": "https://github.com/DEFRA/sroc-charging-module-api"
   },
-  "author": "SRoC service team",
+  "author": "SROC service team",
   "license": "OGL-UK-3.0",
   "dependencies": {
     "@airbrake/node": "^1.4.1",

@@ -50,11 +50,11 @@ describe('Test Bill Run Controller', () => {
     Sinon.restore()
   })
 
-  describe('Generating a test bill run: POST /admin/test/{regimeId}/bill-runs/generate', () => {
+  describe('Generating a test bill run: POST /admin/test/{regimeId}/bill-runs', () => {
     const options = (token, payload) => {
       return {
         method: 'POST',
-        url: '/admin/test/wrls/bill-runs/generate',
+        url: '/admin/test/wrls/bill-runs',
         headers: { authorization: `Bearer ${token}` },
         payload: payload
       }

@@ -6,6 +6,7 @@ const { JwtStrategyAuth } = require('./app/auth')
 const {
   AirbrakePlugin,
   AuthorisationPlugin,
+  BillRunPlugin,
   BlippPlugin,
   DbErrorsPlugin,
   HpalDebugPlugin,
@@ -40,6 +41,7 @@ exports.deployment = async start => {
   await server.register(DbErrorsPlugin)
   await server.register(VersionInfoPlugin)
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
+  await server.register(BillRunPlugin)
 
   // Register non-production plugins
   if (ServerConfig.environment === 'development') {
