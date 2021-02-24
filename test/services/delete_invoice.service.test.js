@@ -14,7 +14,8 @@ const {
   BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
-  RegimeHelper
+  RegimeHelper,
+  TransactionHelper
 } = require('../support/helpers')
 
 const {
@@ -29,7 +30,7 @@ const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charg
 
 const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
-const { CreateTransactionService } = require('../../app/services')
+const { CreateTransactionService, GenerateBillRunService } = require('../../app/services')
 
 // Things we need to stub
 const { RulesService } = require('../../app/services')
@@ -42,6 +43,8 @@ describe('Delete Invoice service', () => {
   let authorisedSystem
   let regime
   let payload
+  let transaction
+  let invoice
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -54,7 +57,8 @@ describe('Delete Invoice service', () => {
 
     Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
     billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-    await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+    transaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+    invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
   })
 
   afterEach(async () => {
@@ -63,8 +67,6 @@ describe('Delete Invoice service', () => {
 
   describe('When a valid invoice is supplied', () => {
     it('deletes the invoice', async () => {
-      const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
-
       await DeleteInvoiceService.go(invoice.id)
 
       const result = await InvoiceModel.query().findById(invoice.id)
@@ -73,19 +75,36 @@ describe('Delete Invoice service', () => {
     })
 
     it('updates the billrun values', async () => {
-      // TODO: Tidy and improve test
-      await CreateTransactionService.go({ ...payload, customerReference: 'CUSTOMER_2' }, billRun.id, authorisedSystem, regime)
-      const billRunBefore = await BillRunModel.query().findById(billRun.id)
-
-      const valuesBefore = billRunValues(billRunBefore)
-      const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
+      // We generate the bill run to ensure that the invoice-level figures are updated
+      await GenerateBillRunService.go(billRun)
 
       await DeleteInvoiceService.go(invoice.id)
 
-      const billRunAfter = await BillRunModel.query().findById(billRun.id)
-      const valuesAfter = billRunValues(billRunAfter)
-      expect(valuesAfter).to.not.equal(valuesBefore)
+      const result = await BillRunModel.query().findById(billRun.id)
+      const values = billRunValues(result)
+
+      // Every value should now be 0
+      for (const key in values) {
+        expect(values[key]).to.equal(0)
+      }
     })
+
+    const billRunValues = (billRun) => {
+      return {
+        creditLineCount: billRun.creditLineCount,
+        creditLineValue: billRun.creditLineValue,
+        debitLineCount: billRun.debitLineCount,
+        debitLineValue: billRun.debitLineValue,
+        zeroLineCount: billRun.zeroLineCount,
+        subjectToMinimumChargeCount: billRun.subjectToMinimumChargeCount,
+        subjectToMinimumChargeCreditValue: billRun.subjectToMinimumChargeCreditValue,
+        subjectToMinimumChargeDebitValue: billRun.subjectToMinimumChargeDebitValue,
+        creditNoteCount: billRun.creditNoteCount,
+        creditNoteValue: billRun.creditNoteValue,
+        invoiceCount: billRun.invoiceCount,
+        invoiceValue: billRun.invoiceValue
+      }
+    }
 
     it('deletes the invoice licences', async () => {
       const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
@@ -104,19 +123,6 @@ describe('Delete Invoice service', () => {
       const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
       expect(transactions).to.be.empty()
     })
-
-    function billRunValues (billRun) {
-      return {
-        creditLineCount: billRun.creditLineCount,
-        creditLineValue: billRun.creditLineValue,
-        debitLineCount: billRun.debitLineCount,
-        debitLineValue: billRun.debitLineValue,
-        zeroLineCount: billRun.zeroLineCount,
-        subjectToMinimumChargeCount: billRun.subjectToMinimumChargeCount,
-        subjectToMinimumChargeCreditValue: billRun.subjectToMinimumChargeCreditValue,
-        subjectToMinimumChargeDebitValue: billRun.subjectToMinimumChargeDebitValue
-      }
-    }
   })
 
   describe('When there is no matching invoice', () => {

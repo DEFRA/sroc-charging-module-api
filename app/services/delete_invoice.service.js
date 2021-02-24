@@ -52,7 +52,6 @@ class DeleteInvoiceService {
    * @param {module:InvoiceModel} invoice The invoice which is to have its values subtracted from a bill run.
    */
   static _billRunPatch (invoice) {
-    // TODO: Confirm behaviour of creditNoteCount/Value and invoiceCount/Value
     const update = {
       creditLineCount: raw('credit_line_count - ?', invoice.creditLineCount),
       creditLineValue: raw('credit_line_value - ?', invoice.creditLineValue),
@@ -62,6 +61,19 @@ class DeleteInvoiceService {
       subjectToMinimumChargeCount: raw('subject_to_minimum_charge_count - ?', invoice.subjectToMinimumChargeCount),
       subjectToMinimumChargeCreditValue: raw('subject_to_minimum_charge_credit_value - ?', invoice.subjectToMinimumChargeCreditValue),
       subjectToMinimumChargeDebitValue: raw('subject_to_minimum_charge_debit_value - ?', invoice.subjectToMinimumChargeDebitValue)
+    }
+
+    // Determine if the invoice is a credit note or invoice and update the credit note/invoice stats accordingly.
+    if (invoice.$creditNote()) {
+      Object.assign(update, {
+        creditNoteCount: raw('credit_note_count - 1'),
+        creditNoteValue: raw('credit_note_value - ?', invoice.$absoluteNetTotal())
+      })
+    } else {
+      Object.assign(update, {
+        invoiceCount: raw('invoice_count - 1'),
+        invoiceValue: raw('invoice_value - ?', invoice.$absoluteNetTotal())
+      })
     }
 
     return update
