@@ -14,8 +14,7 @@ const {
   BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
-  RegimeHelper,
-  TransactionHelper
+  RegimeHelper
 } = require('../support/helpers')
 
 const {
@@ -43,7 +42,6 @@ describe('Delete Invoice service', () => {
   let authorisedSystem
   let regime
   let payload
-  let transaction
   let invoice
 
   beforeEach(async () => {
@@ -57,7 +55,7 @@ describe('Delete Invoice service', () => {
 
     Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
     billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-    transaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+    await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
     invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
   })
 
