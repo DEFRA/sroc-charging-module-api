@@ -17,6 +17,7 @@ const {
   AuthorisedSystemHelper,
   BillRunHelper,
   DatabaseHelper,
+  InvoiceHelper,
   RegimeHelper
 } = require('../../support/helpers')
 
@@ -28,6 +29,7 @@ describe('Presroc Invoices controller', () => {
   let server
   let authToken
   let regime
+  let authorisedSystem
   let billRun
 
   before(async () => {
@@ -43,7 +45,7 @@ describe('Presroc Invoices controller', () => {
     await DatabaseHelper.clean()
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    const authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
+    authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
     billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
   })
 
@@ -64,6 +66,29 @@ describe('Presroc Invoices controller', () => {
       const response = await server.inject(options(authToken, billRun.id, 'INVOICE_ID'))
 
       expect(response.statusCode).to.equal(200)
+    })
+  })
+
+  describe('View bill run invoice: GET /v2/{regimeId}/bill-runs/{billRunId}/invoice/{invoiceId}', () => {
+    const options = (token, billRunId, invoiceId) => {
+      return {
+        method: 'GET',
+        url: `/v2/wrls/bill-runs/${billRunId}/invoices/${invoiceId}`,
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    describe('When the request is valid', () => {
+      it('returns success status 200', async () => {
+        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+        const invoice = await InvoiceHelper.addInvoice(billRun.id, 'CUSTOMER_REFERENCE', 2021)
+
+        const response = await server.inject(options(authToken, billRun.id, invoice.id))
+        const responsePayload = JSON.parse(response.payload)
+
+        expect(response.statusCode).to.equal(200)
+        expect(responsePayload.invoice.id).to.equal(invoice.id)
+      })
     })
   })
 })
