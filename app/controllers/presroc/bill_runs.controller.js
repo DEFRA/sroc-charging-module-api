@@ -24,7 +24,7 @@ class BillRunsController {
 
   static async generate (req, h) {
     await GenerateBillRunValidationService.go(req.app.billRun)
-    GenerateBillRunService.go(req.params.billRunId, req.server.logger)
+    GenerateBillRunService.go(req.app.billRun, req.server.logger)
 
     return h.response().code(204)
   }

@@ -187,7 +187,7 @@ describe('Presroc Bill Runs controller', () => {
 
     describe('When the request is valid', () => {
       describe('because the summary has not yet been generated', () => {
-        it('returns success status 204', async () => {
+        it('returns success status 204 (IMPORTANT! Does not mean generation completed successfully)', async () => {
           const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
           await CreateTransactionService.go(requestPayload, billRun.id, authorisedSystem, regime)
 
