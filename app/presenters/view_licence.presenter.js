@@ -24,7 +24,7 @@ class ViewLicencePresenter extends BasePresenter {
       netTotal: data.netTotal,
       transactions: data.transactions.map(transaction => {
         const presenter = new ViewTransactionPresenter(transaction)
-        return presenter.go(transaction)
+        return presenter.go()
       })
     }
   }
