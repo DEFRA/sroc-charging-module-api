@@ -134,7 +134,7 @@ describe('View bill run service', () => {
 
       describe('when the bill run is generated', () => {
         it('returns correct invoice-level values', async () => {
-          await GenerateBillRunService.go(billRun.id)
+          await GenerateBillRunService.go(billRun)
 
           const result = await ViewBillRunService.go(billRun.id)
 

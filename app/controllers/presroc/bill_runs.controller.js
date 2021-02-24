@@ -4,7 +4,7 @@ const {
   BillRunStatusService,
   CreateBillRunService,
   GenerateBillRunService,
-  ValidateBillRunService,
+  GenerateBillRunValidationService,
   ViewBillRunService
 } = require('../../services')
 
@@ -22,14 +22,14 @@ class BillRunsController {
   }
 
   static async generate (req, h) {
-    await ValidateBillRunService.go(req.params.billRunId)
-    GenerateBillRunService.go(req.params.billRunId, req.server.logger)
+    await GenerateBillRunValidationService.go(req.app.billRun)
+    GenerateBillRunService.go(req.app.billRun, req.server.logger)
 
     return h.response().code(204)
   }
 
   static async status (req, h) {
-    const result = await BillRunStatusService.go(req.params.billRunId)
+    const result = await BillRunStatusService.go(req.app.billRun)
 
     return h.response(result).code(200)
   }
