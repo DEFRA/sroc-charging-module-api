@@ -431,10 +431,6 @@ describe('Generate Bill Run Summary service', () => {
   })
 
   describe('If an error is thrown', () => {
-    beforeEach(async () => {
-      Sinon.stub(BillRunModel, 'query').throws()
-    })
-
     it("gets logged but is not allowed to 'bubble' up", async () => {
       const spy = Sinon.spy(GenerateBillRunService, '_logError')
 
