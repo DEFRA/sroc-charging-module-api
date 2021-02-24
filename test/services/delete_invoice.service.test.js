@@ -37,7 +37,7 @@ const { RulesService } = require('../../app/services')
 // Thing under test
 const { DeleteInvoiceService } = require('../../app/services')
 
-describe.only('Delete Invoice service', () => {
+describe('Delete Invoice service', () => {
   let billRun
   let authorisedSystem
   let regime
@@ -76,7 +76,7 @@ describe.only('Delete Invoice service', () => {
       // TODO: Tidy and improve test
       await CreateTransactionService.go({ ...payload, customerReference: 'CUSTOMER_2' }, billRun.id, authorisedSystem, regime)
       const billRunBefore = await BillRunModel.query().findById(billRun.id)
-      console.log(billRunBefore)
+
       const valuesBefore = billRunValues(billRunBefore)
       const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
@@ -96,7 +96,7 @@ describe.only('Delete Invoice service', () => {
       expect(licences).to.be.empty()
     })
 
-    it.only('deletes the invoice transactions', async () => {
+    it('deletes the invoice transactions', async () => {
       const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
       await DeleteInvoiceService.go(invoice.id)
