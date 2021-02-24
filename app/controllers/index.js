@@ -11,6 +11,7 @@ const TestTransactionsController = require('./admin/test/test_transactions.contr
 const NotSupportedController = require('./not_supported.controller')
 const PresrocBillRunsController = require('./presroc/bill_runs.controller')
 const PresrocBillRunsInvoicesController = require('./presroc/bill_runs_invoices.controller')
+const PresrocBillRunsTransactionsController = require('./presroc/bill_runs_transactions.controller')
 const PresrocCalculateChargeController = require('./presroc/calculate_charge.controller')
 
 module.exports = {
@@ -24,5 +25,6 @@ module.exports = {
   PresrocBillRunsController,
   PresrocCalculateChargeController,
   PresrocBillRunsInvoicesController,
+  PresrocBillRunsTransactionsController,
   NotSupportedController
 }
