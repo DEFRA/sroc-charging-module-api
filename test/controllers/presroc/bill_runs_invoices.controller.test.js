@@ -11,8 +11,6 @@ const { expect } = Code
 // For running our service
 const { deployment } = require('../../../server')
 
-const { InvoiceModel } = require('../../../app/models')
-
 // Test helpers
 const {
   AuthorisationHelper,
@@ -20,8 +18,7 @@ const {
   BillRunHelper,
   DatabaseHelper,
   InvoiceHelper,
-  RegimeHelper,
-  TransactionHelper
+  RegimeHelper
 } = require('../../support/helpers')
 
 // Things we need to stub
@@ -57,12 +54,6 @@ describe('Presroc Invoices controller', () => {
   })
 
   describe('Delete an invoice: DELETE /v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}', () => {
-    let transaction
-
-    beforeEach(async () => {
-      transaction = await TransactionHelper.addTransaction(billRun.id)
-    })
-
     const options = (token, billRunId, invoiceId) => {
       return {
         method: 'DELETE',
@@ -71,17 +62,10 @@ describe('Presroc Invoices controller', () => {
       }
     }
 
-    it('returns a 204 response', async () => {
-      const response = await server.inject(options(authToken, billRun.id, transaction.invoiceId))
+    it('returns a 200 response', async () => {
+      const response = await server.inject(options(authToken, billRun.id, 'INVOICE_ID'))
 
-      expect(response.statusCode).to.equal(204)
-    })
-
-    it('deletes the invoice', async () => {
-      await server.inject(options(authToken, billRun.id, transaction.invoiceId))
-      const invoice = await InvoiceModel.query().findById(transaction.invoiceId)
-
-      expect(invoice).to.equal(undefined)
+      expect(response.statusCode).to.equal(200)
     })
   })
 
