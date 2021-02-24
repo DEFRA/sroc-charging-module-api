@@ -18,8 +18,8 @@ describe('Bill Run Model', () => {
       expect(instance.$editable()).to.be.true()
     })
 
-    it("returns 'true' when the status is 'summarised'", async () => {
-      const instance = BillRunModel.fromJson({ status: 'summarised' })
+    it("returns 'true' when the status is 'generated'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'generated' })
 
       expect(instance.$editable()).to.be.true()
     })
