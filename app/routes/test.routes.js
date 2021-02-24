@@ -1,7 +1,7 @@
 'use strict'
 
 const {
-  TestBillRunController,
+  TestBillRunsController,
   TestTransactionsController
 } = require('../controllers')
 
@@ -9,7 +9,7 @@ const routes = [
   {
     method: 'POST',
     path: '/admin/test/{regimeId}/bill-runs',
-    handler: TestBillRunController.create,
+    handler: TestBillRunsController.create,
     options: {
       description: 'Used by the delivery team to automatically generate bill runs for testing.',
       auth: {
