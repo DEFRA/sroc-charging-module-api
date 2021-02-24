@@ -30,7 +30,7 @@ class BillRunsController {
   }
 
   static async status (req, h) {
-    const result = await BillRunStatusService.go(req.params.billRunId)
+    const result = await BillRunStatusService.go(req.app.billRun)
 
     return h.response(result).code(200)
   }
