@@ -12,23 +12,23 @@ const { raw } = require('../models/base.model')
 
 class GenerateBillRunService {
   /**
-  * Initiates bill run generation. Note that nothing is returned from the service -- the intention is that it will be
-  * called and left to run.
+  * Initiates bill run generation
   *
-  * @param {string} billRunId The id of the bill run to be generated.
+  * Note! Nothing is returned from the service -- the intention is that it will be called and left to run.
+  *
+  * @param {@module:BillRunModel} billRun Instance of the bill run to be generated
   * @param {object} [logger] Server logger object. If passed in then logger.info will be called to log the time taken.
   */
-  static async go (billRunId, logger = '') {
+  static async go (billRun, logger = '') {
     try {
       // Mark the start time for later logging
       const startTime = process.hrtime.bigint()
 
-      const billRun = await BillRunModel.query().findById(billRunId)
       await this._generateBillRun(billRun)
 
-      await this._calculateAndLogTime(logger, billRunId, startTime)
+      await this._calculateAndLogTime(logger, billRun.id, startTime)
     } catch (error) {
-      this._logError(logger, billRunId, error)
+      this._logError(logger, billRun.id, error)
     }
   }
 

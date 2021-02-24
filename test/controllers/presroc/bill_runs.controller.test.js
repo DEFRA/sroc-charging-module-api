@@ -21,8 +21,7 @@ const {
   GeneralHelper,
   RegimeHelper,
   RulesServiceHelper,
-  SequenceCounterHelper,
-  TransactionHelper
+  SequenceCounterHelper
 } = require('../../support/helpers')
 
 const { CreateTransactionService } = require('../../../app/services')
@@ -109,63 +108,6 @@ describe('Presroc Bill Runs controller', () => {
     })
   })
 
-  describe('Add a bill run transaction: POST /v2/{regimeId}/bill-runs/{billRunId}/transactions', () => {
-    let payload
-
-    const options = (token, payload, billRunId) => {
-      return {
-        method: 'POST',
-        url: `/v2/wrls/bill-runs/${billRunId}/transactions`,
-        headers: { authorization: `Bearer ${token}` },
-        payload: payload
-      }
-    }
-
-    beforeEach(async () => {
-      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-
-      // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
-      // the valid tests we can use it straight as
-      payload = GeneralHelper.cloneObject(requestFixtures.simple)
-    })
-
-    describe('When the request is valid', () => {
-      it("returns the 'id' of the new transaction", async () => {
-        const response = await server.inject(options(authToken, payload, billRun.id))
-        const responsePayload = JSON.parse(response.payload)
-
-        expect(response.statusCode).to.equal(201)
-        expect(responsePayload.transaction.id).to.exist()
-      })
-    })
-
-    describe('When the request is invalid', () => {
-      describe('because it contains invalid data', () => {
-        it('returns an error', async () => {
-          payload.periodStart = '01-APR-2021'
-
-          const response = await server.inject(options(authToken, payload, billRun.id))
-
-          expect(response.statusCode).to.equal(422)
-        })
-      })
-
-      describe("because the request is for a duplicate transaction (matching clientId's)", () => {
-        it('returns an error', async () => {
-          // Add the first transaction
-          await TransactionHelper.addTransaction(billRun.id, { regimeId: regime.id, clientId: 'DOUBLEIMPACT' })
-
-          payload.clientId = 'DOUBLEIMPACT'
-
-          // Attempt to add the second
-          const response = await server.inject(options(authToken, payload, billRun.id))
-
-          expect(response.statusCode).to.equal(409)
-        })
-      })
-    })
-  })
-
   describe('Generate a bill run summary: PATCH /v2/{regimeId}/bill-runs/{billRunId}/generate', () => {
     let payload
 
@@ -187,7 +129,7 @@ describe('Presroc Bill Runs controller', () => {
 
     describe('When the request is valid', () => {
       describe('because the summary has not yet been generated', () => {
-        it('returns success status 204', async () => {
+        it('returns success status 204 (IMPORTANT! Does not mean generation completed successfully)', async () => {
           const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
           await CreateTransactionService.go(requestPayload, billRun.id, authorisedSystem, regime)
 
@@ -279,32 +221,6 @@ describe('Presroc Bill Runs controller', () => {
           expect(response.statusCode).to.equal(404)
           expect(responsePayload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
         })
-      })
-    })
-  })
-
-  describe('View bill run transaction: GET /v2/{regimeId}/bill-runs/{billRunId}/transactions/{transactionId}', () => {
-    const options = (token, billRunId, transactionId) => {
-      return {
-        method: 'GET',
-        url: `/v2/wrls/bill-runs/${billRunId}/transactions/${transactionId}`,
-        headers: { authorization: `Bearer ${token}` }
-      }
-    }
-
-    describe('When the request is valid', () => {
-      it('returns success status 200', async () => {
-        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-        const transaction = await TransactionHelper.addTransaction(
-          billRun.id,
-          { createdBy: authorisedSystem.id, regimeId: regime.id }
-        )
-
-        const response = await server.inject(options(authToken, billRun.id, transaction.id))
-        const responsePayload = JSON.parse(response.payload)
-
-        expect(response.statusCode).to.equal(200)
-        expect(responsePayload.transaction.id).to.equal(transaction.id)
       })
     })
   })
