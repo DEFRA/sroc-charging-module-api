@@ -33,6 +33,15 @@ class BillRunsController {
 
     return h.response(result).code(200)
   }
+
+  static async approve (req, h) {
+    if (req.app.billRun.status === 'generated') {
+      return h.response().code(204)
+    } else {
+      const Boom = require('@hapi/boom')
+      throw Boom.badData(`Bill run ${req.app.billRun.id} needs to be generated first.`)
+    }
+  }
 }
 
 module.exports = BillRunsController
