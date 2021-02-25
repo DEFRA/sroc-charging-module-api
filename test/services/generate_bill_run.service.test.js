@@ -233,7 +233,7 @@ describe('Generate Bill Run Summary service', () => {
 
     describe('When minimum charge applies', () => {
       describe('with one transaction in the invoice', () => {
-        describe("and only a 'credit' transaction is needed", () => {
+        describe("and only a 'credit' adjustment transaction is needed", () => {
           beforeEach(async () => {
             const minimumChargePayload = {
               ...payload,
@@ -246,7 +246,7 @@ describe('Generate Bill Run Summary service', () => {
             await GenerateBillRunService.go(billRun)
           })
 
-          it("saves just a 'credit' adjustment transaction to the db", async () => {
+          it("saves just the 'credit' adjustment transaction to the db", async () => {
             const { transactions } = await BillRunModel.query()
               .findById(billRun.id)
               .withGraphFetched('invoices')
@@ -288,7 +288,7 @@ describe('Generate Bill Run Summary service', () => {
           })
         })
 
-        describe("and only a 'debit' transaction is needed", () => {
+        describe("and only a 'debit' adjustment transaction is needed", () => {
           beforeEach(async () => {
             const minimumChargePayload = {
               ...payload,
@@ -300,7 +300,7 @@ describe('Generate Bill Run Summary service', () => {
             await GenerateBillRunService.go(billRun)
           })
 
-          it("saves just a 'debit' adjustment transaction to the db", async () => {
+          it("saves just the 'debit' adjustment transaction to the db", async () => {
             const { transactions } = await BillRunModel.query()
               .findById(billRun.id)
               .withGraphFetched('invoices')
