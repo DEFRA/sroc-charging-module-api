@@ -254,12 +254,12 @@ describe('Presroc Bill Runs controller', () => {
 
     describe('When the request is invalid', () => {
       describe("because the 'bill run' has not been generated", () => {
-        it('returns error status 422', async () => {
+        it('returns error status 409', async () => {
           const response = await server.inject(options(authToken, billRun.id))
           const responsePayload = JSON.parse(response.payload)
 
-          expect(response.statusCode).to.equal(422)
-          expect(responsePayload.message).to.equal(`Bill run ${billRun.id} needs to be generated first.`)
+          expect(response.statusCode).to.equal(409)
+          expect(responsePayload.message).to.equal(`Bill run ${billRun.id} does not have a status of 'generated'.`)
         })
       })
     })
