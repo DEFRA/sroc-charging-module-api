@@ -81,6 +81,13 @@ class BillRunModel extends BaseModel {
   }
 
   /**
+   * Returns true if the bill run status is being 'generated'
+   */
+  $generated () {
+    return this.status === 'generated'
+  }
+
+  /**
    * Returns true if no transactions have been added to this bill run
    */
   $empty () {
