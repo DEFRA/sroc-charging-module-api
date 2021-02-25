@@ -21,10 +21,11 @@ const {
   GeneralHelper,
   RegimeHelper,
   RulesServiceHelper,
-  SequenceCounterHelper
+  SequenceCounterHelper,
+  TransactionHelper
 } = require('../../support/helpers')
 
-const { CreateTransactionService } = require('../../../app/services')
+const { CreateTransactionService, GenerateBillRunService } = require('../../../app/services')
 
 const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
@@ -220,6 +221,45 @@ describe('Presroc Bill Runs controller', () => {
 
           expect(response.statusCode).to.equal(404)
           expect(responsePayload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
+        })
+      })
+    })
+  })
+
+  describe('Approve bill run: PATCH /v2/{regimeId}/bill-runs/{billRunId}/approve', () => {
+    const options = (token, billRunId) => {
+      return {
+        method: 'PATCH',
+        url: `/v2/wrls/bill-runs/${billRunId}/approve`,
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    beforeEach(async () => {
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    })
+
+    describe('When the request is valid', () => {
+      it('returns success status 204', async () => {
+        // We need a bill run with at least one transaction to allow it to be generated. Once 'generated', the bill run
+        // can be approved
+        await TransactionHelper.addTransaction(billRun.id)
+        await GenerateBillRunService.go(billRun)
+
+        const response = await server.inject(options(authToken, billRun.id))
+
+        expect(response.statusCode).to.equal(204)
+      })
+    })
+
+    describe('When the request is invalid', () => {
+      describe("because the 'bill run' has not been generated", () => {
+        it('returns error status 422', async () => {
+          const response = await server.inject(options(authToken, billRun.id))
+          const responsePayload = JSON.parse(response.payload)
+
+          expect(response.statusCode).to.equal(422)
+          expect(responsePayload.message).to.equal(`Bill run ${billRun.id} needs to be generated first.`)
         })
       })
     })
