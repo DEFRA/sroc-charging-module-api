@@ -1,5 +1,6 @@
 'use strict'
 
+const ApproveBillRunService = require('./approve_bill_run.service')
 const AuthorisationService = require('./authorisation.service')
 const BillRunService = require('./bill_run.service')
 const BillRunStatusService = require('./bill_run_status.service')
@@ -28,6 +29,7 @@ const ShowTransactionService = require('./show_transaction.service')
 const ViewBillRunService = require('./view_bill_run.service')
 
 module.exports = {
+  ApproveBillRunService,
   AuthorisationService,
   BillRunService,
   BillRunStatusService,
