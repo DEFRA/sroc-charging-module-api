@@ -34,7 +34,7 @@ const { RulesService } = require('../../app/services')
 // Thing under test
 const { GenerateBillRunService } = require('../../app/services')
 
-describe('Generate Bill Run Summary service', () => {
+describe.only('Generate Bill Run Summary service', () => {
   const customerReference = 'A11111111A'
 
   let billRun
@@ -232,170 +232,291 @@ describe('Generate Bill Run Summary service', () => {
     })
 
     describe('When minimum charge applies', () => {
-      describe("and both a 'credit' and 'debit' adjustment transaction is needed", () => {
-        beforeEach(async () => {
-          const minimumChargePayload = {
-            ...payload,
-            subjectToMinimumCharge: true
-          }
-          await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
-          minimumChargePayload.credit = true
-          await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
-          await GenerateBillRunService.go(billRun)
-        })
+      describe('with one transaction in the invoice', () => {
+        describe("and only a 'credit' transaction is needed", () => {
+          beforeEach(async () => {
+            const minimumChargePayload = {
+              ...payload,
+              credit: true,
+              subjectToMinimumCharge: true
+            }
 
-        it('saves both adjustment transactions to the db', async () => {
-        // Note that we would normally use .withGraphFetched('invoices.transactions') to pull the invoices and nested
-        // transactions from the bill run. However this way of doing it makes it easier to get to the transaction we
-        // want to test without having to dig through the object.
-          const { transactions } = await BillRunModel.query()
-            .findById(billRun.id)
-            .withGraphFetched('invoices')
-            .withGraphFetched('transactions')
+            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
 
-          const adjustmentTransactions = transactions.filter((transaction) => {
-            return transaction.minimumChargeAdjustment
+            await GenerateBillRunService.go(billRun)
           })
 
-          expect(adjustmentTransactions.length).to.equal(2)
+          it("saves just a 'credit' adjustment transaction to the db", async () => {
+            const { transactions } = await BillRunModel.query()
+              .findById(billRun.id)
+              .withGraphFetched('invoices')
+              .withGraphFetched('transactions')
+
+            const adjustmentTransactions = transactions.filter((transaction) => {
+              return transaction.minimumChargeAdjustment
+            })
+
+            expect(adjustmentTransactions.length).to.equal(1)
+            expect(adjustmentTransactions[0].chargeCredit).to.be.true()
+          })
+
+          it('updates the bill run and invoice as expected', async () => {
+            const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
+            const invoices = await minimumChargeBill.$relatedQuery('invoices')
+            const minimumChargeInvoice = invoices[0]
+
+            expect(minimumChargeBill.creditLineCount).to.equal(2)
+            expect(minimumChargeBill.creditLineValue).to.equal(2500)
+            expect(minimumChargeBill.debitLineCount).to.equal(0)
+            expect(minimumChargeBill.debitLineValue).to.equal(0)
+            expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(2)
+            expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2500)
+            expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(0)
+            expect(minimumChargeBill.creditNoteCount).to.equal(1)
+            expect(minimumChargeBill.creditNoteValue).to.equal(2500)
+            expect(minimumChargeBill.invoiceCount).to.equal(0)
+            expect(minimumChargeBill.invoiceValue).to.equal(0)
+
+            expect(minimumChargeInvoice.creditLineCount).to.equal(2)
+            expect(minimumChargeInvoice.creditLineValue).to.equal(2500)
+            expect(minimumChargeInvoice.debitLineCount).to.equal(0)
+            expect(minimumChargeInvoice.debitLineValue).to.equal(0)
+            expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(2)
+            expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2500)
+            expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(0)
+            expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
+          })
         })
 
-        it('updates the bill run as expected', async () => {
-          const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
+        describe("and only a 'debit' transaction is needed", () => {
+          beforeEach(async () => {
+            const minimumChargePayload = {
+              ...payload,
+              subjectToMinimumCharge: true
+            }
 
-          expect(minimumChargeBill.debitLineCount).to.equal(2)
-          expect(minimumChargeBill.creditLineCount).to.equal(2)
-          expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(4)
-          expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(2500)
-          expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2500)
-        })
+            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
 
-        it('updates the invoice as expected', async () => {
-          const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
-          const invoices = await minimumChargeBill.$relatedQuery('invoices')
-          const minimumChargeInvoice = invoices[0]
+            await GenerateBillRunService.go(billRun)
+          })
 
-          expect(minimumChargeInvoice.debitLineCount).to.equal(2)
-          expect(minimumChargeInvoice.creditLineCount).to.equal(2)
-          expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(4)
-          expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2500)
-          expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2500)
-          expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
-        })
+          it("saves just a 'debit' adjustment transaction to the db", async () => {
+            const { transactions } = await BillRunModel.query()
+              .findById(billRun.id)
+              .withGraphFetched('invoices')
+              .withGraphFetched('transactions')
 
-        it('updates the licence as expected', async () => {
-          const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
-          const licences = await minimumChargeBill.$relatedQuery('licences')
-          const minimumChargeLicence = licences[0]
+            const adjustmentTransactions = transactions.filter((transaction) => {
+              return transaction.minimumChargeAdjustment
+            })
 
-          expect(minimumChargeLicence.debitLineCount).to.equal(2)
-          expect(minimumChargeLicence.creditLineCount).to.equal(2)
-          expect(minimumChargeLicence.subjectToMinimumChargeCount).to.equal(4)
-          expect(minimumChargeLicence.subjectToMinimumChargeDebitValue).to.equal(2500)
-          expect(minimumChargeLicence.subjectToMinimumChargeCreditValue).to.equal(2500)
+            expect(adjustmentTransactions.length).to.equal(1)
+            expect(adjustmentTransactions[0].chargeCredit).to.be.false()
+          })
+
+          it('updates the bill run and invoice as expected', async () => {
+            const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
+            const invoices = await minimumChargeBill.$relatedQuery('invoices')
+            const minimumChargeInvoice = invoices[0]
+
+            expect(minimumChargeBill.creditLineCount).to.equal(0)
+            expect(minimumChargeBill.creditLineValue).to.equal(0)
+            expect(minimumChargeBill.debitLineCount).to.equal(2)
+            expect(minimumChargeBill.debitLineValue).to.equal(2500)
+            expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(2)
+            expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(0)
+            expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(2500)
+            expect(minimumChargeBill.creditNoteCount).to.equal(0)
+            expect(minimumChargeBill.creditNoteValue).to.equal(0)
+            expect(minimumChargeBill.invoiceCount).to.equal(1)
+            expect(minimumChargeBill.invoiceValue).to.equal(2500)
+
+            expect(minimumChargeInvoice.creditLineCount).to.equal(0)
+            expect(minimumChargeInvoice.creditLineValue).to.equal(0)
+            expect(minimumChargeInvoice.debitLineCount).to.equal(2)
+            expect(minimumChargeInvoice.debitLineValue).to.equal(2500)
+            expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(2)
+            expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(0)
+            expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2500)
+            expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
+          })
         })
       })
 
-      describe("and only a 'credit' transaction is needed", () => {
-        beforeEach(async () => {
-          const minimumChargePayload = {
-            ...payload,
-            credit: true,
-            subjectToMinimumCharge: true
-          }
-
-          await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
-
-          rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2501)
-          minimumChargePayload.credit = false
-          await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
-
-          await GenerateBillRunService.go(billRun)
-        })
-
-        it("saves just a 'credit' adjustment transaction to the db", async () => {
-          const { transactions } = await BillRunModel.query()
-            .findById(billRun.id)
-            .withGraphFetched('invoices')
-            .withGraphFetched('transactions')
-
-          const adjustmentTransactions = transactions.filter((transaction) => {
-            return transaction.minimumChargeAdjustment
+      describe('with multiple transactions in the invoice', () => {
+        describe("and both a 'credit' and 'debit' adjustment transaction is needed", () => {
+          beforeEach(async () => {
+            const minimumChargePayload = {
+              ...payload,
+              subjectToMinimumCharge: true
+            }
+            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+            minimumChargePayload.credit = true
+            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+            await GenerateBillRunService.go(billRun)
           })
 
-          expect(adjustmentTransactions.length).to.equal(1)
-          expect(adjustmentTransactions[0].chargeCredit).to.be.true()
-        })
+          it('saves both adjustment transactions to the db', async () => {
+            // Note that we would normally use .withGraphFetched('invoices.transactions') to pull the invoices and nested
+            // transactions from the bill run. However this way of doing it makes it easier to get to the transaction we
+            // want to test without having to dig through the object.
+            const { transactions } = await BillRunModel.query()
+              .findById(billRun.id)
+              .withGraphFetched('invoices')
+              .withGraphFetched('transactions')
 
-        it('updates the bill run and invoice as expected', async () => {
-          const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
-          const invoices = await minimumChargeBill.$relatedQuery('invoices')
-          const minimumChargeInvoice = invoices[0]
+            const adjustmentTransactions = transactions.filter((transaction) => {
+              return transaction.minimumChargeAdjustment
+            })
 
-          expect(minimumChargeBill.debitLineCount).to.equal(1)
-          expect(minimumChargeBill.creditLineCount).to.equal(2)
-          expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(3)
-          expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(2501)
-          expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2500)
-
-          expect(minimumChargeInvoice.debitLineCount).to.equal(1)
-          expect(minimumChargeInvoice.creditLineCount).to.equal(2)
-          expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(3)
-          expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2501)
-          expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2500)
-          expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
-        })
-      })
-
-      describe("and only a 'debit' transaction is needed", () => {
-        beforeEach(async () => {
-          const minimumChargePayload = {
-            ...payload,
-            subjectToMinimumCharge: true
-          }
-
-          await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
-
-          rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2501)
-          minimumChargePayload.credit = true
-          await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
-
-          await GenerateBillRunService.go(billRun)
-        })
-
-        it("saves just a 'debit' adjustment transaction to the db", async () => {
-          const { transactions } = await BillRunModel.query()
-            .findById(billRun.id)
-            .withGraphFetched('invoices')
-            .withGraphFetched('transactions')
-
-          const adjustmentTransactions = transactions.filter((transaction) => {
-            return transaction.minimumChargeAdjustment
+            expect(adjustmentTransactions.length).to.equal(2)
           })
 
-          expect(adjustmentTransactions.length).to.equal(1)
-          expect(adjustmentTransactions[0].chargeCredit).to.be.false()
+          it('updates the bill run as expected', async () => {
+            const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
+
+            expect(minimumChargeBill.debitLineCount).to.equal(2)
+            expect(minimumChargeBill.creditLineCount).to.equal(2)
+            expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(4)
+            expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(2500)
+            expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2500)
+          })
+
+          it('updates the invoice as expected', async () => {
+            const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
+            const invoices = await minimumChargeBill.$relatedQuery('invoices')
+            const minimumChargeInvoice = invoices[0]
+
+            expect(minimumChargeInvoice.debitLineCount).to.equal(2)
+            expect(minimumChargeInvoice.creditLineCount).to.equal(2)
+            expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(4)
+            expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2500)
+            expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2500)
+            expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
+          })
+
+          it('updates the licence as expected', async () => {
+            const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
+            const licences = await minimumChargeBill.$relatedQuery('licences')
+            const minimumChargeLicence = licences[0]
+
+            expect(minimumChargeLicence.debitLineCount).to.equal(2)
+            expect(minimumChargeLicence.creditLineCount).to.equal(2)
+            expect(minimumChargeLicence.subjectToMinimumChargeCount).to.equal(4)
+            expect(minimumChargeLicence.subjectToMinimumChargeDebitValue).to.equal(2500)
+            expect(minimumChargeLicence.subjectToMinimumChargeCreditValue).to.equal(2500)
+          })
         })
 
-        it('updates the bill run and invoice as expected', async () => {
-          const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
-          const invoices = await minimumChargeBill.$relatedQuery('invoices')
-          const minimumChargeInvoice = invoices[0]
+        describe("and only a 'credit' transaction is needed", () => {
+          beforeEach(async () => {
+            const minimumChargePayload = {
+              ...payload,
+              credit: true,
+              subjectToMinimumCharge: true
+            }
 
-          expect(minimumChargeBill.debitLineCount).to.equal(2)
-          expect(minimumChargeBill.creditLineCount).to.equal(1)
-          expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(3)
-          expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(2500)
-          expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2501)
+            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
 
-          expect(minimumChargeInvoice.debitLineCount).to.equal(2)
-          expect(minimumChargeInvoice.creditLineCount).to.equal(1)
-          expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(3)
-          expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2500)
-          expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2501)
-          expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
+            rulesServiceStub.restore()
+            RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2501)
+            minimumChargePayload.credit = false
+            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+
+            await GenerateBillRunService.go(billRun)
+          })
+
+          it("saves just a 'credit' adjustment transaction to the db", async () => {
+            const { transactions } = await BillRunModel.query()
+              .findById(billRun.id)
+              .withGraphFetched('invoices')
+              .withGraphFetched('transactions')
+
+            const adjustmentTransactions = transactions.filter((transaction) => {
+              return transaction.minimumChargeAdjustment
+            })
+
+            expect(adjustmentTransactions.length).to.equal(1)
+            expect(adjustmentTransactions[0].chargeCredit).to.be.true()
+          })
+
+          it('updates the bill run and invoice as expected', async () => {
+            const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
+            const invoices = await minimumChargeBill.$relatedQuery('invoices')
+            const minimumChargeInvoice = invoices[0]
+
+            expect(minimumChargeBill.debitLineCount).to.equal(1)
+            expect(minimumChargeBill.creditLineCount).to.equal(2)
+            expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(3)
+            expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(2501)
+            expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2500)
+            expect(minimumChargeBill.creditNoteCount).to.equal(0)
+            expect(minimumChargeBill.creditNoteValue).to.equal(0)
+            expect(minimumChargeBill.invoiceCount).to.equal(1)
+            expect(minimumChargeBill.invoiceValue).to.equal(1)
+
+            expect(minimumChargeInvoice.debitLineCount).to.equal(1)
+            expect(minimumChargeInvoice.creditLineCount).to.equal(2)
+            expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(3)
+            expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2501)
+            expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2500)
+            expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
+          })
+        })
+
+        describe("and only a 'debit' transaction is needed", () => {
+          beforeEach(async () => {
+            const minimumChargePayload = {
+              ...payload,
+              subjectToMinimumCharge: true
+            }
+
+            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+
+            rulesServiceStub.restore()
+            RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2501)
+            minimumChargePayload.credit = true
+            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+
+            await GenerateBillRunService.go(billRun)
+          })
+
+          it("saves just a 'debit' adjustment transaction to the db", async () => {
+            const { transactions } = await BillRunModel.query()
+              .findById(billRun.id)
+              .withGraphFetched('invoices')
+              .withGraphFetched('transactions')
+
+            const adjustmentTransactions = transactions.filter((transaction) => {
+              return transaction.minimumChargeAdjustment
+            })
+
+            expect(adjustmentTransactions.length).to.equal(1)
+            expect(adjustmentTransactions[0].chargeCredit).to.be.false()
+          })
+
+          it('updates the bill run and invoice as expected', async () => {
+            const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
+            const invoices = await minimumChargeBill.$relatedQuery('invoices')
+            const minimumChargeInvoice = invoices[0]
+
+            expect(minimumChargeBill.debitLineCount).to.equal(2)
+            expect(minimumChargeBill.creditLineCount).to.equal(1)
+            expect(minimumChargeBill.subjectToMinimumChargeCount).to.equal(3)
+            expect(minimumChargeBill.subjectToMinimumChargeDebitValue).to.equal(2500)
+            expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2501)
+            expect(minimumChargeBill.creditNoteCount).to.equal(1)
+            expect(minimumChargeBill.creditNoteValue).to.equal(1)
+            expect(minimumChargeBill.invoiceCount).to.equal(0)
+            expect(minimumChargeBill.invoiceValue).to.equal(0)
+
+            expect(minimumChargeInvoice.debitLineCount).to.equal(2)
+            expect(minimumChargeInvoice.creditLineCount).to.equal(1)
+            expect(minimumChargeInvoice.subjectToMinimumChargeCount).to.equal(3)
+            expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2500)
+            expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(2501)
+            expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
+          })
         })
       })
     })
