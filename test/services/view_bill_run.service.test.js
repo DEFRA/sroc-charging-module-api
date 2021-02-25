@@ -104,7 +104,7 @@ describe('View bill run service', () => {
         expect(result.billRun.creditLineValue).to.equal(creditLineValue)
         expect(result.billRun.debitLineCount).to.equal(1)
         expect(result.billRun.debitLineValue).to.equal(debitLineValue)
-        expect(result.billRun.zeroValueLineCount).to.equal(1)
+        expect(result.billRun.zeroLineCount).to.equal(1)
         expect(result.billRun.netTotal).to.equal(debitLineValue - creditLineValue)
       })
 
