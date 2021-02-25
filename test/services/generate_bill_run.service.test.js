@@ -34,7 +34,7 @@ const { RulesService } = require('../../app/services')
 // Thing under test
 const { GenerateBillRunService } = require('../../app/services')
 
-describe.only('Generate Bill Run Summary service', () => {
+describe('Generate Bill Run Summary service', () => {
   const customerReference = 'A11111111A'
 
   let billRun
