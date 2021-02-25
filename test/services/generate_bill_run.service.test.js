@@ -233,6 +233,8 @@ describe('Generate Bill Run Summary service', () => {
 
     describe('When minimum charge applies', () => {
       describe('with one transaction in the invoice', () => {
+        let minimumChargeBill
+
         describe("and only a 'credit' adjustment transaction is needed", () => {
           beforeEach(async () => {
             const minimumChargePayload = {
@@ -244,6 +246,8 @@ describe('Generate Bill Run Summary service', () => {
             await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
 
             await GenerateBillRunService.go(billRun)
+
+            minimumChargeBill = await BillRunModel.query().findById(billRun.id)
           })
 
           it("saves just the 'credit' adjustment transaction to the db", async () => {
@@ -260,11 +264,7 @@ describe('Generate Bill Run Summary service', () => {
             expect(adjustmentTransactions[0].chargeCredit).to.be.true()
           })
 
-          it('updates the bill run and invoice as expected', async () => {
-            const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
-            const invoices = await minimumChargeBill.$relatedQuery('invoices')
-            const minimumChargeInvoice = invoices[0]
-
+          it("updates the 'bill run' as expected", async () => {
             expect(minimumChargeBill.creditLineCount).to.equal(2)
             expect(minimumChargeBill.creditLineValue).to.equal(2500)
             expect(minimumChargeBill.debitLineCount).to.equal(0)
@@ -276,6 +276,11 @@ describe('Generate Bill Run Summary service', () => {
             expect(minimumChargeBill.creditNoteValue).to.equal(2500)
             expect(minimumChargeBill.invoiceCount).to.equal(0)
             expect(minimumChargeBill.invoiceValue).to.equal(0)
+          })
+
+          it("updates the 'invoice' as expected", async () => {
+            const invoices = await minimumChargeBill.$relatedQuery('invoices')
+            const minimumChargeInvoice = invoices[0]
 
             expect(minimumChargeInvoice.creditLineCount).to.equal(2)
             expect(minimumChargeInvoice.creditLineValue).to.equal(2500)
@@ -298,6 +303,8 @@ describe('Generate Bill Run Summary service', () => {
             await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
 
             await GenerateBillRunService.go(billRun)
+
+            minimumChargeBill = await BillRunModel.query().findById(billRun.id)
           })
 
           it("saves just the 'debit' adjustment transaction to the db", async () => {
@@ -314,11 +321,7 @@ describe('Generate Bill Run Summary service', () => {
             expect(adjustmentTransactions[0].chargeCredit).to.be.false()
           })
 
-          it('updates the bill run and invoice as expected', async () => {
-            const minimumChargeBill = await BillRunModel.query().findById(billRun.id)
-            const invoices = await minimumChargeBill.$relatedQuery('invoices')
-            const minimumChargeInvoice = invoices[0]
-
+          it("updates the 'bill run' as expected", async () => {
             expect(minimumChargeBill.creditLineCount).to.equal(0)
             expect(minimumChargeBill.creditLineValue).to.equal(0)
             expect(minimumChargeBill.debitLineCount).to.equal(2)
@@ -330,6 +333,11 @@ describe('Generate Bill Run Summary service', () => {
             expect(minimumChargeBill.creditNoteValue).to.equal(0)
             expect(minimumChargeBill.invoiceCount).to.equal(1)
             expect(minimumChargeBill.invoiceValue).to.equal(2500)
+          })
+
+          it("updates the 'invoice' as expected", async () => {
+            const invoices = await minimumChargeBill.$relatedQuery('invoices')
+            const minimumChargeInvoice = invoices[0]
 
             expect(minimumChargeInvoice.creditLineCount).to.equal(0)
             expect(minimumChargeInvoice.creditLineValue).to.equal(0)
