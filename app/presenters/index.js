@@ -8,6 +8,7 @@ const CreateTransactionPresenter = require('./create_transaction.presenter')
 const JsonPresenter = require('./json.presenter')
 const RulesServicePresenter = require('./rules_service.presenter')
 const ViewBillRunPresenter = require('./view_bill_run.presenter')
+const ViewLicencePresenter = require('./view_licence.presenter')
 const ViewTransactionPresenter = require('./view_transaction.presenter')
 
 module.exports = {
@@ -19,5 +20,6 @@ module.exports = {
   JsonPresenter,
   RulesServicePresenter,
   ViewBillRunPresenter,
+  ViewLicencePresenter,
   ViewTransactionPresenter
 }
