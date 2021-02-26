@@ -127,6 +127,13 @@ class InvoiceModel extends BaseModel {
   $transactionType () {
     return this.$netTotal() < 0 ? 'C' : 'I'
   }
+
+  /**
+   * creditNote method returns true if this is a credit (ie. net total < 0) or false if it's an invoice/debit
+   */
+  $creditNote () {
+    return this.$transactionType() === 'C'
+  }
 }
 
 module.exports = InvoiceModel
