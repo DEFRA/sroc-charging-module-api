@@ -71,7 +71,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice', async () => {
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -82,7 +82,7 @@ describe('Delete Invoice service', () => {
         // We generate the bill run to ensure that the invoice-level figures are updated
         await GenerateBillRunService.go(billRun)
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await BillRunModel.query().findById(billRun.id)
 
@@ -95,7 +95,7 @@ describe('Delete Invoice service', () => {
       it('deletes the invoice licences', async () => {
         const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const licences = await LicenceModel.query().select().where({ billRunId: billRun.id })
         expect(licences).to.be.empty()
@@ -104,7 +104,7 @@ describe('Delete Invoice service', () => {
       it('deletes the invoice transactions', async () => {
         const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
         expect(transactions).to.be.empty()
@@ -118,7 +118,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice', async () => {
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -129,7 +129,7 @@ describe('Delete Invoice service', () => {
         // We generate the bill run to ensure that the invoice-level figures are updated
         await GenerateBillRunService.go(billRun)
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await BillRunModel.query().findById(billRun.id)
 
@@ -142,7 +142,7 @@ describe('Delete Invoice service', () => {
       it('deletes the invoice licences', async () => {
         const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const licences = await LicenceModel.query().select().where({ billRunId: billRun.id })
         expect(licences).to.be.empty()
@@ -151,7 +151,7 @@ describe('Delete Invoice service', () => {
       it('deletes the invoice transactions', async () => {
         const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
         expect(transactions).to.be.empty()
@@ -167,7 +167,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice', async () => {
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -178,7 +178,7 @@ describe('Delete Invoice service', () => {
         // We generate the bill run to ensure that the invoice-level figures are updated
         await GenerateBillRunService.go(billRun)
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await BillRunModel.query().findById(billRun.id)
 
@@ -188,7 +188,7 @@ describe('Delete Invoice service', () => {
       it('deletes the invoice licences', async () => {
         const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const licences = await LicenceModel.query().select().where({ billRunId: billRun.id })
         expect(licences).to.be.empty()
@@ -197,7 +197,7 @@ describe('Delete Invoice service', () => {
       it('deletes the invoice transactions', async () => {
         const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
         expect(transactions).to.be.empty()
@@ -216,7 +216,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice', async () => {
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -227,7 +227,7 @@ describe('Delete Invoice service', () => {
         // We generate the bill run to ensure that the invoice-level figures are updated
         await GenerateBillRunService.go(billRun)
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await BillRunModel.query().findById(billRun.id)
 
@@ -242,7 +242,7 @@ describe('Delete Invoice service', () => {
       it('deletes the invoice licences', async () => {
         const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const licences = await LicenceModel.query().select().where({ billRunId: billRun.id })
         expect(licences).to.be.empty()
@@ -251,7 +251,7 @@ describe('Delete Invoice service', () => {
       it('deletes the invoice transactions', async () => {
         const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
         expect(transactions).to.be.empty()
@@ -271,7 +271,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice', async () => {
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -282,7 +282,7 @@ describe('Delete Invoice service', () => {
         // We generate the bill run to ensure that the invoice-level figures are updated
         await GenerateBillRunService.go(billRun)
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await BillRunModel.query().findById(billRun.id)
 
@@ -297,7 +297,7 @@ describe('Delete Invoice service', () => {
       it('deletes the invoice licences', async () => {
         const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const licences = await LicenceModel.query().select().where({ billRunId: billRun.id })
         expect(licences).to.be.empty()
@@ -306,7 +306,7 @@ describe('Delete Invoice service', () => {
       it('deletes the invoice transactions', async () => {
         const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
-        await DeleteInvoiceService.go(invoice.id)
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
         expect(transactions).to.be.empty()
@@ -314,13 +314,29 @@ describe('Delete Invoice service', () => {
     })
   })
 
-  describe('When there is no matching invoice', () => {
-    it('throws an error', async () => {
-      const unknownInvoiceId = GeneralHelper.uuid4()
-      const err = await expect(DeleteInvoiceService.go(unknownInvoiceId)).to.reject()
+  describe('When an invalid invoice is supplied', () => {
+    describe('because there is no matching invoice', () => {
+      it('throws an error', async () => {
+        const unknownInvoiceId = GeneralHelper.uuid4()
+        const unknownBillRunId = GeneralHelper.uuid4()
+        const err = await expect(DeleteInvoiceService.go(unknownInvoiceId, unknownBillRunId)).to.reject()
 
-      expect(err).to.be.an.error()
-      expect(err.output.payload.message).to.equal(`Invoice ${unknownInvoiceId} is unknown.`)
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal(`Invoice ${unknownInvoiceId} is unknown.`)
+      })
+    })
+
+    describe('because there the invoice is not linked to the bill run', () => {
+      it('throws an error', async () => {
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
+        const unknownBillRunId = GeneralHelper.uuid4()
+
+        const err = await expect(DeleteInvoiceService.go(invoice.id, unknownBillRunId)).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal(`Invoice ${invoice.id} is not linked to bill run ${unknownBillRunId}.`)
+      })
     })
   })
 })
