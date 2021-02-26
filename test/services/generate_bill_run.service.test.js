@@ -291,6 +291,19 @@ describe('Generate Bill Run Summary service', () => {
             expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(0)
             expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
           })
+
+          it("updates the 'licence' as expected", async () => {
+            const licences = await minimumChargeBill.$relatedQuery('licences')
+            const minimumChargeLicence = licences[0]
+
+            expect(minimumChargeLicence.creditLineCount).to.equal(2)
+            expect(minimumChargeLicence.creditLineValue).to.equal(2500)
+            expect(minimumChargeLicence.debitLineCount).to.equal(0)
+            expect(minimumChargeLicence.debitLineValue).to.equal(0)
+            expect(minimumChargeLicence.subjectToMinimumChargeCount).to.equal(2)
+            expect(minimumChargeLicence.subjectToMinimumChargeCreditValue).to.equal(2500)
+            expect(minimumChargeLicence.subjectToMinimumChargeDebitValue).to.equal(0)
+          })
         })
 
         describe("and only a 'debit' adjustment transaction is needed", () => {
@@ -347,6 +360,19 @@ describe('Generate Bill Run Summary service', () => {
             expect(minimumChargeInvoice.subjectToMinimumChargeCreditValue).to.equal(0)
             expect(minimumChargeInvoice.subjectToMinimumChargeDebitValue).to.equal(2500)
             expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
+          })
+
+          it("updates the 'licence' as expected", async () => {
+            const licences = await minimumChargeBill.$relatedQuery('invoices')
+            const minimumChargeLicence = licences[0]
+
+            expect(minimumChargeLicence.creditLineCount).to.equal(0)
+            expect(minimumChargeLicence.creditLineValue).to.equal(0)
+            expect(minimumChargeLicence.debitLineCount).to.equal(2)
+            expect(minimumChargeLicence.debitLineValue).to.equal(2500)
+            expect(minimumChargeLicence.subjectToMinimumChargeCount).to.equal(2)
+            expect(minimumChargeLicence.subjectToMinimumChargeCreditValue).to.equal(0)
+            expect(minimumChargeLicence.subjectToMinimumChargeDebitValue).to.equal(2500)
           })
         })
       })
