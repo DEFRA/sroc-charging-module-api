@@ -1,5 +1,6 @@
 'use strict'
 
+const ApproveBillRunService = require('./approve_bill_run.service')
 const AuthorisationService = require('./authorisation.service')
 const BillRunService = require('./bill_run.service')
 const BillRunStatusService = require('./bill_run_status.service')
@@ -13,6 +14,7 @@ const CreateTransactionService = require('./create_transaction.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
 const DbErrorsService = require('./db_errors.service')
 const DeleteInvoiceService = require('./delete_invoice.service')
+const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill_run_invoice.service')
 const GenerateBillRunService = require('./generate_bill_run.service')
 const GenerateBillRunValidationService = require('./generate_bill_run_validation.service')
 const InvoiceService = require('./invoice.service')
@@ -29,6 +31,7 @@ const ShowTransactionService = require('./show_transaction.service')
 const ViewBillRunService = require('./view_bill_run.service')
 
 module.exports = {
+  ApproveBillRunService,
   AuthorisationService,
   BillRunService,
   BillRunStatusService,
@@ -42,6 +45,7 @@ module.exports = {
   DatabaseHealthCheckService,
   DbErrorsService,
   DeleteInvoiceService,
+  FetchAndValidateBillRunInvoiceService,
   GenerateBillRunService,
   GenerateBillRunValidationService,
   InvoiceService,

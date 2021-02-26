@@ -1,6 +1,7 @@
 'use strict'
 
 const {
+  ApproveBillRunService,
   BillRunStatusService,
   CreateBillRunService,
   GenerateBillRunService,
@@ -32,6 +33,12 @@ class BillRunsController {
     const result = await BillRunStatusService.go(req.app.billRun)
 
     return h.response(result).code(200)
+  }
+
+  static async approve (req, h) {
+    await ApproveBillRunService.go(req.app.billRun)
+
+    return h.response().code(204)
   }
 }
 
