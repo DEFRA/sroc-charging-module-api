@@ -4,7 +4,6 @@
  * @module ViewBillRunInvoiceService
  */
 
-const { InvoiceModel } = require('../models')
 const { ViewInvoicePresenter } = require('../presenters')
 const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill_run_invoice.service')
 
@@ -21,14 +20,13 @@ class ViewBillRunInvoiceService {
   static async go (billRunId, invoiceId) {
     let invoice = await FetchAndValidateBillRunInvoiceService.go(billRunId, invoiceId)
 
-    invoice = await this._invoiceResponseData(invoice.id)
+    invoice = await this._invoiceResponseData(invoice)
 
     return this._response(invoice)
   }
 
-  static async _invoiceResponseData (invoiceId) {
-    const invoice = await InvoiceModel.query()
-      .findById(invoiceId)
+  static async _invoiceResponseData (invoice) {
+    const responseData = await invoice.$query()
       .select(
         'id',
         'billRunId',
@@ -75,9 +73,9 @@ class ViewBillRunInvoiceService {
       })
 
     return {
-      ...invoice,
-      netTotal: invoice.$netTotal(),
-      licences: this._addNetTotalToLicence(invoice.licences)
+      ...responseData,
+      netTotal: responseData.$netTotal(),
+      licences: this._addNetTotalToLicence(responseData.licences)
     }
   }
 
