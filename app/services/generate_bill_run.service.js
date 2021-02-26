@@ -113,7 +113,7 @@ class GenerateBillRunService {
 
   static async _summariseDebitInvoices (billRun, trx) {
     const { count: invoiceCount, value: invoiceValue } = await this._calculateInvoices(
-      await billRun.$relatedQuery('invoices').modify('debit')
+      await billRun.$relatedQuery('invoices', trx).modify('debit')
     )
 
     await billRun.$query(trx)
@@ -125,7 +125,7 @@ class GenerateBillRunService {
 
   static async _summariseCreditInvoices (billRun, trx) {
     const { count: creditNoteCount, value: creditNoteValue } = await this._calculateInvoices(
-      await billRun.$relatedQuery('invoices').modify('credit')
+      await billRun.$relatedQuery('invoices', trx).modify('credit')
     )
 
     await billRun.$query(trx)
