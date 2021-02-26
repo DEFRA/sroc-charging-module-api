@@ -264,4 +264,40 @@ describe('Presroc Bill Runs controller', () => {
       })
     })
   })
+
+  describe('Send bill run: PATCH /v2/{regimeId}/bill-runs/{billRunId}/send', () => {
+    const options = (token, billRunId) => {
+      return {
+        method: 'PATCH',
+        url: `/v2/wrls/bill-runs/${billRunId}/send`,
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    beforeEach(async () => {
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    })
+
+    describe('When the request is valid', () => {
+      it('returns success status 204', async () => {
+        await billRun.$query().patch({ status: 'approved' })
+
+        const response = await server.inject(options(authToken, billRun.id))
+
+        expect(response.statusCode).to.equal(204)
+      })
+    })
+
+    describe('When the request is invalid', () => {
+      describe("because the 'bill run' has not been approved", () => {
+        it('returns error status 409', async () => {
+          const response = await server.inject(options(authToken, billRun.id))
+          const responsePayload = JSON.parse(response.payload)
+
+          expect(response.statusCode).to.equal(409)
+          expect(responsePayload.message).to.equal(`Bill run ${billRun.id} does not have a status of 'approved'.`)
+        })
+      })
+    })
+  })
 })
