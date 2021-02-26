@@ -40,6 +40,13 @@ class LicenceModel extends BaseModel {
       }
     }
   }
+
+  /**
+   * netTotal method provides the net total of the licence (debit value - credit value)
+   */
+  $netTotal () {
+    return this.debitLineValue - this.creditLineValue
+  }
 }
 
 module.exports = LicenceModel
