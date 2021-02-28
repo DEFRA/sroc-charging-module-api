@@ -1,5 +1,40 @@
 # Changelog
 
+## [v0.3.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.3.0) (2021-02-26)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.2.0...v0.3.0)
+
+**Implemented enhancements:**
+
+- Hook up approve bill run endpoint to service [\#239](https://github.com/DEFRA/sroc-charging-module-api/pull/239) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add approve bill run service [\#237](https://github.com/DEFRA/sroc-charging-module-api/pull/237) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add bill run invoice validator [\#236](https://github.com/DEFRA/sroc-charging-module-api/pull/236) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add stand-in approve bill run endpoint [\#235](https://github.com/DEFRA/sroc-charging-module-api/pull/235) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add view licence presenter [\#230](https://github.com/DEFRA/sroc-charging-module-api/pull/230) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add view transaction presenter [\#229](https://github.com/DEFRA/sroc-charging-module-api/pull/229) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add references to licences and transactions tables [\#228](https://github.com/DEFRA/sroc-charging-module-api/pull/228) ([StuAA78](https://github.com/StuAA78))
+- Add view invoice presenter [\#226](https://github.com/DEFRA/sroc-charging-module-api/pull/226) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add stand-in view bill run invoice endpoint [\#224](https://github.com/DEFRA/sroc-charging-module-api/pull/224) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add admin test view transaction endpoint [\#223](https://github.com/DEFRA/sroc-charging-module-api/pull/223) ([Cruikshanks](https://github.com/Cruikshanks))
+- Create Delete Invoice Service [\#221](https://github.com/DEFRA/sroc-charging-module-api/pull/221) ([StuAA78](https://github.com/StuAA78))
+- Add get bill run plugin [\#204](https://github.com/DEFRA/sroc-charging-module-api/pull/204) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Fixed bugs:**
+
+- Fix invoiceValue for minimum charge [\#241](https://github.com/DEFRA/sroc-charging-module-api/pull/241) ([StuAA78](https://github.com/StuAA78))
+- Fix bill run $editable\(\) method [\#234](https://github.com/DEFRA/sroc-charging-module-api/pull/234) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Merged pull requests:**
+
+- Correct view bill run zero line count property [\#240](https://github.com/DEFRA/sroc-charging-module-api/pull/240) ([Cruikshanks](https://github.com/Cruikshanks))
+- Bump nock from 13.0.7 to 13.0.8 [\#238](https://github.com/DEFRA/sroc-charging-module-api/pull/238) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Remove redundant bill run 'gets' and 'checks' [\#233](https://github.com/DEFRA/sroc-charging-module-api/pull/233) ([Cruikshanks](https://github.com/Cruikshanks))
+- Move bill run transaction actions to own ctrlr [\#232](https://github.com/DEFRA/sroc-charging-module-api/pull/232) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix inconsistent test bill run controller name [\#231](https://github.com/DEFRA/sroc-charging-module-api/pull/231) ([Cruikshanks](https://github.com/Cruikshanks))
+- Amend remove invoice route [\#227](https://github.com/DEFRA/sroc-charging-module-api/pull/227) ([Cruikshanks](https://github.com/Cruikshanks))
+- Bump knex from 0.21.17 to 0.21.18 [\#225](https://github.com/DEFRA/sroc-charging-module-api/pull/225) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @hapi/lab from 24.1.0 to 24.1.1 [\#222](https://github.com/DEFRA/sroc-charging-module-api/pull/222) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.2.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.2.0) (2021-02-19)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.1.0...v0.2.0)
