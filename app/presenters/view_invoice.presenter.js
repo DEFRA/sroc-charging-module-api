@@ -13,24 +13,26 @@ const ViewLicencePresenter = require('./view_licence.presenter')
 class ViewInvoicePresenter extends BasePresenter {
   _presentation (data) {
     return {
-      id: data.id,
-      billRunId: data.billRunId,
-      customerReference: data.customerReference,
-      financialYear: data.financialYear,
-      creditLineCount: data.creditLineCount,
-      creditLineValue: data.creditLineValue,
-      debitLineCount: data.debitLineCount,
-      debitLineValue: data.debitLineValue,
-      zeroLineCount: data.zeroLineCount,
-      deminimisInvoice: data.deminimisInvoice,
-      zeroValueInvoice: data.zeroValueInvoice,
-      minimumChargeInvoice: data.minimumChargeInvoice,
-      transactionReference: data.transactionReference,
-      netTotal: data.netTotal,
-      licences: data.licences.map(licence => {
-        const presenter = new ViewLicencePresenter(licence)
-        return presenter.go()
-      })
+      invoice: {
+        id: data.id,
+        billRunId: data.billRunId,
+        customerReference: data.customerReference,
+        financialYear: data.financialYear,
+        creditLineCount: data.creditLineCount,
+        creditLineValue: data.creditLineValue,
+        debitLineCount: data.debitLineCount,
+        debitLineValue: data.debitLineValue,
+        zeroLineCount: data.zeroLineCount,
+        deminimisInvoice: data.deminimisInvoice,
+        zeroValueInvoice: data.zeroValueInvoice,
+        minimumChargeInvoice: data.minimumChargeInvoice,
+        transactionReference: data.transactionReference,
+        netTotal: data.netTotal,
+        licences: data.licences.map(licence => {
+          const presenter = new ViewLicencePresenter(licence)
+          return presenter.go()
+        })
+      }
     }
   }
 }
