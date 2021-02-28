@@ -21,8 +21,18 @@ const {
   RegimeHelper
 } = require('../../support/helpers')
 
+const { InvoiceModel } = require('../../../app/models')
+
+const { CreateTransactionService } = require('../../../app/services')
+
+const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
+const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
+
+const { rulesService: rulesServiceResponse } = chargeFixtures.simple
+
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
+const { RulesService } = require('../../../app/services')
 
 describe('Presroc Invoices controller', () => {
   const clientID = '1234546789'
@@ -62,10 +72,16 @@ describe('Presroc Invoices controller', () => {
       }
     }
 
-    it('returns a 200 response', async () => {
-      const response = await server.inject(options(authToken, billRun.id, 'INVOICE_ID'))
+    describe('When the request is valid', () => {
+      it('returns a 204 response', async () => {
+        Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
+        await CreateTransactionService.go(requestFixtures.simple, billRun.id, authorisedSystem, regime)
+        const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
 
-      expect(response.statusCode).to.equal(200)
+        const response = await server.inject(options(authToken, billRun.id, invoice.id))
+
+        expect(response.statusCode).to.equal(204)
+      })
     })
   })
 
