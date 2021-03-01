@@ -17,8 +17,9 @@ const {
   AuthorisedSystemHelper,
   BillRunHelper,
   DatabaseHelper,
-  InvoiceHelper,
-  RegimeHelper
+  GeneralHelper,
+  RegimeHelper,
+  TransactionHelper
 } = require('../../support/helpers')
 
 const { DeleteInvoiceService } = require('../../../app/services')
@@ -86,14 +87,48 @@ describe('Presroc Invoices controller', () => {
 
     describe('When the request is valid', () => {
       it('returns success status 200', async () => {
-        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-        const invoice = await InvoiceHelper.addInvoice(billRun.id, 'CUSTOMER_REFERENCE', 2021)
+        await TransactionHelper.addTransaction(billRun.id)
+        const transactions = await billRun.$relatedQuery('transactions')
+        const invoiceId = transactions[0].invoiceId
 
-        const response = await server.inject(options(authToken, billRun.id, invoice.id))
+        const response = await server.inject(options(authToken, billRun.id, invoiceId))
         const responsePayload = JSON.parse(response.payload)
 
         expect(response.statusCode).to.equal(200)
-        expect(responsePayload.invoice.id).to.equal(invoice.id)
+        expect(responsePayload.invoice.id).to.equal(invoiceId)
+        expect(responsePayload.invoice.licences).to.be.an.array()
+        expect(responsePayload.invoice.licences[0].transactions).to.be.an.array()
+      })
+    })
+
+    describe('When the request is invalid', () => {
+      describe('because it is unknown', () => {
+        it('returns error status 404', async () => {
+          const unknownInvoiceId = GeneralHelper.uuid4()
+
+          const response = await server.inject(options(authToken, billRun.id, unknownInvoiceId))
+          const responsePayload = JSON.parse(response.payload)
+
+          expect(response.statusCode).to.equal(404)
+          expect(responsePayload.message).to.equal(`Invoice ${unknownInvoiceId} is unknown.`)
+        })
+      })
+
+      describe('because it is not linked to the bill run', () => {
+        it('throws an error', async () => {
+          const otherBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+          await TransactionHelper.addTransaction(otherBillRun.id)
+          const transactions = await otherBillRun.$relatedQuery('transactions')
+          const invoiceId = transactions[0].invoiceId
+
+          const response = await server.inject(options(authToken, billRun.id, invoiceId))
+          const responsePayload = JSON.parse(response.payload)
+
+          expect(response.statusCode).to.equal(409)
+          expect(responsePayload.message).to.equal(
+            `Invoice ${invoiceId} is not linked to bill run ${billRun.id}.`
+          )
+        })
       })
     })
   })
