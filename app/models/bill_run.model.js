@@ -70,7 +70,7 @@ class BillRunModel extends BaseModel {
    * cause the generated result to be invalid.
    */
   $editable () {
-    return ['initialised', 'generated'].includes(this.status)
+    return ['initialised', 'generated', 'approved'].includes(this.status)
   }
 
   /**
