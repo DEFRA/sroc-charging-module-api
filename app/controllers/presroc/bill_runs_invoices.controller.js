@@ -1,7 +1,8 @@
 'use strict'
 
 const {
-  DeleteInvoiceService
+  DeleteInvoiceService,
+  ViewBillRunInvoiceService
 } = require('../../services')
 
 class BillRunsInvoicesController {
@@ -12,11 +13,7 @@ class BillRunsInvoicesController {
   }
 
   static async view (req, h) {
-    const result = {
-      invoice: {
-        id: req.params.invoiceId
-      }
-    }
+    const result = await ViewBillRunInvoiceService.go(req.app.billRun.id, req.params.invoiceId)
 
     return h.response(result).code(200)
   }
