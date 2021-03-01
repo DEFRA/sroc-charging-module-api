@@ -17,7 +17,6 @@ class ViewBillRunPresenter extends BasePresenter {
         billRunNumber: data.billRunNumber,
         region: data.region,
         status: data.status,
-        approvedForBilling: false,
         creditNoteCount: data.creditNoteCount,
         creditNoteValue: data.creditNoteValue,
         invoiceCount: data.invoiceCount,
