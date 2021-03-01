@@ -64,11 +64,8 @@ describe('View Invoice Presenter', () => {
     const presenter = new ViewInvoicePresenter(data)
     const result = presenter.go()
 
-    // Remove the licences to make it easier to check only the invoice level properties
-    delete result.licences
-
     // This isn't every field but it is the critical ones
-    expect(result).to.include([
+    expect(result.invoice).to.include([
       'id',
       'billRunId',
       'customerReference',
@@ -85,8 +82,8 @@ describe('View Invoice Presenter', () => {
     const presenter = new ViewInvoicePresenter(data)
     const result = presenter.go()
 
-    expect(result.licences).to.be.an.array()
-    expect(result.licences[0]).to.include([
+    expect(result.invoice.licences).to.be.an.array()
+    expect(result.invoice.licences[0]).to.include([
       'id',
       'licenceNumber',
       'netTotal'
@@ -97,9 +94,9 @@ describe('View Invoice Presenter', () => {
     const presenter = new ViewInvoicePresenter(data)
     const result = presenter.go()
 
-    expect(result.licences[0].transactions).to.be.an.array()
+    expect(result.invoice.licences[0].transactions).to.be.an.array()
     // This isn't every field but it is the critical ones
-    expect(result.licences[0].transactions[0]).to.include([
+    expect(result.invoice.licences[0].transactions[0]).to.include([
       'id',
       'clientId',
       'chargeValue',

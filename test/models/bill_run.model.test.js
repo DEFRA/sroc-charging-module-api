@@ -18,16 +18,22 @@ describe('Bill Run Model', () => {
       expect(instance.$editable()).to.be.true()
     })
 
+    it("returns 'false' when the status is 'generating'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'generating' })
+
+      expect(instance.$editable()).to.be.false()
+    })
+
     it("returns 'true' when the status is 'generated'", async () => {
       const instance = BillRunModel.fromJson({ status: 'generated' })
 
       expect(instance.$editable()).to.be.true()
     })
 
-    it("returns 'false' when the status is 'generating'", async () => {
-      const instance = BillRunModel.fromJson({ status: 'generating' })
+    it("returns 'true' when the status is 'approved'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'approved' })
 
-      expect(instance.$editable()).to.be.false()
+      expect(instance.$editable()).to.be.true()
     })
 
     it("returns 'false' when the status is 'pending'", async () => {

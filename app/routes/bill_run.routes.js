@@ -27,6 +27,11 @@ const routes = [
     handler: PresrocBillRunsController.approve
   },
   {
+    method: 'PATCH',
+    path: '/v2/{regimeId}/bill-runs/{billRunId}/send',
+    handler: PresrocBillRunsController.send
+  },
+  {
     method: 'GET',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/status',
     handler: PresrocBillRunsController.status
