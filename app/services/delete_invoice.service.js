@@ -31,9 +31,23 @@ class DeleteInvoiceService {
 
       await BillRunModel
         .query(trx)
-        .findById(invoice.billRunId)
+        .findById(billRunId)
         .patch(billRunPatch)
+
+      await this._setBillRunStatusIfEmpty(billRunId, trx)
     })
+  }
+
+  /**
+   * Set the bill run status to 'initialised' if it's empty. We find by bill run id then use the empty modifier to
+   * ensure we only patch the bill run if it's empty.
+   */
+  static async _setBillRunStatusIfEmpty (billRunId, trx) {
+    await BillRunModel
+      .query(trx)
+      .findById(billRunId)
+      .modify('empty')
+      .patch({ status: 'initialised' })
   }
 
   /**

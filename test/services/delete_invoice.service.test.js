@@ -312,6 +312,47 @@ describe('Delete Invoice service', () => {
         expect(transactions).to.be.empty()
       })
     })
+
+    describe("and it's the only invoice in the bill run", () => {
+      beforeEach(async () => {
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
+        await billRun.$query().patch({ status: 'NOT_INITIALISED' })
+      })
+
+      it("changes the bill run status to 'initialised'", async () => {
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
+
+        const result = await BillRunModel.query().findById(billRun.id)
+
+        expect(result.status).to.equal('initialised')
+      })
+    })
+
+    describe('and there are other invoices in the bill run', () => {
+      beforeEach(async () => {
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go({
+          ...payload,
+          customerReference: 'SOMEONE_ELSE'
+        }, billRun.id, authorisedSystem, regime)
+
+        invoice = await InvoiceModel.query().findOne({
+          billRunId: billRun.id,
+          customerReference: payload.customerReference
+        })
+
+        await billRun.$query().patch({ status: 'NOT_INITIALISED' })
+      })
+
+      it('leaves the bill run status as-is', async () => {
+        await DeleteInvoiceService.go(invoice.id, billRun.id)
+
+        const result = await BillRunModel.query().findById(billRun.id)
+
+        expect(result.status).to.equal('NOT_INITIALISED')
+      })
+    })
   })
 
   describe('When an invalid invoice is supplied', () => {
