@@ -58,6 +58,26 @@ class BillRunModel extends BaseModel {
   }
 
   /**
+   * Modifiers allow us to reuse logic in queries, eg. to select all bill runs which are empty:
+   *
+   * return billRun.$query()
+   *   .modify('empty')
+   */
+  static get modifiers () {
+    return {
+      /**
+       * empty modifier selects all bill runs which are empty.
+       */
+      empty (query) {
+        query
+          .where('creditLineCount', 0)
+          .where('debitLineCount', 0)
+          .where('zeroLineCount', 0)
+      }
+    }
+  }
+
+  /**
    * Returns whether the bill run can be 'edited'
    *
    * Once a bill run has been 'sent', which means the transaction file is generated, it cannot be edited. This includes
