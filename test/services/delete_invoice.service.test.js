@@ -320,44 +320,37 @@ describe('Delete Invoice service', () => {
         await billRun.$query().patch({ status: 'NOT_INITIALISED' })
       })
 
-      it.only("changes the bill run status to 'initialised'", async () => {
+      it("changes the bill run status to 'initialised'", async () => {
         await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await BillRunModel.query().findById(billRun.id)
 
         expect(result.status).to.equal('initialised')
       })
+    })
 
-      it('updates the bill run values', async () => {
-        // We generate the bill run to ensure that the invoice-level figures are updated
-        await GenerateBillRunService.go(billRun)
+    describe('and there are other invoices in the bill run', () => {
+      beforeEach(async () => {
+        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go({
+          ...payload,
+          customerReference: 'SOMEONE_ELSE'
+        }, billRun.id, authorisedSystem, regime)
 
+        invoice = await InvoiceModel.query().findOne({
+          billRunId: billRun.id,
+          customerReference: payload.customerReference
+        })
+
+        await billRun.$query().patch({ status: 'NOT_INITIALISED' })
+      })
+
+      it('leaves the bill run status as-is', async () => {
         await DeleteInvoiceService.go(invoice.id, billRun.id)
 
         const result = await BillRunModel.query().findById(billRun.id)
 
-        expect(result.debitLineCount).to.equal(0)
-        expect(result.debitLineValue).to.equal(0)
-        expect(result.invoiceCount).to.equal(0)
-        expect(result.invoiceValue).to.equal(0)
-      })
-
-      it('deletes the invoice licences', async () => {
-        const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
-
-        await DeleteInvoiceService.go(invoice.id, billRun.id)
-
-        const licences = await LicenceModel.query().select().where({ billRunId: billRun.id })
-        expect(licences).to.be.empty()
-      })
-
-      it('deletes the invoice transactions', async () => {
-        const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
-
-        await DeleteInvoiceService.go(invoice.id, billRun.id)
-
-        const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
-        expect(transactions).to.be.empty()
+        expect(result.status).to.equal('NOT_INITIALISED')
       })
     })
   })
