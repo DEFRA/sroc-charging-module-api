@@ -34,7 +34,7 @@ const { RulesService } = require('../../app/services')
 // Thing under test
 const { GenerateBillRunService } = require('../../app/services')
 
-describe('Generate Bill Run Summary service', () => {
+describe('Generate Bill Run service', () => {
   const customerReference = 'A11111111A'
 
   let billRun
@@ -70,7 +70,7 @@ describe('Generate Bill Run Summary service', () => {
 
     it("sets the bill run status to 'generating'", async () => {
       const spy = Sinon.spy(BillRunModel, 'query')
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+      await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
       await GenerateBillRunService.go(billRun)
 
       /**
@@ -94,7 +94,7 @@ describe('Generate Bill Run Summary service', () => {
     })
 
     it("sets the bill run status to 'generated' on completion", async () => {
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+      await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
       await GenerateBillRunService.go(billRun)
 
       const result = await BillRunModel.query().findById(billRun.id)
@@ -105,7 +105,7 @@ describe('Generate Bill Run Summary service', () => {
     it('correctly summarises debit invoices', async () => {
       rulesServiceStub.restore()
       RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 50000)
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+      await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
 
       await GenerateBillRunService.go(billRun)
 
@@ -118,7 +118,7 @@ describe('Generate Bill Run Summary service', () => {
     it('correctly summarises credit invoices', async () => {
       rulesServiceStub.restore()
       RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 50000)
-      await CreateTransactionService.go({ ...payload, credit: true }, billRun.id, authorisedSystem, regime)
+      await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
 
       await GenerateBillRunService.go(billRun)
 
@@ -129,7 +129,7 @@ describe('Generate Bill Run Summary service', () => {
     })
 
     it('calls the info method of the provided logger', async () => {
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+      await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
 
       await GenerateBillRunService.go(billRun, loggerFake)
 
@@ -138,7 +138,7 @@ describe('Generate Bill Run Summary service', () => {
 
     describe('When there are zero value invoices', () => {
       it("sets the 'zeroValueInvoice' flag to true", async () => {
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 0, 0, 0, 0, 1)
         await GenerateBillRunService.go(billRun)
 
@@ -153,8 +153,8 @@ describe('Generate Bill Run Summary service', () => {
 
         // We add 2 zero value transactions so we can ensure the bill run contains the number of zero value transactions
         // rather than invoices
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
 
         await GenerateBillRunService.go(billRun)
 
@@ -165,7 +165,7 @@ describe('Generate Bill Run Summary service', () => {
 
       describe('and there is also a non-zero value invoice', () => {
         it("leaves the 'zeroValueInvoice' flag of the non-zero value invoice as false", async () => {
-          await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+          await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
           await InvoiceHelper.addInvoice(billRun.id, customerReference, 2020, 0, 0, 0, 0, 1)
           const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 200, 1)
           await GenerateBillRunService.go(billRun)
@@ -181,7 +181,7 @@ describe('Generate Bill Run Summary service', () => {
       it("sets the 'deminimisInvoice' flag to true", async () => {
         rulesServiceStub.restore()
         RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 499)
-        let result = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        let result = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun)
 
         result = await TransactionModel.query().select('invoiceId').findById(result.transaction.id)
@@ -194,7 +194,7 @@ describe('Generate Bill Run Summary service', () => {
     describe('When deminimis does not apply', () => {
       describe('because the invoice net value is over 500', () => {
         it("leaves the 'deminimisInvoice' flag as false", async () => {
-          let result = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+          let result = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
           await GenerateBillRunService.go(billRun)
 
           result = await TransactionModel.query().select('invoiceId').findById(result.transaction.id)
@@ -207,7 +207,7 @@ describe('Generate Bill Run Summary service', () => {
       describe('because the invoice net value is under 0', () => {
         it("leaves the 'deminimisInvoice' flag as false", async () => {
           payload.credit = true
-          let result = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+          let result = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
           await GenerateBillRunService.go(billRun)
 
           result = await TransactionModel.query().select('invoiceId').findById(result.transaction.id)
@@ -220,7 +220,7 @@ describe('Generate Bill Run Summary service', () => {
       describe('because the invoice is subject to minimum charge', () => {
         it("leaves the 'deminimisInvoice' flag as false", async () => {
           payload.subjectToMinimumCharge = true
-          let result = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+          let result = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
           await GenerateBillRunService.go(billRun)
 
           result = await TransactionModel.query().select('invoiceId').findById(result.transaction.id)
@@ -243,7 +243,7 @@ describe('Generate Bill Run Summary service', () => {
               subjectToMinimumCharge: true
             }
 
-            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+            await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
 
             await GenerateBillRunService.go(billRun)
 
@@ -313,7 +313,7 @@ describe('Generate Bill Run Summary service', () => {
               subjectToMinimumCharge: true
             }
 
-            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+            await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
 
             await GenerateBillRunService.go(billRun)
 
@@ -384,9 +384,9 @@ describe('Generate Bill Run Summary service', () => {
               ...payload,
               subjectToMinimumCharge: true
             }
-            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+            await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
             minimumChargePayload.credit = true
-            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+            await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
             await GenerateBillRunService.go(billRun)
           })
 
@@ -450,12 +450,12 @@ describe('Generate Bill Run Summary service', () => {
               subjectToMinimumCharge: true
             }
 
-            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+            await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
 
             rulesServiceStub.restore()
             RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2501)
             minimumChargePayload.credit = false
-            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+            await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
 
             await GenerateBillRunService.go(billRun)
           })
@@ -505,12 +505,12 @@ describe('Generate Bill Run Summary service', () => {
               subjectToMinimumCharge: true
             }
 
-            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+            await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
 
             rulesServiceStub.restore()
             RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2501)
             minimumChargePayload.credit = true
-            await CreateTransactionService.go(minimumChargePayload, billRun.id, authorisedSystem, regime)
+            await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
 
             await GenerateBillRunService.go(billRun)
           })
@@ -557,7 +557,7 @@ describe('Generate Bill Run Summary service', () => {
 
     describe('When minimum charge does not apply', () => {
       it('does not save an adjustment transaction to the db', async () => {
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun)
 
         const { transactions } = await BillRunModel.query()
@@ -573,7 +573,7 @@ describe('Generate Bill Run Summary service', () => {
       })
 
       it('does not set the minimumChargeInvoice flag to true', async () => {
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun)
 
         const { invoices } = await BillRunModel.query()
