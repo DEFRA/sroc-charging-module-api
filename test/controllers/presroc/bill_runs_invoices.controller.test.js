@@ -21,6 +21,8 @@ const {
   RegimeHelper
 } = require('../../support/helpers')
 
+const { DeleteInvoiceService } = require('../../../app/services')
+
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
@@ -62,10 +64,14 @@ describe('Presroc Invoices controller', () => {
       }
     }
 
-    it('returns a 200 response', async () => {
-      const response = await server.inject(options(authToken, billRun.id, 'INVOICE_ID'))
+    describe('When the request is valid', () => {
+      it('returns a 204 response', async () => {
+        Sinon.stub(DeleteInvoiceService, 'go').returns()
 
-      expect(response.statusCode).to.equal(200)
+        const response = await server.inject(options(authToken, billRun.id, 'INVOICE'))
+
+        expect(response.statusCode).to.equal(204)
+      })
     })
   })
 
