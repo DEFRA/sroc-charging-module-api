@@ -30,7 +30,7 @@ const { RulesService } = require('../../app/services')
 const { CreateTransactionService } = require('../../app/services')
 
 describe('Create Transaction service', () => {
-  const billRunId = GeneralHelper.uuid4()
+  let billRun
   let authorisedSystem
   let regime
   let payload
@@ -39,6 +39,7 @@ describe('Create Transaction service', () => {
     await DatabaseHelper.clean()
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
+    billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
 
     // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
     // the valid tests we can use it straight as
@@ -50,14 +51,12 @@ describe('Create Transaction service', () => {
   })
 
   describe('When the data is valid', () => {
-    let billRun
     let transaction
     let result
 
     beforeEach(async () => {
       Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
-      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-      transaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+      transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
       result = await TransactionModel.query().findById(transaction.transaction.id)
     })
 
@@ -73,7 +72,7 @@ describe('Create Transaction service', () => {
           payload.customerReference = ''
 
           const err = await expect(
-            CreateTransactionService.go(payload, billRunId, authorisedSystem, regime)
+            CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
           ).to.reject(ValidationError)
 
           expect(err).to.be.an.error()
@@ -81,17 +80,11 @@ describe('Create Transaction service', () => {
       })
 
       describe("due to an item validated by the 'charge'", () => {
-        let billRun
-
-        beforeEach(async () => {
-          billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-        })
-
         it('throws an error', async () => {
           payload.periodStart = '01-APR-2021'
 
           const err = await expect(
-            CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+            CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
           ).to.reject(ValidationError)
 
           expect(err).to.be.an.error()
@@ -99,52 +92,9 @@ describe('Create Transaction service', () => {
       })
     })
 
-    describe("because 'authorisedSystem' is not specified", () => {
-      it('throws an error', async () => {
-        const err = await expect(CreateTransactionService.go(payload, billRunId, null, regime)).to.reject(TypeError)
-
-        expect(err).to.be.an.error()
-      })
-    })
-
-    describe("because 'regime' is not specified", () => {
-      it('throws an error', async () => {
-        const err = await expect(CreateTransactionService.go(payload, billRunId, authorisedSystem)).to.reject(TypeError)
-
-        expect(err).to.be.an.error()
-      })
-    })
-
-    describe("because the 'bill run' does not exist", () => {
-      it('throws an error', async () => {
-        const err = await expect(CreateTransactionService.go(payload, billRunId, authorisedSystem, regime)).to.reject()
-
-        expect(err).to.be.an.error()
-      })
-    })
-
-    describe("because the 'bill run' is not 'editable'", () => {
-      let billRun
-
-      beforeEach(async () => {
-        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'billed')
-      })
-
-      it('throws an error', async () => {
-        const err = await expect(
-          CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
-        ).to.reject()
-
-        expect(err).to.be.an.error()
-      })
-    })
-
     describe("because the request is for a duplicate transaction (matching clientId's)", () => {
-      let billRun
-
       beforeEach(async () => {
         Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
-        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
       })
 
       it('throws an error', async () => {
@@ -155,7 +105,7 @@ describe('Create Transaction service', () => {
 
         // Attempt to add a transaction with a duplicate clientId
         const err = await expect(
-          CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+          CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         ).to.reject()
 
         expect(err).to.be.an.error()
