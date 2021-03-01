@@ -198,14 +198,14 @@ describe('Calculate Charge translator', () => {
         const lowercasePayload = {
           ...payload,
           loss: 'lOw',
-          season: 'sumMer',
+          season: 'aLl yeAr',
           source: 'supPorTed'
         }
 
         const result = new CalculateChargeTranslator(data(lowercasePayload))
 
         expect(result.regimeValue8).to.equal('Low')
-        expect(result.regimeValue7).to.equal('Summer')
+        expect(result.regimeValue7).to.equal('All Year')
         expect(result.regimeValue6).to.equal('Supported')
       })
     })
