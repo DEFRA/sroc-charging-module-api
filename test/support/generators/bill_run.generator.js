@@ -14,24 +14,24 @@ const { presroc: requestFixtures } = require('../fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../fixtures/calculate_charge')
 
 class BillRunGenerator {
-  static async go (payload, billRunId, authorisedSystem, regime, logger = null) {
+  static async go (payload, billRun, authorisedSystem, regime, logger = null) {
     try {
       // Mark the start time for later logging
       const startTime = process.hrtime.bigint()
 
-      const invoices = await this._invoiceGenerator(billRunId, payload)
+      const invoices = await this._invoiceGenerator(payload)
 
       for (const i in invoices) {
-        await this._invoiceEngine(invoices[i], authorisedSystem, regime)
+        await this._invoiceEngine(invoices[i], billRun, authorisedSystem, regime)
       }
 
-      await this._calculateAndLogTime(logger, billRunId, startTime)
+      await this._calculateAndLogTime(logger, billRun.id, startTime)
     } catch (error) {
-      this._logError(logger, billRunId, error)
+      this._logError(logger, billRun.id, error)
     }
   }
 
-  static _invoiceGenerator (billRunId, payload) {
+  static _invoiceGenerator (payload) {
     const invoices = []
     let customerIndex = 0
 
@@ -42,7 +42,6 @@ class BillRunGenerator {
         const licenceNumber = `SROC/TF${customerIndex.toString().padStart(4, '0')}/01`
 
         invoices.push({
-          billRunId,
           region: payload.region,
           customerReference: customerReference,
           periodStart: '01-APR-2018',
@@ -56,9 +55,10 @@ class BillRunGenerator {
     return invoices
   }
 
-  static async _invoiceEngine (invoice, authorisedSystem, regime) {
+  static async _invoiceEngine (invoice, billRun, authorisedSystem, regime) {
     const invoiceData = {
       invoice,
+      billRun,
       authorisedSystem,
       regime
     }
@@ -94,7 +94,7 @@ class BillRunGenerator {
         .persist()
       await CreateTransactionService.go(
         invoiceData.data.payload,
-        invoiceData.invoice.billRunId,
+        invoiceData.billRun,
         invoiceData.authorisedSystem,
         invoiceData.regime
       )

@@ -1,5 +1,6 @@
 'use strict'
 
+const { BillRunModel } = require('../../../models')
 const { CreateBillRunService } = require('../../../services')
 const { BillRunGenerator } = require('../../../../test/support/generators')
 
@@ -11,9 +12,11 @@ class TestBillRunController {
       req.app.regime
     )
 
+    const billRun = await BillRunModel.query().findById(result.billRun.id)
+
     BillRunGenerator.go(
       req.payload,
-      result.billRun.id,
+      billRun,
       req.auth.credentials.user,
       req.app.regime,
       req.server.logger
