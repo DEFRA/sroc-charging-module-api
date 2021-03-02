@@ -34,6 +34,11 @@ describe('Create Transaction Tally service', () => {
       const result = await CreateTransactionTallyService.go(transaction)
 
       expect(result.debitLineCount).to.be.an.instanceOf(RawBuilder)
+      // Adding this comment to the first instance we do this. We lowercase() the value before asserting it matches
+      // because of inconsistencies we found in knex's camel to snake case conversion. In our tests `debitLineValue`
+      // was getting converted to `debit_Line_value`. Rather than update our test to match the inconsistency we have
+      // chosen to lowercase everything before comparing. The case does not matter to the final query, and we feel this
+      // will make our tests less brittle should it get fixed, or other examples arise.
       expect(result.debitLineCount._sql.toLowerCase()).to.equal('debit_line_count + ?')
       expect(result.debitLineCount._args[0]).to.equal(1)
 
