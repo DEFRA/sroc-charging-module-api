@@ -29,7 +29,8 @@ describe('Show Transaction service', () => {
 
   describe('When there is a matching transaction', () => {
     let initialBillRun
-    let transaction
+    let creditTransaction
+    let debitTransaction
 
     beforeEach(async () => {
       const regime = await RegimeHelper.addRegime('wrls', 'Water Resources')
@@ -39,7 +40,7 @@ describe('Show Transaction service', () => {
       const payload = {
         region: 'A',
         mix: [
-          { type: 'mixed-invoice', count: 1 }
+          { type: 'mixed-credit', count: 1 }
         ]
       }
       await BillRunGenerator.go(payload, initialBillRun, authorisedSystem, regime)
@@ -47,38 +48,52 @@ describe('Show Transaction service', () => {
       const { transactions } = await BillRunModel.query()
         .findById(initialBillRun.id)
         .withGraphFetched('transactions')
-      transaction = transactions[0]
+
+      creditTransaction = transactions.find(transaction => transaction.chargeCredit)
+      debitTransaction = transactions.find(transaction => !transaction.chargeCredit)
     })
 
     it('returns a transaction', async () => {
-      const result = await ShowTransactionService.go(transaction.id)
+      const result = await ShowTransactionService.go(creditTransaction.id)
 
       expect(result instanceof TransactionModel).to.equal(true)
-      expect(result.id).to.equal(transaction.id)
+      expect(result.id).to.equal(creditTransaction.id)
     })
 
     it("returns a result that includes the related 'bill run'", async () => {
-      const result = await ShowTransactionService.go(transaction.id)
+      const result = await ShowTransactionService.go(creditTransaction.id)
 
-      const billRun = await BillRunModel.query().findById(transaction.billRunId)
+      const billRun = await BillRunModel.query().findById(creditTransaction.billRunId)
 
       expect(result.billRun).to.equal(billRun)
     })
 
     it("returns a result that includes the related 'invoice'", async () => {
-      const result = await ShowTransactionService.go(transaction.id)
+      const result = await ShowTransactionService.go(creditTransaction.id)
 
-      const invoice = await InvoiceModel.query().findById(transaction.invoiceId)
+      const invoice = await InvoiceModel.query().findById(creditTransaction.invoiceId)
 
       expect(result.invoice).to.equal(invoice)
     })
 
     it("returns a result that includes the related 'licence'", async () => {
-      const result = await ShowTransactionService.go(transaction.id)
+      const result = await ShowTransactionService.go(creditTransaction.id)
 
-      const licence = await LicenceModel.query().findById(transaction.licenceId)
+      const licence = await LicenceModel.query().findById(creditTransaction.licenceId)
 
       expect(result.licence).to.equal(licence)
+    })
+
+    it('returns a positive signedChargeValue if the transaction is a debit', async () => {
+      const result = await ShowTransactionService.go(debitTransaction.id)
+
+      expect(Math.sign(result.signedChargeValue)).to.equal(1)
+    })
+
+    it('returns a negative signedChargeValue if the transaction is a credit', async () => {
+      const result = await ShowTransactionService.go(creditTransaction.id)
+
+      expect(Math.sign(result.signedChargeValue)).to.equal(-1)
     })
   })
 

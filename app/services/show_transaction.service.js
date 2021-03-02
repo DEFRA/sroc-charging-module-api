@@ -39,9 +39,16 @@ class ShowTransactionService {
   }
 
   static _response (transaction) {
+    const signedChargeValue = this._signedChargeValue(transaction)
+    Object.assign(transaction, { signedChargeValue })
     const presenter = new JsonPresenter(transaction)
 
     return presenter.go()
+  }
+
+  static _signedChargeValue (transaction) {
+    const { chargeCredit, chargeValue } = transaction
+    return chargeCredit ? -chargeValue : chargeValue
   }
 }
 
