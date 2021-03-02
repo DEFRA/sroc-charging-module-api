@@ -1,5 +1,29 @@
 # Changelog
 
+## [v0.4.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.4.0) (2021-03-02)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.3.0...v0.4.0)
+
+**Implemented enhancements:**
+
+- Update bill run status when last invoice is deleted [\#252](https://github.com/DEFRA/sroc-charging-module-api/pull/252) ([StuAA78](https://github.com/StuAA78))
+- Connect Delete Invoice Service to controller [\#246](https://github.com/DEFRA/sroc-charging-module-api/pull/246) ([StuAA78](https://github.com/StuAA78))
+- Add stand-in send bill run endpoint [\#245](https://github.com/DEFRA/sroc-charging-module-api/pull/245) ([Cruikshanks](https://github.com/Cruikshanks))
+- Hook up view bill run invoice endpoint to service [\#244](https://github.com/DEFRA/sroc-charging-module-api/pull/244) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add view bill run invoice service [\#243](https://github.com/DEFRA/sroc-charging-module-api/pull/243) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Fixed bugs:**
+
+- CalculateChargeTranslator title case fix for two-word strings [\#250](https://github.com/DEFRA/sroc-charging-module-api/pull/250) ([StuAA78](https://github.com/StuAA78))
+
+**Merged pull requests:**
+
+- Remove bill run fetch and checks in BillRunService [\#253](https://github.com/DEFRA/sroc-charging-module-api/pull/253) ([Cruikshanks](https://github.com/Cruikshanks))
+- Remove approvedForBilling from view bill run [\#251](https://github.com/DEFRA/sroc-charging-module-api/pull/251) ([Cruikshanks](https://github.com/Cruikshanks))
+- Bump nock from 13.0.8 to 13.0.9 [\#249](https://github.com/DEFRA/sroc-charging-module-api/pull/249) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump got from 11.8.1 to 11.8.2 [\#248](https://github.com/DEFRA/sroc-charging-module-api/pull/248) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Housekeeping - correct test file name [\#242](https://github.com/DEFRA/sroc-charging-module-api/pull/242) ([Cruikshanks](https://github.com/Cruikshanks))
+
 ## [v0.3.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.3.0) (2021-02-26)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.2.0...v0.3.0)
@@ -34,6 +58,7 @@
 - Amend remove invoice route [\#227](https://github.com/DEFRA/sroc-charging-module-api/pull/227) ([Cruikshanks](https://github.com/Cruikshanks))
 - Bump knex from 0.21.17 to 0.21.18 [\#225](https://github.com/DEFRA/sroc-charging-module-api/pull/225) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump @hapi/lab from 24.1.0 to 24.1.1 [\#222](https://github.com/DEFRA/sroc-charging-module-api/pull/222) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Add error handling to GenerateBillRunService [\#207](https://github.com/DEFRA/sroc-charging-module-api/pull/207) ([Cruikshanks](https://github.com/Cruikshanks))
 
 ## [v0.2.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.2.0) (2021-02-19)
 
@@ -110,7 +135,6 @@
 - Add system user seed [\#216](https://github.com/DEFRA/sroc-charging-module-api/pull/216) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add support for automated builds in Docker Hub [\#214](https://github.com/DEFRA/sroc-charging-module-api/pull/214) ([Cruikshanks](https://github.com/Cruikshanks))
 - Allow period start to be same as period end date [\#210](https://github.com/DEFRA/sroc-charging-module-api/pull/210) ([Cruikshanks](https://github.com/Cruikshanks))
-- Add error handling to GenerateBillRunService [\#207](https://github.com/DEFRA/sroc-charging-module-api/pull/207) ([Cruikshanks](https://github.com/Cruikshanks))
 - Bump @now-ims/hapi-now-auth from 2.0.2 to 2.0.3 [\#201](https://github.com/DEFRA/sroc-charging-module-api/pull/201) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump joi from 17.3.0 to 17.4.0 [\#189](https://github.com/DEFRA/sroc-charging-module-api/pull/189) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump knex from 0.21.16 to 0.21.17 [\#179](https://github.com/DEFRA/sroc-charging-module-api/pull/179) ([dependabot[bot]](https://github.com/apps/dependabot))
