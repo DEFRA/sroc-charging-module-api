@@ -132,7 +132,7 @@ describe('Presroc Bill Runs controller', () => {
       describe('because the summary has not yet been generated', () => {
         it('returns success status 204 (IMPORTANT! Does not mean generation completed successfully)', async () => {
           const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
-          await CreateTransactionService.go(requestPayload, billRun.id, authorisedSystem, regime)
+          await CreateTransactionService.go(requestPayload, billRun, authorisedSystem, regime)
 
           const response = await server.inject(options(authToken, billRun.id))
 

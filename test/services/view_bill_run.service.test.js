@@ -80,21 +80,21 @@ describe('View bill run service', () => {
           ...payload,
           customerReference: 'CREDIT',
           credit: true
-        }, billRun.id, authorisedSystem, regime)
+        }, billRun, authorisedSystem, regime)
 
         rulesServiceStub.restore()
         RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, debitLineValue)
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'DEBIT'
-        }, billRun.id, authorisedSystem, regime)
+        }, billRun, authorisedSystem, regime)
 
         rulesServiceStub.restore()
         RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 0)
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'ZERO'
-        }, billRun.id, authorisedSystem, regime)
+        }, billRun, authorisedSystem, regime)
       })
 
       it('returns correct credit/debit values', async () => {

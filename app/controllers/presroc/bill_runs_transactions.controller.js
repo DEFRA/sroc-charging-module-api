@@ -6,7 +6,7 @@ const {
 
 class BillRunsTransactionsController {
   static async create (req, h) {
-    const result = await CreateTransactionService.go(req.payload, req.params.billRunId, req.auth.credentials.user, req.app.regime)
+    const result = await CreateTransactionService.go(req.payload, req.app.billRun, req.auth.credentials.user, req.app.regime)
 
     return h.response(result).code(201)
   }

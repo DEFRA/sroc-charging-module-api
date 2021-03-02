@@ -67,7 +67,7 @@ describe('Calculate Minimum Charge service', () => {
     })
 
     it('returns an array of transactions', async () => {
-      await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+      await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
 
       const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
 
@@ -76,7 +76,7 @@ describe('Calculate Minimum Charge service', () => {
     })
 
     it('correctly calculates the debit value', async () => {
-      const transaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+      const transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
       const transactionRecord = await TransactionModel.query().findById(transaction.transaction.id)
 
       const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
@@ -87,7 +87,7 @@ describe('Calculate Minimum Charge service', () => {
     })
 
     it('correctly calculates the credit value', async () => {
-      const transaction = await CreateTransactionService.go({ ...payload, credit: true }, billRun.id, authorisedSystem, regime)
+      const transaction = await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
       const transactionRecord = await TransactionModel.query().findById(transaction.transaction.id)
 
       const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
@@ -98,8 +98,8 @@ describe('Calculate Minimum Charge service', () => {
     })
 
     it('correctly calculates both a credit and debit if required', async () => {
-      const creditTransaction = await CreateTransactionService.go({ ...payload, credit: true }, billRun.id, authorisedSystem, regime)
-      const debitTransaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+      const creditTransaction = await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
+      const debitTransaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
       const creditTransactionRecord = await TransactionModel.query().findById(creditTransaction.transaction.id)
       const debitTransactionRecord = await TransactionModel.query().findById(debitTransaction.transaction.id)
 
@@ -125,7 +125,7 @@ describe('Calculate Minimum Charge service', () => {
       it('returns an empty array', async () => {
         rulesServiceStub.restore()
         RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
 
         const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
 
@@ -136,7 +136,7 @@ describe('Calculate Minimum Charge service', () => {
 
     describe("because minimum charge doesn't apply to this transaction", () => {
       it('returns an empty array', async () => {
-        await CreateTransactionService.go({ ...payload, subjectToMinimumCharge: false }, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go({ ...payload, subjectToMinimumCharge: false }, billRun, authorisedSystem, regime)
 
         const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
 
@@ -155,8 +155,8 @@ describe('Calculate Minimum Charge service', () => {
     })
 
     it('handles them all correctly', async () => {
-      const firstTransaction = await CreateTransactionService.go({ ...payload, customerReference: 'FIRST_CUST' }, billRun.id, authorisedSystem, regime)
-      const secondTransaction = await CreateTransactionService.go({ ...payload, customerReference: 'SECOND_CUST' }, billRun.id, authorisedSystem, regime)
+      const firstTransaction = await CreateTransactionService.go({ ...payload, customerReference: 'FIRST_CUST' }, billRun, authorisedSystem, regime)
+      const secondTransaction = await CreateTransactionService.go({ ...payload, customerReference: 'SECOND_CUST' }, billRun, authorisedSystem, regime)
       const firstRecord = await TransactionModel.query().findById(firstTransaction.transaction.id)
       const secondRecord = await TransactionModel.query().findById(secondTransaction.transaction.id)
 

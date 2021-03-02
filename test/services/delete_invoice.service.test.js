@@ -66,7 +66,7 @@ describe('Delete Invoice service', () => {
   describe('When a valid invoice is supplied', () => {
     describe("and it's a debit invoice", () => {
       beforeEach(async () => {
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
       })
 
@@ -113,7 +113,7 @@ describe('Delete Invoice service', () => {
 
     describe("and it's a credit invoice", () => {
       beforeEach(async () => {
-        await CreateTransactionService.go({ ...payload, credit: true }, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
         invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
       })
 
@@ -162,7 +162,7 @@ describe('Delete Invoice service', () => {
       beforeEach(async () => {
         rulesServiceStub.restore()
         RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 0)
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
       })
 
@@ -211,7 +211,7 @@ describe('Delete Invoice service', () => {
         await CreateTransactionService.go({
           ...payload,
           subjectToMinimumCharge: true
-        }, billRun.id, authorisedSystem, regime)
+        }, billRun, authorisedSystem, regime)
         invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
       })
 
@@ -266,7 +266,7 @@ describe('Delete Invoice service', () => {
           ...payload,
           subjectToMinimumCharge: true,
           credit: true
-        }, billRun.id, authorisedSystem, regime)
+        }, billRun, authorisedSystem, regime)
         invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
       })
 
@@ -315,7 +315,7 @@ describe('Delete Invoice service', () => {
 
     describe("and it's the only invoice in the bill run", () => {
       beforeEach(async () => {
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
         await billRun.$query().patch({ status: 'NOT_INITIALISED' })
       })
@@ -331,11 +331,11 @@ describe('Delete Invoice service', () => {
 
     describe('and there are other invoices in the bill run', () => {
       beforeEach(async () => {
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'SOMEONE_ELSE'
-        }, billRun.id, authorisedSystem, regime)
+        }, billRun, authorisedSystem, regime)
 
         invoice = await InvoiceModel.query().findOne({
           billRunId: billRun.id,
@@ -369,7 +369,7 @@ describe('Delete Invoice service', () => {
 
     describe('because there the invoice is not linked to the bill run', () => {
       it('throws an error', async () => {
-        await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
         const unknownBillRunId = GeneralHelper.uuid4()
 

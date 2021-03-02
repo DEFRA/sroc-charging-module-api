@@ -42,7 +42,7 @@ describe('Show Transaction service', () => {
           { type: 'mixed-invoice', count: 1 }
         ]
       }
-      await BillRunGenerator.go(payload, initialBillRun.id, authorisedSystem, regime)
+      await BillRunGenerator.go(payload, initialBillRun, authorisedSystem, regime)
 
       const { transactions } = await BillRunModel.query()
         .findById(initialBillRun.id)

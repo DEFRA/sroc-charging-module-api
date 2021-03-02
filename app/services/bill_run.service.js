@@ -6,21 +6,19 @@
 
 const Boom = require('@hapi/boom')
 
-const { BillRunModel } = require('../models')
-
 class BillRunService {
   /**
-  * Finds the matching bill run, determines if a transaction can be added to it and updates the count and value stat
-  * as per the transaction details.
+  * Determines if a transaction is for the same region as the requested bill run and if so, updates the bill run's count
+  * and value stats based on the transaction details
   *
-  * Note that the updated stats are _not_ saved back to the database; it is up to the caller to do this.
+  * Note - The updated stats are _not_ saved back to the database; it is up to the caller to do this.
   *
-  * @param {Object} transaction translator belonging to the bill run to find and assess
-  * @returns {module:BillRunModel} a `BillRunModel` if found else it will throw a `Boom` error
+  * @param {module:BillRunModel} billRun the bill run this transaction is being added to
+  * @param {module:TransactionTranslator} transaction translator representing the transaction to be added
+  *
+  * @returns {module:BillRunModel} the updated (but not persisted) instance of `BillRunModel`
   */
-  static async go (transaction) {
-    const billRun = await BillRunModel.query().findById(transaction.billRunId)
-
+  static async go (billRun, transaction) {
     this._validateBillRun(billRun, transaction)
     this._updateStats(billRun, transaction)
 
@@ -28,14 +26,6 @@ class BillRunService {
   }
 
   static _validateBillRun (billRun, transaction) {
-    if (!billRun) {
-      throw Boom.badData(`Bill run ${transaction.billRunId} is unknown.`)
-    }
-
-    if (!billRun.$editable()) {
-      throw Boom.badData(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
-    }
-
     if (billRun.region !== transaction.region) {
       throw Boom.badData(
         `Bill run ${billRun.id} is for region ${billRun.region} but transaction is for region ${transaction.region}.`

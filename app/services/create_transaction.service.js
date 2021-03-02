@@ -13,18 +13,18 @@ const LicenceService = require('./licence.service')
 const { CreateTransactionPresenter } = require('../presenters')
 
 class CreateTransactionService {
-  static async go (payload, billRunId, authorisedSystem, regime) {
-    const translator = this._translateRequest(payload, billRunId, authorisedSystem, regime)
+  static async go (payload, billRun, authorisedSystem, regime) {
+    const translator = this._translateRequest(payload, billRun.id, authorisedSystem, regime)
 
     const calculatedCharge = await this._calculateCharge(translator, regime)
 
     this._applyCalculatedCharge(translator, calculatedCharge)
 
-    const billRun = await this._billRun(translator)
+    const billRunPatch = await this._billRun(billRun, translator)
     const invoice = await this._invoice(translator)
     const licence = await this._licence({ ...translator, invoiceId: invoice.id })
 
-    const transaction = await this._create(translator, invoice, licence, billRun)
+    const transaction = await this._create(translator, invoice, licence, billRunPatch)
 
     return this._response(transaction)
   }
@@ -57,8 +57,8 @@ class CreateTransactionService {
     Object.assign(translator, calculatedCharge)
   }
 
-  static async _billRun (translator) {
-    return BillRunService.go(translator)
+  static async _billRun (billRun, translator) {
+    return BillRunService.go(billRun, translator)
   }
 
   static async _invoice (translator) {

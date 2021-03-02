@@ -72,7 +72,7 @@ describe('Create Minimum Charge Adjustment service', () => {
 
     beforeEach(async () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-      transaction = await CreateTransactionService.go(payload, billRun.id, authorisedSystem, regime)
+      transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
       transactionRecord = await TransactionModel.query().findById(transaction.transaction.id)
       licence = await LicenceModel.query().findById(transactionRecord.licenceId)
       minimumChargeAdjustment = await CreateMinimumChargeAdjustmentService.go(licence, chargeValue, chargeCredit)
