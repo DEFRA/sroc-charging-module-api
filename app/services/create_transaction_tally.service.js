@@ -7,6 +7,25 @@
 const { raw } = require('../models/base.model')
 
 class CreateTransactionTallyService {
+  /**
+   * Generate a 'patch' object based on a transaction for use in an Objection `query().patch()` call
+   *
+   * When a transaction is added to the system there are fields on the linked bill run, invoice and licence record that
+   * need to be updated. These fields are essentially 'tallies' of the number and value of different types of
+   * transactions added at that level.
+   *
+   * This service takes the transaction and returns an object which can be passed into a `patch()` call.
+   *
+   * ```
+   *  await BillRunModel.query().findById(bullRunId).patch(patchObject)
+   * ```
+   *
+   * @param {module:TransactionTranslator} transaction translator representing the transaction to be tallied and used as
+   * the basis for the 'patch'
+   *
+   * @returns {Object} a 'patch' object suitable for using in an Objection `query().patch()` call where each property is
+   * an instance of `RawBuilder`
+   */
   static async go (transactionToBeTallied) {
     return this._generatePatch(transactionToBeTallied)
   }
