@@ -5,6 +5,7 @@
  */
 
 const { LicenceModel } = require('../models')
+const CreateTransactionTallyService = require('./create_transaction_tally.service')
 
 class CreateTransactionLicenceService {
   /**
@@ -19,12 +20,9 @@ class CreateTransactionLicenceService {
   */
 
   static async go (transaction) {
-    // licence number is lineAttr1 in database
     const licence = await this._licence(transaction)
 
-    this._updateStats(licence, transaction)
-
-    return licence
+    return this._generatePatch(licence.id, transaction)
   }
 
   static async _licence ({
@@ -42,22 +40,13 @@ class CreateTransactionLicenceService {
       )
   }
 
-  static _updateStats (object, transaction) {
-    if (transaction.chargeCredit) {
-      object.creditLineCount += 1
-      object.creditLineValue += transaction.chargeValue
-      object.subjectToMinimumChargeCreditValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
-    } else if (transaction.chargeValue === 0) {
-      object.zeroLineCount += 1
-    } else {
-      object.debitLineCount += 1
-      object.debitLineValue += transaction.chargeValue
-      object.subjectToMinimumChargeDebitValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
+  static async _generatePatch (id, transaction) {
+    const patch = {
+      id: id,
+      update: await CreateTransactionTallyService.go(transaction)
     }
 
-    if (transaction.subjectToMinimumCharge) {
-      object.subjectToMinimumChargeCount += 1
-    }
+    return patch
   }
 }
 
