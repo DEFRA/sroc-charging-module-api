@@ -1,12 +1,12 @@
 'use strict'
 
 /**
- * @module BillRunService
+ * @module CreateTransactionBillRunService
  */
 
 const Boom = require('@hapi/boom')
 
-class BillRunService {
+class CreateTransactionBillRunService {
   /**
   * Determines if a transaction is for the same region as the requested bill run and if so, updates the bill run's count
   * and value stats based on the transaction details
@@ -52,4 +52,4 @@ class BillRunService {
   }
 }
 
-module.exports = BillRunService
+module.exports = CreateTransactionBillRunService

@@ -12,7 +12,7 @@ const { BillRunHelper, DatabaseHelper, GeneralHelper } = require('../support/hel
 const { BillRunModel } = require('../../app/models')
 
 // Thing under test
-const { BillRunService } = require('../../app/services')
+const { CreateTransactionBillRunService } = require('../../app/services')
 
 describe('Bill Run service', () => {
   const authorisedSystemId = GeneralHelper.uuid4()
@@ -39,14 +39,14 @@ describe('Bill Run service', () => {
     })
 
     it('returns the matching bill run', async () => {
-      const result = await BillRunService.go(billRun, transaction)
+      const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
       expect(result.id).to.equal(billRun.id)
     })
 
     describe('When a debit transaction is supplied', () => {
       it('correctly calculates the summary', async () => {
-        const result = await BillRunService.go(billRun, transaction)
+        const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
         expect(result.debitLineCount).to.equal(1)
         expect(result.debitLineValue).to.equal(transaction.chargeValue)
@@ -57,7 +57,7 @@ describe('Bill Run service', () => {
       it('correctly calculates the summary', async () => {
         transaction.chargeCredit = true
 
-        const result = await BillRunService.go(billRun, transaction)
+        const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
         expect(result.creditLineCount).to.equal(1)
         expect(result.creditLineValue).to.equal(transaction.chargeValue)
@@ -68,7 +68,7 @@ describe('Bill Run service', () => {
       it('correctly calculates the summary', async () => {
         transaction.chargeValue = 0
 
-        const result = await BillRunService.go(billRun, transaction)
+        const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
         expect(result.zeroLineCount).to.equal(1)
       })
@@ -80,7 +80,7 @@ describe('Bill Run service', () => {
       })
 
       it('correctly sets the subject to minimum charge flag', async () => {
-        const result = await BillRunService.go(billRun, transaction)
+        const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
         expect(result.subjectToMinimumChargeCount).to.equal(1)
       })
@@ -91,11 +91,11 @@ describe('Bill Run service', () => {
         })
 
         it('correctly calculates the total for a debit', async () => {
-          const firstResult = await BillRunService.go(billRun, transaction)
-          // We save the invoice with stats to the database as this isn't done by BillRunService
+          const firstResult = await CreateTransactionBillRunService.go(billRun, transaction)
+          // We save the invoice with stats to the database as this isn't done by CreateTransactionBillRunService
           await BillRunModel.query().update(firstResult)
 
-          const secondResult = await BillRunService.go(billRun, transaction)
+          const secondResult = await CreateTransactionBillRunService.go(billRun, transaction)
 
           expect(secondResult.subjectToMinimumChargeCount).to.equal(2)
           expect(secondResult.subjectToMinimumChargeDebitValue).to.equal(transaction.chargeValue * 2)
@@ -104,11 +104,11 @@ describe('Bill Run service', () => {
         it('correctly calculates the total for a credit', async () => {
           transaction.chargeCredit = true
 
-          const firstResult = await BillRunService.go(billRun, transaction)
-          // We save the invoice with stats to the database as this isn't done by BillRunService
+          const firstResult = await CreateTransactionBillRunService.go(billRun, transaction)
+          // We save the invoice with stats to the database as this isn't done by CreateTransactionBillRunService
           await BillRunModel.query().update(firstResult)
 
-          const secondResult = await BillRunService.go(billRun, transaction)
+          const secondResult = await CreateTransactionBillRunService.go(billRun, transaction)
 
           expect(secondResult.subjectToMinimumChargeCount).to.equal(2)
           expect(secondResult.subjectToMinimumChargeCreditValue).to.equal(transaction.chargeValue * 2)
@@ -119,11 +119,11 @@ describe('Bill Run service', () => {
     describe('When two transactions are created', () => {
       it('correctly calculates the summary', async () => {
         transaction.billRunId = billRun.id
-        const firstResult = await BillRunService.go(billRun, transaction)
-        // We save the invoice with stats to the database as this isn't done by BillRunService
+        const firstResult = await CreateTransactionBillRunService.go(billRun, transaction)
+        // We save the invoice with stats to the database as this isn't done by CreateTransactionBillRunService
         await BillRunModel.query().update(firstResult)
 
-        const secondResult = await BillRunService.go(billRun, transaction)
+        const secondResult = await CreateTransactionBillRunService.go(billRun, transaction)
 
         expect(secondResult.debitLineCount).to.equal(2)
         expect(secondResult.debitLineValue).to.equal(transaction.chargeValue * 2)
@@ -140,7 +140,7 @@ describe('Bill Run service', () => {
       it('throws an error', async () => {
         const transaction = { ...dummyTransaction, billRunId: billRun.id }
 
-        const err = await expect(BillRunService.go(billRun, transaction)).to.reject()
+        const err = await expect(CreateTransactionBillRunService.go(billRun, transaction)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message)

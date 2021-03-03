@@ -6,7 +6,7 @@
 
 const { TransactionModel } = require('../models')
 const { TransactionTranslator } = require('../translators')
-const BillRunService = require('./bill_run.service')
+const CreateTransactionBillRunService = require('./create_transaction_bill_run.service')
 const CalculateChargeService = require('./calculate_charge.service')
 const InvoiceService = require('./invoice.service')
 const LicenceService = require('./licence.service')
@@ -58,7 +58,7 @@ class CreateTransactionService {
   }
 
   static async _billRun (billRun, translator) {
-    return BillRunService.go(billRun, translator)
+    return CreateTransactionBillRunService.go(billRun, translator)
   }
 
   static async _invoice (translator) {
