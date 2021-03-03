@@ -10,6 +10,7 @@ const CreateAuthorisedSystemService = require('./create_authorised_system.servic
 const CreateBillRunService = require('./create_bill_run.service')
 const CreateMinimumChargeAdjustmentService = require('./create_minimum_charge_adjustment.service')
 const CreateTransactionBillRunService = require('./create_transaction_bill_run.service')
+const CreateTransactionInvoiceService = require('./create_transaction_invoice.service')
 const CreateTransactionService = require('./create_transaction.service')
 const CreateTransactionTallyService = require('./create_transaction_tally.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
@@ -18,7 +19,6 @@ const DeleteInvoiceService = require('./delete_invoice.service')
 const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill_run_invoice.service')
 const GenerateBillRunService = require('./generate_bill_run.service')
 const GenerateBillRunValidationService = require('./generate_bill_run_validation.service')
-const InvoiceService = require('./invoice.service')
 const LicenceService = require('./licence.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
 const ListRegimesService = require('./list_regimes.service')
@@ -43,6 +43,7 @@ module.exports = {
   CreateMinimumChargeAdjustmentService,
   CreateBillRunService,
   CreateTransactionBillRunService,
+  CreateTransactionInvoiceService,
   CreateTransactionService,
   CreateTransactionTallyService,
   DatabaseHealthCheckService,
@@ -51,7 +52,6 @@ module.exports = {
   FetchAndValidateBillRunInvoiceService,
   GenerateBillRunService,
   GenerateBillRunValidationService,
-  InvoiceService,
   LicenceService,
   ListAuthorisedSystemsService,
   ListRegimesService,

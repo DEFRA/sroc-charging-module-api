@@ -1,12 +1,12 @@
 'use strict'
 
 /**
- * @module InvoiceService
+ * @module CreateTransactionInvoiceService
  */
 
 const { InvoiceModel } = require('../models')
 
-class InvoiceService {
+class CreateTransactionInvoiceService {
 /**
 * Accepts a transaction and creates an entry in the Invoices table if one doesn't already exist for the transaction's
 * bill run/customer/financial year. It updates the count and value stats as per the transaction details and returns the
@@ -60,4 +60,4 @@ class InvoiceService {
   }
 }
 
-module.exports = InvoiceService
+module.exports = CreateTransactionInvoiceService
