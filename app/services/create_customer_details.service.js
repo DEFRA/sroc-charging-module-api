@@ -5,6 +5,7 @@
  */
 
 const { CustomerModel } = require('../models')
+const { CustomerTranslator } = require('../translators')
 
 class CreateCustomerDetailsService {
   /**
@@ -17,11 +18,23 @@ class CreateCustomerDetailsService {
    * @returns {module:CustomerModel} Instance of `CustomerModel` representing the persisted data.
    */
   static async go (regime, payload) {
+    const translator = this._translateRequest(payload, regime)
+
+    const customer = await this._create(translator)
+
+    return customer
+  }
+
+  static _translateRequest (payload, regime) {
+    return new CustomerTranslator({
+      ...payload,
+      regimeId: regime.id
+    })
+  }
+
+  static _create (translator) {
     return CustomerModel.query()
-      .findOrInsert({
-        ...payload,
-        regimeId: regime.id
-      })
+      .findOrInsert({ ...translator })
   }
 }
 
