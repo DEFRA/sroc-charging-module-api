@@ -8,8 +8,7 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, BillRunHelper, DatabaseHelper, GeneralHelper, RegimeHelper, InvoiceHelper } = require('../support/helpers')
-const { LicenceModel } = require('../../app/models')
+const { DatabaseHelper, GeneralHelper, InvoiceHelper, LicenceHelper } = require('../support/helpers')
 
 // Thing under test
 const { CreateTransactionLicenceService } = require('../../app/services')
@@ -17,132 +16,113 @@ const { CreateTransactionLicenceService } = require('../../app/services')
 describe('Create Transaction Licence service', () => {
   let transaction
 
-  const dummyTransaction = {
-    lineAttr1: 'LICENCE_NUMBER',
-    customerReference: 'CUSTOMER_REFERENCE',
-    chargeFinancialYear: 2021,
-    chargeCredit: false,
-    chargeValue: 5678
-  }
-
   beforeEach(async () => {
+    // The service will create an licence record if none exists already for the transaction so we need a database
+    // cleaner call
     await DatabaseHelper.clean()
 
-    // We clone the request fixture as our payload so we have it available for modification in the invalid tests
-    transaction = GeneralHelper.cloneObject(dummyTransaction)
+    transaction = {
+      billRunId: GeneralHelper.uuid4(),
+      lineAttr1: 'LICENCE_NUMBER',
+      customerReference: 'CUSTOMER_REFERENCE',
+      chargeFinancialYear: 2021,
+      chargeCredit: false,
+      chargeValue: 5678
+    }
 
-    // Create a bill run and invoice as we can't create a licence without a corresponding invoice
-    const regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    const authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
-    const billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-    const invoice = await InvoiceHelper.addInvoice(billRun.id, transaction.customerReference, transaction.chargeFinancialYear)
-
-    // Assign the new billRun and invoice ids to our transaction
-    Object.assign(transaction, { billRunId: billRun.id, invoiceId: invoice.id })
+    const invoice = await InvoiceHelper.addInvoice(
+      transaction.billRunId,
+      transaction.customerReference,
+      transaction.chargeFinancialYear
+    )
+    transaction.invoiceId = invoice.id
   })
 
-  describe('When a valid transaction is supplied', () => {
-    it('creates a licence', async () => {
-      const licence = await CreateTransactionLicenceService.go(transaction)
-      const result = await LicenceModel.query().findById(licence.id)
-
-      expect(result.id).to.exist()
-    })
-
-    it('returns correct data', async () => {
-      const licence = await CreateTransactionLicenceService.go(transaction)
-
-      expect(licence.invoiceId).to.equal(transaction.invoiceId)
-      expect(licence.billRunId).to.equal(transaction.billRunId)
-      expect(licence.licenceNumber).to.equal(transaction.lineAttr1)
-    })
-  })
-
-  describe('When a debit transaction is supplied', () => {
-    it('correctly calculates the summary', async () => {
-      const licence = await CreateTransactionLicenceService.go(transaction)
-
-      expect(licence.debitLineCount).to.equal(1)
-      expect(licence.debitLineValue).to.equal(transaction.chargeValue)
-    })
-  })
-
-  describe('When a credit transaction is supplied', () => {
-    it('correctly calculates the summary', async () => {
-      transaction.chargeCredit = true
-      const licence = await CreateTransactionLicenceService.go(transaction)
-
-      expect(licence.creditLineCount).to.equal(1)
-      expect(licence.creditLineValue).to.equal(transaction.chargeValue)
-    })
-  })
-
-  describe('When a zero value transaction is supplied', () => {
-    it('correctly calculates the summary', async () => {
-      transaction.chargeValue = 0
-      const licence = await CreateTransactionLicenceService.go(transaction)
-
-      expect(licence.zeroLineCount).to.equal(1)
-    })
-  })
-
-  describe('When a transaction subject to minimum charge is supplied', () => {
-    it('correctly sets the subject to minimum charge flag', async () => {
-      transaction.subjectToMinimumCharge = true
-      const licence = await CreateTransactionLicenceService.go(transaction)
-
-      expect(licence.subjectToMinimumChargeCount).to.equal(1)
-    })
-  })
-
-  describe('When a transaction subject to minimum charge is supplied', () => {
-    beforeEach(async () => {
-      transaction.subjectToMinimumCharge = true
-    })
-
-    it('correctly sets the subject to minimum charge flag', async () => {
+  describe('When a valid debit transaction is supplied', () => {
+    it("correctly generates and returns a 'patch' object", async () => {
       const result = await CreateTransactionLicenceService.go(transaction)
 
-      expect(result.subjectToMinimumChargeCount).to.equal(1)
+      expect(result.update).to.only.include(['debitLineCount', 'debitLineValue'])
     })
 
-    describe('and the total is needed', () => {
-      it('correctly calculates the total for a debit', async () => {
-        const firstResult = await CreateTransactionLicenceService.go(transaction)
-        // We save the invoice with stats to the database as this isn't done by CreateTransactionLicenceService
-        await LicenceModel.query().update(firstResult)
-
-        const secondResult = await CreateTransactionLicenceService.go(transaction)
-
-        expect(secondResult.subjectToMinimumChargeCount).to.equal(2)
-        expect(secondResult.subjectToMinimumChargeDebitValue).to.equal(transaction.chargeValue * 2)
+    describe('subject to minimum charge', () => {
+      beforeEach(async () => {
+        transaction.subjectToMinimumCharge = true
       })
 
-      it('correctly calculates the total for a credit', async () => {
-        transaction.chargeCredit = true
+      it("correctly generates and returns a 'patch' object", async () => {
+        const result = await CreateTransactionLicenceService.go(transaction)
 
-        const firstResult = await CreateTransactionLicenceService.go(transaction)
-        // We save the invoice with stats to the database as this isn't done by CreateTransactionLicenceService
-        await LicenceModel.query().update(firstResult)
-
-        const secondResult = await CreateTransactionLicenceService.go(transaction)
-
-        expect(secondResult.subjectToMinimumChargeCount).to.equal(2)
-        expect(secondResult.subjectToMinimumChargeCreditValue).to.equal(transaction.chargeValue * 2)
+        expect(result.update).to.only.include([
+          'debitLineCount',
+          'debitLineValue',
+          'subjectToMinimumChargeCount',
+          'subjectToMinimumChargeDebitValue'
+        ])
       })
     })
   })
 
-  describe('When two transactions are created', () => {
-    it('correctly calculates the summary', async () => {
-      const firstResult = await CreateTransactionLicenceService.go(transaction)
-      // We save the licence with stats to the database as this isn't done by CreateTransactionLicenceService
-      await LicenceModel.query().update(firstResult)
+  describe('and a credit transaction', () => {
+    beforeEach(() => {
+      transaction.chargeCredit = true
+    })
 
-      const secondLicence = await CreateTransactionLicenceService.go(transaction)
+    it('correctly generates the patch', async () => {
+      const result = await CreateTransactionLicenceService.go(transaction)
 
-      expect(secondLicence.debitLineCount).to.equal(2)
-      expect(secondLicence.debitLineValue).to.equal(transaction.chargeValue * 2)
+      expect(result.update).to.only.include(['creditLineCount', 'creditLineValue'])
+    })
+
+    describe('subject to minimum charge', () => {
+      beforeEach(() => {
+        transaction.subjectToMinimumCharge = true
+      })
+
+      it("correctly generates and returns a 'patch' object", async () => {
+        const result = await CreateTransactionLicenceService.go(transaction)
+
+        expect(result.update).to.only.include([
+          'creditLineCount',
+          'creditLineValue',
+          'subjectToMinimumChargeCount',
+          'subjectToMinimumChargeCreditValue'
+        ])
+      })
+    })
+  })
+
+  describe('and a zero value transaction', () => {
+    beforeEach(() => {
+      transaction.chargeValue = 0
+    })
+
+    it('correctly generates the patch', async () => {
+      const result = await CreateTransactionLicenceService.go(transaction)
+
+      expect(result.update).to.only.include(['zeroLineCount'])
+    })
+  })
+
+  describe("When a 'licence' already exists", () => {
+    let licence
+
+    beforeEach(async () => {
+      licence = await LicenceHelper.addLicence(
+        transaction.billRunId,
+        transaction.lineAttr1,
+        transaction.invoiceId,
+        transaction.customerReference,
+        transaction.chargeFinancialYear
+      )
+    })
+
+    describe("the 'patch' object returned", () => {
+      it('contains the matching licence ID', async () => {
+        const result = await CreateTransactionLicenceService.go(transaction)
+
+        expect(result.id).to.equal(licence.id)
+      })
     })
   })
 })
