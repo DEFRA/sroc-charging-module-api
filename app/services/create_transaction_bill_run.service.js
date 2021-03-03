@@ -6,23 +6,35 @@
 
 const Boom = require('@hapi/boom')
 
+const CreateTransactionTallyService = require('./create_transaction_tally.service')
+
 class CreateTransactionBillRunService {
   /**
-  * Determines if a transaction is for the same region as the requested bill run and if so, updates the bill run's count
-  * and value stats based on the transaction details
+  * Determines if a transaction is for the same region as the requested bill run and if so, generates a 'patch' object
+  * intended to be used in a call to `BillRunModel.query().patch()`. The 'patch' object has 2 properties
   *
-  * Note - The updated stats are _not_ saved back to the database; it is up to the caller to do this.
+  * - the ID of the bill run to update (determined by the `billRun` param)
+  * - a child object specifiying which fields to update and how
+  *
+  * A full example would be
+  *
+  * ```
+  * const patchObject = await CreateTransactionBillRunService.go(billRun, transaction)
+  * await BillRunModel.query().findById(patchObject.id).patch(patchObject.update)
+  * ```
+  *
+  * Note - Our experience is that patching a bill run record in this way is more performant than updating the bill run
+  * instance and calling `$patch()` on it.
   *
   * @param {module:BillRunModel} billRun the bill run this transaction is being added to
   * @param {module:TransactionTranslator} transaction translator representing the transaction to be added
   *
-  * @returns {module:BillRunModel} the updated (but not persisted) instance of `BillRunModel`
+  * @returns {Object} an object that contains the ID of the bill run to be updated, and the updates to be applied
   */
   static async go (billRun, transaction) {
     this._validateBillRun(billRun, transaction)
-    this._updateStats(billRun, transaction)
 
-    return billRun
+    return this._generatePatch(billRun.id, transaction)
   }
 
   static _validateBillRun (billRun, transaction) {
@@ -33,22 +45,13 @@ class CreateTransactionBillRunService {
     }
   }
 
-  static _updateStats (object, transaction) {
-    if (transaction.chargeCredit) {
-      object.creditLineCount += 1
-      object.creditLineValue += transaction.chargeValue
-      object.subjectToMinimumChargeCreditValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
-    } else if (transaction.chargeValue === 0) {
-      object.zeroLineCount += 1
-    } else {
-      object.debitLineCount += 1
-      object.debitLineValue += transaction.chargeValue
-      object.subjectToMinimumChargeDebitValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
+  static async _generatePatch (id, transaction) {
+    const patch = {
+      id: id,
+      update: await CreateTransactionTallyService.go(transaction)
     }
 
-    if (transaction.subjectToMinimumCharge) {
-      object.subjectToMinimumChargeCount += 1
-    }
+    return patch
   }
 }
 
