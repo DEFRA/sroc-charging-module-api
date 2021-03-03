@@ -1,12 +1,12 @@
 'use strict'
 
 /**
- * @module InvoiceService
+ * @module CreateTransactionLicenceService
  */
 
 const { LicenceModel } = require('../models')
 
-class LicenceService {
+class CreateTransactionLicenceService {
   /**
   * Accepts a transaction and creates an entry in the Licences table if one doesn't already exist for the transaction's
   * invoice/licence/customer ref/financial year. It updates the count and value stats as per the transaction details
@@ -61,4 +61,4 @@ class LicenceService {
   }
 }
 
-module.exports = LicenceService
+module.exports = CreateTransactionLicenceService
