@@ -8,138 +8,110 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { BillRunHelper, DatabaseHelper, GeneralHelper } = require('../support/helpers')
-const { BillRunModel } = require('../../app/models')
+const { GeneralHelper } = require('../support/helpers')
 
 // Thing under test
 const { CreateTransactionBillRunService } = require('../../app/services')
 
-describe('Bill Run service', () => {
-  const authorisedSystemId = GeneralHelper.uuid4()
-  const regimeId = GeneralHelper.uuid4()
-  const dummyTransaction = {
-    customerReference: 'CUSTOMER_REFERENCE',
-    region: 'A',
-    chargeFinancialYear: 2021,
-    chargeCredit: false,
-    chargeValue: 5678
-  }
+describe('Create Transaction Bill Run service', () => {
   let billRun
+  let transaction
 
-  beforeEach(async () => {
-    await DatabaseHelper.clean()
+  beforeEach(() => {
+    billRun = {
+      id: GeneralHelper.uuid4(),
+      region: 'A'
+    }
+    transaction = {
+      region: 'A',
+      chargeCredit: false,
+      chargeValue: 5678
+    }
   })
 
-  describe('When a valid bill run ID is supplied', () => {
-    let transaction
-
-    beforeEach(async () => {
-      billRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId)
-      transaction = { ...dummyTransaction, billRunId: billRun.id }
-    })
-
-    it('returns the matching bill run', async () => {
-      const result = await CreateTransactionBillRunService.go(billRun, transaction)
-
-      expect(result.id).to.equal(billRun.id)
-    })
-
-    describe('When a debit transaction is supplied', () => {
-      it('correctly calculates the summary', async () => {
+  describe('When a valid bill run is supplied', () => {
+    describe("the 'patch' object returned", () => {
+      it('contains the matching bill run ID', async () => {
         const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
-        expect(result.debitLineCount).to.equal(1)
-        expect(result.debitLineValue).to.equal(transaction.chargeValue)
+        expect(result.id).to.equal(billRun.id)
       })
     })
 
-    describe('When a credit transaction is supplied', () => {
-      it('correctly calculates the summary', async () => {
-        transaction.chargeCredit = true
-
+    describe('and a debit transaction', () => {
+      it("correctly generates and returns a 'patch' object", async () => {
         const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
-        expect(result.creditLineCount).to.equal(1)
-        expect(result.creditLineValue).to.equal(transaction.chargeValue)
-      })
-    })
-
-    describe('When a zero value transaction is supplied', () => {
-      it('correctly calculates the summary', async () => {
-        transaction.chargeValue = 0
-
-        const result = await CreateTransactionBillRunService.go(billRun, transaction)
-
-        expect(result.zeroLineCount).to.equal(1)
-      })
-    })
-
-    describe('When a transaction subject to minimum charge is supplied', () => {
-      beforeEach(async () => {
-        transaction.subjectToMinimumCharge = true
+        expect(result.update).to.only.include(['debitLineCount', 'debitLineValue'])
       })
 
-      it('correctly sets the subject to minimum charge flag', async () => {
-        const result = await CreateTransactionBillRunService.go(billRun, transaction)
-
-        expect(result.subjectToMinimumChargeCount).to.equal(1)
-      })
-
-      describe('and the total is needed', () => {
+      describe('subject to minimum charge', () => {
         beforeEach(async () => {
-          transaction.billRunId = billRun.id
+          transaction.subjectToMinimumCharge = true
         })
 
-        it('correctly calculates the total for a debit', async () => {
-          const firstResult = await CreateTransactionBillRunService.go(billRun, transaction)
-          // We save the invoice with stats to the database as this isn't done by CreateTransactionBillRunService
-          await BillRunModel.query().update(firstResult)
+        it("correctly generates and returns a 'patch' object", async () => {
+          const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
-          const secondResult = await CreateTransactionBillRunService.go(billRun, transaction)
-
-          expect(secondResult.subjectToMinimumChargeCount).to.equal(2)
-          expect(secondResult.subjectToMinimumChargeDebitValue).to.equal(transaction.chargeValue * 2)
-        })
-
-        it('correctly calculates the total for a credit', async () => {
-          transaction.chargeCredit = true
-
-          const firstResult = await CreateTransactionBillRunService.go(billRun, transaction)
-          // We save the invoice with stats to the database as this isn't done by CreateTransactionBillRunService
-          await BillRunModel.query().update(firstResult)
-
-          const secondResult = await CreateTransactionBillRunService.go(billRun, transaction)
-
-          expect(secondResult.subjectToMinimumChargeCount).to.equal(2)
-          expect(secondResult.subjectToMinimumChargeCreditValue).to.equal(transaction.chargeValue * 2)
+          expect(result.update).to.only.include([
+            'debitLineCount',
+            'debitLineValue',
+            'subjectToMinimumChargeCount',
+            'subjectToMinimumChargeDebitValue'
+          ])
         })
       })
     })
 
-    describe('When two transactions are created', () => {
-      it('correctly calculates the summary', async () => {
-        transaction.billRunId = billRun.id
-        const firstResult = await CreateTransactionBillRunService.go(billRun, transaction)
-        // We save the invoice with stats to the database as this isn't done by CreateTransactionBillRunService
-        await BillRunModel.query().update(firstResult)
+    describe('and a credit transaction', () => {
+      beforeEach(() => {
+        transaction.chargeCredit = true
+      })
 
-        const secondResult = await CreateTransactionBillRunService.go(billRun, transaction)
+      it('correctly generates the patch', async () => {
+        const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
-        expect(secondResult.debitLineCount).to.equal(2)
-        expect(secondResult.debitLineValue).to.equal(transaction.chargeValue * 2)
+        expect(result.update).to.only.include(['creditLineCount', 'creditLineValue'])
+      })
+
+      describe('subject to minimum charge', () => {
+        beforeEach(() => {
+          transaction.subjectToMinimumCharge = true
+        })
+
+        it("correctly generates and returns a 'patch' object", async () => {
+          const result = await CreateTransactionBillRunService.go(billRun, transaction)
+
+          expect(result.update).to.only.include([
+            'creditLineCount',
+            'creditLineValue',
+            'subjectToMinimumChargeCount',
+            'subjectToMinimumChargeCreditValue'
+          ])
+        })
+      })
+    })
+
+    describe('and a zero value transaction', () => {
+      beforeEach(() => {
+        transaction.chargeValue = 0
+      })
+
+      it('correctly generates the patch', async () => {
+        const result = await CreateTransactionBillRunService.go(billRun, transaction)
+
+        expect(result.update).to.only.include(['zeroLineCount'])
       })
     })
   })
 
-  describe('When an invalid bill run ID is supplied', () => {
+  describe('When an invalid bill run is supplied', () => {
     describe('because the bill run is for a different region', () => {
-      beforeEach(async () => {
-        billRun = await BillRunHelper.addBillRun(authorisedSystemId, regimeId, 'W')
+      beforeEach(() => {
+        billRun.region = 'W'
       })
 
       it('throws an error', async () => {
-        const transaction = { ...dummyTransaction, billRunId: billRun.id }
-
         const err = await expect(CreateTransactionBillRunService.go(billRun, transaction)).to.reject()
 
         expect(err).to.be.an.error()
