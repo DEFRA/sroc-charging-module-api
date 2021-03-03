@@ -3,6 +3,7 @@
 const AuthorisedSystemModel = require('./authorised_system.model')
 const BaseModel = require('./base.model')
 const BillRunModel = require('./bill_run.model')
+const CustomerModel = require('./customer.model')
 const InvoiceModel = require('./invoice.model')
 const LicenceModel = require('./licence.model')
 const RegimeModel = require('./regime.model')
@@ -13,6 +14,7 @@ module.exports = {
   AuthorisedSystemModel,
   BaseModel,
   BillRunModel,
+  CustomerModel,
   InvoiceModel,
   LicenceModel,
   RegimeModel,
