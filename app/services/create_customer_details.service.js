@@ -9,7 +9,7 @@ const { CustomerTranslator } = require('../translators')
 
 class CreateCustomerDetailsService {
   /**
-   * Takes the provided payload and creates an entry in the customers table,  which is periodically sent to SSCL to
+   * Takes the provided payload and creates an entry in the customers table,  which will be periodically sent to SSCL to
    * update customer details.
    *
    * @param {module:RegimeModel} regime Instance of `RegimeModel` for the regime this customer is being amended for.
