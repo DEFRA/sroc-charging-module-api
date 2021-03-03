@@ -8,124 +8,111 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { DatabaseHelper, GeneralHelper } = require('../support/helpers')
-const { InvoiceModel } = require('../../app/models')
+const { DatabaseHelper, GeneralHelper, InvoiceHelper } = require('../support/helpers')
 
 // Thing under test
 const { CreateTransactionInvoiceService } = require('../../app/services')
 
-describe('Create Transaction Invoice service', () => {
+describe('Create Transaction Bill Run service', () => {
   let transaction
 
-  const dummyTransaction = {
-    billRunId: 'f0d3b4dc-2cae-11eb-adc1-0242ac120002',
-    customerReference: 'CUSTOMER_REFERENCE',
-    chargeFinancialYear: 2021,
-    chargeCredit: false,
-    chargeValue: 5678
-  }
-
   beforeEach(async () => {
+    // The service will create an invoice record if none exists already for the transaction so we need a database
+    // cleaner call
     await DatabaseHelper.clean()
 
-    // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
-    // the valid tests we can use it straight as
-    transaction = GeneralHelper.cloneObject(dummyTransaction)
+    transaction = {
+      billRunId: GeneralHelper.uuid4(),
+      customerReference: 'CUSTOMER_REFERENCE',
+      chargeFinancialYear: 2021,
+      chargeCredit: false,
+      chargeValue: 5678
+    }
   })
 
-  describe('When a valid transaction is supplied', () => {
-    it('creates an invoice', async () => {
-      const invoice = await CreateTransactionInvoiceService.go(transaction)
-      const result = await InvoiceModel.query().findById(invoice.id)
-
-      expect(result.id).to.exist()
-    })
-
-    it('returns correct data', async () => {
-      const invoice = await CreateTransactionInvoiceService.go(transaction)
-
-      expect(invoice.billRunId).to.equal(transaction.billRunId)
-      expect(invoice.customerReference).to.equal(transaction.customerReference)
-      expect(invoice.financialYear).to.equal(transaction.chargeFinancialYear)
-    })
-  })
-
-  describe('When a debit transaction is supplied', () => {
-    it('correctly calculates the summary', async () => {
-      const invoice = await CreateTransactionInvoiceService.go(transaction)
-
-      expect(invoice.debitLineCount).to.equal(1)
-      expect(invoice.debitLineValue).to.equal(transaction.chargeValue)
-    })
-  })
-
-  describe('When a credit transaction is supplied', () => {
-    it('correctly calculates the summary', async () => {
-      transaction.chargeCredit = true
-      const invoice = await CreateTransactionInvoiceService.go(transaction)
-
-      expect(invoice.creditLineCount).to.equal(1)
-      expect(invoice.creditLineValue).to.equal(transaction.chargeValue)
-    })
-  })
-
-  describe('When a zero value transaction is supplied', () => {
-    it('correctly calculates the summary', async () => {
-      transaction.chargeValue = 0
-      const invoice = await CreateTransactionInvoiceService.go(transaction)
-
-      expect(invoice.zeroLineCount).to.equal(1)
-    })
-  })
-
-  describe('When a transaction subject to minimum charge is supplied', () => {
-    beforeEach(async () => {
-      transaction.subjectToMinimumCharge = true
-    })
-
-    it('correctly sets the subject to minimum charge flag', async () => {
+  describe('When a valid debit transaction is supplied', () => {
+    it("correctly generates and returns a 'patch' object", async () => {
       const result = await CreateTransactionInvoiceService.go(transaction)
 
-      expect(result.subjectToMinimumChargeCount).to.equal(1)
+      expect(result.update).to.only.include(['debitLineCount', 'debitLineValue'])
     })
 
-    describe('and the total is needed', () => {
-      it('correctly calculates the total for a debit', async () => {
-        const firstResult = await CreateTransactionInvoiceService.go(transaction)
-        // We save the invoice with stats to the database as this isn't done by InvoiceService
-        await InvoiceModel.query().update(firstResult)
-
-        const secondInvoice = await CreateTransactionInvoiceService.go(transaction)
-
-        expect(secondInvoice.subjectToMinimumChargeCount).to.equal(2)
-        expect(secondInvoice.subjectToMinimumChargeDebitValue).to.equal(transaction.chargeValue * 2)
+    describe('subject to minimum charge', () => {
+      beforeEach(async () => {
+        transaction.subjectToMinimumCharge = true
       })
 
-      it('correctly calculates the total for a credit', async () => {
-        transaction.chargeCredit = true
+      it("correctly generates and returns a 'patch' object", async () => {
+        const result = await CreateTransactionInvoiceService.go(transaction)
 
-        const firstResult = await CreateTransactionInvoiceService.go(transaction)
-        // We save the invoice with stats to the database as this isn't done by InvoiceService
-        await InvoiceModel.query().update(firstResult)
-
-        const secondInvoice = await CreateTransactionInvoiceService.go(transaction)
-
-        expect(secondInvoice.subjectToMinimumChargeCount).to.equal(2)
-        expect(secondInvoice.subjectToMinimumChargeCreditValue).to.equal(transaction.chargeValue * 2)
+        expect(result.update).to.only.include([
+          'debitLineCount',
+          'debitLineValue',
+          'subjectToMinimumChargeCount',
+          'subjectToMinimumChargeDebitValue'
+        ])
       })
     })
   })
 
-  describe('When two transactions are created', () => {
-    it('correctly calculates the summary', async () => {
-      const firstResult = await CreateTransactionInvoiceService.go(transaction)
-      // We save the invoice with stats to the database as this isn't done by InvoiceService
-      await InvoiceModel.query().update(firstResult)
+  describe('and a credit transaction', () => {
+    beforeEach(() => {
+      transaction.chargeCredit = true
+    })
 
-      const secondInvoice = await CreateTransactionInvoiceService.go(transaction)
+    it('correctly generates the patch', async () => {
+      const result = await CreateTransactionInvoiceService.go(transaction)
 
-      expect(secondInvoice.debitLineCount).to.equal(2)
-      expect(secondInvoice.debitLineValue).to.equal(transaction.chargeValue * 2)
+      expect(result.update).to.only.include(['creditLineCount', 'creditLineValue'])
+    })
+
+    describe('subject to minimum charge', () => {
+      beforeEach(() => {
+        transaction.subjectToMinimumCharge = true
+      })
+
+      it("correctly generates and returns a 'patch' object", async () => {
+        const result = await CreateTransactionInvoiceService.go(transaction)
+
+        expect(result.update).to.only.include([
+          'creditLineCount',
+          'creditLineValue',
+          'subjectToMinimumChargeCount',
+          'subjectToMinimumChargeCreditValue'
+        ])
+      })
+    })
+  })
+
+  describe('and a zero value transaction', () => {
+    beforeEach(() => {
+      transaction.chargeValue = 0
+    })
+
+    it('correctly generates the patch', async () => {
+      const result = await CreateTransactionInvoiceService.go(transaction)
+
+      expect(result.update).to.only.include(['zeroLineCount'])
+    })
+  })
+
+  describe("When an 'invoice' already exists", () => {
+    let invoice
+
+    beforeEach(async () => {
+      invoice = await InvoiceHelper.addInvoice(
+        transaction.billRunId,
+        transaction.customerReference,
+        transaction.chargeFinancialYear
+      )
+    })
+
+    describe("the 'patch' object returned", () => {
+      it('contains the matching invoice ID', async () => {
+        const result = await CreateTransactionInvoiceService.go(transaction)
+
+        expect(result.id).to.equal(invoice.id)
+      })
     })
   })
 })
