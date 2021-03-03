@@ -33,7 +33,6 @@ class CreateTransactionLicenceService {
   *
   * @returns {Object} an object that contains the ID of the licence to be updated, and the updates to be applied
   */
-
   static async go (transaction) {
     const licence = await this._licence(transaction)
 

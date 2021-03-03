@@ -24,7 +24,7 @@ class CreateTransactionService {
     const invoicePatch = await this._generateInvoicePatch(translator)
     const licencePatch = await this._licence({ ...translator, invoiceId: invoicePatch.id })
 
-    const transaction = await this._create(translator, invoicePatch, licencePatch, billRunPatch)
+    const transaction = await this._create(translator, billRunPatch, invoicePatch, licencePatch)
 
     return this._response(transaction)
   }
@@ -69,7 +69,7 @@ class CreateTransactionService {
     return CreateTransactionLicenceService.go(translator)
   }
 
-  static _create (translator, invoicePatch, licencePatch, billRunPatch) {
+  static _create (translator, billRunPatch, invoicePatch, licencePatch) {
     return TransactionModel.transaction(async trx => {
       const transaction = await TransactionModel.query(trx)
         .insert({
@@ -79,9 +79,9 @@ class CreateTransactionService {
         })
         .returning('*')
 
+      await BillRunModel.query(trx).findById(billRunPatch.id).patch(billRunPatch.update)
       await InvoiceModel.query(trx).findById(invoicePatch.id).patch(invoicePatch.update)
       await LicenceModel.query(trx).findById(licencePatch.id).patch(licencePatch.update)
-      await BillRunModel.query(trx).findById(billRunPatch.id).patch(billRunPatch.update)
 
       return transaction
     })
