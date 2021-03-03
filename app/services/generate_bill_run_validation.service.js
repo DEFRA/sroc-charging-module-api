@@ -23,6 +23,10 @@ class GenerateBillRunValidationService {
       throw Boom.conflict(`Summary for bill run ${billRun.id} is already being generated`)
     }
 
+    if (billRun.$generated()) {
+      throw Boom.conflict(`Summary for bill run ${billRun.id} has already been generated.`)
+    }
+
     if (billRun.$empty()) {
       throw Boom.badData(`Summary for bill run ${billRun.id} cannot be generated because it has no transactions.`)
     }
