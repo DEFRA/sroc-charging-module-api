@@ -5,6 +5,7 @@
  */
 
 const { InvoiceModel } = require('../models')
+const CreateTransactionTallyService = require('./create_transaction_tally.service')
 
 class CreateTransactionInvoiceService {
 /**
@@ -21,9 +22,7 @@ class CreateTransactionInvoiceService {
   static async go (transaction) {
     const invoice = await this._invoice(transaction)
 
-    this._updateStats(invoice, transaction)
-
-    return invoice
+    return this._generatePatch(invoice.id, transaction)
   }
 
   static async _invoice ({
@@ -41,22 +40,13 @@ class CreateTransactionInvoiceService {
       )
   }
 
-  static _updateStats (object, transaction) {
-    if (transaction.chargeCredit) {
-      object.creditLineCount += 1
-      object.creditLineValue += transaction.chargeValue
-      object.subjectToMinimumChargeCreditValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
-    } else if (transaction.chargeValue === 0) {
-      object.zeroLineCount += 1
-    } else {
-      object.debitLineCount += 1
-      object.debitLineValue += transaction.chargeValue
-      object.subjectToMinimumChargeDebitValue += transaction.subjectToMinimumCharge ? transaction.chargeValue : 0
+  static async _generatePatch (id, transaction) {
+    const patch = {
+      id: id,
+      update: await CreateTransactionTallyService.go(transaction)
     }
 
-    if (transaction.subjectToMinimumCharge) {
-      object.subjectToMinimumChargeCount += 1
-    }
+    return patch
   }
 }
 
