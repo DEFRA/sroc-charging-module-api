@@ -12,7 +12,7 @@ const { DatabaseHelper, RegimeHelper, SequenceCounterHelper } = require('../supp
 const { NotFoundError } = require('objection')
 
 // Thing under test
-const { NextTransactionNumberService } = require('../../app/services')
+const { NextTransactionReferenceService } = require('../../app/services')
 
 describe('Next Transaction Number service', () => {
   beforeEach(async () => {
@@ -25,7 +25,7 @@ describe('Next Transaction Number service', () => {
         const regime = await RegimeHelper.addRegime('test', 'Test')
         await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
-        const result = await NextTransactionNumberService.go(regime.id, 'R', 'C')
+        const result = await NextTransactionReferenceService.go(regime.id, 'R', 'C')
 
         expect(result).to.equal('RAC1000001')
       })
@@ -36,7 +36,7 @@ describe('Next Transaction Number service', () => {
         const regime = await RegimeHelper.addRegime('test', 'Test')
         await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
-        const result = await NextTransactionNumberService.go(regime.id, 'R', 'I')
+        const result = await NextTransactionReferenceService.go(regime.id, 'R', 'I')
 
         expect(result).to.equal('RAI1000001')
       })
@@ -47,8 +47,8 @@ describe('Next Transaction Number service', () => {
         const regime = await RegimeHelper.addRegime('test', 'Test')
         await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
-        const result = await NextTransactionNumberService.go(regime.id, 'R', 'I')
-        const secondResult = await NextTransactionNumberService.go(regime.id, 'R', 'C')
+        const result = await NextTransactionReferenceService.go(regime.id, 'R', 'I')
+        const secondResult = await NextTransactionReferenceService.go(regime.id, 'R', 'C')
 
         // The call to slice(-1) grabs the last character from the returned string
         expect(result.slice(-1)).to.equal('1')
@@ -62,8 +62,8 @@ describe('Next Transaction Number service', () => {
         const otherRegime = await RegimeHelper.addRegime('other', 'Other')
         await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
 
-        const result = await NextTransactionNumberService.go(regime.id, 'R')
-        const otherResult = await NextTransactionNumberService.go(otherRegime.id, 'S')
+        const result = await NextTransactionReferenceService.go(regime.id, 'R')
+        const otherResult = await NextTransactionReferenceService.go(otherRegime.id, 'S')
 
         // The call to slice(-1) grabs the last character from the returned string
         expect(result.slice(-1)).to.equal('1')
@@ -78,7 +78,7 @@ describe('Next Transaction Number service', () => {
       await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
       const err = await expect(
-        NextTransactionNumberService.go('11111111-1111-1111-1111-111111111111', 'R', 'I')
+        NextTransactionReferenceService.go('11111111-1111-1111-1111-111111111111', 'R', 'I')
       ).to.reject(NotFoundError)
 
       expect(err).to.be.an.error()
@@ -89,7 +89,7 @@ describe('Next Transaction Number service', () => {
       await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
       const err = await expect(
-        NextTransactionNumberService.go(regime.id, 'X', 'C')
+        NextTransactionReferenceService.go(regime.id, 'X', 'C')
       ).to.reject(NotFoundError)
 
       expect(err).to.be.an.error()

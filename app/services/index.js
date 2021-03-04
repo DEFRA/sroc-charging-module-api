@@ -24,7 +24,7 @@ const CreateTransactionLicenceService = require('./create_transaction_licence.se
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
 const ListRegimesService = require('./list_regimes.service')
 const NextBillRunNumberService = require('./next_bill_run_number.service')
-const NextTransactionNumberService = require('./next_transaction_number.service')
+const NextTransactionReferenceService = require('./next_transaction_reference.service')
 const ObjectCleaningService = require('./object_cleaning.service')
 const RequestBillRunService = require('./request_bill_run.service')
 const RulesService = require('./rules.service')
@@ -62,7 +62,7 @@ module.exports = {
   RequestBillRunService,
   RulesService,
   NextBillRunNumberService,
-  NextTransactionNumberService,
+  NextTransactionReferenceService,
   ShowAuthorisedSystemService,
   ShowRegimeService,
   ShowTransactionService,

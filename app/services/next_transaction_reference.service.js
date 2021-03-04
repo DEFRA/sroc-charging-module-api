@@ -1,12 +1,12 @@
 'use strict'
 
 /**
- * @module NextTransactionNumberService
+ * @module NextTransactionReferenceService
  */
 
 const { SequenceCounterModel } = require('../models')
 
-class NextTransactionNumberService {
+class NextTransactionReferenceService {
   /**
    * Returns the next transaction reference for the given region and regime and whether it's for a credit note or
    * invoice
@@ -69,4 +69,4 @@ class NextTransactionNumberService {
   }
 }
 
-module.exports = NextTransactionNumberService
+module.exports = NextTransactionReferenceService
