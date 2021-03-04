@@ -14,7 +14,7 @@ const { CustomerModel } = require('../../app/models')
 // Thing under test
 const { CreateCustomerDetailsService } = require('../../app/services')
 
-describe.only('Create Customer Details service', () => {
+describe('Create Customer Details service', () => {
   let regime
 
   const payload = {
@@ -52,6 +52,17 @@ describe.only('Create Customer Details service', () => {
       expect(result.addressLine5).to.equal(payload.addressLine5)
       expect(result.addressLine6).to.equal(payload.addressLine6)
       expect(result.postcode).to.equal(payload.postcode)
+    })
+  })
+
+  describe('When an invalid payload is supplied', () => {
+    describe('because a mandatory field is missing', () => {
+      it('throws an error', async () => {
+        const err = await expect(CreateCustomerDetailsService.go(regime, { INVALID_PAYLOAD: 'INVALID' })).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal('"region" is required. "customerReference" is required. "customerName" is required. "addressLine1" is required')
+      })
     })
   })
 })
