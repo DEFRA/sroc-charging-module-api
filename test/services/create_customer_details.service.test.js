@@ -37,7 +37,7 @@ describe('Create Customer Details service', () => {
 
   describe('When a valid payload is supplied', () => {
     it('saves the payload to the customers table', async () => {
-      const customerDetails = await CreateCustomerDetailsService.go(regime, payload)
+      const customerDetails = await CreateCustomerDetailsService.go(payload, regime)
 
       const result = await CustomerModel.query().findById(customerDetails.id)
 
@@ -58,7 +58,7 @@ describe('Create Customer Details service', () => {
   describe('When an invalid payload is supplied', () => {
     describe('because a mandatory field is missing', () => {
       it('throws an error', async () => {
-        const err = await expect(CreateCustomerDetailsService.go(regime, { INVALID_PAYLOAD: 'INVALID' })).to.reject()
+        const err = await expect(CreateCustomerDetailsService.go({ INVALID_PAYLOAD: 'INVALID' }, regime)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal('"region" is required. "customerReference" is required. "customerName" is required. "addressLine1" is required')
