@@ -22,7 +22,7 @@ class CreateTransactionService {
 
     const billRunPatch = await this._generateBillRunPatch(billRun, translator)
     const invoicePatch = await this._generateInvoicePatch(translator)
-    const licencePatch = await this._licence({ ...translator, invoiceId: invoicePatch.id })
+    const licencePatch = await this._generateLicencePatch({ ...translator, invoiceId: invoicePatch.id })
 
     const transaction = await this._create(translator, billRunPatch, invoicePatch, licencePatch)
 
@@ -65,7 +65,7 @@ class CreateTransactionService {
     return CreateTransactionInvoiceService.go(translator)
   }
 
-  static async _licence (translator) {
+  static async _generateLicencePatch (translator) {
     return CreateTransactionLicenceService.go(translator)
   }
 
