@@ -56,6 +56,16 @@ describe('Generate Bill Run Validation service', () => {
       })
     })
 
+    describe("because the bill run has already been 'generated'", () => {
+      it('throws an error', async () => {
+        const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'generated')
+        const err = await expect(GenerateBillRunValidationService.go(generatingBillRun)).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal(`Summary for bill run ${generatingBillRun.id} has already been generated.`)
+      })
+    })
+
     describe('because the bill run is empty', () => {
       it('throws an error', async () => {
         const emptyBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A')

@@ -4,9 +4,9 @@
  * @module CreateTransactionService
  */
 
-const { TransactionModel } = require('../models')
+const { BillRunModel, TransactionModel } = require('../models')
 const { TransactionTranslator } = require('../translators')
-const BillRunService = require('./bill_run.service')
+const CreateTransactionBillRunService = require('./create_transaction_bill_run.service')
 const CalculateChargeService = require('./calculate_charge.service')
 const InvoiceService = require('./invoice.service')
 const LicenceService = require('./licence.service')
@@ -20,7 +20,7 @@ class CreateTransactionService {
 
     this._applyCalculatedCharge(translator, calculatedCharge)
 
-    const billRunPatch = await this._billRun(billRun, translator)
+    const billRunPatch = await this._generateBillRun(billRun, translator)
     const invoice = await this._invoice(translator)
     const licence = await this._licence({ ...translator, invoiceId: invoice.id })
 
@@ -57,8 +57,8 @@ class CreateTransactionService {
     Object.assign(translator, calculatedCharge)
   }
 
-  static async _billRun (billRun, translator) {
-    return BillRunService.go(billRun, translator)
+  static async _generateBillRun (billRun, translator) {
+    return CreateTransactionBillRunService.go(billRun, translator)
   }
 
   static async _invoice (translator) {
@@ -69,7 +69,7 @@ class CreateTransactionService {
     return LicenceService.go(translator)
   }
 
-  static _create (translator, invoice, licence, billRun) {
+  static _create (translator, invoice, licence, billRunPatch) {
     return TransactionModel.transaction(async trx => {
       const transaction = await TransactionModel.query(trx)
         .insert({
@@ -81,7 +81,7 @@ class CreateTransactionService {
 
       await invoice.$query(trx).patch()
       await licence.$query(trx).patch()
-      await billRun.$query(trx).patch()
+      await BillRunModel.query(trx).findById(billRunPatch.id).patch(billRunPatch.update)
 
       return transaction
     })
