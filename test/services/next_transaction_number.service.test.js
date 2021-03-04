@@ -14,35 +14,61 @@ const { NotFoundError } = require('objection')
 // Thing under test
 const { NextTransactionNumberService } = require('../../app/services')
 
-describe.only('Next Transaction Number service', () => {
+describe('Next Transaction Number service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
   })
 
   describe('When a valid region and regime are specified', () => {
-    it('returns incremented values', async () => {
-      const regime = await RegimeHelper.addRegime('test', 'Test')
-      await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
+    describe("and the reference is needed for a 'credit note'", () => {
+      it('returns a correctly formatted transaction reference', async () => {
+        const regime = await RegimeHelper.addRegime('test', 'Test')
+        await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
-      const result = await NextTransactionNumberService.go(regime.id, 'R')
-      const secondResult = await NextTransactionNumberService.go(regime.id, 'R')
+        const result = await NextTransactionNumberService.go(regime.id, 'R', 'C')
 
-      expect(result).to.equal(1)
-      expect(secondResult).to.equal(2)
+        expect(result).to.equal('RAC1000001')
+      })
     })
 
-    it('only increments the specified region and regime', async () => {
-      const regime = await RegimeHelper.addRegime('test', 'Test')
-      await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
+    describe("and the reference is needed for an 'invoice'", () => {
+      it('returns a correctly formatted transaction reference', async () => {
+        const regime = await RegimeHelper.addRegime('test', 'Test')
+        await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
-      const otherRegime = await RegimeHelper.addRegime('other', 'Other')
-      await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
+        const result = await NextTransactionNumberService.go(regime.id, 'R', 'I')
 
-      const result = await NextTransactionNumberService.go(regime.id, 'R')
-      const otherResult = await NextTransactionNumberService.go(otherRegime.id, 'S')
+        expect(result).to.equal('RAI1000001')
+      })
+    })
 
-      expect(result).to.equal(1)
-      expect(otherResult).to.equal(1)
+    describe('the transaction reference generated', () => {
+      it('increments with each call', async () => {
+        const regime = await RegimeHelper.addRegime('test', 'Test')
+        await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
+
+        const result = await NextTransactionNumberService.go(regime.id, 'R', 'I')
+        const secondResult = await NextTransactionNumberService.go(regime.id, 'R', 'C')
+
+        // The call to slice(-1) grabs the last character from the returned string
+        expect(result.slice(-1)).to.equal('1')
+        expect(secondResult.slice(-1)).to.equal('2')
+      })
+
+      it('increments with each call independently for each regime & region', async () => {
+        const regime = await RegimeHelper.addRegime('test', 'Test')
+        await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
+
+        const otherRegime = await RegimeHelper.addRegime('other', 'Other')
+        await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
+
+        const result = await NextTransactionNumberService.go(regime.id, 'R')
+        const otherResult = await NextTransactionNumberService.go(otherRegime.id, 'S')
+
+        // The call to slice(-1) grabs the last character from the returned string
+        expect(result.slice(-1)).to.equal('1')
+        expect(otherResult.slice(-1)).to.equal('1')
+      })
     })
   })
 
@@ -51,7 +77,9 @@ describe.only('Next Transaction Number service', () => {
       const regime = await RegimeHelper.addRegime('test', 'Test')
       await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
-      const err = await expect(NextTransactionNumberService.go('11111111-1111-1111-1111-111111111111', 'R')).to.reject(NotFoundError)
+      const err = await expect(
+        NextTransactionNumberService.go('11111111-1111-1111-1111-111111111111', 'R', 'I')
+      ).to.reject(NotFoundError)
 
       expect(err).to.be.an.error()
     })
@@ -60,7 +88,9 @@ describe.only('Next Transaction Number service', () => {
       const regime = await RegimeHelper.addRegime('test', 'Test')
       await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
 
-      const err = await expect(NextTransactionNumberService.go(regime.id, 'X')).to.reject(NotFoundError)
+      const err = await expect(
+        NextTransactionNumberService.go(regime.id, 'X', 'C')
+      ).to.reject(NotFoundError)
 
       expect(err).to.be.an.error()
     })
