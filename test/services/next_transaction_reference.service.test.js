@@ -14,7 +14,7 @@ const { NotFoundError } = require('objection')
 // Thing under test
 const { NextTransactionReferenceService } = require('../../app/services')
 
-describe('Next Transaction Number service', () => {
+describe('Next Transaction Reference service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
   })

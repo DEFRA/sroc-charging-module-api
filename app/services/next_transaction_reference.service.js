@@ -27,8 +27,8 @@ class NextTransactionReferenceService {
    *
    * If an invalid region & regime pair is supplied, an Objection `NotFoundError` is thrown
    *
-   * @param {string} regimeId Id of the regime to get the next counter for
-   * @param {string} region The region to get the next counter for
+   * @param {string} regimeId Id of the regime to get the next reference for
+   * @param {string} region The region to get the next reference for
    * @param {string} transactionType Either a `'C'` or an `'I'` which denotes whether the invoice the reference is for
    * is an invoice or a credit note.
    *
