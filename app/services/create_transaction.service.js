@@ -4,12 +4,12 @@
  * @module CreateTransactionService
  */
 
-const { BillRunModel, InvoiceModel, TransactionModel } = require('../models')
+const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
 const { TransactionTranslator } = require('../translators')
 const CreateTransactionBillRunService = require('./create_transaction_bill_run.service')
 const CalculateChargeService = require('./calculate_charge.service')
 const CreateTransactionInvoiceService = require('./create_transaction_invoice.service')
-const LicenceService = require('./licence.service')
+const CreateTransactionLicenceService = require('./create_transaction_licence.service')
 const { CreateTransactionPresenter } = require('../presenters')
 
 class CreateTransactionService {
@@ -22,9 +22,9 @@ class CreateTransactionService {
 
     const billRunPatch = await this._generateBillRunPatch(billRun, translator)
     const invoicePatch = await this._generateInvoicePatch(translator)
-    const licence = await this._licence({ ...translator, invoiceId: invoicePatch.id })
+    const licencePatch = await this._generateLicencePatch({ ...translator, invoiceId: invoicePatch.id })
 
-    const transaction = await this._create(translator, invoicePatch, licence, billRunPatch)
+    const transaction = await this._create(translator, billRunPatch, invoicePatch, licencePatch)
 
     return this._response(transaction)
   }
@@ -65,23 +65,23 @@ class CreateTransactionService {
     return CreateTransactionInvoiceService.go(translator)
   }
 
-  static async _licence (translator) {
-    return LicenceService.go(translator)
+  static async _generateLicencePatch (translator) {
+    return CreateTransactionLicenceService.go(translator)
   }
 
-  static _create (translator, invoicePatch, licence, billRunPatch) {
+  static _create (translator, billRunPatch, invoicePatch, licencePatch) {
     return TransactionModel.transaction(async trx => {
       const transaction = await TransactionModel.query(trx)
         .insert({
           ...translator,
           invoiceId: invoicePatch.id,
-          licenceId: licence.id
+          licenceId: licencePatch.id
         })
         .returning('*')
 
-      await InvoiceModel.query(trx).findById(invoicePatch.id).patch(invoicePatch.update)
-      await licence.$query(trx).patch()
       await BillRunModel.query(trx).findById(billRunPatch.id).patch(billRunPatch.update)
+      await InvoiceModel.query(trx).findById(invoicePatch.id).patch(invoicePatch.update)
+      await LicenceModel.query(trx).findById(licencePatch.id).patch(licencePatch.update)
 
       return transaction
     })
