@@ -8,7 +8,7 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { GeneralHelper } = require('../support/helpers')
+const { BillRunHelper, GeneralHelper } = require('../support/helpers')
 
 // Thing under test
 const { CreateTransactionBillRunService } = require('../../app/services')
@@ -17,11 +17,9 @@ describe('Create Transaction Bill Run service', () => {
   let billRun
   let transaction
 
-  beforeEach(() => {
-    billRun = {
-      id: GeneralHelper.uuid4(),
-      region: 'A'
-    }
+  beforeEach(async () => {
+    billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
+
     transaction = {
       region: 'A',
       chargeCredit: false,
