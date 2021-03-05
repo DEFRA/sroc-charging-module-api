@@ -10,6 +10,7 @@ const config = {
   srocMinDate: process.env.SROC_MINIMUM_DATE ? process.env.SROC_MINIMUM_DATE : '01-APR-2021',
   endpoints: {
     cfd: {
+      filenamePrefix: process.env.CFD_FILENAME_PREFIX || 'cfd',
       rulesets: {
         presroc: {
           application: process.env.CFD_APP,
@@ -22,6 +23,7 @@ const config = {
       }
     },
     pas: {
+      filenamePrefix: process.env.PAS_FILENAME_PREFIX || 'pas',
       rulesets: {
         presroc: {
           application: process.env.PAS_APP,
@@ -34,6 +36,7 @@ const config = {
       }
     },
     wml: {
+      filenamePrefix: process.env.WML_FILENAME_PREFIX || 'wml',
       rulesets: {
         presroc: {
           application: process.env.WML_APP,
@@ -46,6 +49,7 @@ const config = {
       }
     },
     wrls: {
+      filenamePrefix: process.env.WRLS_FILENAME_PREFIX || 'nal',
       rulesets: {
         presroc: {
           application: process.env.WRLS_APP,

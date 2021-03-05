@@ -6,6 +6,8 @@
 
 const { SequenceCounterModel } = require('../models')
 
+const { RulesServiceConfig } = require('../../config')
+
 class NextFileReferenceService {
   /**
    * Returns the next file reference for the given region and regime
@@ -15,7 +17,7 @@ class NextFileReferenceService {
    *
    * The format is `nalri50001` where
    *
-   * - `nal` is the default prefix for the regime
+   * - `nal` is the filename prefix for the regime (set in `RulesServiceConfig`)
    * - `r` is the region lowercased
    * - `i` is a fixed digit "i"
    * - `50001` is our sequential file number padded which starts at 50000
@@ -33,7 +35,7 @@ class NextFileReferenceService {
   static async go (regime, region) {
     const result = await this._updateSequenceCounter(regime.id, region)
 
-    return this._response(region, result.fileNumber)
+    return this._response(regime.slug, region, result.fileNumber)
   }
 
   static async _updateSequenceCounter (regimeId, region) {
@@ -49,8 +51,10 @@ class NextFileReferenceService {
       })
   }
 
-  static _response (region, fileNumber) {
-    return `nal${region.toLowerCase()}i${fileNumber}`
+  static _response (regimeSlug, region, fileNumber) {
+    const filenamePrefix = RulesServiceConfig.endpoints[regimeSlug].filenamePrefix
+
+    return `${filenamePrefix}${region.toLowerCase()}i${fileNumber}`
   }
 }
 
