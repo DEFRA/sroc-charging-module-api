@@ -77,7 +77,7 @@ class CreateTransactionService {
           invoiceId: invoicePatch.id,
           licenceId: licencePatch.id
         })
-        .returning('*')
+        .returning(['id', 'client_id'])
 
       await BillRunModel.query(trx).findById(billRunPatch.id).patch(billRunPatch.update)
       await InvoiceModel.query(trx).findById(invoicePatch.id).patch(invoicePatch.update)
