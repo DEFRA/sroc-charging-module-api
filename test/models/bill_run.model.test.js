@@ -54,4 +54,18 @@ describe('Bill Run Model', () => {
       expect(instance.$editable()).to.be.false()
     })
   })
+
+  describe('the $approved() method', () => {
+    it("returns 'true' when the status is 'approved'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'approved' })
+
+      expect(instance.$approved()).to.be.true()
+    })
+
+    it("returns 'false' when the status is something else", async () => {
+      const instance = BillRunModel.fromJson({ status: 'initialised' })
+
+      expect(instance.$approved()).to.be.false()
+    })
+  })
 })

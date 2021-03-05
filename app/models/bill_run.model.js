@@ -108,6 +108,13 @@ class BillRunModel extends BaseModel {
   }
 
   /**
+   * Returns true if the bill run status is 'approved'
+   */
+  $approved () {
+    return this.status === 'approved'
+  }
+
+  /**
    * Returns true if no transactions have been added to this bill run
    */
   $empty () {
