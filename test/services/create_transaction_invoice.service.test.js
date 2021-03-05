@@ -8,21 +8,24 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { DatabaseHelper, GeneralHelper, InvoiceHelper } = require('../support/helpers')
+const { BillRunHelper, DatabaseHelper, GeneralHelper, InvoiceHelper } = require('../support/helpers')
 
 // Thing under test
 const { CreateTransactionInvoiceService } = require('../../app/services')
 
 describe('Create Transaction Bill Run service', () => {
   let transaction
+  let billRun
 
   beforeEach(async () => {
     // The service will create an invoice record if none exists already for the transaction so we need a database
     // cleaner call
     await DatabaseHelper.clean()
 
+    billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
+
     transaction = {
-      billRunId: GeneralHelper.uuid4(),
+      billRunId: billRun.id,
       customerReference: 'CUSTOMER_REFERENCE',
       chargeFinancialYear: 2021,
       chargeCredit: false,
