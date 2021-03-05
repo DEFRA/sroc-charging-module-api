@@ -34,7 +34,7 @@ class CreateCustomerDetailsService {
 
   static _create (translator) {
     return CustomerModel.query()
-      .findOrInsert({ ...translator })
+      .insert({ ...translator })
   }
 }
 
