@@ -15,16 +15,18 @@ const { NotFoundError } = require('objection')
 const { NextTransactionReferenceService } = require('../../app/services')
 
 describe('Next Transaction Reference service', () => {
+  let regime
+
   beforeEach(async () => {
     await DatabaseHelper.clean()
+
+    regime = await RegimeHelper.addRegime('test', 'Test')
+    await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
   })
 
   describe('When a valid region and regime are specified', () => {
     describe("and the reference is needed for a 'credit note'", () => {
       it('returns a correctly formatted transaction reference', async () => {
-        const regime = await RegimeHelper.addRegime('test', 'Test')
-        await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
-
         const result = await NextTransactionReferenceService.go(regime.id, 'R', 'C')
 
         expect(result).to.equal('RAC1000001')
@@ -33,9 +35,6 @@ describe('Next Transaction Reference service', () => {
 
     describe("and the reference is needed for an 'invoice'", () => {
       it('returns a correctly formatted transaction reference', async () => {
-        const regime = await RegimeHelper.addRegime('test', 'Test')
-        await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
-
         const result = await NextTransactionReferenceService.go(regime.id, 'R', 'I')
 
         expect(result).to.equal('RAI1000001')
@@ -44,9 +43,6 @@ describe('Next Transaction Reference service', () => {
 
     describe('the transaction reference generated', () => {
       it('increments with each call', async () => {
-        const regime = await RegimeHelper.addRegime('test', 'Test')
-        await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
-
         const result = await NextTransactionReferenceService.go(regime.id, 'R', 'I')
         const secondResult = await NextTransactionReferenceService.go(regime.id, 'R', 'C')
 
@@ -56,9 +52,6 @@ describe('Next Transaction Reference service', () => {
       })
 
       it('increments with each call independently for each regime & region', async () => {
-        const regime = await RegimeHelper.addRegime('test', 'Test')
-        await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
-
         const otherRegime = await RegimeHelper.addRegime('other', 'Other')
         await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
 
@@ -74,9 +67,6 @@ describe('Next Transaction Reference service', () => {
 
   describe('When invalid data is specified', () => {
     it('throws an error for an invalid regime', async () => {
-      const regime = await RegimeHelper.addRegime('test', 'Test')
-      await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
-
       const err = await expect(
         NextTransactionReferenceService.go('11111111-1111-1111-1111-111111111111', 'R', 'I')
       ).to.reject(NotFoundError)
@@ -85,9 +75,6 @@ describe('Next Transaction Reference service', () => {
     })
 
     it('throws an error for an invalid region', async () => {
-      const regime = await RegimeHelper.addRegime('test', 'Test')
-      await SequenceCounterHelper.addSequenceCounter(regime.id, 'R')
-
       const err = await expect(
         NextTransactionReferenceService.go(regime.id, 'X', 'C')
       ).to.reject(NotFoundError)
