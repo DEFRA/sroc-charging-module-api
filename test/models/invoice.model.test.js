@@ -81,6 +81,25 @@ describe('Invoice Model', () => {
         })
       })
     })
+
+    describe('#Billable', () => {
+      describe('when there is a mix of invoices', () => {
+        let billableInvoice
+
+        beforeEach(async () => {
+          billableInvoice = await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 501, 0)
+          await InvoiceHelper.addInvoice(billRun.id, 'CMA0000002', 2020, 0, 0, 1, 350, 0) // debit less than 500
+          await InvoiceHelper.addInvoice(billRun.id, 'CMA0000003', 2020, 0, 0, 0, 0, 1) // zero value
+        })
+
+        it("only returns those which are 'billable'", async () => {
+          const results = await InvoiceModel.query().modify('billable').debug()
+
+          expect(results.length).to.equal(1)
+          expect(results[0].id).to.equal(billableInvoice.id)
+        })
+      })
+    })
   })
 
   describe('$transactionType method', () => {
