@@ -49,6 +49,10 @@ class BillRunsController {
       throw Boom.conflict(`Bill run ${req.app.billRun.id} does not have a status of 'approved'.`)
     }
   }
+
+  static async delete (req, h) {
+    return h.response().code(204)
+  }
 }
 
 module.exports = BillRunsController

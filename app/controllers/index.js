@@ -13,6 +13,7 @@ const PresrocBillRunsController = require('./presroc/bill_runs.controller')
 const PresrocBillRunsInvoicesController = require('./presroc/bill_runs_invoices.controller')
 const PresrocBillRunsTransactionsController = require('./presroc/bill_runs_transactions.controller')
 const PresrocCalculateChargeController = require('./presroc/calculate_charge.controller')
+const PresrocCustomerDetailsController = require('./presroc/customer_details.controller')
 
 module.exports = {
   RootController,
@@ -26,5 +27,6 @@ module.exports = {
   PresrocCalculateChargeController,
   PresrocBillRunsInvoicesController,
   PresrocBillRunsTransactionsController,
+  PresrocCustomerDetailsController,
   NotSupportedController
 }
