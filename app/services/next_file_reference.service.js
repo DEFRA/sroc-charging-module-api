@@ -29,17 +29,19 @@ class NextFileReferenceService {
    *
    * @param {module:RegimeModel} regime instance of the `RegimeModel` that the reference is for
    * @param {string} region The region the reference is for
+   * @param {Object} [trx] Optional Objection database `transaction` object to be used in the update to
+   * `sequence_counters`
    *
    * @returns {string} the generated file reference
    */
-  static async go (regime, region) {
-    const result = await this._updateSequenceCounter(regime.id, region)
+  static async go (regime, region, trx = null) {
+    const result = await this._updateSequenceCounter(regime.id, region, trx)
 
     return this._response(regime.slug, region, result.fileNumber)
   }
 
-  static async _updateSequenceCounter (regimeId, region) {
-    return SequenceCounterModel.query()
+  static async _updateSequenceCounter (regimeId, region, trx) {
+    return SequenceCounterModel.query(trx)
       .findOne({
         regime_id: regimeId,
         region
