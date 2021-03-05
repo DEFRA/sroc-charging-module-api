@@ -8,7 +8,7 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { DatabaseHelper, GeneralHelper, InvoiceHelper, LicenceHelper } = require('../support/helpers')
+const { BillRunHelper, DatabaseHelper, GeneralHelper, InvoiceHelper, LicenceHelper } = require('../support/helpers')
 
 // Thing under test
 const { CreateTransactionLicenceService } = require('../../app/services')
@@ -21,8 +21,10 @@ describe('Create Transaction Licence service', () => {
     // cleaner call
     await DatabaseHelper.clean()
 
+    const billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
+
     transaction = {
-      billRunId: GeneralHelper.uuid4(),
+      billRunId: billRun.id,
       lineAttr1: 'LICENCE_NUMBER',
       customerReference: 'CUSTOMER_REFERENCE',
       chargeFinancialYear: 2021,

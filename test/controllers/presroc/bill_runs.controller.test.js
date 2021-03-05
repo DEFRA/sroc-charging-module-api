@@ -300,4 +300,24 @@ describe('Presroc Bill Runs controller', () => {
       })
     })
   })
+
+  describe('Delete bill run stub: PATCH /v2/{regimeId}/bill-runs/{billRunId}', () => {
+    const options = (token, billRunId) => {
+      return {
+        method: 'DELETE',
+        url: `/v2/wrls/bill-runs/${billRunId}`,
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    beforeEach(async () => {
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    })
+
+    it('returns success status 204', async () => {
+      const response = await server.inject(options(authToken, billRun.id))
+
+      expect(response.statusCode).to.equal(204)
+    })
+  })
 })
