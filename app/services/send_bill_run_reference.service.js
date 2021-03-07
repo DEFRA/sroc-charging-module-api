@@ -8,6 +8,7 @@ const Boom = require('@hapi/boom')
 
 const { BillRunModel } = require('../models')
 const NextFileReferenceService = require('./next_file_reference.service')
+const NextTransactionReferenceService = require('./next_transaction_reference.service')
 
 class SendBillRunReferenceService {
   static async go (regime, billRun) {
@@ -26,6 +27,8 @@ class SendBillRunReferenceService {
 
   static async _send (regime, billRun) {
     await BillRunModel.transaction(async trx => {
+      await this._updateBillableInvoices(regime, billRun, trx)
+
       const fileReference = await NextFileReferenceService.go(regime, billRun.region, trx)
 
       await BillRunModel.query(trx)
@@ -35,6 +38,25 @@ class SendBillRunReferenceService {
           fileReference
         })
     })
+  }
+
+  static async _updateBillableInvoices (regime, billRun, trx) {
+    const billableInvoices = await this._billableInvoices(billRun)
+
+    for (let i = 0; i < billableInvoices.length; i++) {
+      const invoice = billableInvoices[i]
+      const reference = await NextTransactionReferenceService.go(
+        regime.id,
+        billRun.region,
+        invoice.$transactionType(),
+        trx
+      )
+      await invoice.$query(trx).patch({ transactionReference: reference })
+    }
+  }
+
+  static _billableInvoices (billRun) {
+    return billRun.$relatedQuery('invoices').modify('billable')
   }
 }
 
