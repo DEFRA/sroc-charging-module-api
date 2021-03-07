@@ -93,7 +93,7 @@ describe('Invoice Model', () => {
         })
 
         it("only returns those which are 'billable'", async () => {
-          const results = await InvoiceModel.query().modify('billable').debug()
+          const results = await InvoiceModel.query().modify('billable')
 
           expect(results.length).to.equal(1)
           expect(results[0].id).to.equal(billableInvoice.id)
