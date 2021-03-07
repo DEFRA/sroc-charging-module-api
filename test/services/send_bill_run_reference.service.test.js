@@ -63,7 +63,7 @@ describe('Send Bill Run Reference service', () => {
         await InvoiceHelper.addInvoice(billRun.id, 'CMA0000006', 2020, 0, 0, 1, 501, 0, 1, 0, 501) // std minimum charge
       })
 
-      it("generates and assigns a 'transaction reference' to the billable invoices", async () => {
+      it("generates and assigns a 'transaction reference' to only the billable invoices", async () => {
         await SendBillRunReferenceService.go(regime, billRun)
 
         const invoices = await billRun.$relatedQuery('invoices')
