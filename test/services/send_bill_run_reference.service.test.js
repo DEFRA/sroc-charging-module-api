@@ -12,6 +12,7 @@ const {
   BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
+  InvoiceHelper,
   RegimeHelper,
   SequenceCounterHelper
 } = require('../support/helpers')
@@ -19,7 +20,7 @@ const {
 // Thing under test
 const { SendBillRunReferenceService } = require('../../app/services')
 
-describe.only('Send Bill Run Reference service', () => {
+describe('Send Bill Run Reference service', () => {
   let regime
   let billRun
 
@@ -32,9 +33,11 @@ describe.only('Send Bill Run Reference service', () => {
   })
 
   describe("When the 'bill run' can be sent", () => {
-    it("sets the 'bill run' status to 'pending'", async () => {
+    beforeEach(async () => {
       billRun.status = 'approved'
+    })
 
+    it("sets the 'bill run' status to 'pending'", async () => {
       await SendBillRunReferenceService.go(regime, billRun)
 
       const refreshedBillRun = await billRun.$query()
@@ -42,19 +45,40 @@ describe.only('Send Bill Run Reference service', () => {
       expect(refreshedBillRun.status).to.equal('pending')
     })
 
-    it.only("generates a file reference for the 'bill run'", async () => {
-      billRun.status = 'approved'
-
+    it("generates a file reference for the 'bill run'", async () => {
       await SendBillRunReferenceService.go(regime, billRun)
 
       const refreshedBillRun = await billRun.$query()
 
       expect(refreshedBillRun.fileReference).to.equal('nalai50001')
     })
+
+    describe("for each 'invoice' linked to the bill run", () => {
+      beforeEach(async () => {
+        await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 350, 0) // deminimis debit
+        await InvoiceHelper.addInvoice(billRun.id, 'CMA0000002', 2020, 0, 0, 1, 501, 0) // standard debit
+        await InvoiceHelper.addInvoice(billRun.id, 'CMA0000003', 2020, 1, 350, 0, 0, 0) // standard credit < deminimis
+        await InvoiceHelper.addInvoice(billRun.id, 'CMA0000004', 2020, 1, 501, 0, 0, 0) // standard credit
+        await InvoiceHelper.addInvoice(billRun.id, 'CMA0000005', 2020, 0, 0, 0, 0, 1) // zero value
+        await InvoiceHelper.addInvoice(billRun.id, 'CMA0000006', 2020, 0, 0, 1, 501, 0, 1, 0, 501) // std minimum charge
+      })
+
+      it("generates and assigns a 'transaction reference' to the billable invoices", async () => {
+        await SendBillRunReferenceService.go(regime, billRun)
+
+        const invoices = await billRun.$relatedQuery('invoices')
+        const updatedInvoices = invoices
+          .filter(invoice => invoice.transactionReference)
+          .map(invoice => invoice.customerReference)
+        const billableInvoices = ['CMA0000002', 'CMA0000003', 'CMA0000004', 'CMA0000006']
+
+        expect(updatedInvoices).to.only.include(billableInvoices)
+      })
+    })
   })
 
   describe("When the 'bill run' cannot be sent", () => {
-    describe("ecause the status is not 'approved'", () => {
+    describe("because the status is not 'approved'", () => {
       it('throws an error', async () => {
         const err = await expect(SendBillRunReferenceService.go(regime, billRun)).to.reject()
 
