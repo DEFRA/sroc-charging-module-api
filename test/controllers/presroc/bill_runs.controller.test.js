@@ -19,6 +19,7 @@ const {
   BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
+  InvoiceHelper,
   RegimeHelper,
   RulesServiceHelper,
   SequenceCounterHelper,
@@ -276,6 +277,9 @@ describe('Presroc Bill Runs controller', () => {
 
     beforeEach(async () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      await SequenceCounterHelper.addSequenceCounter(regime.id, billRun.region)
+      // A bill run needs at least one billable invoice for a file reference to be generated
+      await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 501, 0) // standard debit
     })
 
     describe('When the request is valid', () => {
