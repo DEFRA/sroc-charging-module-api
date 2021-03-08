@@ -27,9 +27,11 @@ class SendBillRunReferenceService {
 
   static async _send (regime, billRun) {
     await BillRunModel.transaction(async trx => {
-      await this._updateBillableInvoices(regime, billRun, trx)
+      const billableCount = await this._updateBillableInvoices(regime, billRun, trx)
 
-      const fileReference = await NextFileReferenceService.go(regime, billRun.region, trx)
+      // We only generate a file reference for the bill run if there was 1 or more billable invoices. This avoids gaps
+      // in the file references and concern about whether something got lost in transit
+      const fileReference = billableCount ? await NextFileReferenceService.go(regime, billRun.region, trx) : null
 
       await BillRunModel.query(trx)
         .findById(billRun.id)
@@ -53,6 +55,8 @@ class SendBillRunReferenceService {
       )
       await invoice.$query(trx).patch({ transactionReference: reference })
     }
+
+    return billableInvoices.length
   }
 
   static _billableInvoices (billRun) {
