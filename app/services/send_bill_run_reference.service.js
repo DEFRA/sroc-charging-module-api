@@ -61,18 +61,19 @@ class SendBillRunReferenceService {
   static async _updateBillableInvoices (regime, billRun, trx) {
     const billableInvoices = await this._billableInvoices(billRun)
 
-    for (let i = 0; i < billableInvoices.length; i++) {
-      const invoice = billableInvoices[i]
+    let updatedInvoices = 0
+
+    for (const invoice of billableInvoices) {
       const reference = await NextTransactionReferenceService.go(
         regime.id,
         billRun.region,
         invoice.$transactionType(),
         trx
       )
-      await invoice.$query(trx).patch({ transactionReference: reference })
+      updatedInvoices += await invoice.$query(trx).patch({ transactionReference: reference })
     }
 
-    return billableInvoices.length
+    return updatedInvoices
   }
 
   static _billableInvoices (billRun) {
