@@ -46,6 +46,8 @@ describe('Send Bill Run Reference service', () => {
     })
 
     it("generates a file reference for the 'bill run'", async () => {
+      // A bill run needs at least one billable invoice for a file reference to be generated
+      await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 501, 0) // standard debit
       await SendBillRunReferenceService.go(regime, billRun)
 
       const refreshedBillRun = await billRun.$query()
