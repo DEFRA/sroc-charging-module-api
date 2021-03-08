@@ -75,6 +75,29 @@ describe('Send Bill Run Reference service', () => {
         expect(updatedInvoices).to.only.include(billableInvoices)
       })
     })
+
+    describe("but none of its invoices are 'billable'", () => {
+      beforeEach(async () => {
+        await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 350, 0) // deminimis debit
+        await InvoiceHelper.addInvoice(billRun.id, 'CMA0000002', 2020, 0, 0, 0, 0, 1) // zero value
+      })
+
+      it("still updates the status to 'pending'", async () => {
+        await SendBillRunReferenceService.go(regime, billRun)
+
+        const refreshedBillRun = await billRun.$query()
+
+        expect(refreshedBillRun.status).to.equal('pending')
+      })
+
+      it("it does not assign a 'file reference'", async () => {
+        await SendBillRunReferenceService.go(regime, billRun)
+
+        const refreshedBillRun = await billRun.$query()
+
+        expect(refreshedBillRun.fileReference).to.be.null()
+      })
+    })
   })
 
   describe("When the 'bill run' cannot be sent", () => {
