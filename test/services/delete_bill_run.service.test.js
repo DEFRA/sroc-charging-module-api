@@ -14,8 +14,7 @@ const {
   BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
-  RegimeHelper,
-  RulesServiceHelper
+  RegimeHelper
 } = require('../support/helpers')
 
 const {
@@ -30,7 +29,7 @@ const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charg
 
 const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
-const { CreateTransactionService, GenerateBillRunService } = require('../../app/services')
+const { CreateTransactionService } = require('../../app/services')
 
 // Things we need to stub
 const { RulesService } = require('../../app/services')
@@ -38,12 +37,11 @@ const { RulesService } = require('../../app/services')
 // Thing under test
 const { DeleteBillRunService } = require('../../app/services')
 
-describe('Delete Invoice service', () => {
+describe.only('Delete Bill Run service', () => {
   let billRun
   let authorisedSystem
   let regime
   let payload
-  let invoice
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -56,18 +54,15 @@ describe('Delete Invoice service', () => {
 
     Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
     billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+
+    await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
   })
 
   afterEach(async () => {
     Sinon.restore()
   })
 
-  describe.only('When a valid bill run is supplied', () => {
-    beforeEach(async () => {
-      await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
-      invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
-    })
-
+  describe('When a valid bill run is supplied', () => {
     it('deletes the bill run', async () => {
       await DeleteBillRunService.go(billRun)
 
@@ -97,16 +92,15 @@ describe('Delete Invoice service', () => {
     })
   })
 
-  // describe('When an invalid bill run is supplied', () => {
-  //   describe('because there is no matching bill run', () => {
-  //     it('throws an error', async () => {
-  //       const unknownInvoiceId = GeneralHelper.uuid4()
-  //       const unknownBillRunId = GeneralHelper.uuid4()
-  //       const err = await expect(DeleteInvoiceService.go(unknownInvoiceId, unknownBillRunId)).to.reject()
+  describe('When an invalid bill run is supplied', () => {
+    describe("because the status is 'billed'", () => {
+      it('throws an error', async () => {
+        billRun.status = 'billed'
+        const err = await expect(DeleteBillRunService.go(billRun)).to.reject()
 
-  //       expect(err).to.be.an.error()
-  //       expect(err.output.payload.message).to.equal(`Invoice ${unknownInvoiceId} is unknown.`)
-  //     })
-  //   })
-  // })
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal(`Bill run ${billRun.id} has a status of 'billed'.`)
+      })
+    })
+  })
 })
