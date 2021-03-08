@@ -68,34 +68,32 @@ describe('Delete Invoice service', () => {
       invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
     })
 
-    it.only('deletes the bill run', async () => {
+    it('deletes the bill run', async () => {
       await DeleteBillRunService.go(billRun.id)
 
       const result = await BillRunModel.query().findById(billRun.id)
-
       expect(result).to.not.exist()
     })
 
     it('deletes the bill run invoices', async () => {
+      await DeleteBillRunService.go(billRun.id)
 
+      const invoices = await InvoiceModel.query().select().where({ billRunId: billRun.id })
+      expect(invoices).to.be.empty()
     })
 
     it('deletes the bill run licences', async () => {
-      // const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
+      await DeleteBillRunService.go(billRun.id)
 
-      // await DeleteInvoiceService.go(invoice.id, billRun.id)
-
-      // const licences = await LicenceModel.query().select().where({ billRunId: billRun.id })
-      // expect(licences).to.be.empty()
+      const licences = await LicenceModel.query().select().where({ billRunId: billRun.id })
+      expect(licences).to.be.empty()
     })
 
     it('deletes the bill run transactions', async () => {
-      // const invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
+      await DeleteBillRunService.go(billRun.id)
 
-      // await DeleteInvoiceService.go(invoice.id, billRun.id)
-
-      // const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
-      // expect(transactions).to.be.empty()
+      const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
+      expect(transactions).to.be.empty()
     })
   })
 
