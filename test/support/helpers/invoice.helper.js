@@ -81,7 +81,7 @@ class InvoiceHelper {
     const netValue = debitLineValue - creditLineValue
     const minimumChargeNetValue = subjectToMinimumChargeCreditValue + subjectToMinimumChargeDebitValue
 
-    if ((nonZeroLinceCount === 0) && (zeroLineCount > 0)) {
+    if ((nonZeroLineCount === 0) && (zeroLineCount > 0)) {
       flags.zeroValueInvoice = true
     } else if ((netValue > 0) && (netValue < 500)) {
       if (minimumChargeNetValue === 0) {
