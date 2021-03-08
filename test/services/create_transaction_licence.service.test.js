@@ -8,34 +8,41 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { BillRunHelper, DatabaseHelper, GeneralHelper, InvoiceHelper } = require('../support/helpers')
+const { BillRunHelper, DatabaseHelper, GeneralHelper, InvoiceHelper, LicenceHelper } = require('../support/helpers')
 
 // Thing under test
-const { CreateTransactionInvoiceService } = require('../../app/services')
+const { CreateTransactionLicenceService } = require('../../app/services')
 
-describe('Create Transaction Bill Run service', () => {
+describe('Create Transaction Licence service', () => {
   let transaction
-  let billRun
 
   beforeEach(async () => {
-    // The service will create an invoice record if none exists already for the transaction so we need a database
+    // The service will create an licence record if none exists already for the transaction so we need a database
     // cleaner call
     await DatabaseHelper.clean()
 
-    billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
+    const billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
 
     transaction = {
       billRunId: billRun.id,
+      lineAttr1: 'LICENCE_NUMBER',
       customerReference: 'CUSTOMER_REFERENCE',
       chargeFinancialYear: 2021,
       chargeCredit: false,
       chargeValue: 5678
     }
+
+    const invoice = await InvoiceHelper.addInvoice(
+      transaction.billRunId,
+      transaction.customerReference,
+      transaction.chargeFinancialYear
+    )
+    transaction.invoiceId = invoice.id
   })
 
   describe('When a valid debit transaction is supplied', () => {
     it("correctly generates and returns a 'patch' object", async () => {
-      const result = await CreateTransactionInvoiceService.go(transaction)
+      const result = await CreateTransactionLicenceService.go(transaction)
 
       expect(result.update).to.only.include(['debitLineCount', 'debitLineValue'])
     })
@@ -46,7 +53,7 @@ describe('Create Transaction Bill Run service', () => {
       })
 
       it("correctly generates and returns a 'patch' object", async () => {
-        const result = await CreateTransactionInvoiceService.go(transaction)
+        const result = await CreateTransactionLicenceService.go(transaction)
 
         expect(result.update).to.only.include([
           'debitLineCount',
@@ -64,7 +71,7 @@ describe('Create Transaction Bill Run service', () => {
     })
 
     it('correctly generates the patch', async () => {
-      const result = await CreateTransactionInvoiceService.go(transaction)
+      const result = await CreateTransactionLicenceService.go(transaction)
 
       expect(result.update).to.only.include(['creditLineCount', 'creditLineValue'])
     })
@@ -75,7 +82,7 @@ describe('Create Transaction Bill Run service', () => {
       })
 
       it("correctly generates and returns a 'patch' object", async () => {
-        const result = await CreateTransactionInvoiceService.go(transaction)
+        const result = await CreateTransactionLicenceService.go(transaction)
 
         expect(result.update).to.only.include([
           'creditLineCount',
@@ -93,28 +100,30 @@ describe('Create Transaction Bill Run service', () => {
     })
 
     it('correctly generates the patch', async () => {
-      const result = await CreateTransactionInvoiceService.go(transaction)
+      const result = await CreateTransactionLicenceService.go(transaction)
 
       expect(result.update).to.only.include(['zeroLineCount'])
     })
   })
 
-  describe("When an 'invoice' already exists", () => {
-    let invoice
+  describe("When a 'licence' already exists", () => {
+    let licence
 
     beforeEach(async () => {
-      invoice = await InvoiceHelper.addInvoice(
+      licence = await LicenceHelper.addLicence(
         transaction.billRunId,
+        transaction.lineAttr1,
+        transaction.invoiceId,
         transaction.customerReference,
         transaction.chargeFinancialYear
       )
     })
 
     describe("the 'patch' object returned", () => {
-      it('contains the matching invoice ID', async () => {
-        const result = await CreateTransactionInvoiceService.go(transaction)
+      it('contains the matching licence ID', async () => {
+        const result = await CreateTransactionLicenceService.go(transaction)
 
-        expect(result.id).to.equal(invoice.id)
+        expect(result.id).to.equal(licence.id)
       })
     })
   })

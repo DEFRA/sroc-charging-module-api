@@ -19,6 +19,7 @@ const {
   BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
+  InvoiceHelper,
   RegimeHelper,
   RulesServiceHelper,
   SequenceCounterHelper,
@@ -276,6 +277,9 @@ describe('Presroc Bill Runs controller', () => {
 
     beforeEach(async () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      await SequenceCounterHelper.addSequenceCounter(regime.id, billRun.region)
+      // A bill run needs at least one billable invoice for a file reference to be generated
+      await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 501, 0) // standard debit
     })
 
     describe('When the request is valid', () => {
@@ -298,6 +302,26 @@ describe('Presroc Bill Runs controller', () => {
           expect(responsePayload.message).to.equal(`Bill run ${billRun.id} does not have a status of 'approved'.`)
         })
       })
+    })
+  })
+
+  describe('Delete bill run stub: PATCH /v2/{regimeId}/bill-runs/{billRunId}', () => {
+    const options = (token, billRunId) => {
+      return {
+        method: 'DELETE',
+        url: `/v2/wrls/bill-runs/${billRunId}`,
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    beforeEach(async () => {
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    })
+
+    it('returns success status 204', async () => {
+      const response = await server.inject(options(authToken, billRun.id))
+
+      expect(response.statusCode).to.equal(204)
     })
   })
 })

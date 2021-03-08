@@ -20,13 +20,16 @@ const DeleteInvoiceService = require('./delete_invoice.service')
 const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill_run_invoice.service')
 const GenerateBillRunService = require('./generate_bill_run.service')
 const GenerateBillRunValidationService = require('./generate_bill_run_validation.service')
-const LicenceService = require('./licence.service')
+const CreateTransactionLicenceService = require('./create_transaction_licence.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
 const ListRegimesService = require('./list_regimes.service')
 const NextBillRunNumberService = require('./next_bill_run_number.service')
+const NextFileReferenceService = require('./next_file_reference.service')
+const NextTransactionReferenceService = require('./next_transaction_reference.service')
 const ObjectCleaningService = require('./object_cleaning.service')
 const RequestBillRunService = require('./request_bill_run.service')
 const RulesService = require('./rules.service')
+const SendBillRunReferenceService = require('./send_bill_run_reference.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
 const ShowRegimeService = require('./show_regime.service')
 const ShowTransactionService = require('./show_transaction.service')
@@ -46,6 +49,7 @@ module.exports = {
   CreateBillRunService,
   CreateTransactionBillRunService,
   CreateTransactionInvoiceService,
+  CreateTransactionLicenceService,
   CreateTransactionService,
   CreateTransactionTallyService,
   DatabaseHealthCheckService,
@@ -54,13 +58,15 @@ module.exports = {
   FetchAndValidateBillRunInvoiceService,
   GenerateBillRunService,
   GenerateBillRunValidationService,
-  LicenceService,
   ListAuthorisedSystemsService,
   ListRegimesService,
   ObjectCleaningService,
   RequestBillRunService,
   RulesService,
   NextBillRunNumberService,
+  NextFileReferenceService,
+  NextTransactionReferenceService,
+  SendBillRunReferenceService,
   ShowAuthorisedSystemService,
   ShowRegimeService,
   ShowTransactionService,
