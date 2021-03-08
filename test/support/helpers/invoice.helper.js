@@ -77,7 +77,7 @@ class InvoiceHelper {
       deminimisInvoice: false
     }
 
-    const nonZeroLinceCount = creditLineCount + debitLineCount
+    const nonZeroLineCount = creditLineCount + debitLineCount
     const netValue = debitLineValue - creditLineValue
     const minimumChargeNetValue = subjectToMinimumChargeCreditValue + subjectToMinimumChargeDebitValue
 
