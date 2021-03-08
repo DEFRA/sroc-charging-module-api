@@ -10,13 +10,13 @@ class DeleteBillRunService {
   /**
    * Deletes a bill run along with its invoices, licences and transactions.
    *
-   * @param {string} billRunId The id of the bill run to be deleted.
+   * @param {@module:BillRunModel} billRun The bill run to be deleted.
    */
-  static async go (billRunId) {
+  static async go (billRun) {
     // First ensure we can delete the bill run!
     await BillRunModel
       .query()
-      .deleteById(billRunId)
+      .deleteById(billRun.id)
   }
 }
 
