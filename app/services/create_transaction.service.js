@@ -21,10 +21,8 @@ class CreateTransactionService {
     this._applyCalculatedCharge(translator, calculatedCharge)
 
     const billRunPatch = await this._generateBillRunPatch(billRun, translator)
-    const invoicePatch = await this._generateInvoicePatch(translator)
-    const licencePatch = await this._generateLicencePatch({ ...translator, invoiceId: invoicePatch.id })
 
-    const transaction = await this._create(translator, billRunPatch, invoicePatch, licencePatch)
+    const transaction = await this._create(translator, billRunPatch)
 
     return this._response(transaction)
   }
@@ -69,19 +67,19 @@ class CreateTransactionService {
     return CreateTransactionLicenceService.go(translator)
   }
 
-  static _create (translator, billRunPatch, invoicePatch, licencePatch) {
+  static _create (translator, billRunPatch) {
     return TransactionModel.transaction(async trx => {
+      await BillRunModel.query(trx).findById(billRunPatch.id).patch(billRunPatch.update)
+      const invoiceId = await CreateTransactionInvoiceService.go(translator, trx)
+      const licenceId = await CreateTransactionLicenceService.go({ ...translator, invoiceId }, trx)
+
       const transaction = await TransactionModel.query(trx)
         .insert({
           ...translator,
-          invoiceId: invoicePatch.id,
-          licenceId: licencePatch.id
+          invoiceId: invoiceId,
+          licenceId: licenceId
         })
         .returning(['id', 'client_id'])
-
-      await BillRunModel.query(trx).findById(billRunPatch.id).patch(billRunPatch.update)
-      await InvoiceModel.query(trx).findById(invoicePatch.id).patch(invoicePatch.update)
-      await LicenceModel.query(trx).findById(licencePatch.id).patch(licencePatch.update)
 
       return transaction
     })

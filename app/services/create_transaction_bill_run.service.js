@@ -5,36 +5,13 @@
  */
 
 const Boom = require('@hapi/boom')
-
-const CreateTransactionTallyService = require('./create_transaction_tally.service')
+const { raw } = require('../models/base.model')
 
 class CreateTransactionBillRunService {
-  /**
-  * Determines if a transaction is for the same region as the requested bill run and if so, generates a 'patch' object
-  * intended to be used in a call to `BillRunModel.query().patch()`. The 'patch' object has 2 properties
-  *
-  * - the ID of the bill run to update (determined by the `billRun` param)
-  * - a child object specifiying which fields to update and how
-  *
-  * A full example would be
-  *
-  * ```
-  * const patchObject = await CreateTransactionBillRunService.go(billRun, transaction)
-  * await BillRunModel.query().findById(patchObject.id).patch(patchObject.update)
-  * ```
-  *
-  * Note - Our experience is that patching a bill run record in this way is more performant than updating the bill run
-  * instance and calling `$patch()` on it.
-  *
-  * @param {module:BillRunModel} billRun the bill run this transaction is being added to
-  * @param {module:TransactionTranslator} transaction translator representing the transaction to be added
-  *
-  * @returns {Object} an object that contains the ID of the bill run to be updated, and the updates to be applied
-  */
   static async go (billRun, transaction) {
     this._validateBillRun(billRun, transaction)
 
-    return this._generatePatch(billRun.id, transaction)
+    return this._response(billRun.id, transaction)
   }
 
   static _validateBillRun (billRun, transaction) {
@@ -45,13 +22,45 @@ class CreateTransactionBillRunService {
     }
   }
 
-  static async _generatePatch (id, transaction) {
+  static async _response (id, transaction) {
     const patch = {
       id: id,
-      update: await CreateTransactionTallyService.go(transaction)
+      update: this._generatePatch(transaction)
     }
 
     return patch
+  }
+
+  static _generatePatch (transaction) {
+    const update = {}
+
+    if (transaction.chargeCredit) {
+      update.creditLineCount = raw('credit_line_count + ?', 1)
+      update.creditLineValue = raw('credit_line_value + ?', transaction.chargeValue)
+    } else if (transaction.chargeValue === 0) {
+      update.zeroLineCount = raw('zero_line_count + ?', 1)
+    } else {
+      update.debitLineCount = raw('debit_line_count + ?', 1)
+      update.debitLineValue = raw('debit_Line_value + ?', transaction.chargeValue)
+    }
+
+    if (transaction.subjectToMinimumCharge) {
+      update.subjectToMinimumChargeCount = raw('subject_to_minimum_charge_count + ?', 1)
+
+      if (transaction.chargeCredit) {
+        update.subjectToMinimumChargeCreditValue = raw(
+          'subject_to_minimum_charge_credit_value + ?',
+          transaction.chargeValue
+        )
+      } else if (transaction.chargeValue !== 0) {
+        update.subjectToMinimumChargeDebitValue = raw(
+          'subject_to_minimum_charge_debit_value + ?',
+          transaction.chargeValue
+        )
+      }
+    }
+
+    return update
   }
 }
 

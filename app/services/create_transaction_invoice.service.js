@@ -5,62 +5,64 @@
  */
 
 const { InvoiceModel } = require('../models')
+const { transaction } = require('../models/base.model')
 const CreateTransactionTallyService = require('./create_transaction_tally.service')
 
 class CreateTransactionInvoiceService {
-  /**
-  * Creates or finds the invoice record then generates and returns a 'patch' object to be used to update it based on
-  * values in the transaction
-  *
-  * The service accepts a transaction and creates an entry in the `invoices` table if one doesn't already exist for the
-  * transaction's 'bill run ID/customer ref/financial year' combo. It then generates a 'patch' object intended to be
-  * used in a call to `InvoiceModel.query().patch()`. The 'patch' object has 2 properties
-  *
-  * - the ID of the invoice to update (determined by either the fetched or created `invoice`)
-  * - a child object specifiying which fields to update and how
-  *
-  * A full example would be
-  *
-  * ```
-  * const patchObject = await CreateTransactionInvoiceService.go(transaction)
-  * await InvoiceModel.query().findById(patchObject.id).patch(patchObject.update)
-  * ```
-  *
-  * Note - Our experience is that patching a record in this way is more performant than updating the instance and
-  * calling `$patch()` on it.
-  *
-  * @param {module:TransactionTranslator} transaction translator representing the transaction to be added
-  *
-  * @returns {Object} an object that contains the ID of the invoice to be updated, and the updates to be applied
-  */
-  static async go (transaction) {
-    const invoice = await this._invoice(transaction)
+  static async go (transaction, trx) {
+    const id = await this._update(transaction, trx)
 
-    return this._generatePatch(invoice.id, transaction)
+    return id
   }
 
-  static async _invoice ({
-    billRunId,
-    customerReference,
-    chargeFinancialYear: financialYear
-  }) {
-    return InvoiceModel.query()
-      .findOrInsert(
-        {
-          billRunId,
-          customerReference,
-          financialYear
-        }
-      )
+  static async _update (transaction, trx) {
+    const insertRecord = this._generateInsertRecord(transaction)
+    const insertSql = InvoiceModel.knexQuery().insert(insertRecord).toQuery()
+    const updateSql = await this._generatePatch(transaction)
+
+    const result = await InvoiceModel.knex().raw(
+      `${insertSql}
+      ON CONFLICT (bill_run_id, customer_reference, financial_year)
+      DO UPDATE SET
+      ${updateSql}
+      RETURNING id;`
+    ).transacting(trx)
+
+    return result.rows[0].id
   }
 
-  static async _generatePatch (id, transaction) {
-    const patch = {
-      id: id,
-      update: await CreateTransactionTallyService.go(transaction)
+  static _generateInsertRecord (transaction) {
+    const record = {
+      billRunId: transaction.billRunId,
+      customerReference: transaction.customerReference,
+      financialYear: transaction.chargeFinancialYear
     }
 
-    return patch
+    if (transaction.chargeCredit) {
+      record.creditLineCount = 1
+      record.creditLineValue = transaction.chargeValue
+    } else if (transaction.chargeValue === 0) {
+      record.zeroLineCount = 1
+    } else {
+      record.debitLineCount = 1
+      record.debitLineValue = transaction.chargeValue
+    }
+
+    if (transaction.subjectToMinimumCharge) {
+      record.subjectToMinimumChargeCount = 1
+
+      if (transaction.chargeCredit) {
+        record.subjectToMinimumChargeCreditValue = transaction.chargeValue
+      } else if (transaction.chargeValue !== 0) {
+        record.subjectToMinimumChargeDebitValue = transaction.chargeValue
+      }
+    }
+
+    return record
+  }
+
+  static async _generatePatch (transaction) {
+    return await CreateTransactionTallyService.go(transaction, InvoiceModel.tableName)
   }
 }
 
