@@ -16,6 +16,7 @@ const CreateTransactionService = require('./create_transaction.service')
 const CreateTransactionTallyService = require('./create_transaction_tally.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
 const DbErrorsService = require('./db_errors.service')
+const DeleteBillRunService = require('./delete_bill_run.service')
 const DeleteInvoiceService = require('./delete_invoice.service')
 const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill_run_invoice.service')
 const GenerateBillRunService = require('./generate_bill_run.service')
@@ -54,6 +55,7 @@ module.exports = {
   CreateTransactionTallyService,
   DatabaseHealthCheckService,
   DbErrorsService,
+  DeleteBillRunService,
   DeleteInvoiceService,
   FetchAndValidateBillRunInvoiceService,
   GenerateBillRunService,
