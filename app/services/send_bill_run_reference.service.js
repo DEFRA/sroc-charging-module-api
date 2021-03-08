@@ -11,6 +11,22 @@ const NextFileReferenceService = require('./next_file_reference.service')
 const NextTransactionReferenceService = require('./next_transaction_reference.service')
 
 class SendBillRunReferenceService {
+  /**
+   * Prepare a 'bill run' to be ready for billing by generating transaction references for its billable invoices and
+   * generating an export file reference for it
+   *
+   * Before we export the invoices for a bill run to SSCL for billing we are required to generate a transaction
+   * reference for each one.
+   *
+   * With that done we then need to generate a file reference for the export but only if there were invoices to be
+   * billed. We don't want the files we send to SSCL to appear to have a gap in their reference so no one gets worried
+   * something has gotten lost or missed.
+   *
+   * Either way, the bill run status is updated to 'pending' to flag it ready to be exported.
+   *
+   * @param {@module RegimeModel} regime An instance of `RegimeModel` which matches the requested regime
+   * @param {@module:BillRunModel} billRun The 'bill run' to send for billing
+   */
   static async go (regime, billRun) {
     this._validate(billRun)
 
