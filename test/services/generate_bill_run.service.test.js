@@ -178,7 +178,7 @@ describe('Generate Bill Run service', () => {
       })
     })
 
-    // These tests are for net zero value invoices, ie. which where the net total of the invoice is zero
+    // These tests are for net zero value invoices, ie. where the net total of the invoice is zero
     describe('When there are net zero value invoices', () => {
       it("sets the 'zeroValueInvoice' flag to true", async () => {
         await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)

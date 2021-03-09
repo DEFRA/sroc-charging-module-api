@@ -54,13 +54,11 @@ class InvoiceModel extends BaseModel {
   static get modifiers () {
     return {
       /**
-       * zeroValue modifier selects all invoices which are zero value.
+       * zeroValue modifier selects all invoices which are net zero value.
        */
       zeroValue (query) {
         query
-          .where('creditLineCount', 0)
-          .where('debitLineCount', 0)
-          .where('zeroLineCount', '>', 0)
+          .whereRaw('debit_line_value - credit_line_value = 0')
       },
 
       /**
