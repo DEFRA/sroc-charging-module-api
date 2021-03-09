@@ -124,6 +124,8 @@ class GenerateBillRunService {
   }
 
   static async _summariseCreditInvoices (billRun, trx) {
+    // Note that we don't specify .where('deminimisInvoice', false) as we do with debit invoices as credit invoices
+    // aren't subject to deminimis
     const { count: creditNoteCount, value: creditNoteValue } = await this._calculateInvoices(
       await billRun.$relatedQuery('invoices', trx).modify('credit')
     )
