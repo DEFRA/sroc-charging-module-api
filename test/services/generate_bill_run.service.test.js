@@ -189,6 +189,36 @@ describe('Generate Bill Run service', () => {
 
         expect(invoice.deminimisInvoice).to.equal(true)
       })
+
+      it('correctly summarises debit invoices', async () => {
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 499)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+
+        await GenerateBillRunService.go(billRun)
+
+        const result = await BillRunModel.query().findById(billRun.id)
+
+        expect(result.invoiceCount).to.equal(0)
+        expect(result.invoiceValue).to.equal(0)
+      })
+
+      it('correctly summarises a debit invoice containing a credit', async () => {
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 499)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 250)
+        await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
+
+        await GenerateBillRunService.go(billRun)
+
+        const result = await BillRunModel.query().findById(billRun.id)
+
+        expect(result.invoiceCount).to.equal(0)
+        expect(result.invoiceValue).to.equal(0)
+      })
     })
 
     describe('When deminimis does not apply', () => {
