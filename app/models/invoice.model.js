@@ -103,6 +103,16 @@ class InvoiceModel extends BaseModel {
       debit (query) {
         query
           .whereRaw('debit_line_value > credit_line_value')
+      },
+
+      /**
+       * billable modifier only returns those invoices which are not flagged as deminimis or zero value. Intended to
+       * be used when `/send` a bill run is requested to determine which to generate transaction references for
+       */
+      billable (query) {
+        query
+          .where('zeroValueInvoice', false)
+          .where('deminimisInvoice', false)
       }
     }
   }

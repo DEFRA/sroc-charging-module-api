@@ -29,6 +29,7 @@ const NextTransactionReferenceService = require('./next_transaction_reference.se
 const ObjectCleaningService = require('./object_cleaning.service')
 const RequestBillRunService = require('./request_bill_run.service')
 const RulesService = require('./rules.service')
+const SendBillRunReferenceService = require('./send_bill_run_reference.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
 const ShowRegimeService = require('./show_regime.service')
 const ShowTransactionService = require('./show_transaction.service')
@@ -65,6 +66,7 @@ module.exports = {
   NextBillRunNumberService,
   NextFileReferenceService,
   NextTransactionReferenceService,
+  SendBillRunReferenceService,
   ShowAuthorisedSystemService,
   ShowRegimeService,
   ShowTransactionService,

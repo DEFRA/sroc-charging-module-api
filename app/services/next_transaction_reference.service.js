@@ -31,17 +31,19 @@ class NextTransactionReferenceService {
    * @param {string} region The region to get the next reference for
    * @param {string} transactionType Either a `'C'` or an `'I'` which denotes whether the invoice the reference is for
    * is an invoice or a credit note.
+   * @param {Object} [trx] Optional Objection database `transaction` object to be used in the update to
+   * `sequence_counters`
    *
    * @returns {string} the generated transaction reference
    */
-  static async go (regimeId, region, transactionType) {
-    const result = await this._updateSequenceCounter(regimeId, region)
+  static async go (regimeId, region, transactionType, trx = null) {
+    const result = await this._updateSequenceCounter(regimeId, region, trx)
 
     return this._response(region, result.transactionNumber, transactionType)
   }
 
-  static async _updateSequenceCounter (regimeId, region) {
-    return SequenceCounterModel.query()
+  static async _updateSequenceCounter (regimeId, region, trx) {
+    return SequenceCounterModel.query(trx)
       .findOne({
         regime_id: regimeId,
         region

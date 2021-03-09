@@ -6,6 +6,7 @@ const {
   CreateBillRunService,
   GenerateBillRunService,
   GenerateBillRunValidationService,
+  SendBillRunReferenceService,
   ViewBillRunService
 } = require('../../services')
 
@@ -42,12 +43,9 @@ class BillRunsController {
   }
 
   static async send (req, h) {
-    if (req.app.billRun.status === 'approved') {
-      return h.response().code(204)
-    } else {
-      const Boom = require('@hapi/boom')
-      throw Boom.conflict(`Bill run ${req.app.billRun.id} does not have a status of 'approved'.`)
-    }
+    await SendBillRunReferenceService.go(req.app.regime, req.app.billRun)
+
+    return h.response().code(204)
   }
 
   static async delete (req, h) {

@@ -35,6 +35,16 @@ class InvoiceHelper {
     subjectToMinimumChargeCreditValue = 0,
     subjectToMinimumChargeDebitValue = 0
   ) {
+    const flags = this._flags(
+      creditLineCount,
+      creditLineValue,
+      debitLineCount,
+      debitLineValue,
+      zeroLineCount,
+      subjectToMinimumChargeCreditValue,
+      subjectToMinimumChargeDebitValue
+    )
+
     return InvoiceModel.query()
       .insert({
         billRunId,
@@ -47,9 +57,39 @@ class InvoiceHelper {
         zeroLineCount,
         subjectToMinimumChargeCount,
         subjectToMinimumChargeCreditValue,
-        subjectToMinimumChargeDebitValue
+        subjectToMinimumChargeDebitValue,
+        ...flags
       })
       .returning('*')
+  }
+
+  static _flags (
+    creditLineCount,
+    creditLineValue,
+    debitLineCount,
+    debitLineValue,
+    zeroLineCount,
+    subjectToMinimumChargeCreditValue,
+    subjectToMinimumChargeDebitValue
+  ) {
+    const flags = {
+      zeroValueInvoice: false,
+      deminimisInvoice: false
+    }
+
+    const nonZeroLineCount = creditLineCount + debitLineCount
+    const netValue = debitLineValue - creditLineValue
+    const minimumChargeNetValue = subjectToMinimumChargeCreditValue + subjectToMinimumChargeDebitValue
+
+    if ((nonZeroLineCount === 0) && (zeroLineCount > 0)) {
+      flags.zeroValueInvoice = true
+    } else if ((netValue > 0) && (netValue < 500)) {
+      if (minimumChargeNetValue === 0) {
+        flags.deminimisInvoice = true
+      }
+    }
+
+    return flags
   }
 }
 
