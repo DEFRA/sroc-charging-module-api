@@ -136,6 +136,7 @@ describe('Generate Bill Run service', () => {
       expect(loggerFake.info.callCount).to.equal(1)
     })
 
+    // These tests are for zero value invoices, ie. which only contain zero-value transactions
     describe('When there are zero value invoices', () => {
       it("sets the 'zeroValueInvoice' flag to true", async () => {
         await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
@@ -177,6 +178,32 @@ describe('Generate Bill Run service', () => {
       })
     })
 
+    // These tests are for net zero value invoices, ie. where the net total of the invoice is zero
+    describe('When there are net zero value invoices', () => {
+      it("sets the 'zeroValueInvoice' flag to true", async () => {
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+        const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 1000, 0)
+        await GenerateBillRunService.go(billRun)
+
+        const result = await InvoiceModel.query().findById(invoice.id)
+
+        expect(result.zeroValueInvoice).to.equal(true)
+      })
+
+      describe('and there is also a non-net zero value invoice', () => {
+        it("leaves the 'zeroValueInvoice' flag of the non-zero value invoice as false", async () => {
+          await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+          await InvoiceHelper.addInvoice(billRun.id, customerReference, 2020, 1, 1000, 1, 1000, 0)
+          const invoice = await InvoiceHelper.addInvoice(billRun.id, customerReference, 2021, 1, 1000, 1, 200, 1)
+          await GenerateBillRunService.go(billRun)
+
+          const result = await InvoiceModel.query().findById(invoice.id)
+
+          expect(result.zeroValueInvoice).to.equal(false)
+        })
+      })
+    })
+
     describe('When deminimis applies', () => {
       it("sets the 'deminimisInvoice' flag to true", async () => {
         rulesServiceStub.restore()
@@ -188,6 +215,36 @@ describe('Generate Bill Run service', () => {
         const invoice = await InvoiceModel.query().findById(result.invoiceId)
 
         expect(invoice.deminimisInvoice).to.equal(true)
+      })
+
+      it('correctly summarises debit invoices', async () => {
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 499)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+
+        await GenerateBillRunService.go(billRun)
+
+        const result = await BillRunModel.query().findById(billRun.id)
+
+        expect(result.invoiceCount).to.equal(0)
+        expect(result.invoiceValue).to.equal(0)
+      })
+
+      it('correctly summarises a debit invoice containing a credit', async () => {
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 499)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 250)
+        await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
+
+        await GenerateBillRunService.go(billRun)
+
+        const result = await BillRunModel.query().findById(billRun.id)
+
+        expect(result.invoiceCount).to.equal(0)
+        expect(result.invoiceValue).to.equal(0)
       })
     })
 

@@ -10,7 +10,7 @@ exports.up = async function (knex) {
       table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'))
 
       // Data
-      table.uuid('bill_run_id').notNullable().references('bill_runs.id')
+      table.uuid('bill_run_id').notNullable()
       table.integer('charge_value').notNullable()
       table.boolean('charge_credit').notNullable()
 

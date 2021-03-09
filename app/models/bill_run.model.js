@@ -121,6 +121,10 @@ class BillRunModel extends BaseModel {
     return (this.creditLineCount === 0 && this.debitLineCount === 0 && this.zeroLineCount === 0)
   }
 
+  $billed () {
+    return this.status === 'billed'
+  }
+
   /**
    * netTotal method provides the net total of the invoice (debit value - credit value)
    */
