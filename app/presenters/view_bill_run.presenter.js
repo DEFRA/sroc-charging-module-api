@@ -21,13 +21,8 @@ class ViewBillRunPresenter extends BasePresenter {
         creditNoteValue: data.creditNoteValue,
         invoiceCount: data.invoiceCount,
         invoiceValue: data.invoiceValue,
-        creditLineCount: data.creditLineCount,
-        creditLineValue: data.creditLineValue,
-        debitLineCount: data.debitLineCount,
-        debitLineValue: data.debitLineValue,
-        zeroLineCount: data.zeroLineCount,
         netTotal: data.netTotal,
-        transactionFileReference: '',
+        transactionFileReference: data.fileReference,
         invoices: data.invoices
       }
     }
