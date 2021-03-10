@@ -124,13 +124,6 @@ class BillRunModel extends BaseModel {
   $billed () {
     return this.status === 'billed'
   }
-
-  /**
-   * netTotal method provides the net total of the invoice (debit value - credit value)
-   */
-  $netTotal () {
-    return this.debitLineValue - this.creditLineValue
-  }
 }
 
 module.exports = BillRunModel
