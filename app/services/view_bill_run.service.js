@@ -72,10 +72,13 @@ class ViewBillRunService {
 
     // The net total is not persisted in the db so we add in the result of the BillRunModel.$netTotal() method
     if (billRun) {
+      const invoices = this._addNetTotalToInvoices(billRun.invoices)
+      const netTotal = this._calculateNetTotal(invoices)
+
       return {
         ...billRun,
-        netTotal: billRun.$netTotal(),
-        invoices: this._addNetTotalToInvoices(billRun.invoices)
+        netTotal,
+        invoices
       }
     }
 
@@ -98,6 +101,16 @@ class ViewBillRunService {
         netTotal: invoice.$netTotal()
       }
     })
+  }
+
+  /**
+   * Take an array of invoices and calculate their net total, excluding any deminimis invoices
+   */
+  static _calculateNetTotal (invoices) {
+    return invoices.reduce((acc, invoice) => {
+      const invoiceValue = invoice.deminimisInvoice ? 0 : invoice.netTotal
+      return acc + invoiceValue
+    }, 0)
   }
 }
 
