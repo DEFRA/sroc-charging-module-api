@@ -105,6 +105,7 @@ describe('Create Minimum Charge Adjustment service', () => {
         'createdBy',
         'region',
         'customerReference',
+        'lineAreaCode',
         'lineAttr1',
         'lineAttr2',
         'lineDescription',

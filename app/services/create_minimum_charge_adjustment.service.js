@@ -23,6 +23,7 @@ class CreateMinimumChargeAdjustmentService {
         'createdBy',
         'region',
         'customerReference',
+        'lineAreaCode',
         'lineAttr1',
         'lineAttr2',
         'lineDescription',
