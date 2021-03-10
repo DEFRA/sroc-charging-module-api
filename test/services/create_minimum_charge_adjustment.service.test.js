@@ -98,6 +98,12 @@ describe('Create Minimum Charge Adjustment service', () => {
       expect(minimumChargeAdjustment.minimumChargeAdjustment).to.equal(true)
     })
 
+    it('has the correct lineDescription', async () => {
+      expect(minimumChargeAdjustment.lineDescription).to.equal(
+        'Minimum Charge Calculation - raised under Schedule 23 of the Environment Act 1995'
+      )
+    })
+
     it('reads data from another transaction within the licence', async () => {
       const fieldsToTest = [
         'billRunId',
@@ -108,7 +114,6 @@ describe('Create Minimum Charge Adjustment service', () => {
         'lineAreaCode',
         'lineAttr1',
         'lineAttr2',
-        'lineDescription',
         'ruleset',
         'chargeFinancialYear'
       ]
