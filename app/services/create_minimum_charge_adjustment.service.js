@@ -23,9 +23,9 @@ class CreateMinimumChargeAdjustmentService {
         'createdBy',
         'region',
         'customerReference',
+        'lineAreaCode',
         'lineAttr1',
         'lineAttr2',
-        'lineDescription',
         'ruleset',
         'chargeFinancialYear',
         'invoiceId',
@@ -36,6 +36,7 @@ class CreateMinimumChargeAdjustmentService {
     this._applyChargeValue(transactionTemplate, chargeValue)
     this._applyChargeCredit(transactionTemplate, chargeCredit)
     this._applyMinimumChargeFlags(transactionTemplate)
+    this._applyLineDescription(transactionTemplate)
 
     return transactionTemplate
   }
@@ -67,6 +68,17 @@ class CreateMinimumChargeAdjustmentService {
       subjectToMinimumCharge: true,
       minimumChargeAdjustment: true
     })
+  }
+
+  /**
+   * Assign the correct line description to the new minimum charge transaction record
+   */
+  static _applyLineDescription (translator) {
+    Object.assign(
+      translator, {
+        lineDescription: 'Minimum Charge Calculation - raised under Schedule 23 of the Environment Act 1995'
+      }
+    )
   }
 }
 

@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.6.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.6.0) (2021-03-10)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.5.0...v0.6.0)
+
+**Implemented enhancements:**
+
+- Connect Delete Bill Run service to endpoint [\#279](https://github.com/DEFRA/sroc-charging-module-api/pull/279) ([StuAA78](https://github.com/StuAA78))
+- Delete Bill Run service [\#268](https://github.com/DEFRA/sroc-charging-module-api/pull/268) ([StuAA78](https://github.com/StuAA78))
+
+**Fixed bugs:**
+
+- Fix incorrect values on minimum charge transaction [\#281](https://github.com/DEFRA/sroc-charging-module-api/pull/281) ([Cruikshanks](https://github.com/Cruikshanks))
+- Bill run summary net zero value fix [\#276](https://github.com/DEFRA/sroc-charging-module-api/pull/276) ([StuAA78](https://github.com/StuAA78))
+- Fix deminimis invoices being included in bill run figures [\#273](https://github.com/DEFRA/sroc-charging-module-api/pull/273) ([StuAA78](https://github.com/StuAA78))
+
+**Merged pull requests:**
+
+- Update the view bill run response [\#278](https://github.com/DEFRA/sroc-charging-module-api/pull/278) ([Cruikshanks](https://github.com/Cruikshanks))
+
 ## [v0.5.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.5.0) (2021-03-08)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.4.0...v0.5.0)
@@ -44,6 +63,7 @@
 **Fixed bugs:**
 
 - CalculateChargeTranslator title case fix for two-word strings [\#250](https://github.com/DEFRA/sroc-charging-module-api/pull/250) ([StuAA78](https://github.com/StuAA78))
+- Fix invoiceValue for minimum charge [\#241](https://github.com/DEFRA/sroc-charging-module-api/pull/241) ([StuAA78](https://github.com/StuAA78))
 
 **Merged pull requests:**
 
@@ -74,7 +94,6 @@
 
 **Fixed bugs:**
 
-- Fix invoiceValue for minimum charge [\#241](https://github.com/DEFRA/sroc-charging-module-api/pull/241) ([StuAA78](https://github.com/StuAA78))
 - Fix bill run $editable\(\) method [\#234](https://github.com/DEFRA/sroc-charging-module-api/pull/234) ([Cruikshanks](https://github.com/Cruikshanks))
 
 **Merged pull requests:**
