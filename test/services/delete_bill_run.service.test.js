@@ -62,16 +62,4 @@ describe('Delete Bill Run service', () => {
       expect(transactions).to.be.empty()
     })
   })
-
-  describe('When an invalid bill run is supplied', () => {
-    describe("because the status is 'billed'", () => {
-      it('throws an error', async () => {
-        billRun.status = 'billed'
-        const err = await expect(DeleteBillRunService.go(billRun)).to.reject()
-
-        expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal(`Bill run ${billRun.id} has a status of 'billed'.`)
-      })
-    })
-  })
 })
