@@ -305,7 +305,7 @@ describe('Presroc Bill Runs controller', () => {
     })
   })
 
-  describe('Delete bill run stub: PATCH /v2/{regimeId}/bill-runs/{billRunId}', () => {
+  describe('Delete bill run: DELETE /v2/{regimeId}/bill-runs/{billRunId}', () => {
     const options = (token, billRunId) => {
       return {
         method: 'DELETE',
@@ -314,14 +314,43 @@ describe('Presroc Bill Runs controller', () => {
       }
     }
 
-    beforeEach(async () => {
-      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    describe('When the request is valid', () => {
+      beforeEach(async () => {
+        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      })
+
+      it('returns success status 204', async () => {
+        const response = await server.inject(options(authToken, billRun.id))
+
+        expect(response.statusCode).to.equal(204)
+      })
     })
 
-    it('returns success status 204', async () => {
-      const response = await server.inject(options(authToken, billRun.id))
+    describe('When the request is invalid', () => {
+      describe('because the bill run does not exist', () => {
+        it('returns error status 404', async () => {
+          const unknownBillRunId = GeneralHelper.uuid4()
+          const response = await server.inject(options(authToken, unknownBillRunId))
+          const responsePayload = JSON.parse(response.payload)
 
-      expect(response.statusCode).to.equal(204)
+          expect(response.statusCode).to.equal(404)
+          expect(responsePayload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
+        })
+      })
+
+      describe('because the bill run has been billed', () => {
+        beforeEach(async () => {
+          billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'billed')
+        })
+
+        it('returns error status 409', async () => {
+          const response = await server.inject(options(authToken, billRun.id))
+          const responsePayload = JSON.parse(response.payload)
+
+          expect(response.statusCode).to.equal(409)
+          expect(responsePayload.message).to.equal(`Bill run ${billRun.id} cannot be edited because its status is billed.`)
+        })
+      })
     })
   })
 })
