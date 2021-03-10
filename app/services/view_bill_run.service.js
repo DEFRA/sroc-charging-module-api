@@ -34,18 +34,16 @@ class ViewBillRunService {
         'region',
         'status',
         'billRunNumber',
-        'creditLineCount',
-        'creditLineValue',
-        'debitLineCount',
-        'debitLineValue',
-        'zeroLineCount',
         'subjectToMinimumChargeCount',
         'subjectToMinimumChargeCreditValue',
         'subjectToMinimumChargeDebitValue',
+        'debitLineValue',
+        'creditLineValue',
         'creditNoteCount',
         'creditNoteValue',
         'invoiceCount',
-        'invoiceValue'
+        'invoiceValue',
+        'fileReference'
       )
       .withGraphFetched('invoices.licences')
       .modifyGraph('invoices', (builder) => {

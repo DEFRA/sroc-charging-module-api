@@ -97,14 +97,9 @@ describe('View bill run service', () => {
         }, billRun, authorisedSystem, regime)
       })
 
-      it('returns correct credit/debit values', async () => {
+      it('returns the net total', async () => {
         const result = await ViewBillRunService.go(billRun.id)
 
-        expect(result.billRun.creditLineCount).to.equal(1)
-        expect(result.billRun.creditLineValue).to.equal(creditLineValue)
-        expect(result.billRun.debitLineCount).to.equal(1)
-        expect(result.billRun.debitLineValue).to.equal(debitLineValue)
-        expect(result.billRun.zeroLineCount).to.equal(1)
         expect(result.billRun.netTotal).to.equal(debitLineValue - creditLineValue)
       })
 
