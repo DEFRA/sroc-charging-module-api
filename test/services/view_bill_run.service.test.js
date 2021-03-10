@@ -145,6 +145,61 @@ describe('View bill run service', () => {
         })
       })
     })
+
+    describe('when there is a deminimis invoice in the bill run', () => {
+      beforeEach(async () => {
+        debitLineValue = 100
+
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, debitLineValue)
+        await CreateTransactionService.go({
+          ...payload,
+          customerReference: 'DEBIT'
+        }, billRun, authorisedSystem, regime)
+      })
+
+      describe('and the bill run is generated', () => {
+        it('correctly calculates the net total', async () => {
+          await GenerateBillRunService.go(billRun)
+
+          const result = await ViewBillRunService.go(billRun.id)
+
+          expect(result.billRun.netTotal).to.equal(0)
+        })
+      })
+    })
+
+    describe('when the bill run is overall in credit', () => {
+      beforeEach(async () => {
+        creditLineValue = 5000
+        debitLineValue = 1000
+
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, creditLineValue)
+        await CreateTransactionService.go({
+          ...payload,
+          customerReference: 'CREDIT',
+          credit: true
+        }, billRun, authorisedSystem, regime)
+
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, debitLineValue)
+        await CreateTransactionService.go({
+          ...payload,
+          customerReference: 'DEBIT'
+        }, billRun, authorisedSystem, regime)
+      })
+
+      describe('and the bill run is generated', () => {
+        it('correctly calculates the net total', async () => {
+          await GenerateBillRunService.go(billRun)
+
+          const result = await ViewBillRunService.go(billRun.id)
+
+          expect(result.billRun.netTotal).to.equal(debitLineValue - creditLineValue)
+        })
+      })
+    })
   })
 
   describe('When there is no matching bill run', () => {

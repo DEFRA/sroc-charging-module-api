@@ -126,10 +126,14 @@ class BillRunModel extends BaseModel {
   }
 
   /**
-   * netTotal method provides the net total of the invoice (debit value - credit value)
+   * netTotal method provides the net total of the invoice by iterating over each invoice and summing the value of
+   * each, excluding any invoices which are deminimis
    */
   $netTotal () {
-    return this.debitLineValue - this.creditLineValue
+    return this.invoices.reduce((acc, invoice) => {
+      const invoiceValue = invoice.deminimisInvoice ? 0 : invoice.$netTotal()
+      return acc + invoiceValue
+    }, 0)
   }
 }
 
