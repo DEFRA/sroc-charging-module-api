@@ -73,7 +73,7 @@ describe('Show Transaction service', () => {
 
       const invoice = await InvoiceModel.query().findById(creditTransaction.invoiceId)
 
-      expect(result.invoice).to.equal(invoice)
+      expect(result.invoice).to.equal({ ...invoice, transactionType: invoice.$transactionType() })
     })
 
     it("returns a result that includes the related 'licence'", async () => {
