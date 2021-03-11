@@ -16,9 +16,9 @@ class GenerateTransactionFileService {
   static async go (filename) {
     const filenameWithPath = path.join(temporaryFilePath, filename)
 
-    const stream = await this._openStream(filenameWithPath)
-    await this._writeToStream(stream)
-    await this._closeStream(stream)
+    const writeStream = await this._openStream(filenameWithPath)
+    await this._writeToStream(writeStream)
+    await this._closeStream(writeStream)
 
     return filenameWithPath
   }
@@ -27,13 +27,13 @@ class GenerateTransactionFileService {
     return fs.createWriteStream(filenameWithPath)
   }
 
-  static async _writeToStream (stream) {
-    await stream.write('Hello world!')
+  static async _writeToStream (writeStream) {
+    await writeStream.write('Hello world!')
   }
 
-  static async _closeStream (stream) {
-    stream.end()
-    await finished(stream)
+  static async _closeStream (writeStream) {
+    writeStream.end()
+    await finished(writeStream)
   }
 }
 
