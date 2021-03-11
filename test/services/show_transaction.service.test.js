@@ -95,6 +95,12 @@ describe('Show Transaction service', () => {
 
       expect(Math.sign(result.signedChargeValue)).to.equal(-1)
     })
+
+    it("returns the 'transactionType' for the invoice", async () => {
+      const result = await ShowTransactionService.go(creditTransaction.id)
+
+      expect(result.invoice.transactionType).to.equal('C')
+    })
   })
 
   describe('When there is no matching transaction', () => {
