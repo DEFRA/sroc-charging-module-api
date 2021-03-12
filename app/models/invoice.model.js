@@ -68,8 +68,6 @@ class InvoiceModel extends BaseModel {
         query
           .whereRaw('debit_line_value - credit_line_value > 0')
           .whereRaw('debit_line_value - credit_line_value < ?', DEMINIMIS_LIMIT)
-          .where('subjectToMinimumChargeCreditValue', '=', 0)
-          .where('subjectToMinimumChargeDebitValue', '=', 0)
       },
 
       /**
