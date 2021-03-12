@@ -39,6 +39,7 @@ describe('View bill run service', () => {
   let rulesServiceStub
   let creditLineValue
   let debitLineValue
+  let minimumChargeDebitLineValue
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -150,6 +151,37 @@ describe('View bill run service', () => {
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'DEBIT'
+        }, billRun, authorisedSystem, regime)
+      })
+
+      describe('and the bill run is generated', () => {
+        it('correctly calculates the net total', async () => {
+          await GenerateBillRunService.go(billRun)
+
+          const result = await ViewBillRunService.go(billRun.id)
+
+          expect(result.billRun.netTotal).to.equal(0)
+        })
+      })
+    })
+
+    describe('when there is a deminimis invoice with minimum charge', () => {
+      beforeEach(async () => {
+        creditLineValue = 2365
+        minimumChargeDebitLineValue = 1
+
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, minimumChargeDebitLineValue)
+        await CreateTransactionService.go({
+          ...payload,
+          subjectToMinimumCharge: true
+        }, billRun, authorisedSystem, regime)
+
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, creditLineValue)
+        await CreateTransactionService.go({
+          ...payload,
+          credit: true
         }, billRun, authorisedSystem, regime)
       })
 
