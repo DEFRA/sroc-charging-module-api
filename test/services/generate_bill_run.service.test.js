@@ -609,6 +609,35 @@ describe('Generate Bill Run service', () => {
             expect(minimumChargeInvoice.minimumChargeInvoice).to.equal(true)
           })
         })
+
+        describe.only('and deminimis applies', () => {
+          beforeEach(async () => {
+            const minimumChargePayload = {
+              ...payload,
+              subjectToMinimumCharge: true
+            }
+
+            rulesServiceStub.restore()
+            RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 1)
+            await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
+
+            rulesServiceStub.restore()
+            RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2365)
+            await CreateTransactionService.go({
+              ...payload,
+              credit: true
+            }, billRun, authorisedSystem, regime)
+
+            await GenerateBillRunService.go(billRun)
+          })
+
+          it('updates the bill run as expected', async () => {
+            const generatedBillRun = await BillRunModel.query().findById(billRun.id)
+
+            expect(generatedBillRun.invoiceCount).to.equal(0)
+            expect(generatedBillRun.invoiceValue).to.equal(0)
+          })
+        })
       })
     })
 
