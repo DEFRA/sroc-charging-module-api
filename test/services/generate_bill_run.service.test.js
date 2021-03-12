@@ -543,8 +543,11 @@ describe('Generate Bill Run service', () => {
             expect(minimumChargeBill.subjectToMinimumChargeCreditValue).to.equal(2500)
             expect(minimumChargeBill.creditNoteCount).to.equal(0)
             expect(minimumChargeBill.creditNoteValue).to.equal(0)
-            expect(minimumChargeBill.invoiceCount).to.equal(1)
-            expect(minimumChargeBill.invoiceValue).to.equal(1)
+
+            // We expect invoice count and value to be 0 because the debit value of 2501 minus the credit value of 2500
+            // makes this a deminimis invoice and therefore not included in the figures.
+            expect(minimumChargeBill.invoiceCount).to.equal(0)
+            expect(minimumChargeBill.invoiceValue).to.equal(0)
 
             expect(minimumChargeInvoice.debitLineCount).to.equal(1)
             expect(minimumChargeInvoice.creditLineCount).to.equal(2)
