@@ -104,8 +104,8 @@ class GenerateBillRunService {
   }
 
   static async _summariseBillRun (billRun, trx) {
-    await this._setZeroValueInvoiceFlags(billRun, trx)
     await this._setDeminimisInvoiceFlags(billRun, trx)
+    await this._setZeroValueInvoiceFlags(billRun, trx)
     await this._summariseDebitInvoices(billRun, trx)
     await this._summariseCreditInvoices(billRun, trx)
     await this._setGeneratedStatus(billRun, trx)
