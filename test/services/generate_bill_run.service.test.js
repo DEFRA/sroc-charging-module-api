@@ -610,7 +610,7 @@ describe('Generate Bill Run service', () => {
           })
         })
 
-        describe.only('and deminimis applies', () => {
+        describe('and deminimis applies', () => {
           beforeEach(async () => {
             const minimumChargePayload = {
               ...payload,

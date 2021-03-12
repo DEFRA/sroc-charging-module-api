@@ -165,7 +165,7 @@ describe('View bill run service', () => {
       })
     })
 
-    describe.only('when there is a deminimis invoice with minimum charge', () => {
+    describe('when there is a deminimis invoice with minimum charge', () => {
       beforeEach(async () => {
         creditLineValue = 2365
         minimumChargeDebitLineValue = 1
