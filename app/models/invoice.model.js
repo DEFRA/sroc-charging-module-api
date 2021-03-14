@@ -114,6 +114,40 @@ class InvoiceModel extends BaseModel {
   }
 
   /**
+   * Returns an array of column names that are used for the unique constraint which groups invoices to transactions
+   *
+   * For each grouping of customer reference and financial year in a bill run we generate an 'invoice' and link the
+   * relevant transactions to it.
+   *
+   * We need this information when adding transactions to help generate the 'UPSERT' query we use to either create the
+   * invoice record for the first time, or update it as requests are received.
+   *
+   * @returns {string[]} an array of field names
+   */
+  static get transactionConstraintFields () {
+    return ['bill_run_id', 'customer_reference', 'financial_year']
+  }
+
+  /**
+   * Returns an object that contains the minimum (base) properties and values needed when inserting a new invoice
+   *
+   * Built for when adding a transaction to a bill run. We also create an `invoice` record for each customer reference
+   * and financial year grouping in a bill run. We need to do this as part of a PostgreSQL 'UPSERT' call in order to
+   * support new concurrent requests for the same invoice.
+   *
+   * It contains the base properties that must be set when the invoice record is first inserted into the DB.
+   *
+   * @return {Object} object that can built on and used with an Objection or Knex `.insert()` call
+   */
+  static createBaseOnInsertObject (transaction) {
+    return {
+      billRunId: transaction.billRunId,
+      customerReference: transaction.customerReference,
+      financialYear: transaction.chargeFinancialYear
+    }
+  }
+
+  /**
    * netTotal method provides the net total of the invoice (debit value - credit value)
    */
   $netTotal () {
