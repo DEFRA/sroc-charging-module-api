@@ -5,9 +5,9 @@
  */
 
 const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
-const { TransactionTranslator } = require('../translators')
-const CalculateChargeService = require('./calculate_charge.service')
 const { CreateTransactionPresenter } = require('../presenters')
+const CalculateChargeService = require('./calculate_charge.service')
+const { TransactionTranslator } = require('../translators')
 
 class CreateTransactionService {
   static async go (payload, billRun, authorisedSystem, regime) {
