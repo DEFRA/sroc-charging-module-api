@@ -86,8 +86,8 @@ class CreateTransactionTallyService {
         `subject_to_minimum_charge_count = ${tableName}.subject_to_minimum_charge_count + EXCLUDED.subject_to_minimum_charge_count`
       )
 
-      tallyObject.insertData.subjectToMinimumChargeCreditValue = chargeValue
-      tallyObject.patch.subjectToMinimumChargeCreditValue = raw(
+      tallyObject.insertData.subjectToMinimumChargeDebitValue = chargeValue
+      tallyObject.patch.subjectToMinimumChargeDebitValue = raw(
         'subject_to_minimum_charge_debit_value + ?',
         chargeValue
       )
