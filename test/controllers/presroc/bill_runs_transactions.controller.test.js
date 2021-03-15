@@ -106,6 +106,16 @@ describe('Presroc Bill runs transactions controller', () => {
         })
       })
 
+      describe("it's for a different region", () => {
+        it('returns an error', async () => {
+          payload.region = 'W'
+
+          const response = await server.inject(options(authToken, payload, billRun.id))
+
+          expect(response.statusCode).to.equal(422)
+        })
+      })
+
       describe("because the request is for a duplicate transaction (matching clientId's)", () => {
         it('returns an error', async () => {
           // Add the first transaction
