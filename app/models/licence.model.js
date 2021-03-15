@@ -41,19 +41,27 @@ class LicenceModel extends BaseModel {
     }
   }
 
+  static async transactionTallyUpsert (transaction, trx) {
+    const { CreateTransactionTallyService } = require('../services')
+
+    const tallyObject = CreateTransactionTallyService.go(transaction, this.tableName)
+    Object.assign(tallyObject.insertData, this._baseOnInsertObject(transaction))
+
+    const sql = `${LicenceModel.knexQuery().insert(tallyObject.insertData).toQuery()}
+      ON CONFLICT (invoice_id, licence_number)
+      DO UPDATE SET ${tallyObject.updateStatements.join(', ')}
+      RETURNING id;`
+
+    const result = await LicenceModel.knex().raw(sql).transacting(trx)
+
+    return result.rows[0].id
+  }
+
   /**
-   * Returns an array of column names that are used for the unique constraint which groups licences to invoices
-   *
-   * For each grouping of invoice ID and licence number in a bill run we generate a 'licence' and link the
-   * relevant transactions to it.
-   *
-   * We need this information when adding transactions to help generate the 'UPSERT' query we use to either create the
-   * licence record for the first time, or update it as requests are received.
-   *
-   * @returns {string[]} an array of field names
+   * netTotal method provides the net total of the licence (debit value - credit value)
    */
-  static get transactionConstraintFields () {
-    return ['invoice_id', 'licence_number']
+  $netTotal () {
+    return this.debitLineValue - this.creditLineValue
   }
 
   /**
@@ -67,19 +75,12 @@ class LicenceModel extends BaseModel {
    *
    * @return {Object} object that can built on and used with an Objection or Knex `.insert()` call
    */
-  static createBaseOnInsertObject (transaction) {
+  static _baseOnInsertObject (transaction) {
     return {
       billRunId: transaction.billRunId,
       invoiceId: transaction.invoiceId,
       licenceNumber: transaction.lineAttr1
     }
-  }
-
-  /**
-   * netTotal method provides the net total of the licence (debit value - credit value)
-   */
-  $netTotal () {
-    return this.debitLineValue - this.creditLineValue
   }
 }
 

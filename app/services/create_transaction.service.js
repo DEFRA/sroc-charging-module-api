@@ -7,7 +7,6 @@
 const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
 const { TransactionTranslator } = require('../translators')
 const CalculateChargeService = require('./calculate_charge.service')
-const CreateTransactionUpsertService = require('./create_transaction_upsert.service')
 const { CreateTransactionPresenter } = require('../presenters')
 
 class CreateTransactionService {
@@ -52,12 +51,12 @@ class CreateTransactionService {
 
   static _create (translator) {
     return TransactionModel.transaction(async trx => {
-      await CreateTransactionUpsertService.go(translator, BillRunModel, trx)
+      await BillRunModel.transactionTallyPatch(translator, trx)
 
-      const invoiceId = await CreateTransactionUpsertService.go(translator, InvoiceModel, trx)
+      const invoiceId = await InvoiceModel.transactionTallyUpsert(translator, trx)
       Object.assign(translator, { invoiceId })
 
-      const licenceId = await CreateTransactionUpsertService.go(translator, LicenceModel, trx)
+      const licenceId = await LicenceModel.transactionTallyUpsert(translator, trx)
 
       const transaction = await TransactionModel.query(trx)
         .insert({
