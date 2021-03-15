@@ -33,6 +33,16 @@ describe('Create Transaction Tally service', () => {
       })
     })
 
+    describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+      it("only includes 'debit' statements", () => {
+        const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
+
+        expect(updateStatements).to.be.length(2)
+        expect(updateStatements[0]).to.startWith('debit_line_count')
+        expect(updateStatements[1]).to.startWith('debit_Line_value')
+      })
+    })
+
     describe("the 'patch' property of the returned 'tallyObject'", () => {
       it("has correctly configured instances of 'Objection RawBuilder'", () => {
         const patch = CreateTransactionTallyService.go(transaction, tableName).patch
@@ -58,7 +68,7 @@ describe('Create Transaction Tally service', () => {
       })
 
       describe("the 'insertData' property of the returned 'tallyObject'", () => {
-        it("only includes 'debit' and 'subjectToMinimumChargeCount' properties", () => {
+        it("only includes 'debit' and 'subjectToMinimumCharge' properties", () => {
           const insertData = CreateTransactionTallyService.go(transaction, tableName).insertData
 
           expect(insertData).to.only.include([
@@ -67,6 +77,18 @@ describe('Create Transaction Tally service', () => {
             'subjectToMinimumChargeCount',
             'subjectToMinimumChargeDebitValue'
           ])
+        })
+      })
+
+      describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+        it("only includes 'debit' and 'subjectToMinimumCharge' statements", () => {
+          const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
+
+          expect(updateStatements).to.be.length(4)
+          expect(updateStatements[0]).to.startWith('debit_line_count')
+          expect(updateStatements[1]).to.startWith('debit_Line_value')
+          expect(updateStatements[2]).to.startWith('subject_to_minimum_charge_count')
+          expect(updateStatements[3]).to.startWith('subject_to_minimum_charge_debit_value')
         })
       })
 
@@ -108,6 +130,16 @@ describe('Create Transaction Tally service', () => {
       })
     })
 
+    describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+      it("only includes 'credit' statements", () => {
+        const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
+
+        expect(updateStatements).to.be.length(2)
+        expect(updateStatements[0]).to.startWith('credit_line_count')
+        expect(updateStatements[1]).to.startWith('credit_line_value')
+      })
+    })
+
     describe("the 'patch' property of the returned 'tallyObject'", () => {
       it("has correctly configured instances of 'Objection RawBuilder'", () => {
         const patch = CreateTransactionTallyService.go(transaction, tableName).patch
@@ -128,7 +160,7 @@ describe('Create Transaction Tally service', () => {
       })
 
       describe("the 'insertData' property of the returned 'tallyObject'", () => {
-        it("only includes 'credit' and 'subjectToMinimumChargeCount' properties", () => {
+        it("only includes 'credit' and 'subjectToMinimumCharge' properties", () => {
           const insertData = CreateTransactionTallyService.go(transaction, tableName).insertData
 
           expect(insertData).to.only.include([
@@ -137,6 +169,18 @@ describe('Create Transaction Tally service', () => {
             'subjectToMinimumChargeCount',
             'subjectToMinimumChargeCreditValue'
           ])
+        })
+      })
+
+      describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+        it("only includes 'credit' and 'subjectToMinimumCharge' statements", () => {
+          const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
+
+          expect(updateStatements).to.be.length(4)
+          expect(updateStatements[0]).to.startWith('credit_line_count')
+          expect(updateStatements[1]).to.startWith('credit_line_value')
+          expect(updateStatements[2]).to.startWith('subject_to_minimum_charge_count')
+          expect(updateStatements[3]).to.startWith('subject_to_minimum_charge_credit_value')
         })
       })
 
@@ -178,6 +222,15 @@ describe('Create Transaction Tally service', () => {
       })
     })
 
+    describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+      it("only includes 'zero value' statements", () => {
+        const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
+
+        expect(updateStatements).to.be.length(1)
+        expect(updateStatements[0]).to.startWith('zero_line_count')
+      })
+    })
+
     describe("the 'patch' property of the returned 'tallyObject'", () => {
       it("has correctly configured instances of 'Objection RawBuilder'", () => {
         const patch = CreateTransactionTallyService.go(transaction, tableName).patch
@@ -198,6 +251,16 @@ describe('Create Transaction Tally service', () => {
           const insertData = CreateTransactionTallyService.go(transaction, tableName).insertData
 
           expect(insertData).to.only.include(['zeroLineCount', 'subjectToMinimumChargeCount'])
+        })
+      })
+
+      describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+        it("only includes 'zero value' and 'subjectToMinimumCharge' statements", () => {
+          const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
+
+          expect(updateStatements).to.be.length(2)
+          expect(updateStatements[0]).to.startWith('zero_line_count')
+          expect(updateStatements[1]).to.startWith('subject_to_minimum_charge_count')
         })
       })
 
