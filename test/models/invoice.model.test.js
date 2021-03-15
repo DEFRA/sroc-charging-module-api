@@ -103,6 +103,54 @@ describe('Invoice Model', () => {
     })
   })
 
+  describe('the transactionTallyPatch() class method', () => {
+    const transaction = {
+      customerReference: 'INV0000001',
+      chargeFinancialYear: 2020,
+      chargeCredit: false,
+      chargeValue: 100,
+      subjectToMinimumCharge: false
+    }
+
+    describe('when no invoice exists', () => {
+      it('creates a new invoice record', async () => {
+        // Have to apply this in the test. Outside of it `billRun` does not exist
+        transaction.billRunId = billRun.id
+
+        const invoiceId = await InvoiceModel.transactionTallyUpsert(transaction)
+        const newInvoice = await InvoiceModel.query().findById(invoiceId)
+
+        expect(newInvoice.billRunId).to.equal(transaction.billRunId)
+        expect(newInvoice.customerReference).to.equal(transaction.customerReference)
+        expect(newInvoice.financialYear).to.equal(transaction.chargeFinancialYear)
+        expect(newInvoice.debitLineCount).to.equal(1)
+        expect(newInvoice.debitLineValue).to.equal(transaction.chargeValue)
+        expect(newInvoice.subjectToMinimumChargeCount).to.equal(0)
+      })
+    })
+
+    describe('when an invoice already exists', () => {
+      beforeEach(async () => {
+        await InvoiceHelper.addInvoice(billRun.id, 'INV0000001', 2020, 0, 0, 1, 100)
+      })
+
+      it("updates the 'tally' fields for the matching invoice", async () => {
+        // Have to apply this in the test. Outside of it `billRun` does not exist
+        transaction.billRunId = billRun.id
+
+        const invoiceId = await InvoiceModel.transactionTallyUpsert(transaction)
+        const updatedInvoice = await InvoiceModel.query().findById(invoiceId)
+
+        expect(updatedInvoice.billRunId).to.equal(transaction.billRunId)
+        expect(updatedInvoice.customerReference).to.equal(transaction.customerReference)
+        expect(updatedInvoice.financialYear).to.equal(transaction.chargeFinancialYear)
+        expect(updatedInvoice.debitLineCount).to.equal(2)
+        expect(updatedInvoice.debitLineValue).to.equal(transaction.chargeValue * 2)
+        expect(updatedInvoice.subjectToMinimumChargeCount).to.equal(0)
+      })
+    })
+  })
+
   describe('$transactionType method', () => {
     it('returns C for a credit', async () => {
       const credit = await InvoiceHelper.addInvoice(billRun.id, 'CRD0000001', 2020, 1, 500, 0, 0, 0)
