@@ -6,25 +6,18 @@
 
 const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
 const { TransactionTranslator } = require('../translators')
-const CreateTransactionBillRunService = require('./create_transaction_bill_run.service')
 const CalculateChargeService = require('./calculate_charge.service')
-const CreateTransactionInvoiceService = require('./create_transaction_invoice.service')
-const CreateTransactionLicenceService = require('./create_transaction_licence.service')
+const CreateTransactionUpsertService = require('./create_transaction_upsert.service')
 const { CreateTransactionPresenter } = require('../presenters')
 
 class CreateTransactionService {
   static async go (payload, billRun, authorisedSystem, regime) {
     const translator = this._translateRequest(payload, billRun.id, authorisedSystem, regime)
-
     const calculatedCharge = await this._calculateCharge(translator, regime)
 
     this._applyCalculatedCharge(translator, calculatedCharge)
 
-    const billRunPatch = await this._generateBillRunPatch(billRun, translator)
-    const invoicePatch = await this._generateInvoicePatch(translator)
-    const licencePatch = await this._generateLicencePatch({ ...translator, invoiceId: invoicePatch.id })
-
-    const transaction = await this._create(translator, billRunPatch, invoicePatch, licencePatch)
+    const transaction = await this._create(translator)
 
     return this._response(transaction)
   }
@@ -57,31 +50,22 @@ class CreateTransactionService {
     Object.assign(translator, calculatedCharge)
   }
 
-  static async _generateBillRunPatch (billRun, translator) {
-    return CreateTransactionBillRunService.go(billRun, translator)
-  }
-
-  static async _generateInvoicePatch (translator) {
-    return CreateTransactionInvoiceService.go(translator)
-  }
-
-  static async _generateLicencePatch (translator) {
-    return CreateTransactionLicenceService.go(translator)
-  }
-
-  static _create (translator, billRunPatch, invoicePatch, licencePatch) {
+  static _create (translator) {
     return TransactionModel.transaction(async trx => {
+      await CreateTransactionUpsertService.go(translator, BillRunModel, trx)
+
+      const invoiceId = await CreateTransactionUpsertService.go(translator, InvoiceModel, trx)
+      Object.assign(translator, { invoiceId })
+
+      const licenceId = await CreateTransactionUpsertService.go(translator, LicenceModel, trx)
+
       const transaction = await TransactionModel.query(trx)
         .insert({
           ...translator,
-          invoiceId: invoicePatch.id,
-          licenceId: licencePatch.id
+          invoiceId: invoiceId,
+          licenceId: licenceId
         })
         .returning(['id', 'client_id'])
-
-      await BillRunModel.query(trx).findById(billRunPatch.id).patch(billRunPatch.update)
-      await InvoiceModel.query(trx).findById(invoicePatch.id).patch(invoicePatch.update)
-      await LicenceModel.query(trx).findById(licencePatch.id).patch(licencePatch.update)
 
       return transaction
     })
