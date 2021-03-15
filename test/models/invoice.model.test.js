@@ -43,7 +43,6 @@ describe('Invoice Model', () => {
 
         it("only returns those which are 'deminimis'", async () => {
           const results = await InvoiceModel.query().modify('deminimis')
-          console.log(results)
 
           expect(results.length).to.equal(1)
           expect(results[0].id).to.equal(deminimisInvoice.id)
