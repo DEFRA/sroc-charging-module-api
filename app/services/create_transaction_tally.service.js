@@ -67,60 +67,69 @@ class CreateTransactionTallyService {
    * @returns {Object} the 'tally' object with its populated `insertData`, `updateStatements`, and `patch` properties
    */
   static go (transaction, tableName) {
-    return this._generateTallyObject(transaction, tableName)
-  }
-
-  static _generateTallyObject (transaction, tableName) {
     const tallyObject = {
       insertData: {},
       updateStatements: [],
       patch: {}
     }
 
-    if (transaction.chargeValue === 0) {
-      this._applyZeroValueChanges(tallyObject, tableName, transaction)
-    } else {
-      this._applyStandardChanges(tallyObject, tableName, transaction)
+    const prefix = this._determineTallyPrefix(transaction)
+
+    // Add the count based statements, for example, debitLineCount
+    this._applyStandardTallyStatements(tallyObject, tableName, prefix, 'Count', 1)
+    // Add the value based statements, for example, debitLineValue
+    this._applyStandardTallyStatements(tallyObject, tableName, prefix, 'Value', transaction.chargeValue)
+
+    if (transaction.subjectToMinimumCharge) {
+      // Add the statements to handle subjectToMinimumChargeCount
+      this._applyMinimumChargeCountTallyStatements(tallyObject, tableName)
+      // Add the value based statements, for example, subjectToMinimumChargeDebitValue
+      this._applyMinimumChargeValueTallyStatements(tallyObject, tableName, prefix, transaction.chargeValue)
     }
 
     return tallyObject
   }
 
-  static _applyStandardChanges (tallyObject, tableName, transaction) {
-    const prefix = transaction.chargeCredit ? 'Credit' : 'Debit'
+  /**
+   * Determine what the prefix to use (`Debit`, `Credit` or `Zero`) in the statements
+   *
+   * Note - We title case the returned value so it can be used in both standard tally fields and subject to minimum
+   * charge ones. In `_applyStandardTallyStatements()` it will be lowercased so we get `debitLineCount`. In
+   * `_applyMinimumChargeValueTallyStatements() we need to generate `subjectToMinimumChargeCreditValue`. It's easier
+   * to lowercase a string than title case it.
+   */
+  static _determineTallyPrefix (transaction) {
+    let prefix = transaction.chargeCredit ? 'Credit' : 'Debit'
 
-    this._updateTallyObject(tallyObject, tableName, prefix, 'Count', 1)
-    this._updateTallyObject(tallyObject, tableName, prefix, 'Value', transaction.chargeValue)
-
-    if (transaction.subjectToMinimumCharge) {
-      this._updateMinimumChargeCountTallyObject(tallyObject, tableName)
-      this._updateMinimumChargeValueTallyObject(tallyObject, tableName, prefix, transaction.chargeValue)
+    if (transaction.chargeValue === 0) {
+      prefix = 'Zero'
     }
+
+    return prefix
   }
 
-  static _applyZeroValueChanges (tallyObject, tableName, transaction) {
-    this._updateTallyObject(tallyObject, tableName, 'zero', 'Count', 1)
+  static _applyStandardTallyStatements (tallyObject, tableName, prefix, suffix, value) {
+    // Don't bother to generate an insert/update/patch if the value is 0. There is no point
+    if (!value) return
 
-    if (transaction.subjectToMinimumCharge) {
-      this._updateMinimumChargeCountTallyObject(tallyObject, tableName)
-    }
-  }
-
-  static _updateTallyObject (tallyObject, tableName, prefix, suffix, value) {
     // For example debitLineCount
     const propertyName = `${prefix.toLowerCase()}Line${suffix}`
-
     tallyObject.insertData[propertyName] = value
 
     // For example debit_line_count
     const columnName = `${prefix}_line_${suffix}`.toLowerCase()
-
     tallyObject.patch[propertyName] = raw(`${columnName} + ?`, value)
-
     tallyObject.updateStatements.push(`${columnName} = ${tableName}.${columnName} + EXCLUDED.${columnName}`)
   }
 
-  static _updateMinimumChargeCountTallyObject (tallyObject, tableName) {
+  /**
+   * Apply statements to insert/patch/update `subjectToMinimumChargeCount`
+   *
+   * If a transaction is subject to minimum charge, it doesn't matter if it's a debit, credit or zero value we need to
+   * increment the `subjectToMinimumChargeCount` field. So, it has its own method and we felt its simpler and clearer
+   * than trying to be dynamic in `_applyMinimumChargeValueTallyStatements()`.
+   */
+  static _applyMinimumChargeCountTallyStatements (tallyObject, tableName) {
     tallyObject.insertData.subjectToMinimumChargeCount = 1
     tallyObject.patch.subjectToMinimumChargeCount = raw('subject_to_minimum_charge_count + ?', 1)
     tallyObject.updateStatements.push(
@@ -128,17 +137,17 @@ class CreateTransactionTallyService {
     )
   }
 
-  static _updateMinimumChargeValueTallyObject (tallyObject, tableName, prefix, value) {
+  static _applyMinimumChargeValueTallyStatements (tallyObject, tableName, prefix, value) {
+    // Don't bother to generate an insert/update/patch if the value is 0. There is no point
+    if (!value) return
+
     // For example subjectToMinimumChargeCreditValue
     const propertyName = `subjectToMinimumCharge${prefix}Value`
-
     tallyObject.insertData[propertyName] = value
 
     // For example subject_to_minimum_charge_credit_value
     const columnName = `subject_to_minimum_charge_${prefix}_value`.toLowerCase()
-
     tallyObject.patch[propertyName] = raw(`${columnName} + ?`, value)
-
     tallyObject.updateStatements.push(`${columnName} = ${tableName}.${columnName} + EXCLUDED.${columnName}`)
   }
 }
