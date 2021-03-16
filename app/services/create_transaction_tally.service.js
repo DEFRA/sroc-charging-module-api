@@ -77,95 +77,69 @@ class CreateTransactionTallyService {
       patch: {}
     }
 
-    const applyArguments = [
-      tableName,
-      transaction.chargeValue,
-      transaction.subjectToMinimumCharge
-    ]
-
-    if (transaction.chargeCredit) {
-      this._applyCreditToUpsertObject(tallyObject, ...applyArguments)
-    } else if (transaction.chargeValue === 0) {
-      this._applyZeroToUpsertObject(tallyObject, tableName, transaction.subjectToMinimumCharge)
+    if (transaction.chargeValue === 0) {
+      this._applyZeroValueChanges(tallyObject, tableName, transaction)
     } else {
-      this._applyDebitToUpsertObject(tallyObject, ...applyArguments)
+      this._applyStandardChanges(tallyObject, tableName, transaction)
     }
 
     return tallyObject
   }
 
-  static _applyCreditToUpsertObject (tallyObject, tableName, chargeValue, subjectToMinimumCharge) {
-    tallyObject.insertData.creditLineCount = 1
-    tallyObject.patch.creditLineCount = raw('credit_line_count + ?', 1)
-    tallyObject.updateStatements.push(
-      `credit_line_count = ${tableName}.credit_line_count + EXCLUDED.credit_line_count`
-    )
+  static _applyStandardChanges (tallyObject, tableName, transaction) {
+    const prefix = transaction.chargeCredit ? 'Credit' : 'Debit'
 
-    tallyObject.insertData.creditLineValue = chargeValue
-    tallyObject.patch.creditLineValue = raw('credit_line_value + ?', chargeValue)
-    tallyObject.updateStatements.push(
-      `credit_line_value = ${tableName}.credit_line_value + EXCLUDED.credit_line_value`
-    )
+    this._updateTallyObject(tallyObject, tableName, prefix, 'Count', 1)
+    this._updateTallyObject(tallyObject, tableName, prefix, 'Value', transaction.chargeValue)
 
-    if (subjectToMinimumCharge) {
-      this._applySubjectToMinimumChargeCount(tallyObject, tableName)
-
-      tallyObject.insertData.subjectToMinimumChargeCreditValue = chargeValue
-      tallyObject.patch.subjectToMinimumChargeCreditValue = raw(
-        'subject_to_minimum_charge_credit_value + ?',
-        chargeValue
-      )
-      tallyObject.updateStatements.push(
-        `subject_to_minimum_charge_credit_value = ${tableName}.subject_to_minimum_charge_credit_value + EXCLUDED.subject_to_minimum_charge_credit_value`
-      )
+    if (transaction.subjectToMinimumCharge) {
+      this._updateMinimumChargeCountTallyObject(tallyObject, tableName)
+      this._updateMinimumChargeValueTallyObject(tallyObject, tableName, prefix, transaction.chargeValue)
     }
   }
 
-  static _applyDebitToUpsertObject (tallyObject, tableName, chargeValue, subjectToMinimumCharge) {
-    tallyObject.insertData.debitLineCount = 1
-    tallyObject.patch.debitLineCount = raw('debit_line_count + ?', 1)
-    tallyObject.updateStatements.push(
-      `debit_line_count = ${tableName}.debit_line_count + EXCLUDED.debit_line_count`
-    )
+  static _applyZeroValueChanges (tallyObject, tableName, transaction) {
+    this._updateTallyObject(tallyObject, tableName, 'zero', 'Count', 1)
 
-    tallyObject.insertData.debitLineValue = chargeValue
-    tallyObject.patch.debitLineValue = raw('debit_Line_value + ?', chargeValue)
-    tallyObject.updateStatements.push(
-      `debit_Line_value = ${tableName}.debit_Line_value + EXCLUDED.debit_Line_value`
-    )
-
-    if (subjectToMinimumCharge) {
-      this._applySubjectToMinimumChargeCount(tallyObject, tableName)
-
-      tallyObject.insertData.subjectToMinimumChargeDebitValue = chargeValue
-      tallyObject.patch.subjectToMinimumChargeDebitValue = raw(
-        'subject_to_minimum_charge_debit_value + ?',
-        chargeValue
-      )
-      tallyObject.updateStatements.push(
-        `subject_to_minimum_charge_debit_value = ${tableName}.subject_to_minimum_charge_debit_value + EXCLUDED.subject_to_minimum_charge_debit_value`
-      )
+    if (transaction.subjectToMinimumCharge) {
+      this._updateMinimumChargeCountTallyObject(tallyObject, tableName)
     }
   }
 
-  static _applyZeroToUpsertObject (tallyObject, tableName, subjectToMinimumCharge) {
-    tallyObject.insertData.zeroLineCount = 1
-    tallyObject.patch.zeroLineCount = raw('zero_line_count + ?', 1)
-    tallyObject.updateStatements.push(
-      `zero_line_count = ${tableName}.zero_line_count + EXCLUDED.zero_line_count`
-    )
+  static _updateTallyObject (tallyObject, tableName, prefix, suffix, value) {
+    // For example debitLineCount
+    const propertyName = `${prefix.toLowerCase()}Line${suffix}`
 
-    if (subjectToMinimumCharge) {
-      this._applySubjectToMinimumChargeCount(tallyObject, tableName)
-    }
+    tallyObject.insertData[propertyName] = value
+
+    // For example debit_line_count
+    const columnName = `${prefix}_line_${suffix}`.toLowerCase()
+
+    tallyObject.patch[propertyName] = raw(`${columnName} + ?`, value)
+
+    tallyObject.updateStatements.push(`${columnName} = ${tableName}.${columnName} + EXCLUDED.${columnName}`)
   }
 
-  static _applySubjectToMinimumChargeCount (tallyObject, tableName) {
+  static _updateMinimumChargeCountTallyObject (tallyObject, tableName) {
     tallyObject.insertData.subjectToMinimumChargeCount = 1
     tallyObject.patch.subjectToMinimumChargeCount = raw('subject_to_minimum_charge_count + ?', 1)
     tallyObject.updateStatements.push(
       `subject_to_minimum_charge_count = ${tableName}.subject_to_minimum_charge_count + EXCLUDED.subject_to_minimum_charge_count`
     )
+  }
+
+  static _updateMinimumChargeValueTallyObject (tallyObject, tableName, prefix, value) {
+    // For example subjectToMinimumChargeCreditValue
+    const propertyName = `subjectToMinimumCharge${prefix}Value`
+
+    tallyObject.insertData[propertyName] = value
+
+    // For example subject_to_minimum_charge_credit_value
+    const columnName = `subject_to_minimum_charge_${prefix}_value`.toLowerCase()
+
+    tallyObject.patch[propertyName] = raw(`${columnName} + ?`, value)
+
+    tallyObject.updateStatements.push(`${columnName} = ${tableName}.${columnName} + EXCLUDED.${columnName}`)
   }
 }
 

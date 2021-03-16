@@ -39,7 +39,7 @@ describe('Create Transaction Tally service', () => {
 
         expect(updateStatements).to.be.length(2)
         expect(updateStatements[0]).to.startWith('debit_line_count')
-        expect(updateStatements[1]).to.startWith('debit_Line_value')
+        expect(updateStatements[1]).to.startWith('debit_line_value')
       })
     })
 
@@ -86,7 +86,7 @@ describe('Create Transaction Tally service', () => {
 
           expect(updateStatements).to.be.length(4)
           expect(updateStatements[0]).to.startWith('debit_line_count')
-          expect(updateStatements[1]).to.startWith('debit_Line_value')
+          expect(updateStatements[1]).to.startWith('debit_line_value')
           expect(updateStatements[2]).to.startWith('subject_to_minimum_charge_count')
           expect(updateStatements[3]).to.startWith('subject_to_minimum_charge_debit_value')
         })
