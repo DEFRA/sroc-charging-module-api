@@ -41,7 +41,7 @@ class LicenceModel extends BaseModel {
     }
   }
 
-  static async transactionTallyUpsert (transaction, trx) {
+  static async transactionTallyUpsert (transaction, trx = null) {
     const { CreateTransactionTallyService } = require('../services')
 
     const tallyObject = CreateTransactionTallyService.go(transaction, this.tableName)
@@ -52,7 +52,7 @@ class LicenceModel extends BaseModel {
       DO UPDATE SET ${tallyObject.updateStatements.join(', ')}
       RETURNING id;`
 
-    const result = await LicenceModel.knex().raw(sql).transacting(trx)
+    const result = await this._applyUpsert(sql, trx)
 
     return result.rows[0].id
   }
@@ -81,6 +81,38 @@ class LicenceModel extends BaseModel {
       invoiceId: transaction.invoiceId,
       licenceNumber: transaction.lineAttr1
     }
+  }
+
+  /**
+   * Apply the PostgreSQL 'upsert' query generated in `transactionTallyUpsert()`
+   *
+   * {@link https://vincit.github.io/objection.js/guide/transactions.html|Objection} can handle us passing in a `null`
+   * value to `query()`. This makes testing of services easy because in the app we can pass through a transaction
+   * object but in our unit tests we can just leave it blank. The query still gets run, the database updated, and our
+   * tests pass.
+   *
+   * We've had to resort to generating our own 'upsert' query and rely on `Knex.raw()` because it doesn't support
+   * incrementing existing fields in the update. We've also found Knex throws an error if the transaction object passed
+   * to `transacting()` is not a valid transaction.
+   *
+   * So, we've had to create this function to support our unit testing and avoid the need to generate Knex transaction
+   * instances in the tests.
+   *
+   * @param {string} sql Upsert SQL statement that will be used in the `knex().raw()` call
+   * @param {object} trx the transaction instance to use if query is to be called within one, else 'null'
+   *
+   * @returns {Object} object that holds the result of the Knex call
+   */
+  static async _applyUpsert (sql, trx) {
+    let result
+
+    if (trx) {
+      result = await LicenceModel.knex().raw(sql).transacting(trx)
+    } else {
+      result = await LicenceModel.knex().raw(sql)
+    }
+
+    return result
   }
 }
 
