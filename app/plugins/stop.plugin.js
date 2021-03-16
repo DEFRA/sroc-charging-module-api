@@ -48,8 +48,10 @@ const StopPlugin = {
       }
     }
 
-    process.on('SIGTERM', stop)
-    process.on('SIGINT', stop)
+    if (process.env.NODE_ENV !== 'test') {
+      process.on('SIGTERM', stop)
+      process.on('SIGINT', stop)
+    }
   }
 }
 
