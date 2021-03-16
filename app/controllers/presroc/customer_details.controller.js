@@ -4,8 +4,8 @@ const { CreateCustomerDetailsService } = require('../../services')
 
 class PresrocCustomerDetailsController {
   static async create (req, h) {
-    const response = await CreateCustomerDetailsService.go(req.payload, req.app.regime)
-    console.log(response)
+    await CreateCustomerDetailsService.go(req.payload, req.app.regime)
+
     return h.response().code(204)
   }
 }
