@@ -14,6 +14,7 @@ const { RawBuilder } = require('objection/lib/queryBuilder/RawBuilder')
 const { CreateTransactionTallyService } = require('../../app/services')
 
 describe('Create Transaction Tally service', () => {
+  const tableName = 'widgets'
   let transaction
 
   beforeEach(() => {
@@ -24,27 +25,41 @@ describe('Create Transaction Tally service', () => {
   })
 
   describe("When the transaction is a 'debit'", () => {
-    it("only includes 'debit' properties", async () => {
-      const result = await CreateTransactionTallyService.go(transaction)
+    describe("the 'insertData' property of the returned 'tallyObject'", () => {
+      it("only includes 'debit' properties", () => {
+        const insertData = CreateTransactionTallyService.go(transaction, tableName).insertData
 
-      expect(result).to.only.include(['debitLineCount', 'debitLineValue'])
+        expect(insertData).to.only.include(['debitLineCount', 'debitLineValue'])
+      })
     })
 
-    it("has correctly configured instances of 'Objection RawBuilder'", async () => {
-      const result = await CreateTransactionTallyService.go(transaction)
+    describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+      it("only includes 'debit' statements", () => {
+        const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
 
-      expect(result.debitLineCount).to.be.an.instanceOf(RawBuilder)
-      // Adding this comment to the first instance we do this. We lowercase() the value before asserting it matches
-      // because of inconsistencies we found in knex's camel to snake case conversion. In our tests `debitLineValue`
-      // was getting converted to `debit_Line_value`. Rather than update our test to match the inconsistency we have
-      // chosen to lowercase everything before comparing. The case does not matter to the final query, and we feel this
-      // will make our tests less brittle should it get fixed, or other examples arise.
-      expect(result.debitLineCount._sql.toLowerCase()).to.equal('debit_line_count + ?')
-      expect(result.debitLineCount._args[0]).to.equal(1)
+        expect(updateStatements).to.be.length(2)
+        expect(updateStatements[0]).to.startWith('debit_line_count')
+        expect(updateStatements[1]).to.startWith('debit_Line_value')
+      })
+    })
 
-      expect(result.debitLineValue).to.be.an.instanceOf(RawBuilder)
-      expect(result.debitLineValue._sql.toLowerCase()).to.equal('debit_line_value + ?')
-      expect(result.debitLineValue._args[0]).to.equal(transaction.chargeValue)
+    describe("the 'patch' property of the returned 'tallyObject'", () => {
+      it("has correctly configured instances of 'Objection RawBuilder'", () => {
+        const patch = CreateTransactionTallyService.go(transaction, tableName).patch
+
+        expect(patch.debitLineCount).to.be.an.instanceOf(RawBuilder)
+        // Adding this comment to the first instance we do this. We lowercase() the value before asserting it matches
+        // because of inconsistencies we found in knex's camel to snake case conversion. In our tests `debitLineValue`
+        // was getting converted to `debit_Line_value`. Rather than update our test to match the inconsistency we have
+        // chosen to lowercase everything before comparing. The case does not matter to the final query, and we feel this
+        // will make our tests less brittle should it get fixed, or other examples arise.
+        expect(patch.debitLineCount._sql.toLowerCase()).to.equal('debit_line_count + ?')
+        expect(patch.debitLineCount._args[0]).to.equal(1)
+
+        expect(patch.debitLineValue).to.be.an.instanceOf(RawBuilder)
+        expect(patch.debitLineValue._sql.toLowerCase()).to.equal('debit_line_value + ?')
+        expect(patch.debitLineValue._args[0]).to.equal(transaction.chargeValue)
+      })
     })
 
     describe("and 'subject to minimum charge'", () => {
@@ -52,36 +67,52 @@ describe('Create Transaction Tally service', () => {
         transaction.subjectToMinimumCharge = true
       })
 
-      it("only includes 'debit' properties and 'subjectToMinimumChargeCount'", async () => {
-        const result = await CreateTransactionTallyService.go(transaction)
+      describe("the 'insertData' property of the returned 'tallyObject'", () => {
+        it("only includes 'debit' and 'subjectToMinimumCharge' properties", () => {
+          const insertData = CreateTransactionTallyService.go(transaction, tableName).insertData
 
-        expect(result).to.only.include([
-          'debitLineCount',
-          'debitLineValue',
-          'subjectToMinimumChargeCount',
-          'subjectToMinimumChargeDebitValue'
-        ])
+          expect(insertData).to.only.include([
+            'debitLineCount',
+            'debitLineValue',
+            'subjectToMinimumChargeCount',
+            'subjectToMinimumChargeDebitValue'
+          ])
+        })
       })
 
-      it("has correctly configured instances of 'Objection RawBuilder'", async () => {
-        const result = await CreateTransactionTallyService.go(transaction)
+      describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+        it("only includes 'debit' and 'subjectToMinimumCharge' statements", () => {
+          const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
 
-        expect(result.debitLineCount).to.be.an.instanceOf(RawBuilder)
-        expect(result.debitLineCount._sql.toLowerCase()).to.equal('debit_line_count + ?')
-        expect(result.debitLineCount._args[0]).to.equal(1)
+          expect(updateStatements).to.be.length(4)
+          expect(updateStatements[0]).to.startWith('debit_line_count')
+          expect(updateStatements[1]).to.startWith('debit_Line_value')
+          expect(updateStatements[2]).to.startWith('subject_to_minimum_charge_count')
+          expect(updateStatements[3]).to.startWith('subject_to_minimum_charge_debit_value')
+        })
+      })
 
-        expect(result.debitLineValue).to.be.an.instanceOf(RawBuilder)
-        expect(result.debitLineValue._sql.toLowerCase()).to.equal('debit_line_value + ?')
-        expect(result.debitLineValue._args[0]).to.equal(transaction.chargeValue)
+      describe("the 'patch' property of the returned 'tallyObject'", () => {
+        it("has correctly configured instances of 'Objection RawBuilder'", () => {
+          const patch = CreateTransactionTallyService.go(transaction, tableName).patch
 
-        expect(result.subjectToMinimumChargeCount).to.be.an.instanceOf(RawBuilder)
-        expect(result.subjectToMinimumChargeCount._sql.toLowerCase()).to.equal('subject_to_minimum_charge_count + ?')
-        expect(result.subjectToMinimumChargeCount._args[0]).to.equal(1)
+          expect(patch.debitLineCount).to.be.an.instanceOf(RawBuilder)
+          expect(patch.debitLineCount._sql.toLowerCase()).to.equal('debit_line_count + ?')
+          expect(patch.debitLineCount._args[0]).to.equal(1)
 
-        expect(result.subjectToMinimumChargeDebitValue).to.be.an.instanceOf(RawBuilder)
-        expect(result.subjectToMinimumChargeDebitValue._sql.toLowerCase())
-          .to.equal('subject_to_minimum_charge_debit_value + ?')
-        expect(result.subjectToMinimumChargeDebitValue._args[0]).to.equal(transaction.chargeValue)
+          expect(patch.debitLineValue).to.be.an.instanceOf(RawBuilder)
+          expect(patch.debitLineValue._sql.toLowerCase()).to.equal('debit_line_value + ?')
+          expect(patch.debitLineValue._args[0]).to.equal(transaction.chargeValue)
+
+          expect(patch.subjectToMinimumChargeCount).to.be.an.instanceOf(RawBuilder)
+          expect(patch.subjectToMinimumChargeCount._sql.toLowerCase()).to.equal('subject_to_minimum_charge_count + ?')
+          expect(patch.subjectToMinimumChargeCount._args[0]).to.equal(1)
+
+          expect(patch.subjectToMinimumChargeDebitValue).to.be.an.instanceOf(RawBuilder)
+          expect(patch.subjectToMinimumChargeDebitValue._sql.toLowerCase())
+            .to.equal('subject_to_minimum_charge_debit_value + ?')
+          expect(patch.subjectToMinimumChargeDebitValue._args[0]).to.equal(transaction.chargeValue)
+        })
       })
     })
   })
@@ -91,22 +122,36 @@ describe('Create Transaction Tally service', () => {
       transaction.chargeCredit = true
     })
 
-    it("only includes 'credit' properties", async () => {
-      const result = await CreateTransactionTallyService.go(transaction)
+    describe("the 'insertData' property of the returned 'tallyObject'", () => {
+      it("only includes 'credit' properties", () => {
+        const insertData = CreateTransactionTallyService.go(transaction, tableName).insertData
 
-      expect(result).to.only.include(['creditLineCount', 'creditLineValue'])
+        expect(insertData).to.only.include(['creditLineCount', 'creditLineValue'])
+      })
     })
 
-    it("has correctly configured instances of 'Objection RawBuilder'", async () => {
-      const result = await CreateTransactionTallyService.go(transaction)
+    describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+      it("only includes 'credit' statements", () => {
+        const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
 
-      expect(result.creditLineCount).to.be.an.instanceOf(RawBuilder)
-      expect(result.creditLineCount._sql.toLowerCase()).to.equal('credit_line_count + ?')
-      expect(result.creditLineCount._args[0]).to.equal(1)
+        expect(updateStatements).to.be.length(2)
+        expect(updateStatements[0]).to.startWith('credit_line_count')
+        expect(updateStatements[1]).to.startWith('credit_line_value')
+      })
+    })
 
-      expect(result.creditLineValue).to.be.an.instanceOf(RawBuilder)
-      expect(result.creditLineValue._sql.toLowerCase()).to.equal('credit_line_value + ?')
-      expect(result.creditLineValue._args[0]).to.equal(transaction.chargeValue)
+    describe("the 'patch' property of the returned 'tallyObject'", () => {
+      it("has correctly configured instances of 'Objection RawBuilder'", () => {
+        const patch = CreateTransactionTallyService.go(transaction, tableName).patch
+
+        expect(patch.creditLineCount).to.be.an.instanceOf(RawBuilder)
+        expect(patch.creditLineCount._sql.toLowerCase()).to.equal('credit_line_count + ?')
+        expect(patch.creditLineCount._args[0]).to.equal(1)
+
+        expect(patch.creditLineValue).to.be.an.instanceOf(RawBuilder)
+        expect(patch.creditLineValue._sql.toLowerCase()).to.equal('credit_line_value + ?')
+        expect(patch.creditLineValue._args[0]).to.equal(transaction.chargeValue)
+      })
     })
 
     describe("and 'subject to minimum charge'", () => {
@@ -114,36 +159,52 @@ describe('Create Transaction Tally service', () => {
         transaction.subjectToMinimumCharge = true
       })
 
-      it("only includes 'credit' properties and 'subjectToMinimumChargeCount'", async () => {
-        const result = await CreateTransactionTallyService.go(transaction)
+      describe("the 'insertData' property of the returned 'tallyObject'", () => {
+        it("only includes 'credit' and 'subjectToMinimumCharge' properties", () => {
+          const insertData = CreateTransactionTallyService.go(transaction, tableName).insertData
 
-        expect(result).to.only.include([
-          'creditLineCount',
-          'creditLineValue',
-          'subjectToMinimumChargeCount',
-          'subjectToMinimumChargeCreditValue'
-        ])
+          expect(insertData).to.only.include([
+            'creditLineCount',
+            'creditLineValue',
+            'subjectToMinimumChargeCount',
+            'subjectToMinimumChargeCreditValue'
+          ])
+        })
       })
 
-      it("has correctly configured instances of 'Objection RawBuilder'", async () => {
-        const result = await CreateTransactionTallyService.go(transaction)
+      describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+        it("only includes 'credit' and 'subjectToMinimumCharge' statements", () => {
+          const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
 
-        expect(result.creditLineCount).to.be.an.instanceOf(RawBuilder)
-        expect(result.creditLineCount._sql.toLowerCase()).to.equal('credit_line_count + ?')
-        expect(result.creditLineCount._args[0]).to.equal(1)
+          expect(updateStatements).to.be.length(4)
+          expect(updateStatements[0]).to.startWith('credit_line_count')
+          expect(updateStatements[1]).to.startWith('credit_line_value')
+          expect(updateStatements[2]).to.startWith('subject_to_minimum_charge_count')
+          expect(updateStatements[3]).to.startWith('subject_to_minimum_charge_credit_value')
+        })
+      })
 
-        expect(result.creditLineValue).to.be.an.instanceOf(RawBuilder)
-        expect(result.creditLineValue._sql.toLowerCase()).to.equal('credit_line_value + ?')
-        expect(result.creditLineValue._args[0]).to.equal(transaction.chargeValue)
+      describe("the 'patch' property of the returned 'tallyObject'", () => {
+        it("has correctly configured instances of 'Objection RawBuilder'", () => {
+          const patch = CreateTransactionTallyService.go(transaction, tableName).patch
 
-        expect(result.subjectToMinimumChargeCount).to.be.an.instanceOf(RawBuilder)
-        expect(result.subjectToMinimumChargeCount._sql.toLowerCase()).to.equal('subject_to_minimum_charge_count + ?')
-        expect(result.subjectToMinimumChargeCount._args[0]).to.equal(1)
+          expect(patch.creditLineCount).to.be.an.instanceOf(RawBuilder)
+          expect(patch.creditLineCount._sql.toLowerCase()).to.equal('credit_line_count + ?')
+          expect(patch.creditLineCount._args[0]).to.equal(1)
 
-        expect(result.subjectToMinimumChargeCreditValue).to.be.an.instanceOf(RawBuilder)
-        expect(result.subjectToMinimumChargeCreditValue._sql.toLowerCase())
-          .to.equal('subject_to_minimum_charge_credit_value + ?')
-        expect(result.subjectToMinimumChargeCreditValue._args[0]).to.equal(transaction.chargeValue)
+          expect(patch.creditLineValue).to.be.an.instanceOf(RawBuilder)
+          expect(patch.creditLineValue._sql.toLowerCase()).to.equal('credit_line_value + ?')
+          expect(patch.creditLineValue._args[0]).to.equal(transaction.chargeValue)
+
+          expect(patch.subjectToMinimumChargeCount).to.be.an.instanceOf(RawBuilder)
+          expect(patch.subjectToMinimumChargeCount._sql.toLowerCase()).to.equal('subject_to_minimum_charge_count + ?')
+          expect(patch.subjectToMinimumChargeCount._args[0]).to.equal(1)
+
+          expect(patch.subjectToMinimumChargeCreditValue).to.be.an.instanceOf(RawBuilder)
+          expect(patch.subjectToMinimumChargeCreditValue._sql.toLowerCase())
+            .to.equal('subject_to_minimum_charge_credit_value + ?')
+          expect(patch.subjectToMinimumChargeCreditValue._args[0]).to.equal(transaction.chargeValue)
+        })
       })
     })
   })
@@ -153,18 +214,31 @@ describe('Create Transaction Tally service', () => {
       transaction.chargeValue = 0
     })
 
-    it("only includes 'zero value' properties", async () => {
-      const result = await CreateTransactionTallyService.go(transaction)
+    describe("the 'insertData' property of the returned 'tallyObject'", () => {
+      it("only includes 'zero value' properties", () => {
+        const insertData = CreateTransactionTallyService.go(transaction, tableName).insertData
 
-      expect(result).to.only.include(['zeroLineCount'])
+        expect(insertData).to.only.include(['zeroLineCount'])
+      })
     })
 
-    it("has correctly configured instances of 'Objection RawBuilder'", async () => {
-      const result = await CreateTransactionTallyService.go(transaction)
+    describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+      it("only includes 'zero value' statements", () => {
+        const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
 
-      expect(result.zeroLineCount).to.be.an.instanceOf(RawBuilder)
-      expect(result.zeroLineCount._sql.toLowerCase()).to.equal('zero_line_count + ?')
-      expect(result.zeroLineCount._args[0]).to.equal(1)
+        expect(updateStatements).to.be.length(1)
+        expect(updateStatements[0]).to.startWith('zero_line_count')
+      })
+    })
+
+    describe("the 'patch' property of the returned 'tallyObject'", () => {
+      it("has correctly configured instances of 'Objection RawBuilder'", () => {
+        const patch = CreateTransactionTallyService.go(transaction, tableName).patch
+
+        expect(patch.zeroLineCount).to.be.an.instanceOf(RawBuilder)
+        expect(patch.zeroLineCount._sql.toLowerCase()).to.equal('zero_line_count + ?')
+        expect(patch.zeroLineCount._args[0]).to.equal(1)
+      })
     })
 
     describe("and 'subject to minimum charge'", () => {
@@ -172,22 +246,36 @@ describe('Create Transaction Tally service', () => {
         transaction.subjectToMinimumCharge = true
       })
 
-      it("only includes 'zero value' properties and 'subjectToMinimumChargeCount'", async () => {
-        const result = await CreateTransactionTallyService.go(transaction)
+      describe("the 'insertData' property of the returned 'tallyObject'", () => {
+        it("only includes 'zero value' and 'subjectToMinimumChargeCount' properties", () => {
+          const insertData = CreateTransactionTallyService.go(transaction, tableName).insertData
 
-        expect(result).to.only.include(['zeroLineCount', 'subjectToMinimumChargeCount'])
+          expect(insertData).to.only.include(['zeroLineCount', 'subjectToMinimumChargeCount'])
+        })
       })
 
-      it("has correctly configured instances of 'Objection RawBuilder'", async () => {
-        const result = await CreateTransactionTallyService.go(transaction)
+      describe("the 'updateStatements' property of the returned 'tallyObject'", () => {
+        it("only includes 'zero value' and 'subjectToMinimumCharge' statements", () => {
+          const updateStatements = CreateTransactionTallyService.go(transaction, tableName).updateStatements
 
-        expect(result.zeroLineCount).to.be.an.instanceOf(RawBuilder)
-        expect(result.zeroLineCount._sql.toLowerCase()).to.equal('zero_line_count + ?')
-        expect(result.zeroLineCount._args[0]).to.equal(1)
+          expect(updateStatements).to.be.length(2)
+          expect(updateStatements[0]).to.startWith('zero_line_count')
+          expect(updateStatements[1]).to.startWith('subject_to_minimum_charge_count')
+        })
+      })
 
-        expect(result.subjectToMinimumChargeCount).to.be.an.instanceOf(RawBuilder)
-        expect(result.subjectToMinimumChargeCount._sql.toLowerCase()).to.equal('subject_to_minimum_charge_count + ?')
-        expect(result.subjectToMinimumChargeCount._args[0]).to.equal(1)
+      describe("the 'patch' property of the returned 'tallyObject'", () => {
+        it("has correctly configured instances of 'Objection RawBuilder'", () => {
+          const patch = CreateTransactionTallyService.go(transaction, tableName).patch
+
+          expect(patch.zeroLineCount).to.be.an.instanceOf(RawBuilder)
+          expect(patch.zeroLineCount._sql.toLowerCase()).to.equal('zero_line_count + ?')
+          expect(patch.zeroLineCount._args[0]).to.equal(1)
+
+          expect(patch.subjectToMinimumChargeCount).to.be.an.instanceOf(RawBuilder)
+          expect(patch.subjectToMinimumChargeCount._sql.toLowerCase()).to.equal('subject_to_minimum_charge_count + ?')
+          expect(patch.subjectToMinimumChargeCount._args[0]).to.equal(1)
+        })
       })
     })
   })
