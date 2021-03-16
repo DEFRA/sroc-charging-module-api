@@ -110,7 +110,9 @@ class CreateTransactionTallyService {
 
   static _applyStandardTallyStatements (tallyObject, tableName, prefix, suffix, value) {
     // Don't bother to generate an insert/update/patch if the value is 0. There is no point
-    if (!value) return
+    if (!value) {
+      return
+    }
 
     // For example debitLineCount
     const propertyName = `${prefix.toLowerCase()}Line${suffix}`
@@ -139,7 +141,9 @@ class CreateTransactionTallyService {
 
   static _applyMinimumChargeValueTallyStatements (tallyObject, tableName, prefix, value) {
     // Don't bother to generate an insert/update/patch if the value is 0. There is no point
-    if (!value) return
+    if (!value) {
+      return
+    }
 
     // For example subjectToMinimumChargeCreditValue
     const propertyName = `subjectToMinimumCharge${prefix}Value`
