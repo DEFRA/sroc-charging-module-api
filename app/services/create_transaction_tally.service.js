@@ -86,7 +86,7 @@ class CreateTransactionTallyService {
     if (transaction.chargeCredit) {
       this._applyCreditToUpsertObject(tallyObject, ...applyArguments)
     } else if (transaction.chargeValue === 0) {
-      this._applyZeroToUpsertObject(tallyObject, ...applyArguments)
+      this._applyZeroToUpsertObject(tallyObject, tableName, transaction.subjectToMinimumCharge)
     } else {
       this._applyDebitToUpsertObject(tallyObject, ...applyArguments)
     }
@@ -108,11 +108,7 @@ class CreateTransactionTallyService {
     )
 
     if (subjectToMinimumCharge) {
-      tallyObject.insertData.subjectToMinimumChargeCount = 1
-      tallyObject.patch.subjectToMinimumChargeCount = raw('subject_to_minimum_charge_count + ?', 1)
-      tallyObject.updateStatements.push(
-        `subject_to_minimum_charge_count = ${tableName}.subject_to_minimum_charge_count + EXCLUDED.subject_to_minimum_charge_count`
-      )
+      this._applySubjectToMinimumChargeCount(tallyObject, tableName)
 
       tallyObject.insertData.subjectToMinimumChargeCreditValue = chargeValue
       tallyObject.patch.subjectToMinimumChargeCreditValue = raw(
@@ -139,11 +135,7 @@ class CreateTransactionTallyService {
     )
 
     if (subjectToMinimumCharge) {
-      tallyObject.insertData.subjectToMinimumChargeCount = 1
-      tallyObject.patch.subjectToMinimumChargeCount = raw('subject_to_minimum_charge_count + ?', 1)
-      tallyObject.updateStatements.push(
-        `subject_to_minimum_charge_count = ${tableName}.subject_to_minimum_charge_count + EXCLUDED.subject_to_minimum_charge_count`
-      )
+      this._applySubjectToMinimumChargeCount(tallyObject, tableName)
 
       tallyObject.insertData.subjectToMinimumChargeDebitValue = chargeValue
       tallyObject.patch.subjectToMinimumChargeDebitValue = raw(
@@ -156,7 +148,7 @@ class CreateTransactionTallyService {
     }
   }
 
-  static _applyZeroToUpsertObject (tallyObject, tableName, chargeValue, subjectToMinimumCharge) {
+  static _applyZeroToUpsertObject (tallyObject, tableName, subjectToMinimumCharge) {
     tallyObject.insertData.zeroLineCount = 1
     tallyObject.patch.zeroLineCount = raw('zero_line_count + ?', 1)
     tallyObject.updateStatements.push(
@@ -164,12 +156,16 @@ class CreateTransactionTallyService {
     )
 
     if (subjectToMinimumCharge) {
-      tallyObject.insertData.subjectToMinimumChargeCount = 1
-      tallyObject.patch.subjectToMinimumChargeCount = raw('subject_to_minimum_charge_count + ?', 1)
-      tallyObject.updateStatements.push(
-        `subject_to_minimum_charge_count = ${tableName}.subject_to_minimum_charge_count + EXCLUDED.subject_to_minimum_charge_count`
-      )
+      this._applySubjectToMinimumChargeCount(tallyObject, tableName)
     }
+  }
+
+  static _applySubjectToMinimumChargeCount (tallyObject, tableName) {
+    tallyObject.insertData.subjectToMinimumChargeCount = 1
+    tallyObject.patch.subjectToMinimumChargeCount = raw('subject_to_minimum_charge_count + ?', 1)
+    tallyObject.updateStatements.push(
+      `subject_to_minimum_charge_count = ${tableName}.subject_to_minimum_charge_count + EXCLUDED.subject_to_minimum_charge_count`
+    )
   }
 }
 
