@@ -6,6 +6,7 @@
 
 const Boom = require('@hapi/boom')
 
+const { BillRunModel } = require('../models')
 const CreateTransactionTallyService = require('./create_transaction_tally.service')
 
 class CreateTransactionBillRunService {
@@ -46,9 +47,10 @@ class CreateTransactionBillRunService {
   }
 
   static async _generatePatch (id, transaction) {
+    const tallyObject = await CreateTransactionTallyService.go(transaction, BillRunModel.tableName)
     const patch = {
       id: id,
-      update: await CreateTransactionTallyService.go(transaction)
+      update: tallyObject.patch
     }
 
     return patch
