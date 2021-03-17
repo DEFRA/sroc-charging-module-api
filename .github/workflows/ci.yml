@@ -117,6 +117,7 @@ jobs:
           sed -i 's/\/home\/runner\/work\/sroc-charging-module-api\/sroc-charging-module-api\//\/github\/workspace\//g' coverage/lcov.info
 
       - name: Analyze with SonarCloud
+        if: ${{ env.SONAR_TOKEN != null && env.SONAR_TOKEN != ''}}
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This is provided automatically by GitHub
