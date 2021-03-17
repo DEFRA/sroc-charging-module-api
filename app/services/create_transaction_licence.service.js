@@ -57,7 +57,7 @@ class CreateTransactionLicenceService {
   static async _generatePatch (id, transaction) {
     const tallyObject = await CreateTransactionTallyService.go(transaction, LicenceModel.tableName)
     const patch = {
-      id: id,
+      id,
       update: tallyObject.patch
     }
 

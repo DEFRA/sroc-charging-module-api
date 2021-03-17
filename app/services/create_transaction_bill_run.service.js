@@ -49,7 +49,7 @@ class CreateTransactionBillRunService {
   static async _generatePatch (id, transaction) {
     const tallyObject = await CreateTransactionTallyService.go(transaction, BillRunModel.tableName)
     const patch = {
-      id: id,
+      id,
       update: tallyObject.patch
     }
 
