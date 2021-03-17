@@ -5,9 +5,9 @@
  */
 
 const { Model } = require('objection')
-const BaseModel = require('./base.model')
+const BaseUpsertModel = require('./base_upsert.model')
 
-class LicenceModel extends BaseModel {
+class LicenceModel extends BaseUpsertModel {
   static get tableName () {
     return 'licences'
   }
