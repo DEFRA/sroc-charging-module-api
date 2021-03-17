@@ -113,6 +113,18 @@ class InvoiceModel extends BaseUpsertModel {
     }
   }
 
+  static _baseOnInsertObject (transaction) {
+    return {
+      billRunId: transaction.billRunId,
+      customerReference: transaction.customerReference,
+      financialYear: transaction.chargeFinancialYear
+    }
+  }
+
+  static _onConflictContraints () {
+    return ['bill_run_id', 'customer_reference', 'financial_year']
+  }
+
   /**
    * netTotal method provides the net total of the invoice (debit value - credit value)
    */
