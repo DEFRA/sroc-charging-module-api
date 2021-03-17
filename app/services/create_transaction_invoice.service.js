@@ -56,8 +56,8 @@ class CreateTransactionInvoiceService {
 
   static async _generatePatch (id, transaction) {
     const patch = {
-      id: id,
-      update: await CreateTransactionTallyService.go(transaction)
+      id,
+      update: await CreateTransactionTallyService.go(transaction, InvoiceModel.tableName).patch
     }
 
     return patch
