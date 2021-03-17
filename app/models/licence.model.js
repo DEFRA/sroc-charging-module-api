@@ -41,6 +41,16 @@ class LicenceModel extends BaseUpsertModel {
     }
   }
 
+  /**
+   * Returns an object that contains the minimum (base) properties and values needed when inserting a new record
+   *
+   * See `BaseUpsertModel._baseOnInsertObject()` for more details
+   *
+   * @param {module:TransactionTranslator} transaction translator representing the transaction that will seed the new
+   * licence
+   *
+   * @return {Object} object that can built on and used with an Objection or Knex `.insert(myObject)` call
+   */
   static _baseOnInsertObject (transaction) {
     return {
       billRunId: transaction.billRunId,
@@ -49,6 +59,11 @@ class LicenceModel extends BaseUpsertModel {
     }
   }
 
+  /**
+   * Returns an array of column names that are used for the unique constraint of a licence to be UPSERT
+   *
+   * @returns {string[]} an array of the constraint field names
+   */
   static _onConflictContraints () {
     return ['invoice_id', 'licence_number']
   }
