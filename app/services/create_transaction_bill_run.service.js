@@ -4,15 +4,15 @@
  * @module CreateTransactionBillRunService
  */
 
-const Boom = require('@hapi/boom')
-
 const { BillRunModel } = require('../models')
 const CreateTransactionTallyService = require('./create_transaction_tally.service')
 
 class CreateTransactionBillRunService {
   /**
-  * Determines if a transaction is for the same region as the requested bill run and if so, generates a 'patch' object
-  * intended to be used in a call to `BillRunModel.query().patch()`. The 'patch' object has 2 properties
+  * Generates and returns a 'patch' object to be used to update the bill run based on values in the transaction
+  *
+  * It generates a 'patch' object intended to be used in a call to `InvoiceModel.query().patch()`. The 'patch' object
+  * has 2 properties
   *
   * - the ID of the bill run to update (determined by the `billRun` param)
   * - a child object specifiying which fields to update and how
@@ -33,17 +33,7 @@ class CreateTransactionBillRunService {
   * @returns {Object} an object that contains the ID of the bill run to be updated, and the updates to be applied
   */
   static async go (billRun, transaction) {
-    this._validateBillRun(billRun, transaction)
-
     return this._generatePatch(billRun.id, transaction)
-  }
-
-  static _validateBillRun (billRun, transaction) {
-    if (billRun.region !== transaction.region) {
-      throw Boom.badData(
-        `Bill run ${billRun.id} is for region ${billRun.region} but transaction is for region ${transaction.region}.`
-      )
-    }
   }
 
   static async _generatePatch (id, transaction) {
