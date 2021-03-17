@@ -121,8 +121,25 @@ class BillRunModel extends BaseModel {
     return (this.creditLineCount === 0 && this.debitLineCount === 0 && this.zeroLineCount === 0)
   }
 
+  /**
+   * Returns true if the bill run status is 'billed'
+   */
   $billed () {
     return this.status === 'billed'
+  }
+
+  /**
+   * Returns true if the bill run status is 'pending'
+   */
+  $pending () {
+    return this.status === 'pending'
+  }
+
+  /**
+   * Returns true if the bill run has a file reference
+   */
+  $billable () {
+    return Boolean(this.fileReference)
   }
 }
 
