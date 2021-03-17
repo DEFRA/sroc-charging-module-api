@@ -50,12 +50,12 @@ class SendFileToS3Service {
     }
   }
 
-  static async _sendFile (bucket, key, filenameWithPath, notify) {
+  static async _sendFile (bucket, key, filenameWithPath) {
     // We start by creating a new instance of the S3 client. Note that our AWS region and credentials are set in .env so
     // we don't need to specify them here
     const client = new S3Client()
 
-    const file = await this._getFile(filenameWithPath, notify)
+    const file = await this._getFile(filenameWithPath)
     const params = this._sendParams(bucket, key, file)
 
     // Instantiate the command to send to the client, passing in the params
