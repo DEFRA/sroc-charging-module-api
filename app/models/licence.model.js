@@ -41,6 +41,18 @@ class LicenceModel extends BaseUpsertModel {
     }
   }
 
+  static _baseOnInsertObject (transaction) {
+    return {
+      billRunId: transaction.billRunId,
+      invoiceId: transaction.invoiceId,
+      licenceNumber: transaction.lineAttr1
+    }
+  }
+
+  static _onConflictContraints () {
+    return ['invoice_id', 'licence_number']
+  }
+
   /**
    * netTotal method provides the net total of the licence (debit value - credit value)
    */
