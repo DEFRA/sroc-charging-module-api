@@ -8,7 +8,6 @@ const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('
 const { TransactionTranslator } = require('../translators')
 const CreateTransactionBillRunService = require('./create_transaction_bill_run.service')
 const CalculateChargeService = require('./calculate_charge.service')
-const CreateTransactionInvoiceService = require('./create_transaction_invoice.service')
 const { CreateTransactionPresenter } = require('../presenters')
 
 class CreateTransactionService {
@@ -20,9 +19,8 @@ class CreateTransactionService {
     this._applyCalculatedCharge(translator, calculatedCharge)
 
     const billRunPatch = await this._generateBillRunPatch(billRun, translator)
-    const invoicePatch = await this._generateInvoicePatch(translator)
 
-    const transaction = await this._create(translator, billRunPatch, invoicePatch)
+    const transaction = await this._create(translator, billRunPatch)
 
     return this._response(transaction)
   }
@@ -59,25 +57,22 @@ class CreateTransactionService {
     return CreateTransactionBillRunService.go(billRun, translator)
   }
 
-  static async _generateInvoicePatch (translator) {
-    return CreateTransactionInvoiceService.go(translator)
-  }
-
-  static _create (translator, billRunPatch, invoicePatch) {
+  static _create (translator, billRunPatch) {
     return TransactionModel.transaction(async trx => {
-      Object.assign(translator, { invoiceId: invoicePatch.id })
+      const invoiceId = await InvoiceModel.updateTally(translator, trx)
+      Object.assign(translator, { invoiceId })
+
       const licenceId = await LicenceModel.updateTally(translator, trx)
 
       const transaction = await TransactionModel.query(trx)
         .insert({
           ...translator,
-          invoiceId: invoicePatch.id,
+          invoiceId,
           licenceId
         })
         .returning(['id', 'client_id'])
 
       await BillRunModel.query(trx).findById(billRunPatch.id).patch(billRunPatch.update)
-      await InvoiceModel.query(trx).findById(invoicePatch.id).patch(invoicePatch.update)
 
       return transaction
     })
