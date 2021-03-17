@@ -22,6 +22,7 @@ class SendFileToS3Service {
    * @param {function} notify The server.methods.notify method, which we pass in as server.methods isn't accessible
    * within a service.
    * @param {boolean} [copyToArchive] Whether the file is also be sent to the archive bucket. Defaults to `true`.
+   * @returns {boolean} Returns `true` if the file was successfully sent and `false` if it failed.
   */
 
   static async go (filename, key, notify, copyToArchive = true) {
@@ -38,7 +39,7 @@ class SendFileToS3Service {
       }
     } catch (error) {
       notify(`Error sending file ${localFilenameWithPath} to bucket ${this._uploadBucket()}: ${error}`)
-      return
+      return false
     }
 
     if (this._removeTemporaryFiles()) {
@@ -48,6 +49,9 @@ class SendFileToS3Service {
         notify(`Error deleting file ${localFilenameWithPath}: ${error}`)
       }
     }
+
+    // Note that we return true even if file deletion failed as the file has been sent
+    return true
   }
 
   static async _sendFile (bucket, key, filenameWithPath) {
