@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const Sinon = require('sinon')
 const Nock = require('nock')
 
-const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
@@ -26,7 +26,11 @@ const {
   TransactionHelper
 } = require('../../support/helpers')
 
-const { CreateTransactionService, GenerateBillRunService } = require('../../../app/services')
+const {
+  CreateTransactionService,
+  GenerateBillRunService,
+  SendTransactionFileService
+} = require('../../../app/services')
 
 const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
@@ -267,6 +271,8 @@ describe('Presroc Bill Runs controller', () => {
   })
 
   describe('Send bill run: PATCH /v2/{regimeId}/bill-runs/{billRunId}/send', () => {
+    let sendTransactionFileStub
+
     const options = (token, billRunId) => {
       return {
         method: 'PATCH',
@@ -276,10 +282,17 @@ describe('Presroc Bill Runs controller', () => {
     }
 
     beforeEach(async () => {
+      // Stub SendTransactionFileService so we don't try to generate any files
+      sendTransactionFileStub = Sinon.stub(SendTransactionFileService, 'go')
+
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
       await SequenceCounterHelper.addSequenceCounter(regime.id, billRun.region)
       // A bill run needs at least one billable invoice for a file reference to be generated
       await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 501, 0) // standard debit
+    })
+
+    afterEach(async () => {
+      sendTransactionFileStub.restore()
     })
 
     describe('When the request is valid', () => {
@@ -290,12 +303,21 @@ describe('Presroc Bill Runs controller', () => {
 
         expect(response.statusCode).to.equal(204)
       })
+
+      it('calls SendTransactionFileService', async () => {
+        await billRun.$query().patch({ status: 'approved' })
+
+        await server.inject(options(authToken, billRun.id))
+
+        expect(sendTransactionFileStub.calledOnce).to.be.true()
+      })
     })
 
     describe('When the request is invalid', () => {
       describe("because the 'bill run' has not been approved", () => {
         it('returns error status 409', async () => {
           const response = await server.inject(options(authToken, billRun.id))
+
           const responsePayload = JSON.parse(response.payload)
 
           expect(response.statusCode).to.equal(409)
