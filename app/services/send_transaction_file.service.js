@@ -28,20 +28,15 @@ class SendTransactionFileService {
   static async go (regime, billRun, notify) {
     this._validate(billRun)
 
-    // We only need to generate a file if there are invoices on it that need to be charged
+    // If we don't need to generate a file then set the bill status to 'billed' and return early.
     const fileNeeded = this._checkIfFileNeeded(billRun)
+    if (!fileNeeded) {
+      this._setBilledStatus(billRun)
+      return
+    }
 
-    // If a file is needed then generate and send it, and set readyToBeBilled to true or false depending on whether we
-    // succeed. If a file isn't needed then we still want to set the bill run status to 'billed', so we set
-    // readyToBeBilled to `true`.
-    //
-    // Note that we don't log an error if _generateAndSend fails and returns false, as an error will already have been
-    // logged by GenerateTransactionFileService or SendFileToS3Service.
-    const readyToBeBilled = fileNeeded
-      ? await this._generateAndSend(billRun, regime, notify)
-      : true
-
-    if (readyToBeBilled) {
+    const generatedAndSent = await this._generateAndSend(billRun, regime, notify)
+    if (generatedAndSent) {
       this._setBilledStatus(billRun)
     }
   }
