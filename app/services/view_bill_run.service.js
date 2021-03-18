@@ -58,7 +58,8 @@ class ViewBillRunService {
           'zeroLineCount',
           'deminimisInvoice',
           'zeroValueInvoice',
-          'minimumChargeInvoice'
+          'minimumChargeInvoice',
+          'transactionReference'
         )
       })
       .modifyGraph('invoices.licences', (builder) => {
