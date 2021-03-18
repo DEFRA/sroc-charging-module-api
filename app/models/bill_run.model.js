@@ -77,6 +77,19 @@ class BillRunModel extends BaseModel {
     }
   }
 
+  static async patchTally (transaction, trx) {
+    const { CreateTransactionTallyService } = require('../services')
+
+    const { patch } = CreateTransactionTallyService.go(transaction, this.tableName)
+
+    const { id } = await BillRunModel.query(trx)
+      .findById(transaction.billRunId)
+      .patch(patch)
+      .returning('id')
+
+    return id
+  }
+
   /**
    * Returns whether the bill run can be 'edited'
    *
