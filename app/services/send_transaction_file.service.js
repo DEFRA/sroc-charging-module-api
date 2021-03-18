@@ -28,10 +28,10 @@ class SendTransactionFileService {
   static async go (regime, billRun, notify) {
     this._validate(billRun)
 
-    // If we don't need to generate a file then set the bill status to 'billed' and return early.
+    // If we don't need to generate a file then set the bill status to 'billing_not_required' and return early.
     const fileNeeded = this._checkIfFileNeeded(billRun)
     if (!fileNeeded) {
-      this._setBilledStatus(billRun)
+      this._setBillingNotRequiredStatus(billRun)
       return
     }
 
@@ -73,6 +73,11 @@ class SendTransactionFileService {
 
   static _filename (fileReference) {
     return `${fileReference}.dat`
+  }
+
+  static async _setBillingNotRequiredStatus (billRun) {
+    await billRun.$query()
+      .patch({ status: 'billing_not_required' })
   }
 
   static async _setBilledStatus (billRun) {

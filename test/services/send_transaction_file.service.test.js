@@ -66,6 +66,18 @@ describe('Send Transaction File service', () => {
         expect(sendStub.getCall(0).firstArg).to.equal('stubFilename')
         expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/transaction/${billRun.fileReference}.dat`)
       })
+
+      it("sets the bill run status to 'billed'", async () => {
+        await SendTransactionFileService.go(regime, billRun)
+
+        // The service returns a response immediately to avoid the user waiting for a response, so we need to pause
+        // briefly to allow it to finish before we check the status.
+        await sleep(100)
+
+        const refreshedBillRun = await billRun.$query()
+
+        expect(refreshedBillRun.status).to.equal('billed')
+      })
     })
 
     describe("and a transaction file isn't required", () => {
@@ -80,18 +92,18 @@ describe('Send Transaction File service', () => {
 
         expect(sendStub.notCalled).to.be.true()
       })
-    })
 
-    it("sets the bill run status to 'billed'", async () => {
-      await SendTransactionFileService.go(regime, billRun)
+      it("sets the bill run status to 'billing_not_required'", async () => {
+        await SendTransactionFileService.go(regime, billRun)
 
-      // The service returns a response immediately to avoid the user waiting for a response, so we need to pause
-      // briefly to allow it to finish before we check the status.
-      await sleep(100)
+        // The service returns a response immediately to avoid the user waiting for a response, so we need to pause
+        // briefly to allow it to finish before we check the status.
+        await sleep(100)
 
-      const refreshedBillRun = await billRun.$query()
+        const refreshedBillRun = await billRun.$query()
 
-      expect(refreshedBillRun.status).to.equal('billed')
+        expect(refreshedBillRun.status).to.equal('billing_not_required')
+      })
     })
   })
 
