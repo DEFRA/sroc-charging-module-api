@@ -27,6 +27,8 @@ class ViewBillRunService {
   }
 
   static async _billRun (billRunId) {
+    // Not all fields are returned in the response but they are needed to calculate things like `netTotal`. Double
+    // check before thinking of removing them!
     const billRun = await BillRunModel.query()
       .findById(billRunId)
       .select(

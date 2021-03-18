@@ -15,12 +15,6 @@ class ViewLicencePresenter extends BasePresenter {
     return {
       id: data.id,
       licenceNumber: data.licenceNumber,
-      creditLineCount: data.creditLineCount,
-      creditLineValue: data.creditLineValue,
-      debitLineCount: data.debitLineCount,
-      debitLineValue: data.debitLineValue,
-      zeroLineCount: data.zeroLineCount,
-      subjectToMinimumChargeCount: data.subjectToMinimumChargeCount,
       netTotal: data.netTotal,
       transactions: data.transactions.map(transaction => {
         const presenter = new ViewTransactionPresenter(transaction)
