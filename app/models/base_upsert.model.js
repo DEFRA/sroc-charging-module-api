@@ -79,7 +79,7 @@ class BaseUpsertModel extends BaseModel {
   }
 
   /**
-   * Returns an array of column names that are used for the unique constraint of the record to be UPSERT
+   * Returns an array of column names in snake_case that are used for the unique constraint of the record to be UPSERT
    *
    * > ***Extending classes must override this method!***
    *
@@ -87,6 +87,9 @@ class BaseUpsertModel extends BaseModel {
    * new 'invoice'.
    *
    * We need this information to help generate the 'UPSERT' query we use.
+   *
+   * **IMPORTANT!!** The columns names _must_ be declared as snake_case. This is because they will be used in a Knex
+   * `raw()` query and will bypass the mappers we have enabled.
    *
    * @returns {string[]} an array of the constraint field names
    */
