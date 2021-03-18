@@ -70,10 +70,6 @@ describe('Send Transaction File service', () => {
       it("sets the bill run status to 'billed'", async () => {
         await SendTransactionFileService.go(regime, billRun)
 
-        // The service returns a response immediately to avoid the user waiting for a response, so we need to pause
-        // briefly to allow it to finish before we check the status.
-        await sleep(100)
-
         const refreshedBillRun = await billRun.$query()
 
         expect(refreshedBillRun.status).to.equal('billed')
@@ -96,10 +92,6 @@ describe('Send Transaction File service', () => {
       it("sets the bill run status to 'billing_not_required'", async () => {
         await SendTransactionFileService.go(regime, billRun)
 
-        // The service returns a response immediately to avoid the user waiting for a response, so we need to pause
-        // briefly to allow it to finish before we check the status.
-        await sleep(100)
-
         const refreshedBillRun = await billRun.$query()
 
         expect(refreshedBillRun.status).to.equal('billing_not_required')
@@ -117,8 +109,4 @@ describe('Send Transaction File service', () => {
       })
     })
   })
-
-  function sleep (ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
 })

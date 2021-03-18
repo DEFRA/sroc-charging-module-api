@@ -31,13 +31,13 @@ class SendTransactionFileService {
     // If we don't need to generate a file then set the bill status to 'billing_not_required' and return early.
     const fileNeeded = this._checkIfFileNeeded(billRun)
     if (!fileNeeded) {
-      this._setBillingNotRequiredStatus(billRun)
+      await this._setBillingNotRequiredStatus(billRun)
       return
     }
 
     const generatedAndSent = await this._generateAndSend(billRun, regime, notify)
     if (generatedAndSent) {
-      this._setBilledStatus(billRun)
+      await this._setBilledStatus(billRun)
     }
   }
 
