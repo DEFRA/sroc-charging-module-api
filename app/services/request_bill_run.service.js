@@ -50,9 +50,7 @@ class RequestBillRunService {
   }
 
   static _billRunRelated (path) {
-    const billRunRegex = new RegExp(/\/bill-runs\//i)
-
-    return billRunRegex.test(path)
+    return /\/bill-runs\//i.test(path)
   }
 
   static async _billRun (billRunId) {

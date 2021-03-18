@@ -11,7 +11,7 @@ const CreateBillRunService = require('./create_bill_run.service')
 const CreateCustomerDetailsService = require('./create_customer_details.service')
 const CreateMinimumChargeAdjustmentService = require('./create_minimum_charge_adjustment.service')
 const CreateTransactionBillRunService = require('./create_transaction_bill_run.service')
-const CreateTransactionInvoiceService = require('./create_transaction_invoice.service')
+const CreateTransactionBillRunValidationService = require('./create_transaction_bill_run_validation.service')
 const CreateTransactionService = require('./create_transaction.service')
 const CreateTransactionTallyService = require('./create_transaction_tally.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
@@ -22,7 +22,6 @@ const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill
 const GenerateBillRunService = require('./generate_bill_run.service')
 const GenerateBillRunValidationService = require('./generate_bill_run_validation.service')
 const GenerateTransactionFileService = require('./generate_transaction_file.service')
-const CreateTransactionLicenceService = require('./create_transaction_licence.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
 const ListRegimesService = require('./list_regimes.service')
 const NextBillRunNumberService = require('./next_bill_run_number.service')
@@ -52,8 +51,7 @@ module.exports = {
   CreateMinimumChargeAdjustmentService,
   CreateBillRunService,
   CreateTransactionBillRunService,
-  CreateTransactionInvoiceService,
-  CreateTransactionLicenceService,
+  CreateTransactionBillRunValidationService,
   CreateTransactionService,
   CreateTransactionTallyService,
   DatabaseHealthCheckService,

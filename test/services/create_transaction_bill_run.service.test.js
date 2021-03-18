@@ -27,95 +27,91 @@ describe('Create Transaction Bill Run service', () => {
     }
   })
 
-  describe('When a valid bill run is supplied', () => {
-    describe("the 'patch' object returned", () => {
-      it('contains the matching bill run ID', async () => {
-        const result = await CreateTransactionBillRunService.go(billRun, transaction)
+  describe("the 'patch' object returned", () => {
+    it('contains the matching bill run ID', async () => {
+      const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
-        expect(result.id).to.equal(billRun.id)
-      })
+      expect(result.id).to.equal(billRun.id)
+    })
+  })
+
+  describe('When a valid debit transaction is supplied', () => {
+    it("correctly generates and returns a 'patch' object", async () => {
+      const result = await CreateTransactionBillRunService.go(billRun, transaction)
+
+      expect(result.update).to.only.include(['debitLineCount', 'debitLineValue'])
     })
 
-    describe('and a debit transaction', () => {
+    describe('subject to minimum charge', () => {
+      beforeEach(async () => {
+        transaction.subjectToMinimumCharge = true
+      })
+
       it("correctly generates and returns a 'patch' object", async () => {
         const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
-        expect(result.update).to.only.include(['debitLineCount', 'debitLineValue'])
-      })
-
-      describe('subject to minimum charge', () => {
-        beforeEach(async () => {
-          transaction.subjectToMinimumCharge = true
-        })
-
-        it("correctly generates and returns a 'patch' object", async () => {
-          const result = await CreateTransactionBillRunService.go(billRun, transaction)
-
-          expect(result.update).to.only.include([
-            'debitLineCount',
-            'debitLineValue',
-            'subjectToMinimumChargeCount',
-            'subjectToMinimumChargeDebitValue'
-          ])
-        })
-      })
-    })
-
-    describe('and a credit transaction', () => {
-      beforeEach(() => {
-        transaction.chargeCredit = true
-      })
-
-      it('correctly generates the patch', async () => {
-        const result = await CreateTransactionBillRunService.go(billRun, transaction)
-
-        expect(result.update).to.only.include(['creditLineCount', 'creditLineValue'])
-      })
-
-      describe('subject to minimum charge', () => {
-        beforeEach(() => {
-          transaction.subjectToMinimumCharge = true
-        })
-
-        it("correctly generates and returns a 'patch' object", async () => {
-          const result = await CreateTransactionBillRunService.go(billRun, transaction)
-
-          expect(result.update).to.only.include([
-            'creditLineCount',
-            'creditLineValue',
-            'subjectToMinimumChargeCount',
-            'subjectToMinimumChargeCreditValue'
-          ])
-        })
-      })
-    })
-
-    describe('and a zero value transaction', () => {
-      beforeEach(() => {
-        transaction.chargeValue = 0
-      })
-
-      it('correctly generates the patch', async () => {
-        const result = await CreateTransactionBillRunService.go(billRun, transaction)
-
-        expect(result.update).to.only.include(['zeroLineCount'])
+        expect(result.update).to.only.include([
+          'debitLineCount',
+          'debitLineValue',
+          'subjectToMinimumChargeCount',
+          'subjectToMinimumChargeDebitValue'
+        ])
       })
     })
   })
 
-  describe('When an invalid bill run is supplied', () => {
-    describe('because the bill run is for a different region', () => {
+  describe('When a valid credit transaction is supplied', () => {
+    beforeEach(() => {
+      transaction.chargeCredit = true
+    })
+
+    it('correctly generates the patch', async () => {
+      const result = await CreateTransactionBillRunService.go(billRun, transaction)
+
+      expect(result.update).to.only.include(['creditLineCount', 'creditLineValue'])
+    })
+
+    describe('subject to minimum charge', () => {
       beforeEach(() => {
-        billRun.region = 'W'
+        transaction.subjectToMinimumCharge = true
       })
 
-      it('throws an error', async () => {
-        const err = await expect(CreateTransactionBillRunService.go(billRun, transaction)).to.reject()
+      it("correctly generates and returns a 'patch' object", async () => {
+        const result = await CreateTransactionBillRunService.go(billRun, transaction)
 
-        expect(err).to.be.an.error()
-        expect(err.output.payload.message)
-          .to
-          .equal(`Bill run ${billRun.id} is for region ${billRun.region} but transaction is for region ${transaction.region}.`)
+        expect(result.update).to.only.include([
+          'creditLineCount',
+          'creditLineValue',
+          'subjectToMinimumChargeCount',
+          'subjectToMinimumChargeCreditValue'
+        ])
+      })
+    })
+  })
+
+  describe('When a valid zero value transaction is supplied', () => {
+    beforeEach(() => {
+      transaction.chargeValue = 0
+    })
+
+    it('correctly generates the patch', async () => {
+      const result = await CreateTransactionBillRunService.go(billRun, transaction)
+
+      expect(result.update).to.only.include(['zeroLineCount'])
+    })
+
+    describe('subject to minimum charge', () => {
+      beforeEach(() => {
+        transaction.subjectToMinimumCharge = true
+      })
+
+      it("correctly generates and returns a 'patch' object", async () => {
+        const result = await CreateTransactionBillRunService.go(billRun, transaction)
+
+        expect(result.update).to.only.include([
+          'zeroLineCount',
+          'subjectToMinimumChargeCount'
+        ])
       })
     })
   })
