@@ -52,7 +52,7 @@
       "label": "Run sroc-cma lint checks",
       "detail": "Run lint checks against the code",
       "type": "shell",
-      "command": "docker-compose exec app npm run unit-test",
+      "command": "docker-compose exec app npm run lint",
       "group": "test",
       "presentation": {
         "echo": true,
