@@ -32,11 +32,6 @@ class ViewBillRunInvoiceService {
         'billRunId',
         'customerReference',
         'financialYear',
-        'creditLineCount',
-        'creditLineValue',
-        'debitLineCount',
-        'debitLineValue',
-        'zeroLineCount',
         'deminimisInvoice',
         'zeroValueInvoice',
         'minimumChargeInvoice',
@@ -46,13 +41,7 @@ class ViewBillRunInvoiceService {
       .modifyGraph('licences', (builder) => {
         builder.select(
           'id',
-          'licenceNumber',
-          'creditLineCount',
-          'creditLineValue',
-          'debitLineCount',
-          'debitLineValue',
-          'zeroLineCount',
-          'subjectToMinimumChargeCount'
+          'licenceNumber'
         )
       })
       .modifyGraph('licences.transactions', (builder) => {
