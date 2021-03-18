@@ -40,8 +40,11 @@ describe('View bill run service', () => {
         const result = await ViewBillRunInvoiceService.go(billRun.id, invoiceId)
 
         expect(result.invoice.id).to.equal(invoiceId)
+        expect(result.invoice.netTotal).to.equal(0)
+
         expect(result.invoice.licences).to.be.an.array()
         expect(result.invoice.licences[0].transactions).to.be.an.array()
+        expect(result.invoice.licences[0].netTotal).to.equal(0)
       })
     })
 
