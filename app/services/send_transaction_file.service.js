@@ -15,30 +15,34 @@ class SendTransactionFileService {
    * Organises the generation and sending of a transaction file:
    * - Validates that the bill run is in the requisite state;
    * - Checks that a transaction file is required;
-   * - Generates the transaction file;
-   * - Sends the transaction file to the S3 bucket.
+   * - Calls GenerateTransactionFileService to generate the transaction file;
+   * - Calls SendFileToS3Service to send the transaction file to the S3 bucket;
+   * - Sets the bill run status to 'billed' if everything was successful.
    *
-   * @param {module:BillRunModel} billRun The bill run we want to send the transaction file for.
    * @param {module:RegimeModel} regime The regime that the bill run belongs to. The regime slug will form part of the
    * path we upload to.
+   * @param {module:BillRunModel} billRun The bill run we want to send the transaction file for.
    * @param {function} notify The server.methods.notify method, which we pass in as server.methods isn't accessible
    * within a service.
    */
-  static async go (billRun, regime, notify) {
-    this._validateBillRun(billRun)
+  static async go (regime, billRun, notify) {
+    this._validate(billRun)
 
     // We only need to generate a file if there are invoices on it that need to be charged
     const fileNeeded = this._checkIfFileNeeded(billRun)
 
     // If a file is needed then generate and send it, and set readyToBeBilled to true or false depending on whether we
     // succeed. If a file isn't needed then we still want to set the bill run status to 'billed', so we set
-    // readyToBeBilled to `true`
+    // readyToBeBilled to `true`.
+    //
+    // Note that we don't log an error if _generateAndSend fails and returns false, as an error will already have been
+    // logged by GenerateTransactionFileService or SendFileToS3Service.
     const readyToBeBilled = fileNeeded
-      ? this._generateAndSend(billRun, regime, notify)
+      ? await this._generateAndSend(billRun, regime, notify)
       : true
 
     if (readyToBeBilled) {
-      this._billed(billRun)
+      this._setBilledStatus(billRun)
     }
   }
 
@@ -55,7 +59,7 @@ class SendTransactionFileService {
   /**
    * Generate and send the transaction file. Returns `true` if this succeeds, and `false` if any part of it fails.
    */
-  static _generateAndSend (billRun, regime, notify) {
+  static async _generateAndSend (billRun, regime, notify) {
     const filename = this._filename(billRun.fileReference)
     const generatedFile = GenerateTransactionFileService.go(filename, notify)
 
@@ -76,7 +80,7 @@ class SendTransactionFileService {
     return `${fileReference}.dat`
   }
 
-  static async _billed (billRun) {
+  static async _setBilledStatus (billRun) {
     await billRun.$query()
       .patch({ status: 'billed' })
   }
