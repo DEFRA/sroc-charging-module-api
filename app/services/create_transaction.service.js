@@ -9,7 +9,6 @@ const { TransactionTranslator } = require('../translators')
 const CreateTransactionBillRunService = require('./create_transaction_bill_run.service')
 const CalculateChargeService = require('./calculate_charge.service')
 const CreateTransactionInvoiceService = require('./create_transaction_invoice.service')
-const CreateTransactionLicenceService = require('./create_transaction_licence.service')
 const { CreateTransactionPresenter } = require('../presenters')
 
 class CreateTransactionService {
@@ -22,9 +21,8 @@ class CreateTransactionService {
 
     const billRunPatch = await this._generateBillRunPatch(billRun, translator)
     const invoicePatch = await this._generateInvoicePatch(translator)
-    const licencePatch = await this._generateLicencePatch({ ...translator, invoiceId: invoicePatch.id })
 
-    const transaction = await this._create(translator, billRunPatch, invoicePatch, licencePatch)
+    const transaction = await this._create(translator, billRunPatch, invoicePatch)
 
     return this._response(transaction)
   }
@@ -65,23 +63,21 @@ class CreateTransactionService {
     return CreateTransactionInvoiceService.go(translator)
   }
 
-  static async _generateLicencePatch (translator) {
-    return CreateTransactionLicenceService.go(translator)
-  }
-
-  static _create (translator, billRunPatch, invoicePatch, licencePatch) {
+  static _create (translator, billRunPatch, invoicePatch) {
     return TransactionModel.transaction(async trx => {
+      Object.assign(translator, { invoiceId: invoicePatch.id })
+      const licenceId = await LicenceModel.updateTally(translator, trx)
+
       const transaction = await TransactionModel.query(trx)
         .insert({
           ...translator,
           invoiceId: invoicePatch.id,
-          licenceId: licencePatch.id
+          licenceId
         })
         .returning(['id', 'client_id'])
 
       await BillRunModel.query(trx).findById(billRunPatch.id).patch(billRunPatch.update)
       await InvoiceModel.query(trx).findById(invoicePatch.id).patch(invoicePatch.update)
-      await LicenceModel.query(trx).findById(licencePatch.id).patch(licencePatch.update)
 
       return transaction
     })
