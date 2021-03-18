@@ -35,13 +35,17 @@ class ViewBillRunInvoiceService {
         'deminimisInvoice',
         'zeroValueInvoice',
         'minimumChargeInvoice',
-        'transactionReference'
+        'transactionReference',
+        'debitLineValue',
+        'creditLineValue'
       )
       .withGraphFetched('licences.transactions')
       .modifyGraph('licences', (builder) => {
         builder.select(
           'id',
-          'licenceNumber'
+          'licenceNumber',
+          'debitLineValue',
+          'creditLineValue'
         )
       })
       .modifyGraph('licences.transactions', (builder) => {
