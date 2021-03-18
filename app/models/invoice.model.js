@@ -5,12 +5,12 @@
  */
 
 const { Model } = require('objection')
-const BaseModel = require('./base.model')
+const BaseUpsertModel = require('./base_upsert.model')
 
 const DEMINIMIS_LIMIT = 500
 const MINIMUM_CHARGE_LIMIT = 2500
 
-class InvoiceModel extends BaseModel {
+class InvoiceModel extends BaseUpsertModel {
   static get tableName () {
     return 'invoices'
   }
@@ -111,6 +111,33 @@ class InvoiceModel extends BaseModel {
           .where('deminimisInvoice', false)
       }
     }
+  }
+
+  /**
+   * Returns an object that contains the minimum (base) properties and values needed when inserting a new invoice
+   *
+   * See `BaseUpsertModel._baseOnInsertObject()` for more details
+   *
+   * @param {module:TransactionTranslator} transaction translator representing the transaction that will seed the new
+   * invoice
+   *
+   * @return {Object} object that can built on and used with an Objection or Knex `.insert(myObject)` call
+   */
+  static _baseOnInsertObject (transaction) {
+    return {
+      billRunId: transaction.billRunId,
+      customerReference: transaction.customerReference,
+      financialYear: transaction.chargeFinancialYear
+    }
+  }
+
+  /**
+   * Returns an array of column names that are used for the unique constraint of an invoice to be UPSERT
+   *
+   * @returns {string[]} an array of the constraint field names
+   */
+  static _onConflictContraints () {
+    return ['bill_run_id', 'customer_reference', 'financial_year']
   }
 
   /**
