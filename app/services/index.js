@@ -10,7 +10,6 @@ const CreateAuthorisedSystemService = require('./create_authorised_system.servic
 const CreateBillRunService = require('./create_bill_run.service')
 const CreateCustomerDetailsService = require('./create_customer_details.service')
 const CreateMinimumChargeAdjustmentService = require('./create_minimum_charge_adjustment.service')
-const CreateTransactionBillRunService = require('./create_transaction_bill_run.service')
 const CreateTransactionBillRunValidationService = require('./create_transaction_bill_run_validation.service')
 const CreateTransactionService = require('./create_transaction.service')
 const CreateTransactionTallyService = require('./create_transaction_tally.service')
@@ -49,7 +48,6 @@ module.exports = {
   CreateCustomerDetailsService,
   CreateMinimumChargeAdjustmentService,
   CreateBillRunService,
-  CreateTransactionBillRunService,
   CreateTransactionBillRunValidationService,
   CreateTransactionService,
   CreateTransactionTallyService,
