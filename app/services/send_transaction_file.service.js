@@ -4,11 +4,14 @@
  * @module SendTransactionFileService
  */
 
-const Boom = require('@hapi/boom')
 const path = require('path')
+
+const { ServerConfig } = require('../../config')
+const { removeTemporaryFiles } = ServerConfig
 
 const GenerateTransactionFileService = require('./generate_transaction_file.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
+const DeleteFileService = require('./delete_file.service')
 
 class SendTransactionFileService {
   /**
@@ -17,6 +20,7 @@ class SendTransactionFileService {
    * - Checks that a transaction file is required;
    * - Calls GenerateTransactionFileService to generate the transaction file;
    * - Calls SendFileToS3Service to send the transaction file to the S3 bucket;
+   * - Deletes the file if removeTemporaryFiles is set to `true`;
    * - Sets the bill run status to 'billed' if everything was successful.
    *
    * @param {module:RegimeModel} regime The regime that the bill run belongs to. The regime slug will form part of the
@@ -26,6 +30,8 @@ class SendTransactionFileService {
    * within a service.
    */
   static async go (regime, billRun, notify) {
+    let generatedFile
+
     try {
       this._validate(billRun)
 
@@ -36,11 +42,20 @@ class SendTransactionFileService {
         return
       }
 
-      await this._generateAndSend(billRun, regime)
+      generatedFile = await this._generateAndSend(billRun, regime)
       await this._setBilledStatus(billRun)
+
+      // We delete the file last of all to ensure we still set the bill run status, even if deletion fails.
+      if (this._removeTemporaryFiles()) {
+        await DeleteFileService.go(generatedFile)
+      }
     } catch (error) {
-      notify(`Error sending transaction file: ${error}`)
+      notify(this._errorMessage(error))
     }
+  }
+
+  static _errorMessage (error) {
+    return `Error sending transaction file: ${error}`
   }
 
   static _validate (billRun) {
@@ -54,7 +69,7 @@ class SendTransactionFileService {
   }
 
   /**
-   * Generate and send the transaction file. Returns `true` if this succeeds, and `false` if any part of it fails.
+   * Generate and send the transaction file. Returns the local filename and path of the generated file.
    */
   static async _generateAndSend (billRun, regime) {
     const filename = this._filename(billRun.fileReference)
@@ -64,10 +79,16 @@ class SendTransactionFileService {
     const key = path.join(regime.slug, 'transaction', filename)
 
     await SendFileToS3Service.go(generatedFile, key)
+
+    return generatedFile
   }
 
   static _filename (fileReference) {
     return `${fileReference}.dat`
+  }
+
+  static _removeTemporaryFiles () {
+    return removeTemporaryFiles
   }
 
   static async _setBillingNotRequiredStatus (billRun) {

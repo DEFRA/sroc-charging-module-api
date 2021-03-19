@@ -5,7 +5,7 @@
  */
 
 const { S3Config, ServerConfig } = require('../../config')
-const { removeTemporaryFiles, temporaryFilePath } = ServerConfig
+const { temporaryFilePath } = ServerConfig
 
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 const fs = require('fs')
@@ -13,8 +13,7 @@ const path = require('path')
 
 class SendFileToS3Service {
   /**
-   * Send a file to an AWS S3 bucket. We optionally send it to the archive bucket, and based on server config we
-   * optionally delete the temp file.
+   * Send a file to an AWS S3 bucket. We optionally send it to the archive bucket.
    *
    * @param {string} localFilenameWithPath The name and path of the file to be sent to S3.
    * @param {string} key The key is the path and filename the file will have in the bucket. For example,
@@ -34,14 +33,6 @@ class SendFileToS3Service {
       }
     } catch (error) {
       throw new Error(error)
-    }
-
-    if (this._removeTemporaryFiles()) {
-      try {
-        fs.unlinkSync(localFilenameWithPath)
-      } catch (error) {
-        throw new Error(error)
-      }
     }
   }
 
@@ -74,10 +65,6 @@ class SendFileToS3Service {
 
   static _temporaryFilePath () {
     return temporaryFilePath
-  }
-
-  static _removeTemporaryFiles () {
-    return removeTemporaryFiles
   }
 
   static _uploadBucket () {

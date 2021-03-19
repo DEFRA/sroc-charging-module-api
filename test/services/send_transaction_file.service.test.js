@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
@@ -17,7 +17,7 @@ const {
 } = require('../support/helpers')
 
 // Things we need to stub
-const { GenerateTransactionFileService, SendFileToS3Service } = require('../../app/services')
+const { DeleteFileService, GenerateTransactionFileService, SendFileToS3Service } = require('../../app/services')
 
 // Thing under test
 const { SendTransactionFileService } = require('../../app/services')
@@ -25,6 +25,7 @@ const { SendTransactionFileService } = require('../../app/services')
 describe('Send Transaction File service', () => {
   let regime
   let billRun
+  let deleteStub
   let generateStub
   let sendStub
   let notifyFake
@@ -35,6 +36,7 @@ describe('Send Transaction File service', () => {
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     billRun = await BillRunHelper.addBillRun(regime.id, GeneralHelper.uuid4())
 
+    deleteStub = Sinon.stub(DeleteFileService, 'go').returns(true)
     generateStub = Sinon.stub(GenerateTransactionFileService, 'go').returns('stubFilename')
     sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
 
@@ -77,6 +79,30 @@ describe('Send Transaction File service', () => {
         const refreshedBillRun = await billRun.$query()
 
         expect(refreshedBillRun.status).to.equal('billed')
+      })
+
+      describe('and removeTemporary files is set to `true`', () => {
+        before(async () => {
+          Sinon.stub(SendTransactionFileService, '_removeTemporaryFiles').returns(true)
+        })
+
+        it('deletes the file', async () => {
+          await SendTransactionFileService.go(regime, billRun)
+
+          expect(deleteStub.calledOnce).to.equal(true)
+        })
+      })
+
+      describe('and removeTemporary files is set to `false`', () => {
+        before(async () => {
+          Sinon.stub(SendTransactionFileService, '_removeTemporaryFiles').returns(false)
+        })
+
+        it("doesn't delete the file", async () => {
+          await SendTransactionFileService.go(regime, billRun)
+
+          expect(deleteStub.called).to.equal(false)
+        })
       })
     })
 

@@ -10,7 +10,6 @@ const { expect } = Code
 
 const mockFs = require('mock-fs')
 
-const fs = require('fs')
 const path = require('path')
 
 // Things we need to stub
@@ -81,24 +80,6 @@ describe('Send File To S3 service', () => {
 
       // Test the bucket the file was sent to
       expect(calledCommand.input.Bucket).to.equal('ARCHIVE_BUCKET')
-    })
-
-    it("deletes the file after uploading if removeTemporary files is 'true'", async () => {
-      Sinon.stub(SendFileToS3Service, '_removeTemporaryFiles').returns(true)
-
-      await SendFileToS3Service.go(filenameWithPath, key, false)
-
-      const fileExists = fs.existsSync(filenameWithPath)
-      expect(fileExists).to.be.false()
-    })
-
-    it("doesn't delete the file if removeTemporaryFiles is 'false'", async () => {
-      Sinon.stub(SendFileToS3Service, '_removeTemporaryFiles').returns(false)
-
-      await SendFileToS3Service.go(filenameWithPath, key, false)
-
-      const fileExists = fs.existsSync(filenameWithPath)
-      expect(fileExists).to.be.true()
     })
   })
 
