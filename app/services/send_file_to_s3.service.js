@@ -16,7 +16,7 @@ class SendFileToS3Service {
    * Send a file to an AWS S3 bucket. We optionally send it to the archive bucket, and based on server config we
    * optionally delete the temp file.
    *
-   * @param {string} filename The name of the file in the temp folder to be sent to S3.
+   * @param {string} localFilenameWithPath The name and path of the file to be sent to S3.
    * @param {string} key The key is the path and filename the file will have in the bucket. For example,
    * 'wrls/transaction/nalai50001.dat'. Note that we prepend this with 'export'.
    * @param {function} notify The server.methods.notify method, which we pass in as server.methods isn't accessible
@@ -25,9 +25,7 @@ class SendFileToS3Service {
    * @returns {boolean} Returns `true` if the file was successfully sent and `false` if it failed.
   */
 
-  static async go (filename, key, notify, copyToArchive = true) {
-    const localFilenameWithPath = path.join(this._temporaryFilePath(), filename)
-
+  static async go (localFilenameWithPath, key, notify, copyToArchive = true) {
     // We always upload into the top-level export folder so prepend the key we've been given with 'export/'
     const exportKey = path.join('export', key)
 
