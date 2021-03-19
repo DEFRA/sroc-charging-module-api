@@ -27,6 +27,7 @@ describe('Send Transaction File service', () => {
   let billRun
   let generateStub
   let sendStub
+  let notifyFake
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -36,6 +37,9 @@ describe('Send Transaction File service', () => {
 
     generateStub = Sinon.stub(GenerateTransactionFileService, 'go').returns('stubFilename')
     sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
+
+    // Create a fake function to stand in place of server.methods.notify
+    notifyFake = Sinon.fake()
   })
 
   afterEach(() => {
@@ -102,10 +106,9 @@ describe('Send Transaction File service', () => {
   describe('When an invalid bill run is specified', () => {
     describe("because the status is not 'pending'", () => {
       it('throws an error', async () => {
-        const err = await expect(SendTransactionFileService.go(regime, billRun)).to.reject()
+        await SendTransactionFileService.go(regime, billRun, notifyFake)
 
-        expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal(`Bill run ${billRun.id} does not have a status of 'pending'.`)
+        expect(notifyFake.calledOnceWithExactly(`Bill run ${billRun.id} does not have a status of 'pending'.`)).to.equal(true)
       })
     })
   })

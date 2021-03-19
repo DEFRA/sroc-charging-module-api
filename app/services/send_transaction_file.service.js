@@ -26,7 +26,10 @@ class SendTransactionFileService {
    * within a service.
    */
   static async go (regime, billRun, notify) {
-    this._validate(billRun)
+    const validated = this._validate(billRun, notify)
+    if (!validated) {
+      return
+    }
 
     // If we don't need to generate a file then set the bill status to 'billing_not_required' and return early.
     const fileNeeded = this._checkIfFileNeeded(billRun)
@@ -41,10 +44,13 @@ class SendTransactionFileService {
     }
   }
 
-  static _validate (billRun) {
+  static _validate (billRun, notify) {
     if (!billRun.$pending()) {
-      throw Boom.conflict(`Bill run ${billRun.id} does not have a status of 'pending'.`)
+      notify(`Bill run ${billRun.id} does not have a status of 'pending'.`)
+      return false
     }
+
+    return true
   }
 
   static _checkIfFileNeeded (billRun) {
