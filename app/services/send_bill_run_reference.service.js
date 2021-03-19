@@ -26,13 +26,15 @@ class SendBillRunReferenceService {
    *
    * @param {@module RegimeModel} regime An instance of `RegimeModel` which matches the requested regime
    * @param {@module:BillRunModel} billRun The 'bill run' to send for billing
+   *
+   * @returns {@module:BillRunModel} the 'sent' bill run with an updated file reference (if applicable) and status
    */
   static async go (regime, billRun) {
     this._validate(billRun)
 
     // If we don't await here as well as in the _send() method the call to go() ends. In our tests we have found this
     // means any attempt to check the status has changed immediately after fails
-    await this._send(regime, billRun)
+    return this._send(regime, billRun)
   }
 
   static _validate (billRun) {
@@ -42,19 +44,20 @@ class SendBillRunReferenceService {
   }
 
   static async _send (regime, billRun) {
-    await BillRunModel.transaction(async trx => {
+    return BillRunModel.transaction(async trx => {
       const billableCount = await this._updateBillableInvoices(regime, billRun, trx)
 
       // We only generate a file reference for the bill run if there was 1 or more billable invoices. This avoids gaps
       // in the file references and concern about whether something got lost in transit
       const fileReference = billableCount ? await NextFileReferenceService.go(regime, billRun.region, trx) : null
 
-      await BillRunModel.query(trx)
+      return BillRunModel.query(trx)
         .findById(billRun.id)
         .patch({
           status: 'pending',
           fileReference
         })
+        .returning('*')
     })
   }
 

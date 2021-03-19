@@ -56,7 +56,7 @@ class SendTransactionFileService {
    */
   static async _generateAndSend (billRun, regime, notify) {
     const filename = this._filename(billRun.fileReference)
-    const generatedFile = GenerateTransactionFileService.go(filename, notify)
+    const generatedFile = await GenerateTransactionFileService.go(filename, notify)
 
     // GenerateTransactionFileService will return `false` if file generation failed; if this happens then we return
     // before we attempt to send the file.
