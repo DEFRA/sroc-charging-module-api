@@ -5,6 +5,7 @@
  */
 
 const BasePresenter = require('./base.presenter')
+const ViewBillRunInvoicePresenter = require('./view_bill_run_invoice.presenter')
 
 /**
  * Formats the data into the response we send after a view bill run request
@@ -23,7 +24,10 @@ class ViewBillRunPresenter extends BasePresenter {
         invoiceValue: data.invoiceValue,
         netTotal: data.netTotal,
         transactionFileReference: data.fileReference,
-        invoices: data.invoices
+        invoices: data.invoices.map(invoice => {
+          const presenter = new ViewBillRunInvoicePresenter(invoice)
+          return presenter.go()
+        })
       }
     }
   }
