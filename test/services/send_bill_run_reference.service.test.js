@@ -38,21 +38,17 @@ describe('Send Bill Run Reference service', () => {
     })
 
     it("sets the 'bill run' status to 'pending'", async () => {
-      await SendBillRunReferenceService.go(regime, billRun)
+      const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
 
-      const refreshedBillRun = await billRun.$query()
-
-      expect(refreshedBillRun.status).to.equal('pending')
+      expect(sentBillRun.status).to.equal('pending')
     })
 
     it("generates a file reference for the 'bill run'", async () => {
       // A bill run needs at least one billable invoice for a file reference to be generated
       await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 501, 0) // standard debit
-      await SendBillRunReferenceService.go(regime, billRun)
+      const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
 
-      const refreshedBillRun = await billRun.$query()
-
-      expect(refreshedBillRun.fileReference).to.equal('nalai50001')
+      expect(sentBillRun.fileReference).to.equal('nalai50001')
     })
 
     describe("for each 'invoice' linked to the bill run", () => {
@@ -85,19 +81,15 @@ describe('Send Bill Run Reference service', () => {
       })
 
       it("still updates the status to 'pending'", async () => {
-        await SendBillRunReferenceService.go(regime, billRun)
+        const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
 
-        const refreshedBillRun = await billRun.$query()
-
-        expect(refreshedBillRun.status).to.equal('pending')
+        expect(sentBillRun.status).to.equal('pending')
       })
 
       it("it does not assign a 'file reference'", async () => {
-        await SendBillRunReferenceService.go(regime, billRun)
+        const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
 
-        const refreshedBillRun = await billRun.$query()
-
-        expect(refreshedBillRun.fileReference).to.be.null()
+        expect(sentBillRun.fileReference).to.be.null()
       })
     })
   })
