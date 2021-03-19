@@ -10,7 +10,6 @@ const CreateAuthorisedSystemService = require('./create_authorised_system.servic
 const CreateBillRunService = require('./create_bill_run.service')
 const CreateCustomerDetailsService = require('./create_customer_details.service')
 const CreateMinimumChargeAdjustmentService = require('./create_minimum_charge_adjustment.service')
-const CreateTransactionBillRunService = require('./create_transaction_bill_run.service')
 const CreateTransactionBillRunValidationService = require('./create_transaction_bill_run_validation.service')
 const CreateTransactionService = require('./create_transaction.service')
 const CreateTransactionTallyService = require('./create_transaction_tally.service')
@@ -31,6 +30,7 @@ const ObjectCleaningService = require('./object_cleaning.service')
 const RequestBillRunService = require('./request_bill_run.service')
 const RulesService = require('./rules.service')
 const SendBillRunReferenceService = require('./send_bill_run_reference.service')
+const SendTransactionFileService = require('./send_transaction_file.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
 const SendTransactionFileService = require('./send_transaction_file.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
@@ -50,7 +50,6 @@ module.exports = {
   CreateCustomerDetailsService,
   CreateMinimumChargeAdjustmentService,
   CreateBillRunService,
-  CreateTransactionBillRunService,
   CreateTransactionBillRunValidationService,
   CreateTransactionService,
   CreateTransactionTallyService,
@@ -71,6 +70,7 @@ module.exports = {
   NextFileReferenceService,
   NextTransactionReferenceService,
   SendBillRunReferenceService,
+  SendTransactionFileService,
   SendFileToS3Service,
   SendTransactionFileService,
   ShowAuthorisedSystemService,
