@@ -112,10 +112,9 @@ describe('Send File To S3 service', () => {
 
       await SendFileToS3Service.go(fakeFile, key, notifyFake, false)
 
-      const fakeFilenameWithPath = path.join(testFolder, fakeFile)
       expect(notifyFake.calledOnceWithExactly(
-        `Error sending file ${fakeFilenameWithPath} to bucket TEST_BUCKET: ` +
-        `Error: ENOENT: no such file or directory, open '${fakeFilenameWithPath}'`
+        `Error sending file ${fakeFile} to bucket TEST_BUCKET: ` +
+        `Error: ENOENT: no such file or directory, open '${fakeFile}'`
       )).to.equal(true)
     })
   })
