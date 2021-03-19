@@ -33,7 +33,7 @@ exports.down = async function (knex) {
 
   await knex
     .schema
-    .alterTable('transactions', table => {
+    .alterTable('invoices', table => {
       table.dropColumn('transaction_reference')
     })
 }
