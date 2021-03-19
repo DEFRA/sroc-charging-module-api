@@ -58,7 +58,7 @@ describe('Send File To S3 service', () => {
     mockFs.restore()
   })
 
-  describe.only('When a valid file is specified', () => {
+  describe('When a valid file is specified', () => {
     it('uploads the file to the S3 bucket', async () => {
       await SendFileToS3Service.go(filenameWithPath, key, notifyFake, false)
 
