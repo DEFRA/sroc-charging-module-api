@@ -17,23 +17,18 @@ class GenerateTransactionFileService {
    * Writes a file to a given filename in the temp folder.
    *
    * @param {string} filename The name of the file to be written.
-   * @param {function} notify The server.methods.notify method, which we pass in as server.methods isn't accessible
-   * within a service.
-   * @returns {string} The path and filename of the written file. If writing failed then `null` is returned.
    */
-  static async go (filename, notify) {
-    const filenameWithPath = path.join(temporaryFilePath, filename)
-    const writeStream = await this._openStream(filenameWithPath)
-
+  static async go (filename) {
     try {
+      const filenameWithPath = path.join(temporaryFilePath, filename)
+      const writeStream = await this._openStream(filenameWithPath)
+
       await this._writeToStream(writeStream)
       await this._closeStream(writeStream)
+      return filenameWithPath
     } catch (error) {
-      notify(`Error writing file ${filenameWithPath}: ${error}`)
-      return null
+      throw new Error(error)
     }
-
-    return filenameWithPath
   }
 
   static async _openStream (filenameWithPath) {

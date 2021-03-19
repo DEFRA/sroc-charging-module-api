@@ -26,31 +26,27 @@ class SendTransactionFileService {
    * within a service.
    */
   static async go (regime, billRun, notify) {
-    const validated = this._validate(billRun, notify)
-    if (!validated) {
-      return
-    }
+    try {
+      this._validate(billRun)
 
-    // If we don't need to generate a file then set the bill status to 'billing_not_required' and return early.
-    const fileNeeded = this._checkIfFileNeeded(billRun)
-    if (!fileNeeded) {
-      await this._setBillingNotRequiredStatus(billRun)
-      return
-    }
+      // If we don't need to generate a file then set the bill status to 'billing_not_required' and return early.
+      const fileNeeded = this._checkIfFileNeeded(billRun)
+      if (!fileNeeded) {
+        await this._setBillingNotRequiredStatus(billRun)
+        return
+      }
 
-    const generatedAndSent = await this._generateAndSend(billRun, regime, notify)
-    if (generatedAndSent) {
+      await this._generateAndSend(billRun, regime)
       await this._setBilledStatus(billRun)
+    } catch (error) {
+      notify(`Error sending transaction file: ${error}`)
     }
   }
 
-  static _validate (billRun, notify) {
+  static _validate (billRun) {
     if (!billRun.$pending()) {
-      notify(`Bill run ${billRun.id} does not have a status of 'pending'.`)
-      return false
+      throw new Error(`Bill run ${billRun.id} does not have a status of 'pending'.`)
     }
-
-    return true
   }
 
   static _checkIfFileNeeded (billRun) {
@@ -60,21 +56,14 @@ class SendTransactionFileService {
   /**
    * Generate and send the transaction file. Returns `true` if this succeeds, and `false` if any part of it fails.
    */
-  static async _generateAndSend (billRun, regime, notify) {
+  static async _generateAndSend (billRun, regime) {
     const filename = this._filename(billRun.fileReference)
-    const generatedFile = await GenerateTransactionFileService.go(filename, notify)
-
-    // GenerateTransactionFileService will return `false` if file generation failed; if this happens then we return
-    // before we attempt to send the file.
-    if (!generatedFile) {
-      return false
-    }
+    const generatedFile = await GenerateTransactionFileService.go(filename)
 
     // The key is the remote path and filename in the S3 bucket, eg. 'wrls/transaction/nalai50001.dat'
     const key = path.join(regime.slug, 'transaction', filename)
 
-    // SendFileToS3Service returns a boolean indicating success, so we simply pass this back to our caller.
-    return SendFileToS3Service.go(generatedFile, key, notify)
+    await SendFileToS3Service.go(generatedFile, key)
   }
 
   static _filename (fileReference) {
