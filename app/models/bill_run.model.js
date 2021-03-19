@@ -78,6 +78,38 @@ class BillRunModel extends BaseModel {
   }
 
   /**
+   * Update the 'tally' fields of the bill run, for example, `debitLineCount` based on the transaction provided
+   *
+   * As we add transactions to a bill run we 'tally' details about them, for example, how many were debits, what the
+   * total credit value is etc. This information is then used when a bill run is 'generated' to simplify and speed up
+   * the process.
+   *
+   * Use this method to update a bill run (determined by the bill run ID in the `transaction` param) based on the
+   * transaction.
+   *
+   * > Note - a similar process is done for invoices and licences though they have the additional task of determining
+   * if a new invoice or licence record needs to be created first
+   *
+   * @param {module:TransactionTranslator} transaction translator representing the transaction that will seed the patch
+   * query
+   * @param {Object} [trx] Optional Objection database `transaction` object to be used in the patch query
+   *
+   * @returns {string} ID of the bill run that was updated
+   */
+  static async patchTally (transaction, trx) {
+    const { CreateTransactionTallyService } = require('../services')
+
+    const { patch } = CreateTransactionTallyService.go(transaction, this.tableName)
+
+    const { id } = await BillRunModel.query(trx)
+      .findById(transaction.billRunId)
+      .patch(patch)
+      .returning('id')
+
+    return id
+  }
+
+  /**
    * Returns whether the bill run can be 'edited'
    *
    * Once a bill run has been 'sent', which means the transaction file is generated, it cannot be edited. This includes
