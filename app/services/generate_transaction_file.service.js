@@ -19,7 +19,7 @@ class GenerateTransactionFileService {
    * @param {string} filename The name of the file to be written.
    * @param {function} notify The server.methods.notify method, which we pass in as server.methods isn't accessible
    * within a service.
-   * @returns {string} The path and filename of the written file.
+   * @returns {string} The path and filename of the written file. If writing failed then `null` is returned.
    */
   static async go (filename, notify) {
     const filenameWithPath = path.join(temporaryFilePath, filename)
@@ -30,6 +30,7 @@ class GenerateTransactionFileService {
       await this._closeStream(writeStream)
     } catch (error) {
       notify(`Error writing file ${filenameWithPath}: ${error}`)
+      return null
     }
 
     return filenameWithPath

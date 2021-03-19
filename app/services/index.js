@@ -30,6 +30,7 @@ const ObjectCleaningService = require('./object_cleaning.service')
 const RequestBillRunService = require('./request_bill_run.service')
 const RulesService = require('./rules.service')
 const SendBillRunReferenceService = require('./send_bill_run_reference.service')
+const SendTransactionFileService = require('./send_transaction_file.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
 const ShowRegimeService = require('./show_regime.service')
@@ -68,6 +69,7 @@ module.exports = {
   NextFileReferenceService,
   NextTransactionReferenceService,
   SendBillRunReferenceService,
+  SendTransactionFileService,
   SendFileToS3Service,
   ShowAuthorisedSystemService,
   ShowRegimeService,
