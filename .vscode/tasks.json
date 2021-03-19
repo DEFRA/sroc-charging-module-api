@@ -124,10 +124,40 @@
       }
     },
     {
+      "label": "Refresh sroc-cma dev db",
+      "detail": "Will rollback all changes then re-run migrations and seeds for the main db",
+      "type": "shell",
+      "command": "docker-compose exec app /bin/sh -c 'npm run rollbackdb && npm run migratedb && npm run seeddb'",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
       "label": "Prepare sroc-cma test db",
       "detail": "Will create test db and run migrations. Is safe to call repeatedly",
       "type": "shell",
       "command": "docker-compose exec app /bin/sh -c 'npm run createdbtest && npm run migratedbtest'",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Refresh sroc-cma test db",
+      "detail": "Will rollback all changes then re-run migrations and seeds for the test db",
+      "type": "shell",
+      "command": "docker-compose exec app /bin/sh -c 'npm run rollbackdbtest && npm run migratedbtest'",
       "group": "test",
       "presentation": {
         "echo": true,
