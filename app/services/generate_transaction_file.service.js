@@ -14,17 +14,18 @@ const finished = util.promisify(stream.finished)
 
 class GenerateTransactionFileService {
   /**
-   * Writes a file to a given filename in the temp folder.
+   * Generates and writes a transaction file to a given filename in the temp folder.
    *
-   * @param {string} filename The name of the file to be written.
+   * @param {string} filename The name of the file to be generated.
+   * @returns {string} The path and filename of the generated file.
    */
   static async go (filename) {
     try {
       const filenameWithPath = path.join(temporaryFilePath, filename)
       const writeStream = await this._openStream(filenameWithPath)
-
       await this._writeToStream(writeStream)
       await this._closeStream(writeStream)
+
       return filenameWithPath
     } catch (error) {
       throw new Error(error)

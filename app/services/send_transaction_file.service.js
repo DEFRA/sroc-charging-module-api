@@ -20,7 +20,7 @@ class SendTransactionFileService {
    * - Checks that a transaction file is required;
    * - Calls GenerateTransactionFileService to generate the transaction file;
    * - Calls SendFileToS3Service to send the transaction file to the S3 bucket;
-   * - Deletes the file if removeTemporaryFiles is set to `true`;
+   * - Deletes the file if ServerConfig.removeTemporaryFiles is set to `true`;
    * - Sets the bill run status to 'billed' if everything was successful.
    *
    * @param {module:RegimeModel} regime The regime that the bill run belongs to. The regime slug will form part of the
@@ -69,7 +69,7 @@ class SendTransactionFileService {
   }
 
   /**
-   * Generate and send the transaction file. Returns the local filename and path of the generated file.
+   * Generate and send the transaction file. Returns the path and filename of the generated file.
    */
   static async _generateAndSend (billRun, regime) {
     const filename = this._filename(billRun.fileReference)
