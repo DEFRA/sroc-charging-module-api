@@ -20,7 +20,6 @@ const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 const { SendFileToS3Service } = require('../../app/services')
 
 describe('Send File To S3 service', () => {
-  let notifyFake
   let s3Stub
   let key
 
@@ -31,9 +30,6 @@ describe('Send File To S3 service', () => {
   beforeEach(() => {
     // Stub the S3 client's send method, which is used to run the 'put object' command
     s3Stub = Sinon.stub(S3Client.prototype, 'send')
-
-    // Create a fake function to stand in place of server.methods.notify
-    notifyFake = Sinon.fake()
 
     // Define the key we'll 'upload' to. We use the 'test_folder' dir as this exists in our dev bucket so if we want to
     // double-check that files are indeed uploaded successfully, we can un-stub AWS and check the bucket contents
@@ -60,7 +56,7 @@ describe('Send File To S3 service', () => {
 
   describe('When a valid file is specified', () => {
     it('uploads the file to the S3 bucket', async () => {
-      await SendFileToS3Service.go(filenameWithPath, key, notifyFake, false)
+      await SendFileToS3Service.go(filenameWithPath, key, false)
 
       // Test that the S3 client was called once
       expect(s3Stub.calledOnce).to.be.true()
@@ -74,7 +70,7 @@ describe('Send File To S3 service', () => {
     })
 
     it("also uploads the file to the archive S3 bucket when copyToArchive is 'true'", async () => {
-      await SendFileToS3Service.go(filenameWithPath, key, notifyFake, true)
+      await SendFileToS3Service.go(filenameWithPath, key, true)
 
       // Test that the S3 client was called twice
       expect(s3Stub.calledTwice).to.be.true()
@@ -90,7 +86,7 @@ describe('Send File To S3 service', () => {
     it("deletes the file after uploading if removeTemporary files is 'true'", async () => {
       Sinon.stub(SendFileToS3Service, '_removeTemporaryFiles').returns(true)
 
-      await SendFileToS3Service.go(filenameWithPath, key, notifyFake, false)
+      await SendFileToS3Service.go(filenameWithPath, key, false)
 
       const fileExists = fs.existsSync(filenameWithPath)
       expect(fileExists).to.be.false()
@@ -99,7 +95,7 @@ describe('Send File To S3 service', () => {
     it("doesn't delete the file if removeTemporaryFiles is 'false'", async () => {
       Sinon.stub(SendFileToS3Service, '_removeTemporaryFiles').returns(false)
 
-      await SendFileToS3Service.go(filenameWithPath, key, notifyFake, false)
+      await SendFileToS3Service.go(filenameWithPath, key, false)
 
       const fileExists = fs.existsSync(filenameWithPath)
       expect(fileExists).to.be.true()
@@ -107,15 +103,13 @@ describe('Send File To S3 service', () => {
   })
 
   describe('When an invalid file is specified', () => {
-    it('uses server.notify to log the error', async () => {
+    it('throws an error', async () => {
       const fakeFile = 'FAKE_FILE'
 
-      await SendFileToS3Service.go(fakeFile, key, notifyFake, false)
+      const err = await expect(SendFileToS3Service.go(fakeFile, key, false)).to.reject()
 
-      expect(notifyFake.calledOnceWithExactly(
-        `Error sending file ${fakeFile} to bucket TEST_BUCKET: ` +
-        `Error: ENOENT: no such file or directory, open '${fakeFile}'`
-      )).to.equal(true)
+      expect(err).to.be.an.error()
+      expect(err.message).to.equal(`Error: ENOENT: no such file or directory, open '${fakeFile}'`)
     })
   })
 })
