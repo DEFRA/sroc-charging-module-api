@@ -58,9 +58,9 @@ describe('Send File To S3 service', () => {
     mockFs.restore()
   })
 
-  describe('When a valid file is specified', () => {
+  describe.only('When a valid file is specified', () => {
     it('uploads the file to the S3 bucket', async () => {
-      await SendFileToS3Service.go(testFile, key, notifyFake, false)
+      await SendFileToS3Service.go(filenameWithPath, key, notifyFake, false)
 
       // Test that the S3 client was called once
       expect(s3Stub.calledOnce).to.be.true()
@@ -74,7 +74,7 @@ describe('Send File To S3 service', () => {
     })
 
     it("also uploads the file to the archive S3 bucket when copyToArchive is 'true'", async () => {
-      await SendFileToS3Service.go(testFile, key, notifyFake, true)
+      await SendFileToS3Service.go(filenameWithPath, key, notifyFake, true)
 
       // Test that the S3 client was called twice
       expect(s3Stub.calledTwice).to.be.true()
@@ -90,7 +90,7 @@ describe('Send File To S3 service', () => {
     it("deletes the file after uploading if removeTemporary files is 'true'", async () => {
       Sinon.stub(SendFileToS3Service, '_removeTemporaryFiles').returns(true)
 
-      await SendFileToS3Service.go(testFile, key, notifyFake, false)
+      await SendFileToS3Service.go(filenameWithPath, key, notifyFake, false)
 
       const fileExists = fs.existsSync(filenameWithPath)
       expect(fileExists).to.be.false()
@@ -99,7 +99,7 @@ describe('Send File To S3 service', () => {
     it("doesn't delete the file if removeTemporaryFiles is 'false'", async () => {
       Sinon.stub(SendFileToS3Service, '_removeTemporaryFiles').returns(false)
 
-      await SendFileToS3Service.go(testFile, key, notifyFake, false)
+      await SendFileToS3Service.go(filenameWithPath, key, notifyFake, false)
 
       const fileExists = fs.existsSync(filenameWithPath)
       expect(fileExists).to.be.true()
