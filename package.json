@@ -13,6 +13,8 @@
     "createdbtest": "NODE_ENV=test node db/create_database.js",
     "migratedb": "knex migrate:latest",
     "migratedbtest": "NODE_ENV=test knex migrate:latest",
+    "rollbackdb": "knex migrate:rollback --all",
+    "rollbackdbtest": "NODE_ENV=test knex migrate:rollback --all",
     "seeddb": "knex seed:run",
     "unit-test": "lab --silent-skips --shuffle"
   },
