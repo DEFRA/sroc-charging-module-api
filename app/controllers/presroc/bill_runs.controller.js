@@ -45,9 +45,9 @@ class BillRunsController {
   }
 
   static async send (req, h) {
-    await SendBillRunReferenceService.go(req.app.regime, req.app.billRun)
+    const sentBillRun = await SendBillRunReferenceService.go(req.app.regime, req.app.billRun)
 
-    SendTransactionFileService.go(req.app.regime, req.app.billRun, req.server.methods.notify)
+    SendTransactionFileService.go(req.app.regime, sentBillRun, req.server.methods.notify)
 
     return h.response().code(204)
   }
