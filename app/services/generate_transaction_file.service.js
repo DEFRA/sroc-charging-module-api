@@ -29,7 +29,7 @@ class GenerateTransactionFileService {
       await this._writeToStream(writeStream)
       await this._closeStream(writeStream)
     } catch (error) {
-      notify(`Error writing file ${filenameWithPath}: ${error}`)
+      this._errorNotification(notify, 'Error writing file', filenameWithPath, error)
       return null
     }
 
@@ -47,6 +47,13 @@ class GenerateTransactionFileService {
   static async _closeStream (writeStream) {
     writeStream.end()
     await finished(writeStream)
+  }
+
+  static _errorNotification (notify, message, filename, error) {
+    notify(
+      message,
+      { filename, error }
+    )
   }
 }
 

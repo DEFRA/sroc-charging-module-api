@@ -36,7 +36,7 @@ class SendFileToS3Service {
         await this._sendFile(this._archiveBucket(), exportKey, localFilenameWithPath)
       }
     } catch (error) {
-      notify(`Error sending file ${localFilenameWithPath} to bucket ${this._uploadBucket()}: ${error}`)
+      this._errorNotification(notify, 'Error sending file', localFilenameWithPath, this._uploadBucket(), error)
       return false
     }
 
@@ -44,7 +44,7 @@ class SendFileToS3Service {
       try {
         fs.unlinkSync(localFilenameWithPath)
       } catch (error) {
-        notify(`Error deleting file ${localFilenameWithPath}: ${error}`)
+        this._errorNotification(notify, 'Error deleting file', localFilenameWithPath, null, error)
       }
     }
 
@@ -93,6 +93,13 @@ class SendFileToS3Service {
 
   static _archiveBucket () {
     return S3Config.archiveBucket
+  }
+
+  static _errorNotification (notify, message, filename, bucket, error) {
+    notify(
+      message,
+      { filename, bucket, error }
+    )
   }
 }
 
