@@ -18,6 +18,7 @@ const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 
 // Thing under test
 const { SendFileToS3Service } = require('../../app/services')
+const { ENOENT } = require('constants')
 
 describe('Send File To S3 service', () => {
   let notifyFake
@@ -107,15 +108,15 @@ describe('Send File To S3 service', () => {
   })
 
   describe('When an invalid file is specified', () => {
-    it('uses server.notify to log the error', async () => {
-      const fakeFile = 'FAKE_FILE'
+    const fakeFile = 'FAKE_FILE'
 
+    it('uses server.notify to log the error', async () => {
       await SendFileToS3Service.go(fakeFile, key, notifyFake, false)
 
-      expect(notifyFake.calledOnceWithExactly(
-        `Error sending file ${fakeFile} to bucket TEST_BUCKET: ` +
-        `Error: ENOENT: no such file or directory, open '${fakeFile}'`
-      )).to.equal(true)
+      expect(notifyFake.firstArg).to.equal('Error sending file')
+      expect(notifyFake.lastArg.filename).to.equal(fakeFile)
+      expect(notifyFake.lastArg.bucket).to.equal('TEST_BUCKET')
+      expect(notifyFake.lastArg.error.code).to.equal('ENOENT')
     })
   })
 })
