@@ -46,7 +46,7 @@ EXPOSE $PORT 9229 9230
 # first copy just the package*.json files from the host
 COPY package.json package-lock.json* ./
 
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Update the PATH env var to add any node binaries from our dependencies to it. This should make them discoverable from
 # the command line
@@ -103,7 +103,7 @@ USER node
 # owner of the copied files
 COPY --chown=node:node package.json package-lock.json* ./
 
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Update the PATH env var to add any node binaries from our dependencies to it. This should make them discoverable from
 # the command line
