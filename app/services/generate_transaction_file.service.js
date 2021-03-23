@@ -46,9 +46,7 @@ class GenerateTransactionFileService {
    * https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/#implement-a-readable-stream
    */
   static _inputStream () {
-    const stream = new Readable({
-      read () {}
-    })
+    const stream = new Readable()
 
     stream.push('Hello world!')
     stream.push(null) // No more data
