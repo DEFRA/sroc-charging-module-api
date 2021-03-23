@@ -22,6 +22,8 @@ class ViewInvoicePresenter extends BasePresenter {
         zeroValueInvoice: data.zeroValueInvoice,
         minimumChargeInvoice: data.minimumChargeInvoice,
         transactionReference: data.transactionReference,
+        creditLineValue: data.creditLineValue,
+        debitLineValue: data.debitLineValue,
         netTotal: data.netTotal,
         licences: data.licences.map(licence => {
           const presenter = new ViewLicencePresenter(licence)
