@@ -14,11 +14,7 @@ class DeleteFileService {
   */
 
   static async go (localFilenameWithPath) {
-    try {
-      fs.unlinkSync(localFilenameWithPath)
-    } catch (error) {
-      throw new Error(error)
-    }
+    fs.unlinkSync(localFilenameWithPath)
   }
 }
 
