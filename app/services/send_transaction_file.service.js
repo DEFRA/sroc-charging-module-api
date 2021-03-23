@@ -4,11 +4,14 @@
  * @module SendTransactionFileService
  */
 
-const Boom = require('@hapi/boom')
 const path = require('path')
+
+const { ServerConfig } = require('../../config')
+const { removeTemporaryFiles } = ServerConfig
 
 const GenerateTransactionFileService = require('./generate_transaction_file.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
+const DeleteFileService = require('./delete_file.service')
 
 class SendTransactionFileService {
   /**
@@ -17,6 +20,7 @@ class SendTransactionFileService {
    * - Checks that a transaction file is required;
    * - Calls GenerateTransactionFileService to generate the transaction file;
    * - Calls SendFileToS3Service to send the transaction file to the S3 bucket;
+   * - Deletes the file if ServerConfig.removeTemporaryFiles is set to `true`;
    * - Sets the bill run status to 'billed' if everything was successful.
    *
    * @param {module:RegimeModel} regime The regime that the bill run belongs to. The regime slug will form part of the
@@ -26,24 +30,37 @@ class SendTransactionFileService {
    * within a service.
    */
   static async go (regime, billRun, notify) {
-    this._validate(billRun)
+    let generatedFile
 
-    // If we don't need to generate a file then set the bill status to 'billing_not_required' and return early.
-    const fileNeeded = this._checkIfFileNeeded(billRun)
-    if (!fileNeeded) {
-      await this._setBillingNotRequiredStatus(billRun)
-      return
-    }
+    try {
+      this._validate(billRun)
 
-    const generatedAndSent = await this._generateAndSend(billRun, regime, notify)
-    if (generatedAndSent) {
+      // If we don't need to generate a file then set the bill status to 'billing_not_required' and return early.
+      const fileNeeded = this._checkIfFileNeeded(billRun)
+      if (!fileNeeded) {
+        await this._setBillingNotRequiredStatus(billRun)
+        return
+      }
+
+      generatedFile = await this._generateAndSend(billRun, regime)
       await this._setBilledStatus(billRun)
+
+      // We delete the file last of all to ensure we still set the bill run status, even if deletion fails.
+      if (this._removeTemporaryFiles()) {
+        await DeleteFileService.go(generatedFile)
+      }
+    } catch (error) {
+      notify(this._errorMessage(error))
     }
+  }
+
+  static _errorMessage (error) {
+    return `Error sending transaction file: ${error}`
   }
 
   static _validate (billRun) {
     if (!billRun.$pending()) {
-      throw Boom.conflict(`Bill run ${billRun.id} does not have a status of 'pending'.`)
+      throw new Error(`Bill run ${billRun.id} does not have a status of 'pending'.`)
     }
   }
 
@@ -52,27 +69,26 @@ class SendTransactionFileService {
   }
 
   /**
-   * Generate and send the transaction file. Returns `true` if this succeeds, and `false` if any part of it fails.
+   * Generate and send the transaction file. Returns the path and filename of the generated file.
    */
-  static async _generateAndSend (billRun, regime, notify) {
+  static async _generateAndSend (billRun, regime) {
     const filename = this._filename(billRun.fileReference)
-    const generatedFile = await GenerateTransactionFileService.go(filename, notify)
-
-    // GenerateTransactionFileService will return `false` if file generation failed; if this happens then we return
-    // before we attempt to send the file.
-    if (!generatedFile) {
-      return false
-    }
+    const generatedFile = await GenerateTransactionFileService.go(filename)
 
     // The key is the remote path and filename in the S3 bucket, eg. 'wrls/transaction/nalai50001.dat'
     const key = path.join(regime.slug, 'transaction', filename)
 
-    // SendFileToS3Service returns a boolean indicating success, so we simply pass this back to our caller.
-    return SendFileToS3Service.go(generatedFile, key, notify)
+    await SendFileToS3Service.go(generatedFile, key)
+
+    return generatedFile
   }
 
   static _filename (fileReference) {
     return `${fileReference}.dat`
+  }
+
+  static _removeTemporaryFiles () {
+    return removeTemporaryFiles
   }
 
   static async _setBillingNotRequiredStatus (billRun) {

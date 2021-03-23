@@ -6,47 +6,52 @@
 
 const fs = require('fs')
 const path = require('path')
-const stream = require('stream')
-const util = require('util')
+const { Readable } = require('stream')
 const { temporaryFilePath } = require('../../config/server.config')
-
-const finished = util.promisify(stream.finished)
 
 class GenerateTransactionFileService {
   /**
-   * Writes a file to a given filename in the temp folder.
+   * Generates and writes a transaction file to a given filename in the temp folder.
    *
-   * @param {string} filename The name of the file to be written.
-   * @param {function} notify The server.methods.notify method, which we pass in as server.methods isn't accessible
-   * within a service.
-   * @returns {string} The path and filename of the written file. If writing failed then `null` is returned.
+   * @param {string} filename The name of the file to be generated.
+   * @returns {string} The path and filename of the generated file.
    */
-  static async go (filename, notify) {
+  static async go (filename) {
     const filenameWithPath = path.join(temporaryFilePath, filename)
-    const writeStream = await this._openStream(filenameWithPath)
-
-    try {
-      await this._writeToStream(writeStream)
-      await this._closeStream(writeStream)
-    } catch (error) {
-      notify(`Error writing file ${filenameWithPath}: ${error}`)
-      return null
-    }
+    const inputStream = this._inputStream()
+    await this._streamToFile(inputStream, filenameWithPath)
 
     return filenameWithPath
   }
 
-  static async _openStream (filenameWithPath) {
-    return fs.createWriteStream(filenameWithPath)
+  /**
+   * Accept a stream and pipe it to a file. We wrap this in a promise to streamline event handling. The method returns
+   * a promise so we can simply call it using "await" to wait for it to complete before we continue.
+   *
+   * https://dev.to/cdanielsen/wrap-your-streams-with-promises-for-fun-and-profit-51ka
+   */
+  static _streamToFile (inputStream, filePath) {
+    return new Promise((resolve, reject) => {
+      const fileWriteStream = fs.createWriteStream(filePath)
+      inputStream
+        .pipe(fileWriteStream)
+        .on('finish', resolve)
+        .on('error', reject)
+    })
   }
 
-  static async _writeToStream (writeStream) {
-    await writeStream.write('Hello world!')
-  }
+  /**
+   * Implement a simple readable stream to return our 'Hello world!' string.
+   *
+   * https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/#implement-a-readable-stream
+   */
+  static _inputStream () {
+    const stream = new Readable()
 
-  static async _closeStream (writeStream) {
-    writeStream.end()
-    await finished(writeStream)
+    stream.push('Hello world!')
+    stream.push(null) // No more data
+
+    return stream
   }
 }
 

@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
@@ -17,7 +17,7 @@ const {
 } = require('../support/helpers')
 
 // Things we need to stub
-const { GenerateTransactionFileService, SendFileToS3Service } = require('../../app/services')
+const { DeleteFileService, GenerateTransactionFileService, SendFileToS3Service } = require('../../app/services')
 
 // Thing under test
 const { SendTransactionFileService } = require('../../app/services')
@@ -25,8 +25,10 @@ const { SendTransactionFileService } = require('../../app/services')
 describe('Send Transaction File service', () => {
   let regime
   let billRun
+  let deleteStub
   let generateStub
   let sendStub
+  let notifyFake
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -34,8 +36,12 @@ describe('Send Transaction File service', () => {
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     billRun = await BillRunHelper.addBillRun(regime.id, GeneralHelper.uuid4())
 
+    deleteStub = Sinon.stub(DeleteFileService, 'go').returns(true)
     generateStub = Sinon.stub(GenerateTransactionFileService, 'go').returns('stubFilename')
     sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
+
+    // Create a fake function to stand in place of server.methods.notify
+    notifyFake = Sinon.fake()
   })
 
   afterEach(() => {
@@ -74,6 +80,30 @@ describe('Send Transaction File service', () => {
 
         expect(refreshedBillRun.status).to.equal('billed')
       })
+
+      describe('and removeTemporary files is set to `true`', () => {
+        before(async () => {
+          Sinon.stub(SendTransactionFileService, '_removeTemporaryFiles').returns(true)
+        })
+
+        it('deletes the file', async () => {
+          await SendTransactionFileService.go(regime, billRun)
+
+          expect(deleteStub.calledOnce).to.equal(true)
+        })
+      })
+
+      describe('and removeTemporary files is set to `false`', () => {
+        before(async () => {
+          Sinon.stub(SendTransactionFileService, '_removeTemporaryFiles').returns(false)
+        })
+
+        it("doesn't delete the file", async () => {
+          await SendTransactionFileService.go(regime, billRun)
+
+          expect(deleteStub.called).to.equal(false)
+        })
+      })
     })
 
     describe("and a transaction file isn't required", () => {
@@ -102,10 +132,11 @@ describe('Send Transaction File service', () => {
   describe('When an invalid bill run is specified', () => {
     describe("because the status is not 'pending'", () => {
       it('throws an error', async () => {
-        const err = await expect(SendTransactionFileService.go(regime, billRun)).to.reject()
+        await SendTransactionFileService.go(regime, billRun, notifyFake)
 
-        expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal(`Bill run ${billRun.id} does not have a status of 'pending'.`)
+        expect(notifyFake.calledOnceWithExactly(
+          `Error sending transaction file: Error: Bill run ${billRun.id} does not have a status of 'pending'.`
+        )).to.equal(true)
       })
     })
   })

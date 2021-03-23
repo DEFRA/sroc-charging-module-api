@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { afterEach, before, beforeEach, describe, it } = exports.lab = Lab.script()
+const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 const mockFs = require('mock-fs')
@@ -19,15 +19,10 @@ const { temporaryFilePath } = require('../../config/server.config')
 const { GenerateTransactionFileService } = require('../../app/services')
 
 describe('Generate Transaction File service', () => {
-  let notifyFake
-
   const filename = 'test.txt'
   const filenameWithPath = path.join(temporaryFilePath, filename)
 
   beforeEach(async () => {
-    // Create a fake function to stand in place of server.methods.notify
-    notifyFake = Sinon.fake()
-
     // Create mock in-memory file system to avoid temp files being dropped in our filesystem
     mockFs({
       tmp: { }
@@ -41,7 +36,7 @@ describe('Generate Transaction File service', () => {
 
   describe('When writing a file succeeds', () => {
     it('creates a file with expected content', async () => {
-      await GenerateTransactionFileService.go(filename, notifyFake)
+      await GenerateTransactionFileService.go(filename)
 
       const file = fs.readFileSync(filenameWithPath, 'utf-8')
 
@@ -49,23 +44,22 @@ describe('Generate Transaction File service', () => {
     })
 
     it('returns the filename and path', async () => {
-      const returnedFilenameWithPath = await GenerateTransactionFileService.go(filename, notifyFake)
+      const returnedFilenameWithPath = await GenerateTransactionFileService.go(filename)
 
       expect(returnedFilenameWithPath).to.equal(filenameWithPath)
     })
   })
 
   describe('When writing a file fails', () => {
-    before(async () => {
-      Sinon
-        .stub(GenerateTransactionFileService, '_writeToStream')
-        .throws('TEST')
-    })
+    it('throws an error', async () => {
+      const fakeFilenameWithPath = path.join('FAKE_DIR', filenameWithPath)
 
-    it('uses server.notify to log the error', async () => {
-      await GenerateTransactionFileService.go(filename, notifyFake)
+      const err = await expect(GenerateTransactionFileService.go(fakeFilenameWithPath)).to.reject()
 
-      expect(notifyFake.calledOnceWithExactly(`Error writing file ${filenameWithPath}: TEST`)).to.equal(true)
+      expect(err).to.be.an.error()
+      // The service adds the temp file path to the filename we pass to it so this is the path we expect in the error
+      const errorPath = path.join(temporaryFilePath, fakeFilenameWithPath)
+      expect(err.message).to.equal(`ENOENT, no such file or directory '${errorPath}'`)
     })
   })
 })
