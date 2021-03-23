@@ -6,22 +6,35 @@
 
 const fs = require('fs')
 const path = require('path')
-const { Readable } = require('stream')
+const { Readable, Transform } = require('stream')
 const { temporaryFilePath } = require('../../config/server.config')
 
 class GenerateTransactionFileService {
   /**
-   * Generates and writes a transaction file to a given filename in the temp folder.
+   * Generates and writes a transaction file to a file in the temp folder. The filename will be the bill run's file
+   * reference with '.dat' appended, ie. 'nalai50001.dat'
    *
-   * @param {string} filename The name of the file to be generated.
+   * @param {string} fileReference The bill run's file reference.
    * @returns {string} The path and filename of the generated file.
    */
-  static async go (filename) {
-    const filenameWithPath = path.join(temporaryFilePath, filename)
+  static async go (fileReference) {
+    const filenameWithPath = this._filenameWithPath(fileReference)
     const inputStream = this._inputStream()
-    await this._streamToFile(inputStream, filenameWithPath)
+    const transformStream = this._transformStream()
+    await this._streamToFile(inputStream, transformStream, filenameWithPath)
 
     return filenameWithPath
+  }
+
+  static _filenameWithPath (fileReference) {
+    // We use path.normalize to remove any double forward slashes that occur when assembling the path
+    return path.normalize(
+      path.format({
+        dir: temporaryFilePath,
+        name: fileReference,
+        ext: '.dat'
+      })
+    )
   }
 
   /**
@@ -30,10 +43,11 @@ class GenerateTransactionFileService {
    *
    * https://dev.to/cdanielsen/wrap-your-streams-with-promises-for-fun-and-profit-51ka
    */
-  static _streamToFile (inputStream, filePath) {
+  static _streamToFile (inputStream, transformStream, filePath) {
     return new Promise((resolve, reject) => {
       const fileWriteStream = fs.createWriteStream(filePath)
       inputStream
+        .pipe(transformStream)
         .pipe(fileWriteStream)
         .on('finish', resolve)
         .on('error', reject)
@@ -41,15 +55,28 @@ class GenerateTransactionFileService {
   }
 
   /**
-   * Implement a simple readable stream to return our 'Hello world!' string.
-   *
-   * https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/#implement-a-readable-stream
+   * Create a stream that reads each transaction, translates it, and outputs it
    */
   static _inputStream () {
-    const stream = new Readable()
+    const stream = new Readable({
+      read () {
+        this.push('Hello world!')
 
-    stream.push('Hello world!')
-    stream.push(null) // No more data
+        // Return null to signify end of data
+        this.push(null)
+      }
+    })
+
+    return stream
+  }
+
+  static _transformStream () {
+    const stream = new Transform({
+      transform (chunk, _encoding, callback) {
+        this.push(chunk.toString().toUpperCase())
+        callback()
+      }
+    })
 
     return stream
   }

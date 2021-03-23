@@ -19,8 +19,16 @@ const { temporaryFilePath } = require('../../config/server.config')
 const { GenerateTransactionFileService } = require('../../app/services')
 
 describe('Generate Transaction File service', () => {
-  const filename = 'test.txt'
-  const filenameWithPath = path.join(temporaryFilePath, filename)
+  const filename = 'test'
+
+  // We use path.normalize to remove any double forward slashes that occur when assembling the path
+  const filenameWithPath = path.normalize(
+    path.format({
+      dir: temporaryFilePath,
+      name: filename,
+      ext: '.dat'
+    })
+  )
 
   beforeEach(async () => {
     // Create mock in-memory file system to avoid temp files being dropped in our filesystem
@@ -40,7 +48,7 @@ describe('Generate Transaction File service', () => {
 
       const file = fs.readFileSync(filenameWithPath, 'utf-8')
 
-      expect(file).to.equal('Hello world!')
+      expect(file).to.equal('HELLO WORLD!')
     })
 
     it('returns the filename and path', async () => {
@@ -52,14 +60,15 @@ describe('Generate Transaction File service', () => {
 
   describe('When writing a file fails', () => {
     it('throws an error', async () => {
-      const fakeFilenameWithPath = path.join('FAKE_DIR', filenameWithPath)
+      const fakeFile = path.format({
+        dir: 'FAKE_DIR',
+        name: 'FAKE_FILE'
+      })
 
-      const err = await expect(GenerateTransactionFileService.go(fakeFilenameWithPath)).to.reject()
+      const err = await expect(GenerateTransactionFileService.go(fakeFile)).to.reject()
 
       expect(err).to.be.an.error()
-      // The service adds the temp file path to the filename we pass to it so this is the path we expect in the error
-      const errorPath = path.join(temporaryFilePath, fakeFilenameWithPath)
-      expect(err.message).to.equal(`ENOENT, no such file or directory '${errorPath}'`)
+      expect(err.message).to.include('ENOENT, no such file or directory')
     })
   })
 })
