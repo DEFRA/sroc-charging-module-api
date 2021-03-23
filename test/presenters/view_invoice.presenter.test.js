@@ -74,6 +74,8 @@ describe('View Invoice Presenter', () => {
       'zeroValueInvoice',
       'minimumChargeInvoice',
       'transactionReference',
+      'creditLineValue',
+      'debitLineValue',
       'netTotal'
     ])
   })
