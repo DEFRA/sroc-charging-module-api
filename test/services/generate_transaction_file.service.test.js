@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { afterEach, before, beforeEach, describe, it } = exports.lab = Lab.script()
+const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 const mockFs = require('mock-fs')
@@ -51,17 +51,15 @@ describe('Generate Transaction File service', () => {
   })
 
   describe('When writing a file fails', () => {
-    before(async () => {
-      Sinon
-        .stub(GenerateTransactionFileService, '_writeToStream')
-        .throws('TEST')
-    })
-
     it('throws an error', async () => {
-      const err = await expect(GenerateTransactionFileService.go(filename)).to.reject()
+      const fakeFilenameWithPath = path.join('FAKE_DIR', filenameWithPath)
+
+      const err = await expect(GenerateTransactionFileService.go(fakeFilenameWithPath)).to.reject()
 
       expect(err).to.be.an.error()
-      expect(err.message).to.equal('TEST')
+      // The service adds the temp file path to the filename we pass to it so this is the path we expect in the error
+      const errorPath = path.join(temporaryFilePath, fakeFilenameWithPath)
+      expect(err.message).to.equal(`ENOENT, no such file or directory '${errorPath}'`)
     })
   })
 })

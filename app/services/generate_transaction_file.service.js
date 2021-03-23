@@ -6,11 +6,8 @@
 
 const fs = require('fs')
 const path = require('path')
-const stream = require('stream')
-const util = require('util')
+const { Readable } = require('stream')
 const { temporaryFilePath } = require('../../config/server.config')
-
-const finished = util.promisify(stream.finished)
 
 class GenerateTransactionFileService {
   /**
@@ -20,29 +17,43 @@ class GenerateTransactionFileService {
    * @returns {string} The path and filename of the generated file.
    */
   static async go (filename) {
-    try {
-      const filenameWithPath = path.join(temporaryFilePath, filename)
-      const writeStream = await this._openStream(filenameWithPath)
-      await this._writeToStream(writeStream)
-      await this._closeStream(writeStream)
+    const filenameWithPath = path.join(temporaryFilePath, filename)
+    const inputStream = this._inputStream()
+    await this._streamToFile(inputStream, filenameWithPath)
 
-      return filenameWithPath
-    } catch (error) {
-      throw new Error(error)
-    }
+    return filenameWithPath
   }
 
-  static async _openStream (filenameWithPath) {
-    return fs.createWriteStream(filenameWithPath)
+  /**
+   * Accept a stream and pipe it to a file. We wrap this in a promise to streamline event handling. The method returns
+   * a promise so we can simply call it using "await" to wait for it to complete before we continue.
+   *
+   * https://dev.to/cdanielsen/wrap-your-streams-with-promises-for-fun-and-profit-51ka
+   */
+  static _streamToFile (inputStream, filePath) {
+    return new Promise((resolve, reject) => {
+      const fileWriteStream = fs.createWriteStream(filePath)
+      inputStream
+        .pipe(fileWriteStream)
+        .on('finish', resolve)
+        .on('error', reject)
+    })
   }
 
-  static async _writeToStream (writeStream) {
-    await writeStream.write('Hello world!')
-  }
+  /**
+   * Implement a simple readable stream to return our 'Hello world!' string.
+   *
+   * https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/#implement-a-readable-stream
+   */
+  static _inputStream () {
+    const stream = new Readable({
+      read () {}
+    })
 
-  static async _closeStream (writeStream) {
-    writeStream.end()
-    await finished(writeStream)
+    stream.push('Hello world!')
+    stream.push(null) // No more data
+
+    return stream
   }
 }
 
