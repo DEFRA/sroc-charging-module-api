@@ -90,7 +90,7 @@ describe('Send File To S3 service', () => {
       const err = await expect(SendFileToS3Service.go(fakeFile, key, false)).to.reject()
 
       expect(err).to.be.an.error()
-      expect(err.message).to.equal(`Error: ENOENT: no such file or directory, open '${fakeFile}'`)
+      expect(err.message).to.equal(`ENOENT: no such file or directory, open '${fakeFile}'`)
     })
   })
 })

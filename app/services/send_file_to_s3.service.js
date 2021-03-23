@@ -22,17 +22,13 @@ class SendFileToS3Service {
   */
 
   static async go (localFilenameWithPath, key, copyToArchive = true) {
-    try {
-      // We always upload into the top-level export folder so prepend the key we've been given with 'export/'
-      const exportKey = path.join('export', key)
+    // We always upload into the top-level export folder so prepend the key we've been given with 'export/'
+    const exportKey = path.join('export', key)
 
-      await this._sendFile(this._uploadBucket(), exportKey, localFilenameWithPath)
+    await this._sendFile(this._uploadBucket(), exportKey, localFilenameWithPath)
 
-      if (copyToArchive) {
-        await this._sendFile(this._archiveBucket(), exportKey, localFilenameWithPath)
-      }
-    } catch (error) {
-      throw new Error(error)
+    if (copyToArchive) {
+      await this._sendFile(this._archiveBucket(), exportKey, localFilenameWithPath)
     }
   }
 
