@@ -134,9 +134,9 @@ describe('Send Transaction File service', () => {
       it('throws an error', async () => {
         await SendTransactionFileService.go(regime, billRun, notifyFake)
 
-        expect(notifyFake.calledOnceWithExactly(
-          `Error sending transaction file: Error: Bill run ${billRun.id} does not have a status of 'pending'.`
-        )).to.equal(true)
+        expect(notifyFake.firstArg).to.equal('Error sending transaction file')
+        expect(notifyFake.lastArg.filename).to.be.undefined()
+        expect(notifyFake.lastArg.error.message).to.equal(`Bill run ${billRun.id} does not have a status of 'pending'.`)
       })
     })
   })
