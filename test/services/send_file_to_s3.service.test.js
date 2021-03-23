@@ -18,7 +18,6 @@ const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 
 // Thing under test
 const { SendFileToS3Service } = require('../../app/services')
-const { ENOENT } = require('constants')
 
 describe('Send File To S3 service', () => {
   let notifyFake
