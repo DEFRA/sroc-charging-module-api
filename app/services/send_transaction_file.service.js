@@ -50,12 +50,8 @@ class SendTransactionFileService {
         await DeleteFileService.go(generatedFile)
       }
     } catch (error) {
-      notify(this._errorMessage(error))
+      this._notifyError(notify, 'Error sending transaction file', generatedFile, error)
     }
-  }
-
-  static _errorMessage (error) {
-    return `Error sending transaction file: ${error}`
   }
 
   static _validate (billRun) {
@@ -99,6 +95,13 @@ class SendTransactionFileService {
   static async _setBilledStatus (billRun) {
     await billRun.$query()
       .patch({ status: 'billed' })
+  }
+
+  static _notifyError (notifier, message, filename, error) {
+    notifier(
+      message,
+      { filename, error }
+    )
   }
 }
 
