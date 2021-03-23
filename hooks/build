@@ -2,4 +2,4 @@
 
 # Ensure the build args we need are set. The env vars are provided by Docker
 # https://docs.docker.com/docker-hub/builds/advanced/#environment-variables-for-building-and-testing
-docker build --target production -t $IMAGE_NAME . --build-arg GIT_COMMIT=$SOURCE_COMMIT --build-arg DOCKER_TAG=$IMAGE_NAME
+docker build --no-cache --target production -t $IMAGE_NAME . --build-arg GIT_COMMIT=$SOURCE_COMMIT --build-arg DOCKER_TAG=$IMAGE_NAME
