@@ -56,16 +56,23 @@ describe('Generate Transaction File service', () => {
   })
 
   describe('When writing a file fails', () => {
+    const error = new Error('TEST')
+
     before(async () => {
       Sinon
         .stub(GenerateTransactionFileService, '_writeToStream')
-        .throws('TEST')
+        .throws(error)
     })
 
     it('uses server.notify to log the error', async () => {
+      const notifyData = {
+        filename: filenameWithPath,
+        error: error
+      }
+
       await GenerateTransactionFileService.go(filename, notifyFake)
 
-      expect(notifyFake.calledOnceWithExactly(`Error writing file ${filenameWithPath}: TEST`)).to.equal(true)
+      expect(notifyFake.calledOnceWithExactly('Error writing file', notifyData)).to.equal(true)
     })
   })
 })
