@@ -137,7 +137,19 @@ describe.only('Generate Transaction File service', () => {
     it.only('creates a file with expected content', async () => {
       const query = TransactionModel.query().select('*')
 
-      class testPresenter {
+      class headerPresenter {
+        constructor (data) {
+          this.data = data
+        }
+
+        go () {
+          return {
+            col01: '---HEADER---'
+          }
+        }
+      }
+
+      class bodyPresenter {
         constructor (data) {
           this.data = data
         }
@@ -151,7 +163,19 @@ describe.only('Generate Transaction File service', () => {
         }
       }
 
-      await TransformRecordsToFileService.go(query, null, testPresenter, null, filename)
+      class footerPresenter {
+        constructor (data) {
+          this.data = data
+        }
+
+        go () {
+          return {
+            col01: '---FOOTER---'
+          }
+        }
+      }
+
+      await TransformRecordsToFileService.go(billRun, query, headerPresenter, bodyPresenter, footerPresenter, filename)
 
       const file = fs.readFileSync(filenameWithPath, 'utf-8')
 
