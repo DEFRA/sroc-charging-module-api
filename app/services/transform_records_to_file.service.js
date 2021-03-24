@@ -4,13 +4,16 @@
  * @module TransformRecordsToFileService
  */
 
-const fs = require('fs')
 const path = require('path')
-const { pipeline, Transform } = require('stream')
+const { pipeline } = require('stream')
 const util = require('util')
 const { temporaryFilePath } = require('../../config/server.config')
-const StreamDataService = require('./stream_data.service')
-const StreamRecordsService = require('./stream_records.service')
+
+const StreamReadableDataService = require('./stream_readable_data.service')
+const StreamReadableRecordsService = require('./stream_readable_records.service')
+const StreamTransformCSVService = require('./stream_transform_csv.service')
+const StreamTransformUsingPresenterService = require('./stream_transform_using_presenter.service')
+const StreamWritableFileService = require('./stream_writable_file.service')
 
 class TransformRecordsToFileService {
   /**
@@ -95,69 +98,37 @@ class TransformRecordsToFileService {
    * Readable stream which simply outputs the data passed to it.
    */
   static _dataStream (data) {
-    return StreamDataService.go(data)
+    return StreamReadableDataService.go(data)
   }
 
   /**
    * Readble stream which outputs the records returned by the passed-in Objection QueryBuilder object.
    */
   static _recordStream (query) {
-    return StreamRecordsService.go(query)
+    return StreamReadableRecordsService.go(query)
   }
 
   /**
-   * Transform stream which processes an object supplied to it; this could be a row streamed from the database or an
-   * object from elsewhere. It uses the passed-in Presenter to transform the data, then creates an array from the
-   * resulting values, ensuring the values are first sorted in alphabetical order of key, on the basis that the
-   * presenter will have its items named 'col01', 'col02' etc.
-   *
-   * While we should in theory receive the data from the presenter in the correct order, we sort it to ensure this is
-   * the case as the order we store the data in the array is critical to producing the resulting file correctly.
-   *
-   * We are also able to pass an object containing additional data which will be added to each record before it's
-   * passed to the presenter. For example, the bill run's file reference is required for each row of a transaction file
-   * but this isn't present in the transaction records we pull from the db. We therefore pass it in when writing these
-   * records so that it's available to us.
+   * Transform stream which processes an object supplied to it using the supplied Presenter, and optionally combining
+   * each chunk of data it receives with additionalData, which allows us to eg. use bill run-level data when handling
+   * transaction records.
    */
   static _presenterTransformStream (Presenter, additionalData = {}) {
-    return new Transform({
-      objectMode: true,
-      transform: function (record, _encoding, callback) {
-        const presenter = new Presenter({ ...record, ...additionalData })
-        const dataObject = presenter.go()
-
-        // Object.keys() gives us an array of keys in the object. We then sort it, and use map to create a new array by
-        // iterating over the keys in their sorted order and retrieving the value of each one from dataObject.
-        const sortedArray = Object
-          .keys(dataObject)
-          .sort()
-          .map(key => dataObject[key])
-
-        callback(null, sortedArray)
-      }
-    })
+    return StreamTransformUsingPresenterService.go(Presenter, additionalData)
   }
 
   /**
-   * Transform stream which joins an array with commas and adds a newline. Note that the fields aren't sanitised in any
-   * way as the transaction files don't contain data that would need it (ie. containing commas etc.)
+   * Transform stream which returns a comma-separated row of data, terminating in a newline. (NOTE: not sanitised)
    */
   static _csvTransformStream () {
-    return new Transform({
-      objectMode: true,
-      transform: function (array, _encoding, callback) {
-        const csv = array.join()
-        callback(null, csv.concat('\n'))
-      }
-    })
+    return StreamTransformCSVService.go()
   }
 
   /**
-   * Writeable stream that writes to a given file. Defaults to overwriting the content of the existing file; pass 'true'
-   * as the second parameter to append the data instead.
+   * Writable stream that writes to a given file.
    */
-  static _writeToFileStream (filenameWithPath, append = false) {
-    return fs.createWriteStream(filenameWithPath, append ? { flags: 'a' } : {})
+  static _writeToFileStream (filenameWithPath, append) {
+    return StreamWritableFileService.go(filenameWithPath, append)
   }
 }
 

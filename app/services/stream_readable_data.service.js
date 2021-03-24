@@ -1,24 +1,24 @@
 'use strict'
 
 /**
- * @module StreamDataService
+ * @module StreamReadableDataService
  */
 
 const { Readable } = require('stream')
 
 /**
- * Returns the data passed to it as a stream containing a single 'chunk'.
+ * Returns a Readable stream of the data passed to it in a single 'chunk'.
  *
  * Note that the data is passed to Readable in an array, as Readable requires an Iterable.
  *
  * @param {object} data Data object to be streamed back.
  * @returns {ReadableStream} A stream of data.
  */
-class StreamDataService {
+class StreamReadableDataService {
   static go (data) {
     return Readable
       .from([data])
   }
 }
 
-module.exports = StreamDataService
+module.exports = StreamReadableDataService

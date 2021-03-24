@@ -1,21 +1,21 @@
 'use strict'
 
 /**
- * @module StreamRecordsService
+ * @module StreamReadableRecordsService
  */
 
 /**
- * Returns a stream of database records when given an Objection QueryBuilder object.
+ * Returns a Readable stream of database records when given an Objection QueryBuilder object.
  *
  * Note that we must pass in a query and not the result of a query -- therefore it should be instantiated _without_
  * `await` ie:
  *  const query = TransactionModel.query().select('*')
- *  StreamRecordsService.go(query)
+ *  StreamReadableRecordsService.go(query)
  *
  * @param {module:QueryBuilder} query Objection QueryBuilder object of the query you wish to stream.
  * @returns {ReadableStream} A stream of database records.
  */
-class StreamRecordsService {
+class StreamReadableRecordsService {
   static go (query) {
     return query
       .toKnexQuery()
@@ -23,4 +23,4 @@ class StreamRecordsService {
   }
 }
 
-module.exports = StreamRecordsService
+module.exports = StreamReadableRecordsService
