@@ -157,6 +157,7 @@ describe.only('Generate Transaction File service', () => {
         // Note the order, which ensures we're also testing that the order of items is sorted correctly as col01, col02
         go () {
           return {
+            col03: this.data.region,
             col02: this.data.billRunId,
             col01: this.data.id
           }
@@ -180,9 +181,9 @@ describe.only('Generate Transaction File service', () => {
       const file = fs.readFileSync(filenameWithPath, 'utf-8')
 
       const header = '---HEADER---'.concat('\n')
-      const body = [transaction.id, transaction.billRunId].join().concat('\n')
+      const body = [transaction.id, transaction.billRunId, billRun.region].join().concat('\n')
       const footer = '---FOOTER---'.concat('\n')
-
+      console.log(file)
       expect(file).to.equal(header.concat(body).concat(footer))
     })
 

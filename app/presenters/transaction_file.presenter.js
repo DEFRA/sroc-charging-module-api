@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module CreateTransactionPresenter
+ * @module TransactionFilePresenter
  */
 
 const BasePresenter = require('./base.presenter')
@@ -9,7 +9,7 @@ const BasePresenter = require('./base.presenter')
 /**
  * Handles formatting the data into the response we send to clients after a create transaction request.
  */
-class CreateTransactionPresenter extends BasePresenter {
+class TransactionFilePresenter extends BasePresenter {
   _presentation (data) {
     return {
       col01: 'D',
@@ -59,4 +59,4 @@ class CreateTransactionPresenter extends BasePresenter {
   }
 }
 
-module.exports = CreateTransactionPresenter
+module.exports = TransactionFilePresenter

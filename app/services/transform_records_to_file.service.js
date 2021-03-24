@@ -23,7 +23,7 @@ class TransformRecordsToFileService {
     const filenameWithPath = this._filenameWithPath(fileReference)
 
     await this._writeHeader(billRun, headerPresenter, filenameWithPath)
-    await this._writeBody(query, bodyPresenter, filenameWithPath)
+    await this._writeBody(query, bodyPresenter, filenameWithPath, { region: billRun.region })
     await this._writeFooter(billRun, footerPresenter, filenameWithPath)
 
     return filenameWithPath
@@ -49,7 +49,7 @@ class TransformRecordsToFileService {
    * @param {string} filenameWithPath The filename and path to be written to.
    * @param {boolean} [append] Whether data should be appended to the file. Default is `false` ie. overwrite.
    */
-  static async _writeSection (inputStream, presenter, filenameWithPath, append = false) {
+  static async _writeSection (inputStream, presenter, filenameWithPath, append, additionalData) {
     const promisifiedPipeline = this._promisifiedPipeline()
 
     await promisifiedPipeline(
@@ -64,23 +64,23 @@ class TransformRecordsToFileService {
    * Write the file header, passing the supplied data to the supplied presenter. Overwrites the content of the file if
    * it exists.
    */
-  static async _writeHeader (data, presenter, filenameWithPath) {
-    await this._writeSection(Readable.from([data]), presenter, filenameWithPath)
+  static async _writeHeader (data, presenter, filenameWithPath, additionalData = {}) {
+    await this._writeSection(this._dataStream(data), presenter, filenameWithPath, false, { ...additionalData })
   }
 
   /**
    * Write the file body, using the supplied query to read records from the database and passing them to the supplied
    * presenter. Appends the data to the existing file.
    */
-  static async _writeBody (query, presenter, filenameWithPath) {
-    await this._writeSection(this._recordStream(query), presenter, filenameWithPath, true)
+  static async _writeBody (query, presenter, filenameWithPath, additionalData = {}) {
+    await this._writeSection(this._recordStream(query), presenter, filenameWithPath, true, { ...additionalData })
   }
 
   /**
    * Write the file footer, passing the supplied data to the supplied presenter. Appends the data to the existing file.
    */
-  static async _writeFooter (data, presenter, filenameWithPath) {
-    await this._writeSection(Readable.from([data]), presenter, filenameWithPath, true)
+  static async _writeFooter (data, presenter, filenameWithPath, additionalData = {}) {
+    await this._writeSection(this._dataStream(data), presenter, filenameWithPath, true, { ...additionalData })
   }
 
   /**
@@ -91,7 +91,14 @@ class TransformRecordsToFileService {
   }
 
   /**
-   * Readble stream which returns the results of the passed-in Objection QueryBuilder object.
+   * Readable stream which simply outputs the data passed to it. We put it in an array as Readable requires an Iterable.
+   */
+  static _dataStream (data) {
+    return Readable.from([data])
+  }
+
+  /**
+   * Readble stream which outputs the records returned by the passed-in Objection QueryBuilder object.
    */
   static _recordStream (query) {
     return StreamRecordsService.go(query)
@@ -105,12 +112,17 @@ class TransformRecordsToFileService {
    *
    * While we should in theory receive the data from the presenter in the correct order, we sort it to ensure this is
    * the case as the order we store the data in the array is critical to producing the resulting file correctly.
+   *
+   * We are also able to pass an object containing additional data which will be added to each record before it's
+   * passed to the presenter. For example, the bill run's file reference is required for each row of a transaction file
+   * but this isn't present in the transaction records we pull from the db. We therefore pass it in when writing these
+   * records so that it's available to us.
    */
-  static _presenterTransformStream (Presenter) {
+  static _presenterTransformStream (Presenter, additionalData = {}) {
     return new Transform({
       objectMode: true,
       transform: function (record, _encoding, callback) {
-        const presenter = new Presenter(record)
+        const presenter = new Presenter({ ...record, ...additionalData })
         const dataObject = presenter.go()
 
         // Object.keys() gives us an array of keys in the object. We then sort it, and use map to create a new array by
