@@ -36,6 +36,7 @@ const SendTransactionFileService = require('./send_transaction_file.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
 const ShowRegimeService = require('./show_regime.service')
 const ShowTransactionService = require('./show_transaction.service')
+const StreamRecordsService = require('./stream_records.service')
 const ViewBillRunService = require('./view_bill_run.service')
 const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 
@@ -76,6 +77,7 @@ module.exports = {
   ShowAuthorisedSystemService,
   ShowRegimeService,
   ShowTransactionService,
+  StreamRecordsService,
   ViewBillRunService,
   ViewBillRunInvoiceService
 }
