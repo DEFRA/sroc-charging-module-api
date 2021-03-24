@@ -17,7 +17,7 @@ class CreateTransactionBillRunValidationService {
    * @param {string} region The region to be checked against the bill run
    */
   static async go (billRun, region) {
-    await this._validateBillRun(billRun, region.toUpperCase())
+    await this._validateBillRun(billRun, region?.toUpperCase())
   }
 
   static async _validateBillRun (billRun, region) {
