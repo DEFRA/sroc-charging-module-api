@@ -19,9 +19,12 @@ class GenerateTransactionFileService {
    */
   static async go (fileReference) {
     const filenameWithPath = this._filenameWithPath(fileReference)
+
     const inputStream = this._inputStream()
     const transformStream = this._transformStream()
-    await this._streamToFile(inputStream, transformStream, filenameWithPath)
+    const outputStream = this._writeToFileStream(filenameWithPath)
+
+    await this._streamAndTransform(inputStream, transformStream, outputStream)
 
     return filenameWithPath
   }
@@ -38,17 +41,17 @@ class GenerateTransactionFileService {
   }
 
   /**
-   * Accept a stream and pipe it to a file. We wrap this in a promise to streamline event handling. The method returns
-   * a promise so we can simply call it using "await" to wait for it to complete before we continue.
+   * Accept an input stream and pipe it through a transform stream to an output stream. We wrap this in a promise to
+   * streamline event handling. The method returns a promise so we can simply call it using "await" to wait for it to
+   * complete before we continue.
    *
    * https://dev.to/cdanielsen/wrap-your-streams-with-promises-for-fun-and-profit-51ka
    */
-  static _streamToFile (inputStream, transformStream, filePath) {
+  static _streamAndTransform (inputStream, transformStream, outputStream) {
     return new Promise((resolve, reject) => {
-      const fileWriteStream = fs.createWriteStream(filePath)
       inputStream
         .pipe(transformStream)
-        .pipe(fileWriteStream)
+        .pipe(outputStream)
         .on('finish', resolve)
         .on('error', reject)
     })
@@ -58,7 +61,7 @@ class GenerateTransactionFileService {
    * Create a stream that reads each transaction, translates it, and outputs it
    */
   static _inputStream () {
-    const stream = new Readable({
+    return new Readable({
       read () {
         this.push('Hello world!')
 
@@ -66,19 +69,25 @@ class GenerateTransactionFileService {
         this.push(null)
       }
     })
-
-    return stream
   }
 
   static _transformStream () {
-    const stream = new Transform({
+    return new Transform({
       transform (chunk, _encoding, callback) {
-        this.push(chunk.toString().toUpperCase())
-        callback()
+        const upperCaseText = chunk.toString().toUpperCase()
+
+        // First argument of callback is an error object if applicable
+        // Second argument is data to be passed along
+        callback(null, upperCaseText)
       }
     })
+  }
 
-    return stream
+  /**
+   * Create a stream that writes to a given file
+   */
+  static _writeToFileStream (filenameWithPath) {
+    return fs.createWriteStream(filenameWithPath)
   }
 }
 
