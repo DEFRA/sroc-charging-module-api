@@ -6,7 +6,8 @@
 
 const fs = require('fs')
 const path = require('path')
-const { Readable, Transform } = require('stream')
+const { pipeline, Readable, Transform } = require('stream')
+const util = require('util')
 const { temporaryFilePath } = require('../../config/server.config')
 
 class GenerateTransactionFileService {
@@ -20,11 +21,13 @@ class GenerateTransactionFileService {
   static async go (fileReference) {
     const filenameWithPath = this._filenameWithPath(fileReference)
 
-    const inputStream = this._inputStream()
-    const transformStream = this._transformStream()
-    const outputStream = this._writeToFileStream(filenameWithPath)
+    const promisifiedPipeline = this._promisifiedPipeline()
 
-    await this._streamAndTransform(inputStream, transformStream, outputStream)
+    await promisifiedPipeline(
+      this._inputStream(),
+      this._transformStream(),
+      this._writeToFileStream(filenameWithPath)
+    )
 
     return filenameWithPath
   }
@@ -41,20 +44,10 @@ class GenerateTransactionFileService {
   }
 
   /**
-   * Accept an input stream and pipe it through a transform stream to an output stream. We wrap this in a promise to
-   * streamline event handling. The method returns a promise so we can simply call it using "await" to wait for it to
-   * complete before we continue.
-   *
-   * https://dev.to/cdanielsen/wrap-your-streams-with-promises-for-fun-and-profit-51ka
+   * Wrap stream.pipeline in a promise so we can easily 'await' it.
    */
-  static _streamAndTransform (inputStream, transformStream, outputStream) {
-    return new Promise((resolve, reject) => {
-      inputStream
-        .pipe(transformStream)
-        .pipe(outputStream)
-        .on('finish', resolve)
-        .on('error', reject)
-    })
+  static _promisifiedPipeline () {
+    return util.promisify(pipeline)
   }
 
   /**
