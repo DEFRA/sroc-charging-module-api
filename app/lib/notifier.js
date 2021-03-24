@@ -1,21 +1,18 @@
 'use strict'
 
 class Notifier {
-  #logger
-  #notifier
-
   constructor (logger, notifier) {
-    this.#logger = logger
-    this.#notifier = notifier
+    this._logger = logger
+    this._notifier = notifier
   }
 
   omg (message) {
-    this.#logger.info(message)
+    this._logger.info(message)
   }
 
   omfg (message, data = {}) {
-    this.#logger.error({ message, data })
-    this.#notifier(message, data)
+    this._logger.error({ message, data })
+    this._notifier(message, data)
   }
 }
 
