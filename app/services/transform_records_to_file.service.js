@@ -6,9 +6,10 @@
 
 const fs = require('fs')
 const path = require('path')
-const { pipeline, Readable, Transform } = require('stream')
+const { pipeline, Transform } = require('stream')
 const util = require('util')
 const { temporaryFilePath } = require('../../config/server.config')
+const StreamDataService = require('./stream_data.service')
 const StreamRecordsService = require('./stream_records.service')
 
 class TransformRecordsToFileService {
@@ -91,10 +92,10 @@ class TransformRecordsToFileService {
   }
 
   /**
-   * Readable stream which simply outputs the data passed to it. We put it in an array as Readable requires an Iterable.
+   * Readable stream which simply outputs the data passed to it.
    */
   static _dataStream (data) {
-    return Readable.from([data])
+    return StreamDataService.go(data)
   }
 
   /**
