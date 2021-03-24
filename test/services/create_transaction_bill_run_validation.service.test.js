@@ -40,4 +40,17 @@ describe('Create Transaction Bill Run Validation service', () => {
       })
     })
   })
+
+  describe("When the 'region' is invalid", () => {
+    describe("because it's empty", () => {
+      it('throws an error', async () => {
+        const err = await expect(CreateTransactionBillRunValidationService.go(billRun)).to.reject(Error)
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal(
+          `Bill run ${billRun.id} is for region ${billRun.region} but transaction is for region undefined.`
+        )
+      })
+    })
+  })
 })
