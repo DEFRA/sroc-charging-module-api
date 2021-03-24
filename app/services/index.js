@@ -21,7 +21,6 @@ const DeleteInvoiceService = require('./delete_invoice.service')
 const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill_run_invoice.service')
 const GenerateBillRunService = require('./generate_bill_run.service')
 const GenerateBillRunValidationService = require('./generate_bill_run_validation.service')
-const GenerateTransactionFileService = require('./generate_transaction_file.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
 const ListRegimesService = require('./list_regimes.service')
 const NextBillRunNumberService = require('./next_bill_run_number.service')
@@ -37,6 +36,7 @@ const ShowAuthorisedSystemService = require('./show_authorised_system.service')
 const ShowRegimeService = require('./show_regime.service')
 const ShowTransactionService = require('./show_transaction.service')
 const StreamRecordsService = require('./stream_records.service')
+const TransformRecordsToFileService = require('./transform_records_to_file.service')
 const ViewBillRunService = require('./view_bill_run.service')
 const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 
@@ -62,7 +62,6 @@ module.exports = {
   FetchAndValidateBillRunInvoiceService,
   GenerateBillRunService,
   GenerateBillRunValidationService,
-  GenerateTransactionFileService,
   ListAuthorisedSystemsService,
   ListRegimesService,
   ObjectCleaningService,
@@ -78,6 +77,7 @@ module.exports = {
   ShowRegimeService,
   ShowTransactionService,
   StreamRecordsService,
+  TransformRecordsToFileService,
   ViewBillRunService,
   ViewBillRunInvoiceService
 }
