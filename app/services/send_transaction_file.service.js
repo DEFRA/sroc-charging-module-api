@@ -9,7 +9,7 @@ const path = require('path')
 const { ServerConfig } = require('../../config')
 const { removeTemporaryFiles } = ServerConfig
 
-const GenerateTransactionFileService = require('./generate_transaction_file.service')
+const TransformRecordsToFileService = require('./transform_records_to_file.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
 const DeleteFileService = require('./delete_file.service')
 
@@ -73,7 +73,7 @@ class SendTransactionFileService {
    */
   static async _generateAndSend (billRun, regime) {
     const filename = this._filename(billRun.fileReference)
-    const generatedFile = await GenerateTransactionFileService.go(filename)
+    const generatedFile = await TransformRecordsToFileService.go(filename)
 
     // The key is the remote path and filename in the S3 bucket, eg. 'wrls/transaction/nalai50001.dat'
     const key = path.join(regime.slug, 'transaction', filename)
