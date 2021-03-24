@@ -141,6 +141,26 @@ class RouteHelper {
       }
     })
   }
+
+  /**
+   * Adds a route to a Hapi server instance which is used to test the 'Notifier' plugin
+   *
+   * This is used to confirm that an instance of `Notifier` was added to `request.app` by the plugin for all requests.
+   *
+   * @param {Object} server A Hapi server instance
+   */
+  static addNotifierRoute (server) {
+    server.route({
+      method: 'GET',
+      path: '/test/notifier',
+      handler: (request, _h) => {
+        return { exists: request.app.notifier ? 'yes' : 'no' }
+      },
+      options: {
+        auth: false
+      }
+    })
+  }
 }
 
 module.exports = RouteHelper
