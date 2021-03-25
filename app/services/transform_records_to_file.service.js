@@ -23,11 +23,15 @@ class TransformRecordsToFileService {
    * @param {string} fileReference The bill run's file reference.
    * @returns {string} The path and filename of the generated file.
    */
-  static async go (billRun, query, headerPresenter, bodyPresenter, footerPresenter, fileReference) {
+  static async go (billRun, invoice, query, headerPresenter, bodyPresenter, footerPresenter, fileReference) {
     const filenameWithPath = this._filenameWithPath(fileReference)
 
     await this._writeHeader(billRun, headerPresenter, filenameWithPath)
-    await this._writeBody(query, bodyPresenter, filenameWithPath, { fileReference: billRun.fileReference })
+    await this._writeBody(query, bodyPresenter, filenameWithPath, {
+      fileReference: billRun.fileReference,
+      billRunNumber: billRun.billRunNumber,
+      transactionReference: invoice.transactionReference
+    })
     await this._writeFooter(billRun, footerPresenter, filenameWithPath)
 
     return filenameWithPath

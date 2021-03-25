@@ -103,6 +103,7 @@ const testTransaction = {
 
 describe('Generate Transaction File service', () => {
   let billRun
+  let invoice
   let transaction
 
   const filename = 'test'
@@ -123,6 +124,8 @@ describe('Generate Transaction File service', () => {
     billRun.fileReference = 'FILE_REF'
     transaction = await TransactionHelper.addTransaction(billRun.id)
 
+    // TODO: assign the transaction's invoice to `invoice`
+
     // // Create mock in-memory file system to avoid temp files being dropped in our filesystem
     // mockFs({
     //   tmp: { }
@@ -135,7 +138,7 @@ describe('Generate Transaction File service', () => {
   })
 
   describe('When writing a file succeeds', () => {
-    it.only('creates a file with expected content', async () => {
+    it('creates a file with expected content', async () => {
       const query = TransactionModel.query().select('*')
 
       class headerPresenter {
@@ -177,7 +180,7 @@ describe('Generate Transaction File service', () => {
         }
       }
 
-      await TransformRecordsToFileService.go(billRun, query, headerPresenter, bodyPresenter, footerPresenter, filename)
+      await TransformRecordsToFileService.go(billRun, invoice, query, headerPresenter, bodyPresenter, footerPresenter, filename)
 
       const file = fs.readFileSync(filenameWithPath, 'utf-8')
 
