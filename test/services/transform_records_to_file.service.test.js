@@ -101,7 +101,7 @@ const testTransaction = {
   licence_id: 'f5238030-50c1-4296-adf9-3bd042be6fe4'
 }
 
-describe.only('Generate Transaction File service', () => {
+describe('Generate Transaction File service', () => {
   let billRun
   let transaction
 
@@ -120,6 +120,7 @@ describe.only('Generate Transaction File service', () => {
     await DatabaseHelper.clean()
 
     billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
+    billRun.fileReference = 'FILE_REF'
     transaction = await TransactionHelper.addTransaction(billRun.id)
 
     // // Create mock in-memory file system to avoid temp files being dropped in our filesystem
@@ -157,7 +158,7 @@ describe.only('Generate Transaction File service', () => {
         // Note the order, which ensures we're also testing that the order of items is sorted correctly as col01, col02
         go () {
           return {
-            col03: this.data.region,
+            col03: this.data.fileReference,
             col02: this.data.billRunId,
             col01: this.data.id
           }
@@ -181,9 +182,9 @@ describe.only('Generate Transaction File service', () => {
       const file = fs.readFileSync(filenameWithPath, 'utf-8')
 
       const header = '---HEADER---'.concat('\n')
-      const body = [transaction.id, transaction.billRunId, billRun.region].join().concat('\n')
+      const body = [transaction.id, transaction.billRunId, billRun.fileReference].join().concat('\n')
       const footer = '---FOOTER---'.concat('\n')
-      console.log(file)
+
       expect(file).to.equal(header.concat(body).concat(footer))
     })
 

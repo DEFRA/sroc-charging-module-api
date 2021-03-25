@@ -27,7 +27,7 @@ class TransformRecordsToFileService {
     const filenameWithPath = this._filenameWithPath(fileReference)
 
     await this._writeHeader(billRun, headerPresenter, filenameWithPath)
-    await this._writeBody(query, bodyPresenter, filenameWithPath, { region: billRun.region })
+    await this._writeBody(query, bodyPresenter, filenameWithPath, { fileReference: billRun.fileReference })
     await this._writeFooter(billRun, footerPresenter, filenameWithPath)
 
     return filenameWithPath
@@ -58,7 +58,7 @@ class TransformRecordsToFileService {
 
     await promisifiedPipeline(
       inputStream,
-      this._presenterTransformStream(presenter),
+      this._presenterTransformStream(presenter, additionalData),
       this._csvTransformStream(),
       this._writeToFileStream(filenameWithPath, append)
     )
