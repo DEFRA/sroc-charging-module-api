@@ -11,9 +11,9 @@ const { expect } = Code
 const { GeneralHelper } = require('../support/helpers')
 
 // Thing under test
-const { TransactionFilePresenter } = require('../../app/presenters')
+const { TransactionFileBodyPresenter } = require('../../app/presenters')
 
-describe.only('View Invoice Presenter', () => {
+describe.only('Transaction File Body Presenter', () => {
   const data = {
     id: GeneralHelper.uuid4(),
     billRunId: GeneralHelper.uuid4(),
@@ -108,7 +108,7 @@ describe.only('View Invoice Presenter', () => {
   }
 
   it('returns the required columns', () => {
-    const presenter = new TransactionFilePresenter(data)
+    const presenter = new TransactionFileBodyPresenter(data)
     const result = presenter.go()
 
     // To avoid writing out col01...col43 we generate an array of them
@@ -123,7 +123,7 @@ describe.only('View Invoice Presenter', () => {
   })
 
   it('returns the correct values for static fields', () => {
-    const presenter = new TransactionFilePresenter(data)
+    const presenter = new TransactionFileBodyPresenter(data)
     const result = presenter.go()
 
     expect(result.col01).to.equal('D')
@@ -150,7 +150,7 @@ describe.only('View Invoice Presenter', () => {
   })
 
   it('returns the correct values for dynamic fields', () => {
-    const presenter = new TransactionFilePresenter(data)
+    const presenter = new TransactionFileBodyPresenter(data)
     const result = presenter.go()
 
     expect(result.col02).to.equal(data.billRunNumber)
@@ -163,21 +163,21 @@ describe.only('View Invoice Presenter', () => {
   })
 
   it('returns the correct values for col05 (transactionType) when given a credit', () => {
-    const presenter = new TransactionFilePresenter({ ...data, chargeCredit: true })
+    const presenter = new TransactionFileBodyPresenter({ ...data, chargeCredit: true })
     const result = presenter.go()
 
     expect(result.col05).to.equal('C')
   })
 
   it('returns the correct values for col05 (transactionType) when given a debit', () => {
-    const presenter = new TransactionFilePresenter({ ...data, chargeCredit: false })
+    const presenter = new TransactionFileBodyPresenter({ ...data, chargeCredit: false })
     const result = presenter.go()
 
     expect(result.col05).to.equal('I')
   })
 
   it('correctly formats dates', () => {
-    const presenter = new TransactionFilePresenter(data)
+    const presenter = new TransactionFileBodyPresenter(data)
     const result = presenter.go()
 
     expect(result.col04).to.equal('01-JAN-2021')
@@ -185,7 +185,7 @@ describe.only('View Invoice Presenter', () => {
   })
 
   it('returns correct values when compensation charge and minimum charge adjustment are false', () => {
-    const presenter = new TransactionFilePresenter({ ...data, regimeValue17: false, minimumChargeAdjustment: false })
+    const presenter = new TransactionFileBodyPresenter({ ...data, regimeValue17: false, minimumChargeAdjustment: false })
     const result = presenter.go()
 
     expect(result.col26).to.equal(data.lineAttr1)
@@ -204,7 +204,7 @@ describe.only('View Invoice Presenter', () => {
   })
 
   it('returns correct values when compensation charge is true', () => {
-    const presenter = new TransactionFilePresenter({ ...data, regimeValue17: true, minimumChargeAdjustment: false })
+    const presenter = new TransactionFileBodyPresenter({ ...data, regimeValue17: true, minimumChargeAdjustment: false })
     const result = presenter.go()
 
     expect(result.col26).to.equal('')
@@ -223,7 +223,7 @@ describe.only('View Invoice Presenter', () => {
   })
 
   it('returns correct values when minimum charge adjustment is true', () => {
-    const presenter = new TransactionFilePresenter({ ...data, regimeValue17: false, minimumChargeAdjustment: true })
+    const presenter = new TransactionFileBodyPresenter({ ...data, regimeValue17: false, minimumChargeAdjustment: true })
     const result = presenter.go()
 
     expect(result.col26).to.equal('')
@@ -242,7 +242,7 @@ describe.only('View Invoice Presenter', () => {
   })
 
   it('returns the correct value for col30', () => {
-    const presenter = new TransactionFilePresenter({ ...data, regimeValue17: false, minimumChargeAdjustment: true })
+    const presenter = new TransactionFileBodyPresenter({ ...data, regimeValue17: false, minimumChargeAdjustment: true })
     const result = presenter.go()
 
     expect(result.col26).to.equal('')

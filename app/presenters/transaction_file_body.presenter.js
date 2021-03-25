@@ -1,18 +1,18 @@
 'use strict'
 
 /**
- * @module TransactionFilePresenter
+ * @module TransactionFileBodyPresenter
  */
 
 const BasePresenter = require('./base.presenter')
 
 /**
- * Formats data for saving to a transaction file.
+ * Formats data for saving to the body of a transaction file.
  *
  * With reference to the existing v1 charging module transaction file presenter:
  * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/transaction_file_presenter.js
  */
-class TransactionFilePresenter extends BasePresenter {
+class TransactionFileBodyPresenter extends BasePresenter {
   _presentation (data) {
     return {
       col01: 'D',
@@ -110,4 +110,4 @@ class TransactionFilePresenter extends BasePresenter {
   }
 }
 
-module.exports = TransactionFilePresenter
+module.exports = TransactionFileBodyPresenter
