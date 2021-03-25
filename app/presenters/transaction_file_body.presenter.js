@@ -9,6 +9,8 @@ const BasePresenter = require('./base.presenter')
 /**
  * Formats data for saving to the body of a transaction file.
  *
+ * TODO: col02 is not the bill run number but the SEQUENCE NUMBER
+ *
  * With reference to the existing v1 charging module transaction file presenter:
  * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/transaction_file_presenter.js
  */
