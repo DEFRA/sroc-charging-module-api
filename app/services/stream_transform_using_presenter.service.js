@@ -7,8 +7,9 @@
 const { Transform } = require('stream')
 
 /**
- * Returns a Transform stream which processes an object supplied to it using the supplied Presenter. Optionally accepts
- * additional data which will be added to the object before it is processed by the Presenter.
+ * Returns a Transform stream which processes an object supplied to it using the supplied Presenter. It adds a field
+ * `index` to the object which can be used by the Presenter to read the row number. It optionally accepts additional
+ * data which will be added to the object before it is passed to the Presenter.
  *
  * The object supplied could be a row streamed from the database or an object from elsewhere. The Presenter is used to
  * transform the data, then an array is created from the resulting values, ensuring the values are first sorted in
@@ -29,10 +30,12 @@ const { Transform } = require('stream')
  */
 class StreamTransformUsingPresenterService {
   static go (Presenter, additionalData = {}) {
+    let index = 0
+
     return new Transform({
       objectMode: true,
       transform: function (currentRow, _encoding, callback) {
-        const presenter = new Presenter({ ...currentRow, ...additionalData })
+        const presenter = new Presenter({ ...currentRow, ...additionalData, index })
         const dataObject = presenter.go()
 
         // Object.keys() gives us an array of keys in the object. We then sort it, and use map to create a new array by
@@ -41,6 +44,8 @@ class StreamTransformUsingPresenterService {
           .keys(dataObject)
           .sort()
           .map(key => dataObject[key])
+
+        index++
 
         callback(null, sortedArray)
       }
