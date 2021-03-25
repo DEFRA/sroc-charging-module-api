@@ -13,7 +13,7 @@ const { GeneralHelper } = require('../support/helpers')
 // Thing under test
 const { TransactionFileBodyPresenter } = require('../../app/presenters')
 
-describe.only('Transaction File Body Presenter', () => {
+describe('Transaction File Body Presenter', () => {
   const data = {
     id: GeneralHelper.uuid4(),
     billRunId: GeneralHelper.uuid4(),
@@ -118,7 +118,6 @@ describe.only('Transaction File Body Presenter', () => {
       expectedFields.push(`col${paddedNumber}`)
     }
 
-    // This isn't every field but it is the critical ones
     expect(result).to.only.include(expectedFields)
   })
 
