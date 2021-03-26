@@ -30,7 +30,7 @@ describe('Stream Readable Data service', () => {
 
       const readableStream = StreamReadableDataService.go(testData)
       // We use destructuring to pull the sole element of the array into result
-      const [result] = await StreamHelper.returnReadableStreamData(readableStream)
+      const [result] = await StreamHelper.testReadableStream(readableStream)
 
       expect(result).to.equal(testData)
     })

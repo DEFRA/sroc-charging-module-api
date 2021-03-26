@@ -49,7 +49,7 @@ describe('Stream Transform CSV service', () => {
     it('streams the correct data', async () => {
       const transformStream = StreamTransformUsingPresenterService.go(testPresenter)
       // We use destructuring to pull the sole element of the array into result
-      const [result] = await StreamHelper.returnTransformStreamData(transformStream, testData)
+      const [result] = await StreamHelper.testTransformStream(transformStream, testData)
 
       // Note this tests not just the content but the order of the array
       expect(result[0]).to.equal(testData.element01)
@@ -59,21 +59,21 @@ describe('Stream Transform CSV service', () => {
 
     it('accepts additional data', async () => {
       const transformStream = StreamTransformUsingPresenterService.go(testPresenter, { additionalElement: 'EXTRA' })
-      const [result] = await StreamHelper.returnTransformStreamData(transformStream, testData)
+      const [result] = await StreamHelper.testTransformStream(transformStream, testData)
 
       expect(result[3]).to.equal('EXTRA')
     })
 
     it('passes in the index starting at 0', async () => {
       const transformStream = StreamTransformUsingPresenterService.go(testPresenter)
-      const [result] = await StreamHelper.returnTransformStreamData(transformStream, testData)
+      const [result] = await StreamHelper.testTransformStream(transformStream, testData)
 
       expect(result[4]).to.equal(0)
     })
 
     it('increments the index', async () => {
       const transformStream = StreamTransformUsingPresenterService.go(testPresenter)
-      const resultArray = await StreamHelper.returnTransformStreamData(transformStream, testData, 3)
+      const resultArray = await StreamHelper.testTransformStream(transformStream, testData, 3)
 
       expect(resultArray[0][4]).to.equal(0)
       expect(resultArray[1][4]).to.equal(1)
@@ -82,7 +82,7 @@ describe('Stream Transform CSV service', () => {
 
     it('accepts different index start numbers', async () => {
       const transformStream = StreamTransformUsingPresenterService.go(testPresenter, null, 10)
-      const resultArray = await StreamHelper.returnTransformStreamData(transformStream, testData, 3)
+      const resultArray = await StreamHelper.testTransformStream(transformStream, testData, 3)
 
       expect(resultArray[0][4]).to.equal(10)
       expect(resultArray[1][4]).to.equal(11)

@@ -10,7 +10,7 @@ class StreamHelper {
    * @param {ReadableStream} inputStream The stream we want to capture the output of.
    * @returns {array} An array of the stream's output.
    */
-  static async returnReadableStreamData (inputStream) {
+  static async testReadableStream (inputStream) {
     const result = []
 
     // Create a Writable stream that captures data coming into it and pushes it to the result array
@@ -22,7 +22,8 @@ class StreamHelper {
       }
     })
 
-    // Create a promisifed pipline that runs asynchronously then use it to stream data from inputStream to outputStream
+    // Create a promisifed pipline that runs asynchronously then use it to stream data
+    // inputStream > outputStream
     const promisifiedPipeline = this._promisifiedPipeline()
     await promisifiedPipeline(
       inputStream,
@@ -40,7 +41,7 @@ class StreamHelper {
    * @param {integer} [times] The optional number of times the data will be passed through the pipeline. Defaults to 1.
    * @returns {array} An array of the stream's output.
    */
-  static async returnTransformStreamData (transformStream, data, times = 1) {
+  static async testTransformStream (transformStream, data, times = 1) {
     const result = []
 
     const dataArray = new Array(times).fill(data)
@@ -57,7 +58,8 @@ class StreamHelper {
       }
     })
 
-    // Create a promisifed pipline that runs asynchronously then use it to stream data from inputStream to outputStream
+    // Create a promisifed pipline that runs asynchronously then use it to stream data
+    // inputStream > transformStream > outputStream
     const promisifiedPipeline = this._promisifiedPipeline()
     await promisifiedPipeline(
       inputStream,
@@ -66,6 +68,21 @@ class StreamHelper {
     )
 
     return result
+  }
+
+  static async testWritableStream (outputStream, data, times = 1) {
+    const dataArray = new Array(times).fill(data)
+
+    // Create a Readable stream that sends provided data
+    const inputStream = Readable.from(dataArray)
+
+    // Create a promisifed pipline that runs asynchronously then use it to stream data
+    // inputStream > outputStream
+    const promisifiedPipeline = this._promisifiedPipeline()
+    await promisifiedPipeline(
+      inputStream,
+      outputStream
+    )
   }
 
   static _promisifiedPipeline () {
