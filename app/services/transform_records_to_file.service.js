@@ -23,16 +23,16 @@ class TransformRecordsToFileService {
    * @param {string} fileReference The bill run's file reference.
    * @returns {string} The path and filename of the generated file.
    */
-  static async go (billRun, invoice, query, headerPresenter, bodyPresenter, footerPresenter, fileReference) {
+  static async go (billRun, query, headerPresenter, bodyPresenter, footerPresenter, fileReference, additionalData) {
     const filenameWithPath = this._filenameWithPath(fileReference)
 
-    await this._writeHeader(billRun, headerPresenter, filenameWithPath)
-    await this._writeBody(query, bodyPresenter, filenameWithPath, {
-      fileReference: billRun.fileReference,
-      billRunNumber: billRun.billRunNumber,
-      transactionReference: invoice.transactionReference
-    })
-    await this._writeFooter(billRun, footerPresenter, filenameWithPath)
+    let recordCount
+
+    recordCount = await this._writeHeader(billRun, headerPresenter, filenameWithPath, additionalData)
+    // TODO: ENSURE THE BODY PRESENTER USES THE INDEX
+    recordCount = await this._writeBody(query, bodyPresenter, filenameWithPath, additionalData, recordCount)
+    // TODO: ENSURE THE FOOTER PRESENTER TAKES THE NUMBER OF RECORDS
+    await this._writeFooter(billRun, footerPresenter, filenameWithPath, additionalData, recordCount)
 
     return filenameWithPath
   }
@@ -55,40 +55,50 @@ class TransformRecordsToFileService {
    * @param {ReadableStream} inputStream The stream of data to be written.
    * @param {module:Presenter} presenter The presenter to use to transform the data.
    * @param {string} filenameWithPath The filename and path to be written to.
-   * @param {boolean} [append] Whether data should be appended to the file. Default is `false` ie. overwrite.
+   * @param {boolean} append Whether data should be appended to the file.
+   * @param {object} additionalData Any additional data to be added to the presenter
+   * @param {integer} [recordCount] The number of records written so far. We pass it in from previous sections so we can
+   * keep a correct count of rows. Defaults to 0.
+   * @returns {integer} The number of records written.
    */
-  static async _writeSection (inputStream, presenter, filenameWithPath, append, additionalData) {
+  static async _writeSection (inputStream, presenter, filenameWithPath, append, additionalData, recordCount = 0) {
+    // Add an event listener to inputStream to increment recordCount each time a record passes through the pipeline. We
+    // add it to inputStream as only Readable streams emit the 'data' event.
+    inputStream.on('data', () => recordCount++)
+
     const promisifiedPipeline = this._promisifiedPipeline()
 
     await promisifiedPipeline(
       inputStream,
-      this._presenterTransformStream(presenter, additionalData),
+      this._presenterTransformStream(presenter, additionalData, recordCount),
       this._csvTransformStream(),
       this._writeToFileStream(filenameWithPath, append)
     )
+
+    return recordCount
   }
 
   /**
    * Write the file header, passing the supplied data to the supplied presenter. Overwrites the content of the file if
    * it exists.
    */
-  static async _writeHeader (data, presenter, filenameWithPath, additionalData = {}) {
-    await this._writeSection(this._dataStream(data), presenter, filenameWithPath, false, { ...additionalData })
+  static async _writeHeader (data, presenter, filenameWithPath, additionalData, recordCount) {
+    return this._writeSection(this._dataStream(data), presenter, filenameWithPath, false, { ...additionalData }, recordCount)
   }
 
   /**
    * Write the file body, using the supplied query to read records from the database and passing them to the supplied
-   * presenter. Appends the data to the existing file.
+   * presenter. Appends the data to the existing file. Returns the number of records written.
    */
-  static async _writeBody (query, presenter, filenameWithPath, additionalData = {}) {
-    await this._writeSection(this._recordStream(query), presenter, filenameWithPath, true, { ...additionalData })
+  static async _writeBody (query, presenter, filenameWithPath, additionalData, recordCount) {
+    return this._writeSection(this._recordStream(query), presenter, filenameWithPath, true, { ...additionalData }, recordCount)
   }
 
   /**
    * Write the file footer, passing the supplied data to the supplied presenter. Appends the data to the existing file.
    */
-  static async _writeFooter (data, presenter, filenameWithPath, additionalData = {}) {
-    await this._writeSection(this._dataStream(data), presenter, filenameWithPath, true, { ...additionalData })
+  static async _writeFooter (data, presenter, filenameWithPath, additionalData, recordCount) {
+    return this._writeSection(this._dataStream(data), presenter, filenameWithPath, true, { ...additionalData }, recordCount)
   }
 
   /**
@@ -117,8 +127,8 @@ class TransformRecordsToFileService {
    * each chunk of data it receives with additionalData, which allows us to eg. use bill run-level data when handling
    * transaction records.
    */
-  static _presenterTransformStream (Presenter, additionalData = {}) {
-    return StreamTransformUsingPresenterService.go(Presenter, additionalData)
+  static _presenterTransformStream (Presenter, additionalData, recordCount) {
+    return StreamTransformUsingPresenterService.go(Presenter, additionalData, recordCount)
   }
 
   /**

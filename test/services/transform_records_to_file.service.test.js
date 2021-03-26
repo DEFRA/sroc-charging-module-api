@@ -16,7 +16,7 @@ const {
   TransactionHelper
 } = require('../support/helpers')
 
-const { TransactionModel } = require('../../app/models')
+const { InvoiceModel, TransactionModel, LicenceModel } = require('../../app/models')
 
 // const mockFs = require('mock-fs')
 
@@ -101,10 +101,13 @@ const testTransaction = {
   licence_id: 'f5238030-50c1-4296-adf9-3bd042be6fe4'
 }
 
-describe('Generate Transaction File service', () => {
+describe.only('Generate Transaction File service', () => {
   let billRun
   let invoice
-  let transaction
+  let licence
+  let firstTransaction
+  let secondTransaction
+  let thirdTransaction
 
   const filename = 'test'
 
@@ -122,9 +125,12 @@ describe('Generate Transaction File service', () => {
 
     billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
     billRun.fileReference = 'FILE_REF'
-    transaction = await TransactionHelper.addTransaction(billRun.id)
 
-    // TODO: assign the transaction's invoice to `invoice`
+    firstTransaction = await TransactionHelper.addTransaction(billRun.id)
+    invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
+    licence = await LicenceModel.query().findOne({ billRunId: billRun.id })
+    secondTransaction = await TransactionHelper.addTransaction(billRun.id, { invoiceId: invoice.id, licenceId: licence.id })
+    thirdTransaction = await TransactionHelper.addTransaction(billRun.id, { invoiceId: invoice.id, licenceId: licence.id })
 
     // // Create mock in-memory file system to avoid temp files being dropped in our filesystem
     // mockFs({
@@ -138,7 +144,7 @@ describe('Generate Transaction File service', () => {
   })
 
   describe('When writing a file succeeds', () => {
-    it('creates a file with expected content', async () => {
+    it.only('creates a file with expected content', async () => {
       const query = TransactionModel.query().select('*')
 
       class headerPresenter {
@@ -148,7 +154,8 @@ describe('Generate Transaction File service', () => {
 
         go () {
           return {
-            col01: '---HEADER---'
+            col01: '---HEADER---',
+            col02: this.data.index
           }
         }
       }
@@ -156,6 +163,7 @@ describe('Generate Transaction File service', () => {
       class bodyPresenter {
         constructor (data) {
           this.data = data
+          this.row = 0
         }
 
         // Note the order, which ensures we're also testing that the order of items is sorted correctly as col01, col02
@@ -163,7 +171,9 @@ describe('Generate Transaction File service', () => {
           return {
             col03: this.data.fileReference,
             col02: this.data.billRunId,
-            col01: this.data.id
+            col04: this.data.invoiceId,
+            col01: this.data.id,
+            col05: this.data.index
           }
         }
       }
@@ -175,18 +185,28 @@ describe('Generate Transaction File service', () => {
 
         go () {
           return {
-            col01: '---FOOTER---'
+            col01: '---FOOTER---',
+            col02: this.data.index
           }
         }
       }
 
-      await TransformRecordsToFileService.go(billRun, invoice, query, headerPresenter, bodyPresenter, footerPresenter, filename)
+      const additionalData = {
+        fileReference: billRun.fileReference,
+        billRunNumber: billRun.billRunNumber,
+        transactionReference: invoice.transactionReference
+      }
+
+      await TransformRecordsToFileService.go(billRun, query, headerPresenter, bodyPresenter, footerPresenter, filename, additionalData)
 
       const file = fs.readFileSync(filenameWithPath, 'utf-8')
 
-      const header = '---HEADER---'.concat('\n')
-      const body = [transaction.id, transaction.billRunId, billRun.fileReference].join().concat('\n')
-      const footer = '---FOOTER---'.concat('\n')
+      const header = ['---HEADER---', 0].join().concat('\n')
+      const bodyFirstRow = [firstTransaction.id, firstTransaction.billRunId, billRun.fileReference, invoice.id, 1].join().concat('\n')
+      const bodySecondRow = [secondTransaction.id, secondTransaction.billRunId, billRun.fileReference, invoice.id, 2].join().concat('\n')
+      const bodyThirdRow = [thirdTransaction.id, thirdTransaction.billRunId, billRun.fileReference, invoice.id, 3].join().concat('\n')
+      const body = bodyFirstRow.concat(bodySecondRow).concat(bodyThirdRow)
+      const footer = ['---FOOTER---', 4].join().concat('\n')
 
       expect(file).to.equal(header.concat(body).concat(footer))
     })

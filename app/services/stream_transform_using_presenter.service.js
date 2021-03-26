@@ -23,14 +23,21 @@ const { Transform } = require('stream')
  * but this isn't present in the transaction records we pull from the db. We therefore pass it in when writing these
  * records so that it's available to us.
  *
+ * To ensure that rows in a file are numbered correctly, we optionally accept indexStart which is the number that the
+ * index will start at. Say for example we have written the header and body of a file, with the rows numbered 1-19. When
+ * this service is called to write the tail, an indexStart value of 20 will be passed in, ensuring that the tail row has
+ * the correct number 20.
+ *
  * @param {module:Presenter} Presenter Presenter to be used to transform data.
  * @param {object} [additionalData] Optional data object which will be combined with the incoming data before being
  * transformed.
+ * @param {integer} [indexStart] The start value for the index. Used to ensure that we use the correct consecutive
+ * numbering for each row of the data file. Defaults to 0.
  * @returns {TransformStream} A stream of data.
  */
 class StreamTransformUsingPresenterService {
-  static go (Presenter, additionalData = {}) {
-    let index = 0
+  static go (Presenter, additionalData = {}, indexStart = 0) {
+    let index = indexStart
 
     return new Transform({
       objectMode: true,
