@@ -11,6 +11,7 @@ const RegimeHelper = require('./regime.helper')
 const RouteHelper = require('./route.helper')
 const RulesServiceHelper = require('./rules_service.helper')
 const SequenceCounterHelper = require('./sequence_counter.helper')
+const StreamHelper = require('./stream.helper')
 const TransactionHelper = require('./transaction.helper')
 
 module.exports = {
@@ -25,5 +26,6 @@ module.exports = {
   RouteHelper,
   RulesServiceHelper,
   SequenceCounterHelper,
+  StreamHelper,
   TransactionHelper
 }
