@@ -37,13 +37,16 @@ class StreamHelper {
    *
    * @param {TransformStream} transformStream The stream we want to capture the output of.
    * @param {object} data The data the stream will receive.
+   * @param {integer} [times] The optional number of times the data will be passed through the pipeline. Defaults to 1.
    * @returns {array} An array of the stream's output.
    */
-  static async returnTransformStreamData (transformStream, data) {
+  static async returnTransformStreamData (transformStream, data, times = 1) {
     const result = []
 
+    const dataArray = new Array(times).fill(data)
+
     // Create a Readable stream that sends provided data
-    const inputStream = Readable.from([data])
+    const inputStream = Readable.from(dataArray)
 
     // Create a Writable stream that captures data coming into it and pushes it to the result array
     const outputStream = new Writable({
