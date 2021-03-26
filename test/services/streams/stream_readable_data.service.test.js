@@ -10,9 +10,7 @@ const { expect } = Code
 const stream = require('stream')
 
 // Test helpers
-const {
-  StreamHelper
-} = require('../../support/helpers')
+const { StreamHelper } = require('../../support/helpers')
 
 // Thing under test
 const { StreamReadableDataService } = require('../../../app/services')
@@ -31,9 +29,10 @@ describe('Stream Readable Data service', () => {
       const testData = 'TEST'
 
       const readableStream = StreamReadableDataService.go(testData)
-      const result = await StreamHelper.returnReadableStreamData(readableStream)
+      // We use destructuring to pull the sole element of the array into result
+      const [result] = await StreamHelper.returnReadableStreamData(readableStream)
 
-      expect(result[0]).to.equal(testData)
+      expect(result).to.equal(testData)
     })
   })
 })

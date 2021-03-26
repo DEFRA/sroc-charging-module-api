@@ -48,9 +48,10 @@ describe('Stream Readable Records service', () => {
       const query = TransactionModel.query().select('*')
 
       const readableStream = StreamReadableRecordsService.go(query)
-      const result = await StreamHelper.returnReadableStreamData(readableStream)
+      // We use destructuring to pull the sole element of the array into result
+      const [result] = await StreamHelper.returnReadableStreamData(readableStream)
 
-      expect(result[0].id).to.equal(transaction.id)
+      expect(result.id).to.equal(transaction.id)
     })
   })
 })

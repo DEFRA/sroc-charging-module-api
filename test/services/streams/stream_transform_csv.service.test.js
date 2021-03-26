@@ -15,7 +15,7 @@ const { StreamHelper } = require('../../support/helpers')
 // Thing under test
 const { StreamTransformCSVService } = require('../../../app/services')
 
-describe.only('Stream Transform CSV service', () => {
+describe('Stream Transform CSV service', () => {
   describe('When data is passed to it', () => {
     it('returns a stream', async () => {
       const result = StreamTransformCSVService.go()
@@ -27,9 +27,10 @@ describe.only('Stream Transform CSV service', () => {
       const testData = ['first', '2', 'false']
 
       const stream = StreamTransformCSVService.go()
-      const result = await StreamHelper.returnTransformStreamData(stream, testData)
+      // We use destructuring to pull the sole element of the array into result
+      const [result] = await StreamHelper.returnTransformStreamData(stream, testData)
 
-      expect(result[0]).to.equal('"first","2","false"\n')
+      expect(result).to.equal('"first","2","false"\n')
     })
   })
 })
