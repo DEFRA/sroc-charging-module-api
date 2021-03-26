@@ -23,7 +23,7 @@ const { TransactionModel } = require('../../../app/models')
 // Thing under test
 const { StreamReadableRecordsService } = require('../../../app/services')
 
-describe.only('Stream Readable Records service', () => {
+describe('Stream Readable Records service', () => {
   let billRun
   let transaction
 

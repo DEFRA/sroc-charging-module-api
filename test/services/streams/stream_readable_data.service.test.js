@@ -4,53 +4,36 @@
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 
-const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 const stream = require('stream')
 
 // Test helpers
 const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  StreamHelper,
-  TransactionHelper
+  StreamHelper
 } = require('../../support/helpers')
 
-const { TransactionModel } = require('../../../app/models')
-
 // Thing under test
-const { StreamReadableRecordsService } = require('../../../app/services')
+const { StreamReadableDataService } = require('../../../app/services')
 
-describe.only('Stream Readable Records service', () => {
-  let billRun
-  let transaction
-
-  beforeEach(async () => {
-    await DatabaseHelper.clean()
-
-    billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
-
-    transaction = await TransactionHelper.addTransaction(billRun.id)
-  })
-
-  describe('When a valid query builder object specified', () => {
+describe('Stream Readable Data service', () => {
+  describe('When data is passed to it', () => {
     it('returns a stream', async () => {
-      const query = TransactionModel.query().select('*')
+      const testData = 'TEST'
 
-      const result = StreamReadableRecordsService.go(query)
+      const result = StreamReadableDataService.go(testData)
 
       expect(result).to.be.an.instanceof(stream.Stream)
     })
 
     it('streams the correct data', async () => {
-      const query = TransactionModel.query().select('*')
+      const testData = 'TEST'
 
-      const readableStream = StreamReadableRecordsService.go(query)
+      const readableStream = StreamReadableDataService.go(testData)
       const result = await StreamHelper.returnReadableStreamData(readableStream)
 
-      expect(result[0].id).to.equal(transaction.id)
+      expect(result[0]).to.equal(testData)
     })
   })
 })
