@@ -36,6 +36,11 @@ const SendTransactionFileService = require('./send_transaction_file.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
 const ShowRegimeService = require('./show_regime.service')
 const ShowTransactionService = require('./show_transaction.service')
+const StreamReadableDataService = require('./streams/stream_readable_data.service')
+const StreamReadableRecordsService = require('./streams/stream_readable_records.service')
+const StreamTransformCSVService = require('./streams/stream_transform_csv.service')
+const StreamTransformUsingPresenterService = require('./streams/stream_transform_using_presenter.service')
+const StreamWritableFileService = require('./streams/stream_writable_file.service')
 const ViewBillRunService = require('./view_bill_run.service')
 const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 
@@ -76,6 +81,11 @@ module.exports = {
   ShowAuthorisedSystemService,
   ShowRegimeService,
   ShowTransactionService,
+  StreamReadableDataService,
+  StreamReadableRecordsService,
+  StreamTransformCSVService,
+  StreamTransformUsingPresenterService,
+  StreamWritableFileService,
   ViewBillRunService,
   ViewBillRunInvoiceService
 }
