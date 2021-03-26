@@ -17,7 +17,7 @@ class TransactionFileHeaderPresenter extends BasePresenter {
   _presentation (data) {
     return {
       col01: 'H',
-      col02: data.billRunNumber,
+      col02: '0000000',
       col03: 'NAL',
       col04: data.region,
       col05: 'I',

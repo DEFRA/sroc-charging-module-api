@@ -13,7 +13,7 @@ const { GeneralHelper } = require('../support/helpers')
 // Thing under test
 const { TransactionFileHeaderPresenter } = require('../../app/presenters')
 
-describe.only('Transaction File Header Presenter', () => {
+describe('Transaction File Header Presenter', () => {
   const data = {
     id: GeneralHelper.uuid4(),
     createdAt: '2021-01-01 12:05:54.569348+00',

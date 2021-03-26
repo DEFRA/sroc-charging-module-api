@@ -240,6 +240,7 @@ describe('Transaction File Body Presenter', () => {
     expect(result.col39).to.equal('')
   })
 
+  // TODO: COMPLETE THIS TEST
   it('returns the correct value for col30', () => {
     const presenter = new TransactionFileBodyPresenter({ ...data, regimeValue17: false, minimumChargeAdjustment: true })
     const result = presenter.go()
