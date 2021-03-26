@@ -16,6 +16,7 @@ const BasePresenter = require('./base.presenter')
  */
 
 // TODO: STICK QUOTES AROUND TEXT FIELDS
+// TODO: MAKE SURE CORRECT ROW VALUE IS WRITTEN
 class TransactionFileBodyPresenter extends BasePresenter {
   _presentation (data) {
     return {
