@@ -26,9 +26,9 @@ describe('Stream Transform CSV service', () => {
     it('streams the correct data', async () => {
       const testData = ['first', '2', 'false']
 
-      const stream = StreamTransformCSVService.go()
+      const transformStream = StreamTransformCSVService.go()
       // We use destructuring to pull the sole element of the array into result
-      const [result] = await StreamHelper.returnTransformStreamData(stream, testData)
+      const [result] = await StreamHelper.returnTransformStreamData(transformStream, testData)
 
       expect(result).to.equal('"first","2","false"\n')
     })
