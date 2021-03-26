@@ -13,21 +13,9 @@ class StreamHelper {
   static async testReadableStream (inputStream) {
     const result = []
 
-    // Create a Writable stream that captures data coming into it and pushes it to the result array
-    const outputStream = new Writable({
-      objectMode: true,
-      write (chunk, encoding, callback) {
-        result.push(chunk)
-        callback()
-      }
-    })
-
-    // Create a promisifed pipline that runs asynchronously then use it to stream data
-    // inputStream > outputStream
-    const promisifiedPipeline = this._promisifiedPipeline()
-    await promisifiedPipeline(
+    await this._inputOutputPipeline(
       inputStream,
-      outputStream
+      this._captureDataInArray(result)
     )
 
     return result
@@ -42,49 +30,79 @@ class StreamHelper {
    * @returns {array} An array of the stream's output.
    */
   static async testTransformStream (transformStream, data, times = 1) {
+    const dataArray = this._fillDataArray(data, times)
+
     const result = []
 
-    const dataArray = new Array(times).fill(data)
+    await this._inputTransformOutputPipeline(
+      this._sendDataFromArray(dataArray),
+      transformStream,
+      this._captureDataInArray(result))
 
-    // Create a Readable stream that sends provided data
-    const inputStream = Readable.from(dataArray)
+    return result
+  }
 
-    // Create a Writable stream that captures data coming into it and pushes it to the result array
-    const outputStream = new Writable({
+  /**
+   * Runs a Writable stream using the provided data.
+   *
+   * @param {ReadableStream} inputStream The stream we want to capture the output of.
+   * @param {object} data The data the stream will receive.
+   * @param {integer} [times] The optional number of times the data will be passed through the pipeline. Defaults to 1.
+   */
+  static async testWritableStream (outputStream, data, times = 1) {
+    const dataArray = this._fillDataArray(data, times)
+
+    await this._inputOutputPipeline(
+      this._sendDataFromArray(dataArray),
+      outputStream
+    )
+  }
+
+  /**
+   * Returns an array of data, where `data` is repeated `times` times, eg. _fillDataArray('rhubarb', 3) returns:
+   * ['rhubarb', 'rhubarb', 'rhubarb']
+   */
+  static _fillDataArray (data, times) {
+    return new Array(times).fill(data)
+  }
+
+  /**
+   * Returns a Writable stream that will capture data coming into it and push it to the provided array
+   */
+  static _captureDataInArray (result) {
+    return new Writable({
       objectMode: true,
       write (chunk, encoding, callback) {
         result.push(chunk)
         callback()
       }
     })
-
-    // Create a promisifed pipline that runs asynchronously then use it to stream data
-    // inputStream > transformStream > outputStream
-    const promisifiedPipeline = this._promisifiedPipeline()
-    await promisifiedPipeline(
-      inputStream,
-      transformStream,
-      outputStream
-    )
-
-    return result
   }
 
-  static async testWritableStream (outputStream, data, times = 1) {
-    const dataArray = new Array(times).fill(data)
-
-    // Create a Readable stream that sends provided data
-    const inputStream = Readable.from(dataArray)
-
-    // Create a promisifed pipline that runs asynchronously then use it to stream data
-    // inputStream > outputStream
-    const promisifiedPipeline = this._promisifiedPipeline()
-    await promisifiedPipeline(
-      inputStream,
-      outputStream
-    )
+  /**
+   * Returns a Writable stream that will send the array of data provided to it, one element at a time
+   */
+  static _sendDataFromArray (dataArray) {
+    return Readable.from(dataArray)
   }
 
+  /**
+   * Runs an async pipeline passing data from inputStream > outputStream
+   */
+  static async _inputOutputPipeline (inputStream, outputStream) {
+    await this._promisifiedPipeline()(inputStream, outputStream)
+  }
+
+  /**
+   * Runs an async pipeline passing data from inputStream > transformStream > outputStream
+   */
+  static async _inputTransformOutputPipeline (inputStream, transformStream, outputStream) {
+    await this._promisifiedPipeline()(inputStream, transformStream, outputStream)
+  }
+
+  /**
+   * Returns pipeline wrapped in a promise, which allows us to simply `await` it to resolve
+   */
   static _promisifiedPipeline () {
     return util.promisify(pipeline)
   }
