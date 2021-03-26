@@ -15,14 +15,14 @@ const {
   DatabaseHelper,
   GeneralHelper,
   TransactionHelper
-} = require('../support/helpers')
+} = require('../../support/helpers')
 
-const { TransactionModel } = require('../../app/models')
+const { TransactionModel } = require('../../../app/models')
 
 // Thing under test
-const { StreamRecordsService } = require('../../app/services')
+const { StreamReadableRecordsService } = require('../../../app/services')
 
-describe('Stream Records service', () => {
+describe.only('Stream Readable Records service', () => {
   let billRun
 
   beforeEach(async () => {
@@ -40,7 +40,7 @@ describe('Stream Records service', () => {
     it('returns a stream', async () => {
       const query = TransactionModel.query().select('*')
 
-      const result = await StreamRecordsService.go(query)
+      const result = await StreamReadableRecordsService.go(query)
 
       expect(result).to.be.an.instanceof(stream.Stream)
     })
