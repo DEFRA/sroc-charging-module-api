@@ -46,4 +46,15 @@ describe('Base presenter', () => {
       expect(result).to.equal('12-JAN-2021')
     })
   })
+
+  describe('_leftPadZeroes method', () => {
+    it('correctly pads numbers', async () => {
+      const number = 123
+      const presenter = new BasePresenter()
+
+      const result = presenter._leftPadZeroes(number, 7)
+
+      expect(result).to.equal('0000123')
+    })
+  })
 })

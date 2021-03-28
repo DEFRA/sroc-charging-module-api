@@ -33,6 +33,15 @@ class BasePresenter {
       .split(' ')
       .join('-')
   }
+
+  /**
+   * Pads a number to a given length with leading zeroes and returns the result as a string.
+   */
+  _leftPadZeroes (number, length) {
+    return number
+      .toString()
+      .padStart(length, '0')
+  }
 }
 
 module.exports = BasePresenter
