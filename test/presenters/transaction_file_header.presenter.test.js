@@ -13,7 +13,7 @@ const { GeneralHelper } = require('../support/helpers')
 // Thing under test
 const { TransactionFileHeaderPresenter } = require('../../app/presenters')
 
-describe.only('Transaction File Header presenter', () => {
+describe('Transaction File Header presenter', () => {
   const data = {
     index: 0,
     region: 'A',
