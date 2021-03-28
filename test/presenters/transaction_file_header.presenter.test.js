@@ -11,9 +11,9 @@ const { expect } = Code
 const { GeneralHelper } = require('../support/helpers')
 
 // Thing under test
-const { TransactionFileHeaderPresenter } = require('../../app/presenters')
+const { TransactionFileHeadPresenter } = require('../../app/presenters')
 
-describe('Transaction File Header presenter', () => {
+describe('Transaction File Head presenter', () => {
   const data = {
     index: 0,
     region: 'A',
@@ -23,7 +23,7 @@ describe('Transaction File Header presenter', () => {
   }
 
   it('returns the required columns', () => {
-    const testPresenter = new TransactionFileHeaderPresenter(data)
+    const testPresenter = new TransactionFileHeadPresenter(data)
     const result = testPresenter.go()
 
     // To avoid writing out col01...col08 we generate an array of them
@@ -37,7 +37,7 @@ describe('Transaction File Header presenter', () => {
   })
 
   it('correctly presents the data', () => {
-    const testPresenter = new TransactionFileHeaderPresenter(data)
+    const testPresenter = new TransactionFileHeadPresenter(data)
     const result = testPresenter.go()
 
     expect(result.col01).to.equal('H')

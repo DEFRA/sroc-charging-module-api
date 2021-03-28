@@ -7,7 +7,7 @@
 const BasePresenter = require('./base.presenter')
 
 /**
- * Formats data for saving to the body of a transaction file.
+ * Formats data for the body of a transaction file.
  *
  * Note that data.index and data.transactionReference are added by StreamTransformUsingPresenter and are not part of the
  * data originally read from the source transaction record.

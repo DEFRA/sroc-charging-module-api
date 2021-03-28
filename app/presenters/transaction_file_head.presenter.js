@@ -1,13 +1,13 @@
 'use strict'
 
 /**
- * @module TransactionFileHeaderPresenter
+ * @module TransactionFileHeadPresenter
  */
 
 const BasePresenter = require('./base.presenter')
 
 /**
- * Formats data for saving to the header of a transaction file.
+ * Formats data for the head of a transaction file.
  *
  * Note that data.index is added by StreamTransformUsingPresenter and is not part of the data originally read from the
  * source transaction record.
@@ -16,7 +16,7 @@ const BasePresenter = require('./base.presenter')
  * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/transaction_file_presenter.js
  */
 
-class TransactionFileHeaderPresenter extends BasePresenter {
+class TransactionFileHeadPresenter extends BasePresenter {
   _presentation (data) {
     return {
       col01: 'H',
@@ -52,4 +52,4 @@ class TransactionFileHeaderPresenter extends BasePresenter {
   }
 }
 
-module.exports = TransactionFileHeaderPresenter
+module.exports = TransactionFileHeadPresenter
