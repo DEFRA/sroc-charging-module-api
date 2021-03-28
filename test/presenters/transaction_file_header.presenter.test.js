@@ -13,16 +13,30 @@ const { GeneralHelper } = require('../support/helpers')
 // Thing under test
 const { TransactionFileHeaderPresenter } = require('../../app/presenters')
 
-describe('Transaction File Header presenter', () => {
-  it('correctly presents the data', () => {
-    const data = {
-      index: 0,
-      region: 'A',
-      fileId: 'FILE_ID',
-      id: GeneralHelper.uuid4(),
-      updatedAt: '2021-01-12T14:41:10.511Z'
+describe.only('Transaction File Header presenter', () => {
+  const data = {
+    index: 0,
+    region: 'A',
+    fileId: 'FILE_ID',
+    id: GeneralHelper.uuid4(),
+    updatedAt: '2021-01-12T14:41:10.511Z'
+  }
+
+  it('returns the required columns', () => {
+    const testPresenter = new TransactionFileHeaderPresenter(data)
+    const result = testPresenter.go()
+
+    // To avoid writing out col01...col08 we generate an array of them
+    const expectedFields = []
+    for (let fieldNumber = 1; fieldNumber <= 8; fieldNumber++) {
+      const paddedNumber = fieldNumber.toString().padStart(2, '0')
+      expectedFields.push(`col${paddedNumber}`)
     }
 
+    expect(result).to.only.include(expectedFields)
+  })
+
+  it('correctly presents the data', () => {
     const testPresenter = new TransactionFileHeaderPresenter(data)
     const result = testPresenter.go()
 
