@@ -93,7 +93,7 @@ class TransformRecordsToFileService {
 
   /**
    * Write the file head, passing the supplied data to the supplied presenter. Overwrites the content of the file if
-   * it exists.
+   * it exists. Returns the number of records written.
    */
   static async _writeHead (data, presenter, filenameWithPath) {
     return this._writeSection(this._dataStream(data), presenter, filenameWithPath, false, null)
@@ -101,14 +101,16 @@ class TransformRecordsToFileService {
 
   /**
    * Write the file body, using the supplied query to read records from the database and passing them to the supplied
-   * presenter. Appends the data to the existing file. Returns the number of records written.
+   * presenter, along with additionalData. Appends the data if the file already exists, or creates it if not. Returns
+   * the number of records written.
    */
   static async _writeBody (query, presenter, filenameWithPath, additionalData, lineCount) {
     return this._writeSection(this._recordStream(query), presenter, filenameWithPath, true, { ...additionalData }, lineCount)
   }
 
   /**
-   * Write the file tail, passing the supplied data to the supplied presenter. Appends the data to the existing file.
+   * Write the file tail, passing the supplied data to the supplied presenter. Appends the data if the file already
+   * exists, or creates it if not. Returns the number of records written.
    */
   static async _writeTail (data, presenter, filenameWithPath, lineCount) {
     return this._writeSection(this._dataStream(data), presenter, filenameWithPath, true, null, lineCount)
