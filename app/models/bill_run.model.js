@@ -173,6 +173,13 @@ class BillRunModel extends BaseModel {
   $billable () {
     return Boolean(this.fileReference)
   }
+
+  /**
+   * Returns the file number (ie. the last 5 chars of the file reference), or `null` if the bill run does not have one
+   */
+  $fileNumber () {
+    return this.fileReference ? this.fileReference.slice(-5) : null
+  }
 }
 
 module.exports = BillRunModel

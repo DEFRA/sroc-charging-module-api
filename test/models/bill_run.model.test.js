@@ -98,4 +98,18 @@ describe('Bill Run Model', () => {
       expect(instance.$approved()).to.be.false()
     })
   })
+
+  describe('the $fileNumber() method', () => {
+    it('returns the file number if the bill run has a file reference', async () => {
+      const instance = BillRunModel.fromJson({ fileReference: 'nalri50003' })
+
+      expect(instance.$fileNumber()).to.equal('50003')
+    })
+
+    it("returns 'null' if the bill run doesn't have a file reference", async () => {
+      const instance = BillRunModel.fromJson({ fileReference: null })
+
+      expect(instance.$fileNumber()).to.equal(null)
+    })
+  })
 })
