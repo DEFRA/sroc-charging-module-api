@@ -41,6 +41,7 @@ const StreamReadableRecordsService = require('./streams/stream_readable_records.
 const StreamTransformCSVService = require('./streams/stream_transform_csv.service')
 const StreamTransformUsingPresenterService = require('./streams/stream_transform_using_presenter.service')
 const StreamWritableFileService = require('./streams/stream_writable_file.service')
+const TransformRecordsToFileService = require('./transform_records_to_file.service')
 const ViewBillRunService = require('./view_bill_run.service')
 const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 
@@ -86,6 +87,7 @@ module.exports = {
   StreamTransformCSVService,
   StreamTransformUsingPresenterService,
   StreamWritableFileService,
+  TransformRecordsToFileService,
   ViewBillRunService,
   ViewBillRunInvoiceService
 }
