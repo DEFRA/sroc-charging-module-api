@@ -1,6 +1,5 @@
 'use strict'
 
-const { QueryBuilder } = require('knex')
 /**
  * @module TransformRecordsToFileService
  */
