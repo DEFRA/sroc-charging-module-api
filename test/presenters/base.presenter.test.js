@@ -35,4 +35,26 @@ describe('Base presenter', () => {
 
     expect(() => testPresenter.go()).to.throw('You need to specify _presentation in the child presenter')
   })
+
+  describe('_formatDate method', () => {
+    it('correctly formats dates', async () => {
+      const date = '2021-01-12T14:41:10.511Z'
+      const presenter = new BasePresenter()
+
+      const result = presenter._formatDate(date)
+
+      expect(result).to.equal('12-JAN-2021')
+    })
+  })
+
+  describe('_leftPadZeroes method', () => {
+    it('correctly pads numbers', async () => {
+      const number = 123
+      const presenter = new BasePresenter()
+
+      const result = presenter._leftPadZeroes(number, 7)
+
+      expect(result).to.equal('0000123')
+    })
+  })
 })
