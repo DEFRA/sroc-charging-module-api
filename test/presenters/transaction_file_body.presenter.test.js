@@ -7,6 +7,8 @@ const Code = require('@hapi/code')
 const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
+const { BasePresenter } = require('../../app/presenters')
+
 // Thing under test
 const { TransactionFileBodyPresenter } = require('../../app/presenters')
 
@@ -14,10 +16,10 @@ describe('Transaction File Body Presenter', () => {
   const data = {
     index: 1,
     customerReference: 'CUSTOMER_REF',
-    transactionDate: '2021-01-01T12:05:54.651Z',
+    transactionDate: Date.now(),
     chargeCredit: false,
     transactionReference: 'TRANSACTION_REF',
-    headerAttr1: '2021-12-31T12:05:54.651Z',
+    headerAttr1: Date.now(),
     chargeValue: 772,
     lineAreaCode: 'ARCA',
     lineDescription: 'Well at Chigley Town Hall',
@@ -109,8 +111,11 @@ describe('Transaction File Body Presenter', () => {
     const presenter = new TransactionFileBodyPresenter(data)
     const result = presenter.go()
 
-    expect(result.col04).to.equal('01-JAN-2021')
-    expect(result.col10).to.equal('31-DEC-2021')
+    const basePresenter = new BasePresenter()
+    const date = basePresenter._formatDate(new Date())
+
+    expect(result.col04).to.equal(date)
+    expect(result.col10).to.equal(date)
   })
 
   it('returns correct values when compensation charge and minimum charge adjustment are false', () => {

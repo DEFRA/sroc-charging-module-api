@@ -84,7 +84,7 @@ describe('Generate Transaction File service', () => {
     const date = presenter._formatDate(new Date())
 
     const head = ['"H"', '"0000000"', '"NAL"', '"A"', '"I"', '"t.txt"', '"12345"', `"${date}"`].join(',').concat('\n')
-    const body = ['"D"', '"0000001"', '"TH230000222"', '"01-JAN-1970"', '"I"', '"TRANSACTION_REF"', '""', '"GBP"', '""', '"01-JAN-1970"', '""', '""', '""', '""', '""', '""', '""', '""', '""', '"772"', '""', '"ARCA"', '"Well at Chigley Town Hall"', '"A"', '""', '"TONY/TF9222/37"', '"01-APR-2018 - 31-MAR-2019"', '"null"', '"1495"', '"6.22 Ml"', '"3"', '"1.6"', '"0.03"', '""', '""', '""', '""', '""', '""', '""', '"1"', '"Each"', '"772"'].join(',').concat('\n')
+    const body = ['"D"', '"0000001"', '"TH230000222"', `"${date}"`, '"I"', '"TRANSACTION_REF"', '""', '"GBP"', '""', `"${date}"`, '""', '""', '""', '""', '""', '""', '""', '""', '""', '"772"', '""', '"ARCA"', '"Well at Chigley Town Hall"', '"A"', '""', '"TONY/TF9222/37"', '"01-APR-2018 - 31-MAR-2019"', '"null"', '"1495"', '"6.22 Ml"', '"3"', '"1.6"', '"0.03"', '""', '""', '""', '""', '""', '""', '""', '"1"', '"Each"', '"772"'].join(',').concat('\n')
     const tail = ['"T"', '"0000002"', '"3"', '"0"', '"0"'].join(',').concat('\n')
 
     return head.concat(body).concat(tail)

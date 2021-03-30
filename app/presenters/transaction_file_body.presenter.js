@@ -22,13 +22,13 @@ class TransactionFileBodyPresenter extends BasePresenter {
       col01: 'D',
       col02: this._leftPadZeroes(data.index, 7),
       col03: data.customerReference,
-      col04: this._formatDate(data.transactionDate),
+      col04: this._formatDate(Date.now()),
       col05: this._transactionType(data),
       col06: data.transactionReference,
       col07: '',
       col08: 'GBP',
       col09: '',
-      col10: this._formatDate(data.headerAttr1),
+      col10: this._formatDate(Date.now()),
       col11: '',
       col12: '',
       col13: '',
@@ -38,7 +38,7 @@ class TransactionFileBodyPresenter extends BasePresenter {
       col17: '',
       col18: '',
       col19: '',
-      col20: data.chargeValue,
+      col20: this._signedCreditValue(data.chargeValue, data.chargeCredit),
       col21: '',
       col22: data.lineAreaCode,
       col23: data.lineDescription,
@@ -61,11 +61,13 @@ class TransactionFileBodyPresenter extends BasePresenter {
       col40: '',
       col41: '1',
       col42: 'Each',
-      col43: data.chargeValue
+      col43: this._signedCreditValue(data.chargeValue, data.chargeCredit)
     }
   }
 
-  // Returns a negative or positive value for chargeValue dependent on whether credit is true or false
+  /**
+   * Returns a negative or positive value for chargeValue dependent on whether credit is true or false
+   */
   _transactionType (data) {
     return data.chargeCredit ? 'C' : 'I'
   }
@@ -76,14 +78,6 @@ class TransactionFileBodyPresenter extends BasePresenter {
    */
   _blankIfCompensationChargeOrMinimumCharge (value, data) {
     return data.regimeValue17 || data.minimumChargeAdjustment ? '' : value
-  }
-
-  /**
-   * null is an acceptable value to store in the db for some fields, however in such cases we want to return an empty
-   * field instead of 'null'
-   */
-  _cleanseNull (value) {
-    return value === null ? '' : value
   }
 
   /**

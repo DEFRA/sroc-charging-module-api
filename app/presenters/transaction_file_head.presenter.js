@@ -26,7 +26,7 @@ class TransactionFileHeadPresenter extends BasePresenter {
       col05: 'I',
       col06: this._fileNumber(data.fileReference),
       col07: data.billRunNumber,
-      col08: this._formatDate(data.billRunUpdatedAt)
+      col08: this._formatDate(Date.now())
     }
   }
 

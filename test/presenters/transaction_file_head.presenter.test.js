@@ -7,6 +7,8 @@ const Code = require('@hapi/code')
 const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
+const { BasePresenter } = require('../../app/presenters')
+
 // Thing under test
 const { TransactionFileHeadPresenter } = require('../../app/presenters')
 
@@ -37,6 +39,9 @@ describe('Transaction File Head presenter', () => {
     const testPresenter = new TransactionFileHeadPresenter(data)
     const result = testPresenter.go()
 
+    const basePresenter = new BasePresenter()
+    const date = basePresenter._formatDate(new Date())
+
     expect(result.col01).to.equal('H')
     expect(result.col02).to.equal('0000000')
     expect(result.col03).to.equal('NAL')
@@ -44,6 +49,6 @@ describe('Transaction File Head presenter', () => {
     expect(result.col05).to.equal('I')
     expect(result.col06).to.equal('50003')
     expect(result.col07).to.equal(data.billRunNumber)
-    expect(result.col08).to.equal('12-JAN-2021')
+    expect(result.col08).to.equal(date)
   })
 })

@@ -39,6 +39,6 @@ describe('Transaction File Tail Presenter', () => {
     expect(result.col02).to.equal('0000003')
     expect(result.col03).to.equal(4)
     expect(result.col04).to.equal(data.invoiceValue)
-    expect(result.col05).to.equal(data.creditNoteValue)
+    expect(result.col05).to.equal(-data.creditNoteValue)
   })
 })
