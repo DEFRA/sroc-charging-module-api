@@ -22,8 +22,8 @@ class TransactionFileTailPresenter extends BasePresenter {
       col01: 'T',
       col02: this._leftPadZeroes(data.index, 7),
       col03: this._numberOfLinesInFile(data.index),
-      col04: data.invoiceTotal,
-      col05: data.creditTotal
+      col04: data.invoiceValue,
+      col05: data.creditNoteValue
     }
   }
 

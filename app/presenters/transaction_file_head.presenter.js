@@ -30,6 +30,10 @@ class TransactionFileHeadPresenter extends BasePresenter {
     }
   }
 
+  /**
+   * When given a file reference eg. 'nalwi50003', returns the file number part '50003'. The format we return it in
+   * doesn't matter so we simply return a string without converting to an integer first.
+   */
   _fileNumber (fileReference) {
     return fileReference.slice(-5)
   }
