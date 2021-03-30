@@ -62,7 +62,7 @@ describe('Send Transaction File service', () => {
         await SendTransactionFileService.go(regime, billRun)
 
         expect(generateStub.calledOnce).to.be.true()
-        expect(generateStub.getCall(0).firstArg).to.equal(`${billRun.fileReference}.dat`)
+        expect(generateStub.getCall(0).args[1]).to.equal(`${billRun.fileReference}.dat`)
       })
 
       it('sends the transaction file', async () => {

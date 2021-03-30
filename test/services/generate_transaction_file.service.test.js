@@ -8,10 +8,20 @@ const Sinon = require('sinon')
 const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
-const mockFs = require('mock-fs')
-
 const fs = require('fs')
 const path = require('path')
+
+// Test helpers
+const {
+  BillRunHelper,
+  DatabaseHelper,
+  GeneralHelper,
+  TransactionHelper
+} = require('../support/helpers')
+
+const { InvoiceModel } = require('../../app/models')
+
+const { BasePresenter } = require('../../app/presenters')
 
 const { temporaryFilePath } = require('../../config/server.config')
 
@@ -22,44 +32,49 @@ describe('Generate Transaction File service', () => {
   const filename = 'test.txt'
   const filenameWithPath = path.join(temporaryFilePath, filename)
 
+  let billRun
+
   beforeEach(async () => {
-    // Create mock in-memory file system to avoid temp files being dropped in our filesystem
-    mockFs({
-      tmp: { }
-    })
+    await DatabaseHelper.clean()
+
+    billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
+    billRun.fileReference = filename
+    billRun.billRunNumber = 12345
+
+    await TransactionHelper.addTransaction(billRun.id)
+
+    // Set the transaction reference on the invoice
+    await InvoiceModel.query().findOne({ billRunId: billRun.id }).patch({ transactionReference: 'TRANSACTION_REF' })
   })
 
   afterEach(async () => {
     Sinon.restore()
-    mockFs.restore()
   })
 
-  describe('When writing a file succeeds', () => {
-    it('creates a file with expected content', async () => {
-      await GenerateTransactionFileService.go(filename)
+  it('creates a file with the correct content', async () => {
+    const returnedFilenameWithPath = await GenerateTransactionFileService.go(billRun, filename)
 
-      const file = fs.readFileSync(filenameWithPath, 'utf-8')
+    const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
+    const expectedContent = _expectedContent()
 
-      expect(file).to.equal('Hello world!')
-    })
-
-    it('returns the filename and path', async () => {
-      const returnedFilenameWithPath = await GenerateTransactionFileService.go(filename)
-
-      expect(returnedFilenameWithPath).to.equal(filenameWithPath)
-    })
+    expect(file).to.equal(expectedContent)
   })
 
-  describe('When writing a file fails', () => {
-    it('throws an error', async () => {
-      const fakeFilenameWithPath = path.join('FAKE_DIR', filenameWithPath)
+  it('returns the filename and path', async () => {
+    const returnedFilenameWithPath = await GenerateTransactionFileService.go(billRun, filename)
 
-      const err = await expect(GenerateTransactionFileService.go(fakeFilenameWithPath)).to.reject()
-
-      expect(err).to.be.an.error()
-      // The service adds the temp file path to the filename we pass to it so this is the path we expect in the error
-      const errorPath = path.join(temporaryFilePath, fakeFilenameWithPath)
-      expect(err.message).to.equal(`ENOENT, no such file or directory '${errorPath}'`)
-    })
+    expect(returnedFilenameWithPath).to.equal(filenameWithPath)
   })
+
+  function _expectedContent () {
+    // Get today's date using new Date() and convert it to the format we expect using BaseBresenter._formatDate()
+    const presenter = new BasePresenter()
+    const date = presenter._formatDate(new Date())
+
+    const head = ['"H"', '"0000000"', '"NAL"', '"A"', '"I"', '"t.txt"', '"12345"', `"${date}"`].join(',').concat('\n')
+    const body = ['"D"', '"0000001"', '"TH230000222"', '"01-JAN-1970"', '"I"', '"TRANSACTION_REF"', '""', '"GBP"', '""', '"01-JAN-1970"', '""', '""', '""', '""', '""', '""', '""', '""', '""', '"772"', '""', '"ARCA"', '"Well at Chigley Town Hall"', '"A"', '""', '"TONY/TF9222/37"', '"01-APR-2018 - 31-MAR-2019"', '"null"', '"1495"', '"6.22 Ml"', '"3"', '"1.6"', '"0.03"', '""', '""', '""', '""', '""', '""', '""', '"1"', '"Each"', '"772"'].join(',').concat('\n')
+    const tail = ['"T"', '"0000002"', '"3"', '"0"', '"0"'].join(',').concat('\n')
+
+    return head.concat(body).concat(tail)
+  }
 })

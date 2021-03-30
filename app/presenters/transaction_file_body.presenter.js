@@ -52,8 +52,8 @@ class TransactionFileBodyPresenter extends BasePresenter {
       col31: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr6, data),
       col32: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr7, data),
       col33: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr8, data),
-      col34: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr9, data),
-      col35: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr10, data),
+      col34: this._blankIfCompensationChargeOrMinimumCharge(this._cleanseNull(data.lineAttr9), data),
+      col35: this._blankIfCompensationChargeOrMinimumCharge(this._cleanseNull(data.lineAttr10), data),
       col36: '',
       col37: '',
       col38: this._blankIfNotCompensationCharge(data.lineAttr13, data),
@@ -76,6 +76,14 @@ class TransactionFileBodyPresenter extends BasePresenter {
    */
   _blankIfCompensationChargeOrMinimumCharge (value, data) {
     return data.regimeValue17 || data.minimumChargeAdjustment ? '' : value
+  }
+
+  /**
+   * null is an acceptable value to store in the db for some fields, however in such cases we want to return an empty
+   * field instead of 'null'
+   */
+  _cleanseNull (value) {
+    return value === null ? '' : value
   }
 
   /**

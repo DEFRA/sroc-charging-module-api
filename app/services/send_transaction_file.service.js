@@ -69,7 +69,13 @@ class SendTransactionFileService {
    */
   static async _generateAndSend (billRun, regime) {
     const filename = this._filename(billRun.fileReference)
-    const generatedFile = await GenerateTransactionFileService.go(filename)
+    let generatedFile
+    try {
+      generatedFile = await GenerateTransactionFileService.go(billRun, filename)
+    } catch (error) {
+      console.log('😡😡😡')
+      console.log(error)
+    }
 
     // The key is the remote path and filename in the S3 bucket, eg. 'wrls/transaction/nalai50001.dat'
     const key = path.join(regime.slug, 'transaction', filename)
