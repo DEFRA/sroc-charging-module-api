@@ -24,10 +24,14 @@ class TransactionFileHeadPresenter extends BasePresenter {
       col03: 'NAL',
       col04: data.region,
       col05: 'I',
-      col06: data.fileId,
-      col07: data.id,
-      col08: this._formatDate(data.updatedAt)
+      col06: this._fileNumber(data.fileReference),
+      col07: data.billRunNumber,
+      col08: this._formatDate(data.billRunUpdatedAt)
     }
+  }
+
+  _fileNumber (fileReference) {
+    return fileReference.slice(-5)
   }
 }
 
