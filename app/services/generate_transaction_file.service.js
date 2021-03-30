@@ -65,6 +65,7 @@ class GenerateTransactionFileService {
         'invoices.transactionReference'
       )
       .where('transactions.billRunId', billRun.id)
+      .whereNotNull('invoices.transactionReference')
   }
 
   static _additionalData (billRun) {
