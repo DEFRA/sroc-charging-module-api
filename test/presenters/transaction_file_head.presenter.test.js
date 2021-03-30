@@ -10,7 +10,7 @@ const { expect } = Code
 // Thing under test
 const { TransactionFileHeadPresenter } = require('../../app/presenters')
 
-describe.only('Transaction File Head presenter', () => {
+describe('Transaction File Head presenter', () => {
   const data = {
     index: 0,
     region: 'A',
