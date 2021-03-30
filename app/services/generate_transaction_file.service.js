@@ -64,6 +64,7 @@ class GenerateTransactionFileService {
         'minimumChargeAdjustment',
         'invoices.transactionReference'
       )
+      .where('transactions.billRunId', billRun.id)
   }
 
   static _additionalData (billRun) {
