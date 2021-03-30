@@ -23,7 +23,7 @@ class TransactionFileBodyPresenter extends BasePresenter {
       col02: this._leftPadZeroes(data.index, 7),
       col03: data.customerReference,
       col04: this._formatDate(Date.now()),
-      col05: this._transactionType(data),
+      col05: this._invoiceType(data.debitLineValue, data.creditLineValue),
       col06: data.transactionReference,
       col07: '',
       col08: 'GBP',
@@ -66,10 +66,10 @@ class TransactionFileBodyPresenter extends BasePresenter {
   }
 
   /**
-   * Returns a negative or positive value for chargeValue dependent on whether credit is true or false
+   * Returns 'C' if the invoice is a credit and 'I' if the invoice is a debit
    */
-  _transactionType (data) {
-    return data.chargeCredit ? 'C' : 'I'
+  _invoiceType (debit, credit) {
+    return debit - credit < 0 ? 'C' : 'I'
   }
 
   /**

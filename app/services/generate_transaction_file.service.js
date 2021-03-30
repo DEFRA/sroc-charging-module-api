@@ -62,7 +62,9 @@ class GenerateTransactionFileService {
         'lineAttr13',
         'lineAttr14',
         'minimumChargeAdjustment',
-        'invoices.transactionReference'
+        'invoices.transactionReference',
+        'invoices.creditLineValue',
+        'invoices.debitLineValue'
       )
       .where('transactions.billRunId', billRun.id)
       .whereNotNull('invoices.transactionReference')

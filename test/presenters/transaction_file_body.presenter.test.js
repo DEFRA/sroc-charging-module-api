@@ -94,14 +94,14 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns the correct values for col05 (transactionType) when given a credit', () => {
-    const presenter = new TransactionFileBodyPresenter({ ...data, chargeCredit: true })
+    const presenter = new TransactionFileBodyPresenter({ ...data, creditLineValue: 500, debitLineValue: 100 })
     const result = presenter.go()
 
     expect(result.col05).to.equal('C')
   })
 
   it('returns the correct values for col05 (transactionType) when given a debit', () => {
-    const presenter = new TransactionFileBodyPresenter({ ...data, chargeCredit: false })
+    const presenter = new TransactionFileBodyPresenter({ ...data, debitLineValue: 500, creditLineValue: 100 })
     const result = presenter.go()
 
     expect(result.col05).to.equal('I')
