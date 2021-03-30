@@ -57,4 +57,40 @@ describe('Base presenter', () => {
       expect(result).to.equal('0000123')
     })
   })
+
+  describe('_signedCreditValue method', () => {
+    it('returns a negative value if given a credit', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._signedCreditValue(123, true)
+
+      expect(result).to.equal(-123)
+    })
+
+    it('returns a negative value if given a debit', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._signedCreditValue(123, false)
+
+      expect(result).to.equal(123)
+    })
+  })
+
+  describe('_cleanseNull method', () => {
+    it('returns a blank string value if given a null value', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._cleanseNull(null)
+
+      expect(result).to.equal('')
+    })
+
+    it('returns a string if given a string', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._cleanseNull('TEST')
+
+      expect(result).to.equal('TEST')
+    })
+  })
 })
