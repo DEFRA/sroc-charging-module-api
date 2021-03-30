@@ -28,7 +28,7 @@ const { temporaryFilePath } = require('../../config/server.config')
 // Thing under test
 const { GenerateTransactionFileService } = require('../../app/services')
 
-describe('Generate Transaction File service', () => {
+describe.only('Generate Transaction File service', () => {
   const filename = 'test.txt'
   const filenameWithPath = path.join(temporaryFilePath, filename)
 
@@ -66,6 +66,18 @@ describe('Generate Transaction File service', () => {
     expect(returnedFilenameWithPath).to.equal(filenameWithPath)
   })
 
+  it('excludes invoices without a transaction reference', async () => {
+    // Remove the transaction reference
+    await InvoiceModel.query().findOne({ billRunId: billRun.id }).patch({ transactionReference: null })
+    const returnedFilenameWithPath = await GenerateTransactionFileService.go(billRun, filename)
+
+    const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
+    const numberOfLines = _numberOfLines(file)
+
+    // The transaction should be excluded so only the head and tail should be written to the file
+    expect(numberOfLines).to.equal(2)
+  })
+
   function _expectedContent () {
     // Get today's date using new Date() and convert it to the format we expect using BaseBresenter._formatDate()
     const presenter = new BasePresenter()
@@ -76,5 +88,19 @@ describe('Generate Transaction File service', () => {
     const tail = ['"T"', '"0000002"', '"3"', '"0"', '"0"'].join(',').concat('\n')
 
     return head.concat(body).concat(tail)
+  }
+
+  function _numberOfLines (file) {
+    // Split the file into an array by \n
+    const splitLines = file.split('\n')
+
+    // Pop the last element from the array then push it back if it contains text
+    // This gets rid of the last line if it's empty to ensure the value we return is the number of populated lines
+    const lastElement = splitLines.pop()
+    if (lastElement) {
+      splitLines.push(lastElement)
+    }
+
+    return splitLines.length
   }
 })
