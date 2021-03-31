@@ -51,7 +51,7 @@ class BasePresenter {
   }
 
   /**
-   * null is an acceptable value to store in the db for some fields, however we would want to return an empty  field
+   * null is an acceptable value to store in the db for some fields, however we would want to return an empty field
    * instead of 'null'
    */
   _cleanseNull (value) {
