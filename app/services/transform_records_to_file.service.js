@@ -18,7 +18,7 @@ const StreamWritableFileService = require('./streams/stream_writable_file.servic
 class TransformRecordsToFileService {
   /**
    * Takes an Objection QueryBuilder object and passes its results through the provided presenters in order to generate
-   * a file. The filename will be fileReference with .dat appended, ie. 'nalai50001.dat'.
+   * a file.
    *
    * The file comprises 3 parts:
    *
@@ -33,12 +33,12 @@ class TransformRecordsToFileService {
    * @param {module:Presenter} headPresenter The presenter used for the file head
    * @param {module:Presenter} bodyPresenter The presenter used for the file body
    * @param {module:Presenter} tailPresenter The presenter used for the file tail
-   * @param {string} fileReference The reference to be used for the filename
+   * @param {string} filename The filename to be saved to
    * @param {object} additionalData Additional data to be used for the head and tail, and to be passed
    * @returns {string} The full path and filename of the generated file
    */
-  static async go (query, headPresenter, bodyPresenter, tailPresenter, fileReference, additionalData) {
-    const filenameWithPath = this._filenameWithPath(fileReference)
+  static async go (query, headPresenter, bodyPresenter, tailPresenter, filename, additionalData) {
+    const filenameWithPath = this._filenameWithPath(filename)
 
     // We track the number of lines written as each line of the generated file includes a line number
     let lineCount
@@ -50,13 +50,12 @@ class TransformRecordsToFileService {
     return filenameWithPath
   }
 
-  static _filenameWithPath (fileReference) {
+  static _filenameWithPath (name) {
     // We use path.normalize to remove any double forward slashes that occur when assembling the path
     return path.normalize(
       path.format({
         dir: temporaryFilePath,
-        name: fileReference,
-        ext: '.dat'
+        name
       })
     )
   }

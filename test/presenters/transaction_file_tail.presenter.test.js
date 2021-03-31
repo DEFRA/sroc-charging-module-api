@@ -13,8 +13,8 @@ const { TransactionFileTailPresenter } = require('../../app/presenters')
 describe('Transaction File Tail Presenter', () => {
   const data = {
     index: 3,
-    invoiceTotal: 12345,
-    creditTotal: 67890
+    invoiceValue: 12345,
+    creditNoteValue: 67890
   }
 
   it('returns the required columns', () => {
@@ -38,7 +38,7 @@ describe('Transaction File Tail Presenter', () => {
     expect(result.col01).to.equal('T')
     expect(result.col02).to.equal('0000003')
     expect(result.col03).to.equal(4)
-    expect(result.col04).to.equal(data.invoiceTotal)
-    expect(result.col05).to.equal(data.creditTotal)
+    expect(result.col04).to.equal(data.invoiceValue)
+    expect(result.col05).to.equal(-data.creditNoteValue)
   })
 })

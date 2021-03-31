@@ -42,6 +42,21 @@ class BasePresenter {
       .toString()
       .padStart(length, '0')
   }
+
+  /**
+   * If the value passed in is a credit it returns the value as a negative; otherwise returns it unchanged
+   */
+  _signedCreditValue (value, credit) {
+    return credit ? -Math.abs(value) : value
+  }
+
+  /**
+   * null is an acceptable value to store in the db for some fields, however we would want to return an empty field
+   * instead of 'null'
+   */
+  _cleanseNull (value) {
+    return value === null ? '' : value
+  }
 }
 
 module.exports = BasePresenter

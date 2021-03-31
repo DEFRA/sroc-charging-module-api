@@ -57,4 +57,60 @@ describe('Base presenter', () => {
       expect(result).to.equal('0000123')
     })
   })
+
+  describe('_signedCreditValue method', () => {
+    describe('when given a credit', () => {
+      it('returns a negative value if given a positive value', async () => {
+        const presenter = new BasePresenter()
+
+        const result = presenter._signedCreditValue(123, true)
+
+        expect(result).to.equal(-123)
+      })
+
+      it('returns a negative value if given a negative value', async () => {
+        const presenter = new BasePresenter()
+
+        const result = presenter._signedCreditValue(-123, true)
+
+        expect(result).to.equal(-123)
+      })
+    })
+
+    describe('when given a debit', () => {
+      it('returns the unchanged positive value if given a positive value', async () => {
+        const presenter = new BasePresenter()
+
+        const result = presenter._signedCreditValue(123, false)
+
+        expect(result).to.equal(123)
+      })
+
+      it('returns the unchanged negative value if given a negative value', async () => {
+        const presenter = new BasePresenter()
+
+        const result = presenter._signedCreditValue(-123, false)
+
+        expect(result).to.equal(-123)
+      })
+    })
+  })
+
+  describe('_cleanseNull method', () => {
+    it('returns a blank string value if given a null value', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._cleanseNull(null)
+
+      expect(result).to.equal('')
+    })
+
+    it('returns a string if given a string', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._cleanseNull('TEST')
+
+      expect(result).to.equal('TEST')
+    })
+  })
 })

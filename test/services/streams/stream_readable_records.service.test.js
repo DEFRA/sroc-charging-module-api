@@ -35,7 +35,7 @@ describe('Stream Readable Records service', () => {
     transaction = await TransactionHelper.addTransaction(billRun.id)
   })
 
-  describe('When a valid query builder object specified', () => {
+  describe('When a valid Objection query builder object specified', () => {
     it('returns a stream', async () => {
       const query = TransactionModel.query().select('*')
 
@@ -49,6 +49,25 @@ describe('Stream Readable Records service', () => {
 
       const readableStream = StreamReadableRecordsService.go(query)
       // We use destructuring to pull the sole element of the array into result
+      const [result] = await StreamHelper.testReadableStream(readableStream)
+
+      expect(result.id).to.equal(transaction.id)
+    })
+  })
+
+  describe('When a valid Knex query builder object specified', () => {
+    it('returns a stream', async () => {
+      const query = TransactionModel.knexQuery().select('*')
+
+      const result = StreamReadableRecordsService.go(query)
+
+      expect(result).to.be.an.instanceof(stream.Stream)
+    })
+
+    it('streams the correct data', async () => {
+      const query = TransactionModel.knexQuery().select('*')
+
+      const readableStream = StreamReadableRecordsService.go(query)
       const [result] = await StreamHelper.testReadableStream(readableStream)
 
       expect(result.id).to.equal(transaction.id)

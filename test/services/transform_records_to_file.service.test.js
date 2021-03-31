@@ -31,10 +31,10 @@ describe('Transform Records To File service', () => {
   let transaction
   let additionalData
 
-  const filename = 'test'
+  const filename = 'test.dat'
 
   // We use path.normalize to remove any double forward slashes that occur when assembling the path
-  const filenameWithPath = path.normalize(path.format({ dir: temporaryFilePath, name: filename, ext: '.dat' }))
+  const filenameWithPath = path.normalize(path.format({ dir: temporaryFilePath, name: filename }))
 
   // Presenters used in the tests
   class headPresenter {

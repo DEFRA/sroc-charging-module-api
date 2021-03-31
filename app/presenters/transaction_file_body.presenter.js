@@ -22,13 +22,13 @@ class TransactionFileBodyPresenter extends BasePresenter {
       col01: 'D',
       col02: this._leftPadZeroes(data.index, 7),
       col03: data.customerReference,
-      col04: this._formatDate(data.transactionDate),
-      col05: this._transactionType(data),
+      col04: this._formatDate(Date.now()),
+      col05: this._invoiceType(data.debitLineValue, data.creditLineValue),
       col06: data.transactionReference,
       col07: '',
       col08: 'GBP',
       col09: '',
-      col10: this._formatDate(data.headerAttr1),
+      col10: this._formatDate(Date.now()),
       col11: '',
       col12: '',
       col13: '',
@@ -38,7 +38,7 @@ class TransactionFileBodyPresenter extends BasePresenter {
       col17: '',
       col18: '',
       col19: '',
-      col20: data.chargeValue,
+      col20: this._signedCreditValue(data.chargeValue, data.chargeCredit),
       col21: '',
       col22: data.lineAreaCode,
       col23: data.lineDescription,
@@ -52,8 +52,8 @@ class TransactionFileBodyPresenter extends BasePresenter {
       col31: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr6, data),
       col32: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr7, data),
       col33: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr8, data),
-      col34: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr9, data),
-      col35: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr10, data),
+      col34: this._blankIfCompensationChargeOrMinimumCharge(this._cleanseNull(data.lineAttr9), data),
+      col35: this._blankIfCompensationChargeOrMinimumCharge(this._cleanseNull(data.lineAttr10), data),
       col36: '',
       col37: '',
       col38: this._blankIfNotCompensationCharge(data.lineAttr13, data),
@@ -61,13 +61,15 @@ class TransactionFileBodyPresenter extends BasePresenter {
       col40: '',
       col41: '1',
       col42: 'Each',
-      col43: data.chargeValue
+      col43: this._signedCreditValue(data.chargeValue, data.chargeCredit)
     }
   }
 
-  // Returns a negative or positive value for chargeValue dependent on whether credit is true or false
-  _transactionType (data) {
-    return data.chargeCredit ? 'C' : 'I'
+  /**
+   * Returns 'C' if the invoice is a credit and 'I' if the invoice is a debit
+   */
+  _invoiceType (debit, credit) {
+    return debit - credit < 0 ? 'C' : 'I'
   }
 
   /**
