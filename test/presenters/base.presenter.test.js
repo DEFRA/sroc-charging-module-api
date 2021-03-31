@@ -59,20 +59,40 @@ describe('Base presenter', () => {
   })
 
   describe('_signedCreditValue method', () => {
-    it('returns a negative value if given a credit', async () => {
-      const presenter = new BasePresenter()
+    describe('when given a credit', () => {
+      it('returns a negative value if given a positive value', async () => {
+        const presenter = new BasePresenter()
 
-      const result = presenter._signedCreditValue(123, true)
+        const result = presenter._signedCreditValue(123, true)
 
-      expect(result).to.equal(-123)
+        expect(result).to.equal(-123)
+      })
+
+      it('returns a negative value if given a negative value', async () => {
+        const presenter = new BasePresenter()
+
+        const result = presenter._signedCreditValue(-123, true)
+
+        expect(result).to.equal(-123)
+      })
     })
 
-    it('returns a negative value if given a debit', async () => {
-      const presenter = new BasePresenter()
+    describe('when given a debit', () => {
+      it('returns the unchanged positive value if given a positive value', async () => {
+        const presenter = new BasePresenter()
 
-      const result = presenter._signedCreditValue(123, false)
+        const result = presenter._signedCreditValue(123, false)
 
-      expect(result).to.equal(123)
+        expect(result).to.equal(123)
+      })
+
+      it('returns the unchanged negative value if given a negative value', async () => {
+        const presenter = new BasePresenter()
+
+        const result = presenter._signedCreditValue(-123, false)
+
+        expect(result).to.equal(-123)
+      })
     })
   })
 

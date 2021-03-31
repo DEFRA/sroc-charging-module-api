@@ -44,10 +44,10 @@ class BasePresenter {
   }
 
   /**
-   * If the value passed in is a credit then returns the value as a negative; otherwise returns it as a positive
+   * If the value passed in is a credit it returns the value as a negative; otherwise returns it unchanged
    */
   _signedCreditValue (value, credit) {
-    return credit ? -value : value
+    return credit ? -Math.abs(value) : value
   }
 
   /**
