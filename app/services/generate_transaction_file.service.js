@@ -25,7 +25,7 @@ class GenerateTransactionFileService {
 
     const additionalData = this._additionalData(billRun)
 
-    const filenameWithPath = await TransformRecordsToFileService.go(
+    return TransformRecordsToFileService.go(
       query,
       TransactionFileHeadPresenter,
       TransactionFileBodyPresenter,
@@ -33,8 +33,6 @@ class GenerateTransactionFileService {
       filename,
       additionalData
     )
-
-    return filenameWithPath
   }
 
   static _query (billRun) {
