@@ -66,6 +66,9 @@ class GenerateTransactionFileService {
         'invoices.creditLineValue',
         'invoices.debitLineValue'
       )
+      .orderBy('invoices.transactionReference') // sort by transaction reference col06
+      .orderBy('lineAttr1') // then sort by licence number col26
+      .orderBy('regimeValue17') // then sort by compensation charge, where non-compensation charge (ie. false) is first
       .where('transactions.billRunId', billRun.id)
       .whereNotNull('invoices.transactionReference')
   }
