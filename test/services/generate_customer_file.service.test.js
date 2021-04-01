@@ -53,7 +53,7 @@ describe('Generate Customer File service', () => {
   })
 
   it('creates a file with the correct content', async () => {
-    const returnedFilenameWithPath = await GenerateCustomerFileService.go(payload.region, filename)
+    const returnedFilenameWithPath = await GenerateCustomerFileService.go(regime.id, payload.region, filename)
 
     const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
     const expectedContent = _expectedContent()
@@ -62,7 +62,7 @@ describe('Generate Customer File service', () => {
   })
 
   it('returns the filename and path', async () => {
-    const returnedFilenameWithPath = await GenerateCustomerFileService.go(payload.region, filename)
+    const returnedFilenameWithPath = await GenerateCustomerFileService.go(regime.id, payload.region, filename)
 
     expect(returnedFilenameWithPath).to.equal(filenameWithPath)
   })

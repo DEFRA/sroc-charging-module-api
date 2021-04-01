@@ -11,12 +11,13 @@ class GenerateCustomerFileService {
   /**
    * Generates and writes a customer file for a region to a given filename in the temp folder.
    *
+   * @param {string} regimeId Id of the regime to generate the customer file for.
    * @param {string} region The region to generate the customer file for.
    * @param {string} filename The name of the file to be generated.
    * @returns {string} The path and filename of the generated file.
    */
-  static async go (region, filename) {
-    const query = this._query(region)
+  static async go (regimeId, region, filename) {
+    const query = this._query(regimeId, region)
 
     const additionalData = this._additionalData()
 
@@ -30,9 +31,10 @@ class GenerateCustomerFileService {
     )
   }
 
-  static _query (region) {
+  static _query (regimeId, region) {
     return CustomerModel.query()
       .select('*')
+      .where('regimeId', regimeId)
       .where('region', region)
   }
 
