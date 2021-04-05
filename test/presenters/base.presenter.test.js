@@ -138,5 +138,13 @@ describe('Base presenter', () => {
 
       expect(result).to.be.false()
     })
+
+    it('returns false if given nothing', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._asBoolean()
+
+      expect(result).to.be.false()
+    })
   })
 })

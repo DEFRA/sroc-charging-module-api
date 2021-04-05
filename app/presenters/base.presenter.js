@@ -59,6 +59,10 @@ class BasePresenter {
   }
 
   _asBoolean (value) {
+    if (value?.toLowerCase() === 'true') {
+      return true
+    }
+
     return false
   }
 }
