@@ -113,4 +113,38 @@ describe('Base presenter', () => {
       expect(result).to.equal('TEST')
     })
   })
+
+  describe('_asBoolean method', () => {
+    it("returns true if given the string 'true'", async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._asBoolean('true')
+
+      expect(result).to.be.true()
+    })
+
+    it("returns true if given the string 'tRuE'", async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._asBoolean('tRuE')
+
+      expect(result).to.be.true()
+    })
+
+    it('returns false if given a string with any other value', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._asBoolean('foobar')
+
+      expect(result).to.be.false()
+    })
+
+    it('returns false if given nothing', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._asBoolean()
+
+      expect(result).to.be.false()
+    })
+  })
 })

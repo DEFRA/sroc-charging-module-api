@@ -57,6 +57,14 @@ class BasePresenter {
   _cleanseNull (value) {
     return value === null ? '' : value
   }
+
+  _asBoolean (value) {
+    if (value?.toLowerCase() === 'true') {
+      return true
+    }
+
+    return false
+  }
 }
 
 module.exports = BasePresenter

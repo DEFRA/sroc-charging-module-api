@@ -22,7 +22,7 @@ class ViewTransactionPresenter extends BasePresenter {
       lineDescription: data.lineDescription,
       periodStart: data.chargePeriodStart,
       periodEnd: data.chargePeriodEnd,
-      compensationCharge: data.regimeValue17,
+      compensationCharge: this._asBoolean(data.regimeValue17),
       calculation: data.chargeCalculation
     }
   }
