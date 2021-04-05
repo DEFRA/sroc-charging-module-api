@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.7.1](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.7.1) (2021-04-05)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.7.0...v0.7.1)
+
+**Fixed bugs:**
+
+- Fix compensation charge as string in /invoices [\#336](https://github.com/DEFRA/sroc-charging-module-api/pull/336) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Merged pull requests:**
+
+- Bump @aws-sdk/client-s3 from 3.10.0 to 3.11.0 [\#335](https://github.com/DEFRA/sroc-charging-module-api/pull/335) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump jwk-to-pem from 2.0.4 to 2.0.5 [\#333](https://github.com/DEFRA/sroc-charging-module-api/pull/333) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @joi/date from 2.0.1 to 2.1.0 [\#332](https://github.com/DEFRA/sroc-charging-module-api/pull/332) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.7.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.7.0) (2021-03-31)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.6.2...v0.7.0)
@@ -190,7 +204,6 @@
 - Amend remove invoice route [\#227](https://github.com/DEFRA/sroc-charging-module-api/pull/227) ([Cruikshanks](https://github.com/Cruikshanks))
 - Bump knex from 0.21.17 to 0.21.18 [\#225](https://github.com/DEFRA/sroc-charging-module-api/pull/225) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump @hapi/lab from 24.1.0 to 24.1.1 [\#222](https://github.com/DEFRA/sroc-charging-module-api/pull/222) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Add system user seed [\#216](https://github.com/DEFRA/sroc-charging-module-api/pull/216) ([Cruikshanks](https://github.com/Cruikshanks))
 
 ## [v0.2.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.2.0) (2021-02-19)
 
@@ -232,6 +245,7 @@
 - Add foreign key constraint to bill run id in trans [\#134](https://github.com/DEFRA/sroc-charging-module-api/pull/134) ([Cruikshanks](https://github.com/Cruikshanks))
 - Link add transaction endpoint with service [\#131](https://github.com/DEFRA/sroc-charging-module-api/pull/131) ([Cruikshanks](https://github.com/Cruikshanks))
 - Retain rules service response in translator [\#114](https://github.com/DEFRA/sroc-charging-module-api/pull/114) ([Cruikshanks](https://github.com/Cruikshanks))
+- Allow access to validatedData in translators [\#108](https://github.com/DEFRA/sroc-charging-module-api/pull/108) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add create transaction service [\#107](https://github.com/DEFRA/sroc-charging-module-api/pull/107) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add create transaction presenter [\#106](https://github.com/DEFRA/sroc-charging-module-api/pull/106) ([Cruikshanks](https://github.com/Cruikshanks))
 
@@ -263,6 +277,7 @@
 - Add seed run script to package.json [\#220](https://github.com/DEFRA/sroc-charging-module-api/pull/220) ([Cruikshanks](https://github.com/Cruikshanks))
 - Make transaction tracking properties consistent [\#218](https://github.com/DEFRA/sroc-charging-module-api/pull/218) ([Cruikshanks](https://github.com/Cruikshanks))
 - Remove pre-sroc \(ruleset\) from view bill run [\#217](https://github.com/DEFRA/sroc-charging-module-api/pull/217) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add system user seed [\#216](https://github.com/DEFRA/sroc-charging-module-api/pull/216) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add support for automated builds in Docker Hub [\#214](https://github.com/DEFRA/sroc-charging-module-api/pull/214) ([Cruikshanks](https://github.com/Cruikshanks))
 - Allow period start to be same as period end date [\#210](https://github.com/DEFRA/sroc-charging-module-api/pull/210) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add error handling to GenerateBillRunService [\#207](https://github.com/DEFRA/sroc-charging-module-api/pull/207) ([Cruikshanks](https://github.com/Cruikshanks))
@@ -319,7 +334,6 @@
 
 **Implemented enhancements:**
 
-- Allow access to validatedData in translators [\#108](https://github.com/DEFRA/sroc-charging-module-api/pull/108) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add stop \(SIGTERM\) plugin [\#105](https://github.com/DEFRA/sroc-charging-module-api/pull/105) ([Cruikshanks](https://github.com/Cruikshanks))
 - Transaction translator [\#104](https://github.com/DEFRA/sroc-charging-module-api/pull/104) ([StuAA78](https://github.com/StuAA78))
 - Add --shuffle parameter to lab [\#102](https://github.com/DEFRA/sroc-charging-module-api/pull/102) ([StuAA78](https://github.com/StuAA78))
