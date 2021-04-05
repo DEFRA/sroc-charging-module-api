@@ -57,6 +57,10 @@ class BasePresenter {
   _cleanseNull (value) {
     return value === null ? '' : value
   }
+
+  _asBoolean (value) {
+    return false
+  }
 }
 
 module.exports = BasePresenter
