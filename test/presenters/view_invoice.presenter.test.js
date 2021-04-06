@@ -46,7 +46,6 @@ describe('View Invoice Presenter', () => {
             clientId: null,
             chargeValue: 2093,
             chargeCredit: false,
-            status: 'unbilled',
             subjectToMinimumCharge: false,
             minimumChargeAdjustment: false,
             lineDescription: 'Well at Chigley Town Hall',
@@ -103,7 +102,6 @@ describe('View Invoice Presenter', () => {
       'clientId',
       'chargeValue',
       'credit',
-      'status',
       'subjectToMinimumCharge',
       'minimumChargeAdjustment',
       'calculation'

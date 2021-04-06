@@ -19,7 +19,6 @@ describe('View Transaction Presenter', () => {
     clientId: null,
     chargeValue: 2093,
     chargeCredit: false,
-    status: 'unbilled',
     subjectToMinimumCharge: false,
     minimumChargeAdjustment: false,
     lineDescription: 'Well at Chigley Town Hall',
@@ -38,7 +37,6 @@ describe('View Transaction Presenter', () => {
       'clientId',
       'chargeValue',
       'credit',
-      'status',
       'subjectToMinimumCharge',
       'minimumChargeAdjustment',
       'lineDescription',
@@ -57,7 +55,6 @@ describe('View Transaction Presenter', () => {
     expect(result.clientId).to.equal(data.clientId)
     expect(result.chargeValue).to.equal(data.chargeValue)
     expect(result.credit).to.equal(data.chargeCredit)
-    expect(result.status).to.equal(data.status)
     expect(result.subjectToMinimumCharge).to.equal(data.subjectToMinimumCharge)
     expect(result.minimumChargeAdjustment).to.equal(data.minimumChargeAdjustment)
     expect(result.lineDescription).to.equal(data.lineDescription)
