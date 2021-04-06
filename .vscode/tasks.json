@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Start sroc-cma environment",
+      "label": "UP (CMA)",
       "detail": "Build if needed then run a local docker environment",
       "type": "shell",
       "command": "GIT_COMMIT=$(git rev-parse HEAD) docker-compose up",
@@ -19,7 +19,7 @@
       }
     },
     {
-      "label": "Drop sroc-cma containers",
+      "label": "DOWN (CMA)",
       "detail": "Drop any stopped containers",
       "type": "shell",
       "command": "docker-compose down",
@@ -34,7 +34,7 @@
       }
     },
     {
-      "label": "Clean sroc-cma environment",
+      "label": "CLEAN (CMA)",
       "detail": "Will drop the containers, then remove the related images and volumes",
       "type": "shell",
       "command": "docker-compose down --rmi local -v",
@@ -49,7 +49,7 @@
       }
     },
     {
-      "label": "Rebuild sroc-cma environment",
+      "label": "REBUILD (CMA)",
       "detail": "Drop and remove everything, then rebuild with no cache",
       "type": "shell",
       "command": "docker-compose down --rmi local -v && docker-compose build --no-cache",
@@ -64,7 +64,7 @@
       }
     },
     {
-      "label": "Run sroc-cma lint checks",
+      "label": "LINT (CMA)",
       "detail": "Run lint checks against the code",
       "type": "shell",
       "command": "docker-compose exec app npm run lint",
@@ -79,7 +79,7 @@
       }
     },
     {
-      "label": "Run sroc-cma unit tests",
+      "label": "TEST (CMA)",
       "detail": "Run unit tests in docker",
       "type": "shell",
       "command": "docker-compose exec app npm run unit-test",
@@ -94,37 +94,7 @@
       }
     },
     {
-      "label": "Run sroc-cma dev migrations",
-      "detail": "Will run the migrations for the main db",
-      "type": "shell",
-      "command": "docker-compose exec app npm run migratedb",
-      "group": "test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true
-      }
-    },
-    {
-      "label": "Run sroc-cma dev seeds",
-      "detail": "Will run the seeds for the main db",
-      "type": "shell",
-      "command": "docker-compose exec app npm run seeddb",
-      "group": "test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true
-      }
-    },
-    {
-      "label": "Refresh sroc-cma dev db",
+      "label": "DB (CMA)",
       "detail": "Will rollback all changes then re-run migrations and seeds for the main db",
       "type": "shell",
       "command": "docker-compose exec app /bin/sh -c 'npm run rollbackdb && npm run migratedb && npm run seeddb'",
@@ -139,25 +109,10 @@
       }
     },
     {
-      "label": "Prepare sroc-cma test db",
-      "detail": "Will create test db and run migrations. Is safe to call repeatedly",
-      "type": "shell",
-      "command": "docker-compose exec app /bin/sh -c 'npm run createdbtest && npm run migratedbtest'",
-      "group": "test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true
-      }
-    },
-    {
-      "label": "Refresh sroc-cma test db",
+      "label": "DB TEST (CMA)",
       "detail": "Will rollback all changes then re-run migrations and seeds for the test db",
       "type": "shell",
-      "command": "docker-compose exec app /bin/sh -c 'npm run rollbackdbtest && npm run migratedbtest'",
+      "command": "docker-compose exec app /bin/sh -c 'npm run createdbtest && npm run rollbackdbtest && npm run migratedbtest'",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -169,7 +124,7 @@
       }
     },
     {
-      "label": "Open shell in sroc-cma container",
+      "label": "OPEN (CMA)",
       "detail": "Will open /bin/sh in the running 'app' container",
       "type": "shell",
       "command": "docker-compose exec app /bin/sh",
