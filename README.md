@@ -48,26 +48,21 @@ As [Docker](https://www.docker.com/) is our chosen solution for deploying and ma
 
 Open the project in VSCode and then use the [Command palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) to access the tasks we have provided in [tasks.json](.vscode/tasks.json)
 
-With the palette open search for **Run test task** and once highlighted select it. From the list that's presented select **Start sroc-cma environment**
+With the palette open search for **Run test task** and once highlighted select it. From the list that's presented select **UP (CMA)**
 
 You should see a new terminal open up and [Docker Compose](https://docs.docker.com/compose/) begin to start building the images. Once that is done it will switch to running the API in docker.
 
 ### Prep the database
 
-The database is automatically created but you still need to run migrations and seed it. Again using the command palette and the **Run test task** option, find and select in turn
-
-- **Run sroc-cma dev migrations**
-- **Run sroc-cma dev seeds**
+The database is automatically created but you still need to run migrations and seed it. Again using the command palette and the **Run test task** option, find and select **DB (CMA)**.
 
 The API should now be ready to use.
 
 ### Prep for testing
 
-Before we can run any tests the 'test' database needs to be created and migrations run against it. Using the command palette and the **Run test task** option, find and select
+Before we can run any tests the 'test' database needs to be created and migrations run against it. Using the command palette and the **Run test task** option, find and select **DB TEST (CMA)**.
 
-- **Prepare sroc-cma test db**
-
-This will both create the test database and run migrations against it. It is also safe to run repeatedly should you need to run new migrations.
+This will both create the test database and run migrations against it. It is also safe to run repeatedly should you need to rebuild it.
 
 ### Non-vscode users
 
@@ -77,11 +72,11 @@ If you are not a VSCode user it does not mean you cannot use Docker. Refer to [t
 
 To run lint checks use the command palette and the **Run test task** option to find and select
 
-- **Run sroc-cma lint checks**
+- **LINT (CMA)**
 
 To run unit tests find and select
 
-- **Run sroc-cma unit tests**
+- **TEST (CMA)**
 
 Check out the `scripts` in [package.json](package.json) if you intend to run things locally.
 
