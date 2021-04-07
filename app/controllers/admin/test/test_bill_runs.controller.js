@@ -19,7 +19,7 @@ class TestBillRunController {
       billRun,
       req.auth.credentials.user,
       req.app.regime,
-      req.server.logger
+      req.app.notifier
     )
 
     return h.response(result).code(201)
