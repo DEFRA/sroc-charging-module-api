@@ -21,6 +21,7 @@ const DeleteInvoiceService = require('./delete_invoice.service')
 const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill_run_invoice.service')
 const GenerateBillRunService = require('./generate_bill_run.service')
 const GenerateBillRunValidationService = require('./generate_bill_run_validation.service')
+const GenerateCustomerFileService = require('./generate_customer_file.service')
 const GenerateTransactionFileService = require('./generate_transaction_file.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
 const ListRegimesService = require('./list_regimes.service')
@@ -67,6 +68,7 @@ module.exports = {
   FetchAndValidateBillRunInvoiceService,
   GenerateBillRunService,
   GenerateBillRunValidationService,
+  GenerateCustomerFileService,
   GenerateTransactionFileService,
   ListAuthorisedSystemsService,
   ListRegimesService,
