@@ -16,7 +16,6 @@ const {
   AuthorisationHelper,
   AuthorisedSystemHelper,
   DatabaseHelper,
-  GeneralHelper,
   SequenceCounterHelper
 } = require('../../../support/helpers')
 const { BillRunModel } = require('../../../../app/models')
@@ -87,7 +86,7 @@ describe('Test Bill Run Controller', () => {
       // So, the only way we could see to keep a test for this endpoint was to add in an arbitrary delay. In this case
       // we 'sleep' for 1 second (the generate process takes approx 300ms) and then continue. It seems any larger sleep
       // value causes the tests to through a timeout error.
-      await GeneralHelper.sleep(1000)
+      await sleep(1000)
 
       const billRun = await BillRunModel.query().findById(responsePayload.billRun.id)
       const invoices = await billRun.$relatedQuery('invoices')
@@ -103,4 +102,8 @@ describe('Test Bill Run Controller', () => {
       expect(transactions.filter(tran => tran.subjectToMinimumCharge).length).to.equal(3)
     })
   })
+
+  function sleep (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 })
