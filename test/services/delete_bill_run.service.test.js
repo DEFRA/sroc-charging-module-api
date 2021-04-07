@@ -48,8 +48,6 @@ describe('Delete Bill Run service', () => {
 
     it('deletes the bill run', async () => {
       await DeleteBillRunService.go(billRun)
-      // We need a delay because the service returns before the delete finishes which causes the tests to fail
-      await GeneralHelper.sleep(500)
 
       const refreshedBillRun = await billRun.$query()
 
@@ -58,8 +56,6 @@ describe('Delete Bill Run service', () => {
 
     it('deletes the bill run invoices', async () => {
       await DeleteBillRunService.go(billRun)
-      // We need a delay because the service returns before the delete finishes which causes the tests to fail
-      await GeneralHelper.sleep(500)
 
       const invoices = await billRun.$relatedQuery('invoices')
 
@@ -68,8 +64,6 @@ describe('Delete Bill Run service', () => {
 
     it('deletes the bill run licences', async () => {
       await DeleteBillRunService.go(billRun)
-      // We need a delay because the service returns before the delete finishes which causes the tests to fail
-      await GeneralHelper.sleep(500)
 
       const licences = await billRun.$relatedQuery('licences')
 
@@ -78,8 +72,6 @@ describe('Delete Bill Run service', () => {
 
     it('deletes the bill run transactions', async () => {
       await DeleteBillRunService.go(billRun)
-      // We need a delay because the service returns before the delete finishes which causes the tests to fail
-      await GeneralHelper.sleep(500)
 
       const transactions = await billRun.$relatedQuery('transactions')
 

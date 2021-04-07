@@ -23,16 +23,16 @@ class DeleteBillRunService {
   static async go (billRun) {
     await this._setDeletingStatus(billRun)
 
-    this._deleteBillRun(billRun)
+    await this._deleteBillRun(billRun)
   }
 
-  static async _setDeletingStatus (billRun) {
-    await billRun.$query()
+  static _setDeletingStatus (billRun) {
+    return billRun.$query()
       .patch({ status: 'deleting' })
   }
 
-  static async _deleteBillRun (billRun) {
-    await BillRunModel
+  static _deleteBillRun (billRun) {
+    return BillRunModel
       .query()
       .deleteById(billRun.id)
   }
