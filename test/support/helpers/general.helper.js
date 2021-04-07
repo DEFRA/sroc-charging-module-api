@@ -54,6 +54,10 @@ class GeneralHelper {
       return v.toString(16)
     })
   }
+
+  static sleep (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 }
 
 module.exports = GeneralHelper
