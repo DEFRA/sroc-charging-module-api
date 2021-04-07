@@ -9,6 +9,8 @@ const path = require('path')
 const { ServerConfig } = require('../../config')
 const { removeTemporaryFiles } = ServerConfig
 
+const { CustomerModel } = require('../../app/models')
+
 const GenerateCustomerFileService = require('./generate_customer_file.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
 const DeleteFileService = require('./delete_file.service')
@@ -29,7 +31,6 @@ class SendCustomerFileService {
    */
   static async go (regime, regions, notify) {
     let generatedFile
-    const generatedFiles = []
 
     for (const region of regions) {
       try {
@@ -39,7 +40,6 @@ class SendCustomerFileService {
         }
 
         generatedFile = await this._generateAndSend(regime, region)
-        generatedFiles.push(generatedFile)
 
         // Clean up
         await this._clearCustomerTable(regime, region)
@@ -53,9 +53,16 @@ class SendCustomerFileService {
     }
   }
 
+  /**
+   * Returns true if there are customer records for this regime and region, and false if there aren't
+   */
   static async _checkIfFileNeeded (regime, region) {
-    // TODO: Do a select query on the customer table and return true/false depending on the results
-    return true
+    const customers = await CustomerModel.query()
+      .select('id')
+      .where('regimeId', regime.id)
+      .where('region', region)
+
+    return customers.length !== 0
   }
 
   /**
@@ -82,8 +89,14 @@ class SendCustomerFileService {
     return removeTemporaryFiles
   }
 
-  static _clearCustomerTable (regime, region) {
-    // TODO: Delete content of the customer table for this regime and region
+  /**
+   * Deletes customer records for the given regime and region
+   */
+  static async _clearCustomerTable (regime, region) {
+    await CustomerModel.query()
+      .where('regimeId', regime.id)
+      .where('region', region)
+      .delete()
   }
 
   static _notifyError (notifier, message, filename, error) {
