@@ -42,7 +42,7 @@ describe('Generate Bill Run service', () => {
   let regime
   let payload
   let rulesServiceStub
-  let loggerFake
+  let notifierFake
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -50,7 +50,7 @@ describe('Generate Bill Run service', () => {
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
 
     // Create a fake for use in tests that want to know if the service attempted to log anything
-    loggerFake = { info: Sinon.fake() }
+    notifierFake = { omg: Sinon.fake(), omfg: Sinon.fake() }
 
     // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
     // the valid tests we can use it straight as
@@ -128,12 +128,12 @@ describe('Generate Bill Run service', () => {
       expect(result.creditNoteValue).to.equal(50000)
     })
 
-    it('calls the info method of the provided logger', async () => {
+    it("logs the time taken using the provided 'notifier'", async () => {
       await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
 
-      await GenerateBillRunService.go(billRun, loggerFake)
+      await GenerateBillRunService.go(billRun, notifierFake)
 
-      expect(loggerFake.info.callCount).to.equal(1)
+      expect(notifierFake.omg.callCount).to.equal(1)
     })
 
     // These tests are for zero value invoices, ie. which only contain zero-value transactions
@@ -675,11 +675,11 @@ describe('Generate Bill Run service', () => {
   })
 
   describe('If an error is thrown', () => {
-    it("gets logged but is not allowed to 'bubble' up", async () => {
-      const spy = Sinon.spy(GenerateBillRunService, '_logError')
+    it("gets logged and recorded but is not allowed to 'bubble' up", async () => {
+      const spy = Sinon.spy(GenerateBillRunService, '_notifyError')
 
-      await expect(GenerateBillRunService.go({}, loggerFake)).not.to.reject()
-      expect(loggerFake.info.callCount).to.equal(1)
+      await expect(GenerateBillRunService.go({}, notifierFake)).not.to.reject()
+      expect(notifierFake.omfg.callCount).to.equal(1)
       expect(spy.calledOnce).to.be.true()
     })
   })
