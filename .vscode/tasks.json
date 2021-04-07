@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "UP (CMA)",
+      "label": "⬆️ UP (CMA)",
       "detail": "Build if needed then run a local docker environment",
       "type": "shell",
       "command": "GIT_COMMIT=$(git rev-parse HEAD) docker-compose up",
@@ -19,7 +19,7 @@
       }
     },
     {
-      "label": "DOWN (CMA)",
+      "label": "⬇️ DOWN (CMA)",
       "detail": "Drop any stopped containers",
       "type": "shell",
       "command": "docker-compose down",
@@ -34,7 +34,7 @@
       }
     },
     {
-      "label": "CLEAN (CMA)",
+      "label": "🧹 CLEAN (CMA)",
       "detail": "Will drop the containers, then remove the related images and volumes",
       "type": "shell",
       "command": "docker-compose down --rmi local -v",
@@ -49,7 +49,7 @@
       }
     },
     {
-      "label": "REBUILD (CMA)",
+      "label": "🏗️ REBUILD (CMA)",
       "detail": "Drop and remove everything, then rebuild with no cache",
       "type": "shell",
       "command": "docker-compose down --rmi local -v && docker-compose build --no-cache",
@@ -64,7 +64,7 @@
       }
     },
     {
-      "label": "LINT (CMA)",
+      "label": "🔎 LINT (CMA)",
       "detail": "Run lint checks against the code",
       "type": "shell",
       "command": "docker-compose exec app npm run lint",
@@ -79,7 +79,7 @@
       }
     },
     {
-      "label": "TEST (CMA)",
+      "label": "✅ TEST (CMA)",
       "detail": "Run unit tests in docker",
       "type": "shell",
       "command": "docker-compose exec app npm run unit-test",
@@ -94,7 +94,7 @@
       }
     },
     {
-      "label": "DB (CMA)",
+      "label": "🗄️ DB (CMA)",
       "detail": "Will rollback all changes then re-run migrations and seeds for the main db",
       "type": "shell",
       "command": "docker-compose exec app /bin/sh -c 'npm run rollbackdb && npm run migratedb && npm run seeddb'",
@@ -109,7 +109,7 @@
       }
     },
     {
-      "label": "DB TEST (CMA)",
+      "label": "🗄️✅ DB TEST (CMA)",
       "detail": "Will rollback all changes then re-run migrations and seeds for the test db",
       "type": "shell",
       "command": "docker-compose exec app /bin/sh -c 'npm run createdbtest && npm run rollbackdbtest && npm run migratedbtest'",
@@ -124,7 +124,7 @@
       }
     },
     {
-      "label": "OPEN (CMA)",
+      "label": "💻 OPEN (CMA)",
       "detail": "Will open /bin/sh in the running 'app' container",
       "type": "shell",
       "command": "docker-compose exec app /bin/sh",
