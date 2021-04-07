@@ -2,6 +2,7 @@
 
 const ApproveBillRunService = require('./approve_bill_run.service')
 const AuthorisationService = require('./authorisation.service')
+const BaseNextFileReferenceService = require('./base_next_file_reference.service')
 const BillRunStatusService = require('./bill_run_status.service')
 const CalculateChargeService = require('./calculate_charge.service')
 const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')
@@ -49,6 +50,7 @@ const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 module.exports = {
   ApproveBillRunService,
   AuthorisationService,
+  BaseNextFileReferenceService,
   BillRunStatusService,
   CalculateChargeService,
   CalculateMinimumChargeService,
