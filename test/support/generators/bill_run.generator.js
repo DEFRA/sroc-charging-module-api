@@ -14,7 +14,7 @@ const { presroc: requestFixtures } = require('../fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../fixtures/calculate_charge')
 
 class BillRunGenerator {
-  static async go (payload, billRun, authorisedSystem, regime, logger = null) {
+  static async go (payload, billRun, authorisedSystem, regime, notifier = null) {
     try {
       // Mark the start time for later logging
       const startTime = process.hrtime.bigint()
@@ -25,9 +25,9 @@ class BillRunGenerator {
         await this._invoiceEngine(invoices[i], billRun, authorisedSystem, regime)
       }
 
-      await this._calculateAndLogTime(logger, billRun.id, startTime)
+      await this._calculateAndLogTime(notifier, billRun.id, startTime)
     } catch (error) {
-      this._logError(logger, billRun.id, error)
+      this._notifyError(notifier, billRun.id, error)
     }
   }
 
@@ -218,14 +218,13 @@ class BillRunGenerator {
    * If `logger` is not set then it will do nothing. If it is set this will get the current time and then calculate the
    * difference from `startTime`. This and the `billRunId` are then used to generate a log message.
    *
-   * @param {function} logger Logger with an 'info' method we use to log the time taken (assumed to be the one added to
-   * the Hapi server instance by hapi-pino)
+   * @param {@module:Notifier} notifier Use to log the time taken
    * @param {string} billRunId Id of the bill run currently being 'generated'
    * @param {BigInt} startTime The time the auto-generate process kicked off. It is expected to be the result of a call
    * to `process.hrtime.bigint()`
    */
-  static async _calculateAndLogTime (logger, billRunId, startTime) {
-    if (!logger) {
+  static async _calculateAndLogTime (notifier, billRunId, startTime) {
+    if (!notifier) {
       return
     }
 
@@ -233,26 +232,25 @@ class BillRunGenerator {
     const timeTakenNs = endTime - startTime
     const timeTakenMs = timeTakenNs / 1000000n
 
-    logger.info(`Time taken to auto-generate bill run '${billRunId}': ${timeTakenMs}ms`)
+    notifier.omg(`Time taken to auto-generate bill run '${billRunId}': ${timeTakenMs}ms`)
   }
 
   /**
    * Log an error if the auto-generate process fails
    *
-   * If `logger` is not set then it will do nothing. If it is set this will log an error message based on the
+   * If `notifier` is not set then it will do nothing. If it is set this will log an error message based on the
    * `billRunId` and error provided.
    *
-   * @param {function} logger Logger with an 'info' method we use to log the error (assumed to be the one added to
-   * the Hapi server instance by hapi-pino)
+   * @param {@module:Notifier} notifier Use to both log the error in the server logs and record the event in Errbit
    * @param {string} billRunId Id of the bill run currently being 'generated'
    * @param {Object} error The error that was thrown
    */
-  static async _logError (logger, billRunId, error) {
-    if (!logger) {
+  static async _notifyError (notifier, billRunId, error) {
+    if (!notifier) {
       return
     }
 
-    logger.info(`Auto-generate bill run '${billRunId}' failed: ${error.message} - ${error}`)
+    notifier.omfg('Auto-generate bill run failed', { billRunId, error })
   }
 }
 

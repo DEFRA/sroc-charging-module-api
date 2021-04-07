@@ -26,10 +26,9 @@ class SendTransactionFileService {
    * @param {module:RegimeModel} regime The regime that the bill run belongs to. The regime slug will form part of the
    * path we upload to.
    * @param {module:BillRunModel} billRun The bill run we want to send the transaction file for.
-   * @param {function} notify The server.methods.notify method, which we pass in as server.methods isn't accessible
-   * within a service.
+   * @param {@module:Notifier} [notifier] Instance of `Notifier` class. Used to report any errors that occur
    */
-  static async go (regime, billRun, notify) {
+  static async go (regime, billRun, notifier) {
     let generatedFile
 
     try {
@@ -50,7 +49,7 @@ class SendTransactionFileService {
         await DeleteFileService.go(generatedFile)
       }
     } catch (error) {
-      this._notifyError(notify, 'Error sending transaction file', generatedFile, error)
+      notifier.omfg('Error sending transaction file', { generatedFile, error })
     }
   }
 
@@ -95,13 +94,6 @@ class SendTransactionFileService {
   static async _setBilledStatus (billRun) {
     await billRun.$query()
       .patch({ status: 'billed' })
-  }
-
-  static _notifyError (notifier, message, filename, error) {
-    notifier(
-      message,
-      { filename, error }
-    )
   }
 }
 

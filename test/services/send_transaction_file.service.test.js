@@ -28,7 +28,7 @@ describe('Send Transaction File service', () => {
   let deleteStub
   let generateStub
   let sendStub
-  let notifyFake
+  let notifierFake
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -40,8 +40,8 @@ describe('Send Transaction File service', () => {
     generateStub = Sinon.stub(GenerateTransactionFileService, 'go').returns('stubFilename')
     sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
 
-    // Create a fake function to stand in place of server.methods.notify
-    notifyFake = Sinon.fake()
+    // Create a fake function to stand in place of Notifier.omfg()
+    notifierFake = { omfg: Sinon.fake() }
   })
 
   afterEach(() => {
@@ -132,11 +132,13 @@ describe('Send Transaction File service', () => {
   describe('When an invalid bill run is specified', () => {
     describe("because the status is not 'pending'", () => {
       it('throws an error', async () => {
-        await SendTransactionFileService.go(regime, billRun, notifyFake)
+        await SendTransactionFileService.go(regime, billRun, notifierFake)
 
-        expect(notifyFake.firstArg).to.equal('Error sending transaction file')
-        expect(notifyFake.lastArg.filename).to.be.undefined()
-        expect(notifyFake.lastArg.error.message).to.equal(`Bill run ${billRun.id} does not have a status of 'pending'.`)
+        expect(notifierFake.omfg.callCount).to.equal(1)
+
+        expect(notifierFake.omfg.firstArg).to.equal('Error sending transaction file')
+        expect(notifierFake.omfg.lastArg.filename).to.be.undefined()
+        expect(notifierFake.omfg.lastArg.error.message).to.equal(`Bill run ${billRun.id} does not have a status of 'pending'.`)
       })
     })
   })

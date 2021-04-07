@@ -17,18 +17,18 @@ class GenerateBillRunService {
   * Note! Nothing is returned from the service -- the intention is that it will be called and left to run.
   *
   * @param {@module:BillRunModel} billRun Instance of the bill run to be generated
-  * @param {object} [logger] Server logger object. If passed in then logger.info will be called to log the time taken.
+  * @param {@module:Notifier} [notifier] Instance of `Notifier` class. If passed in it will be used to log the time taken.
   */
-  static async go (billRun, logger = '') {
+  static async go (billRun, notifier = '') {
     try {
       // Mark the start time for later logging
       const startTime = process.hrtime.bigint()
 
       await this._generateBillRun(billRun)
 
-      await this._calculateAndLogTime(logger, billRun.id, startTime)
+      await this._calculateAndLogTime(notifier, billRun.id, startTime)
     } catch (error) {
-      this._logError(logger, billRun.id, error)
+      this._notifyError(notifier, billRun.id, error)
     }
   }
 
@@ -157,17 +157,16 @@ class GenerateBillRunService {
   /**
    * Log the time taken to generate the bill run using the passed in logger
    *
-   * If `logger` is not set then it will do nothing. If it is set this will get the current time and then calculate the
+   * If `notifier` is not set then it will do nothing. If it is set this will get the current time and then calculate the
    * difference from `startTime`. This and the `billRunId` are then used to generate a log message.
    *
-   * @param {function} logger Logger with an 'info' method we use to log the time taken (assumed to be the one added to
-   * the Hapi server instance by hapi-pino)
+   * @param {@module:Notifier} notifier Use to log the time taken
    * @param {string} billRunId Id of the bill run currently being 'generated'
    * @param {BigInt} startTime The time the generate process kicked off. It is expected to be the result of a call to
    * `process.hrtime.bigint()`
    */
-  static async _calculateAndLogTime (logger, billRunId, startTime) {
-    if (!logger) {
+  static async _calculateAndLogTime (notifier, billRunId, startTime) {
+    if (!notifier) {
       return
     }
 
@@ -175,26 +174,25 @@ class GenerateBillRunService {
     const timeTakenNs = endTime - startTime
     const timeTakenMs = timeTakenNs / 1000000n
 
-    logger.info(`Time taken to generate bill run '${billRunId}': ${timeTakenMs}ms`)
+    notifier.omg(`Time taken to generate bill run '${billRunId}': ${timeTakenMs}ms`)
   }
 
   /**
-   * Log an error if the generate process fails
+   * Log and record in Errbit if the generate process fails
    *
-   * If `logger` is not set then it will do nothing. If it is set this will log an error message based on the
-   * `billRunId` and error provided.
+   * If `notifier` is not set then it will do nothing. If it is set this will log an error message based on the
+   * `billRunId` and error provided plus record the event in Errbit.
    *
-   * @param {function} logger Logger with an 'info' method we use to log the error (assumed to be the one added to
-   * the Hapi server instance by hapi-pino)
+   * @param {@module:Notifier} notifier Use to both log the error in the server logs and record the event in Errbit
    * @param {string} billRunId Id of the bill run currently being 'generated'
    * @param {Object} error The error that was thrown
    */
-  static async _logError (logger, billRunId, error) {
-    if (!logger) {
+  static async _notifyError (notifier, billRunId, error) {
+    if (!notifier) {
       return
     }
 
-    logger.info(`Generate bill run '${billRunId}' failed: ${error.message} - ${error}`)
+    notifier.omfg('Generate bill run failed', { billRunId, error })
   }
 }
 
