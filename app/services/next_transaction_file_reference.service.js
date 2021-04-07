@@ -1,14 +1,14 @@
 'use strict'
 
 /**
- * @module NextFileReferenceService
+ * @module NextTransactionFileReferenceService
  */
 
 const { SequenceCounterModel } = require('../models')
 
 const { RulesServiceConfig } = require('../../config')
 
-class NextFileReferenceService {
+class NextTransactionFileReferenceService {
   /**
    * Returns the next file reference for the given region and regime
    *
@@ -37,7 +37,7 @@ class NextFileReferenceService {
   static async go (regime, region, trx = null) {
     const result = await this._updateSequenceCounter(regime.id, region, trx)
 
-    return this._response(regime.slug, region, result.fileNumber)
+    return this._response(regime.slug, region, result.transactionFileNumber)
   }
 
   static async _updateSequenceCounter (regimeId, region, trx) {
@@ -46,8 +46,8 @@ class NextFileReferenceService {
         regime_id: regimeId,
         region
       })
-      .increment('file_number', 1)
-      .returning('file_number')
+      .increment('transaction_file_number', 1)
+      .returning('transaction_file_number')
       .throwIfNotFound({
         message: 'Invalid combination of regime and region'
       })
@@ -60,4 +60,4 @@ class NextFileReferenceService {
   }
 }
 
-module.exports = NextFileReferenceService
+module.exports = NextTransactionFileReferenceService

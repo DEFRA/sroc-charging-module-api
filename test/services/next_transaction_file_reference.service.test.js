@@ -12,9 +12,9 @@ const { DatabaseHelper, GeneralHelper, RegimeHelper, SequenceCounterHelper } = r
 const { NotFoundError } = require('objection')
 
 // Thing under test
-const { NextFileReferenceService } = require('../../app/services')
+const { NextTransactionFileReferenceService } = require('../../app/services')
 
-describe('Next File Reference service', () => {
+describe('Next Transaction File Reference service', () => {
   let regime
 
   beforeEach(async () => {
@@ -26,15 +26,15 @@ describe('Next File Reference service', () => {
 
   describe('When a valid region and regime are specified', () => {
     it('returns a correctly formatted file reference', async () => {
-      const result = await NextFileReferenceService.go(regime, 'R')
+      const result = await NextTransactionFileReferenceService.go(regime, 'R')
 
       expect(result).to.equal('nalri50001')
     })
 
     describe('the file reference generated', () => {
       it('increments with each call', async () => {
-        const result = await NextFileReferenceService.go(regime, 'R')
-        const secondResult = await NextFileReferenceService.go(regime, 'R')
+        const result = await NextTransactionFileReferenceService.go(regime, 'R')
+        const secondResult = await NextTransactionFileReferenceService.go(regime, 'R')
 
         // The call to slice(-1) grabs the last character from the returned string
         expect(result.slice(-1)).to.equal('1')
@@ -45,8 +45,8 @@ describe('Next File Reference service', () => {
         const otherRegime = await RegimeHelper.addRegime('cfd', 'CFD')
         await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
 
-        const result = await NextFileReferenceService.go(regime, 'R')
-        const otherResult = await NextFileReferenceService.go(otherRegime, 'S')
+        const result = await NextTransactionFileReferenceService.go(regime, 'R')
+        const otherResult = await NextTransactionFileReferenceService.go(otherRegime, 'S')
 
         // The call to slice(-1) grabs the last character from the returned string
         expect(result.slice(-1)).to.equal('1')
@@ -57,8 +57,8 @@ describe('Next File Reference service', () => {
         const otherRegime = await RegimeHelper.addRegime('cfd', 'CFD')
         await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
 
-        const result = await NextFileReferenceService.go(regime, 'R')
-        const otherResult = await NextFileReferenceService.go(otherRegime, 'S')
+        const result = await NextTransactionFileReferenceService.go(regime, 'R')
+        const otherResult = await NextTransactionFileReferenceService.go(otherRegime, 'S')
 
         expect(result).startsWith('nal')
         expect(otherResult).startsWith('cfd')
@@ -71,7 +71,7 @@ describe('Next File Reference service', () => {
       const dummyRegime = { id: GeneralHelper.uuid4(), slug: 'cfd' }
 
       const err = await expect(
-        NextFileReferenceService.go(dummyRegime, 'R')
+        NextTransactionFileReferenceService.go(dummyRegime, 'R')
       ).to.reject(NotFoundError)
 
       expect(err).to.be.an.error()
@@ -79,7 +79,7 @@ describe('Next File Reference service', () => {
 
     it('throws an error for an invalid region', async () => {
       const err = await expect(
-        NextFileReferenceService.go(regime, 'X')
+        NextTransactionFileReferenceService.go(regime, 'X')
       ).to.reject(NotFoundError)
 
       expect(err).to.be.an.error()
