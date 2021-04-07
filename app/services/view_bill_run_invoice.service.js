@@ -54,7 +54,6 @@ class ViewBillRunInvoiceService {
           'clientId',
           'chargeValue',
           'chargeCredit',
-          'status',
           'subjectToMinimumCharge',
           'minimumChargeAdjustment',
           'lineDescription',
