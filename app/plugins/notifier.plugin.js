@@ -15,7 +15,7 @@ const NotifierPlugin = {
   name: 'Notifier',
   register: (server, _options) => {
     server.ext('onRequest', (request, h) => {
-      request.app.notifier = new Notifier(server.logger, server.methods.notify)
+      request.app.notifier = new Notifier(request.info.id, server.logger, server.methods.notify)
 
       return h.continue
     })

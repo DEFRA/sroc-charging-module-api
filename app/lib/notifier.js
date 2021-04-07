@@ -21,12 +21,15 @@ class Notifier {
   /**
    * Instantiate a new instance
    *
+   * @param {string} id The request ID taken from a {@link https://hapi.dev/api/?v=20.1.2#request|Hapi request}
+   * instance. Used to link notifications to the requests that generated them
    * @param {Object} logger An instance of {@link https://github.com/pinojs/pino|pino}, a Node JSON logger
    * which the {@link https://github.com/pinojs/hapi-pino|hapi-pino} plugin adds to Hapi
    * @param {Object} notifier An instance of the {@link https://github.com/airbrake/airbrake-js|airbrake-js} `notify()`
    * method which our 'AirbrakePlugin` adds to Hapi
    */
-  constructor (logger, notifier) {
+  constructor (id, logger, notifier) {
+    this._id = id
     this._logger = logger
     this._notifier = notifier
   }
@@ -36,10 +39,11 @@ class Notifier {
    *
    * The message will be added as an `INFO` level log message.
    *
-   * @param {string} message Message to add to the log
+   * @param {string} message Message to add to the log (INFO)
+   * @param {Object} data Any params or values, for example, a bill run ID to be included with the log message
    */
-  omg (message) {
-    this._logger.info(message)
+  omg (message, data = {}) {
+    this._logger.info(this._formatLogPacket(message, data))
   }
 
   /**
@@ -66,13 +70,42 @@ class Notifier {
    * notifier.omfg('Bill run failed to generate.', { id: billRun.id })
    * ```
    *
-   * @param {string} message Message to add to the log
+   * @param {string} message Message to add to the log (ERROR)
    * @param {Object} data Any params or values, for example, a bill run ID to be included with the log message and sent
    * with the notification to Errbit
    */
   omfg (message, data = {}) {
-    this._logger.error({ message, data })
-    this._notifier(message, data)
+    this._logger.error(this._formatLogPacket(message, data))
+    this._notifier(message, { id: this._id, data })
+  }
+
+  /**
+   * Used to format the 'packet' of information sent to the logger
+   *
+   * We don't just want the log output to include the request ID. We want it to output it in the same structure as the
+   * Hapi request is logged, for example
+   *
+   * ```
+   * req: {
+   *   "id": "1617655289640:533c1e381364:1671:kn526tbx:10000",
+   *   ...
+   * ```
+   *
+   * This means we can then locate all log entries for a specific request in AWS Cloudwatch by using
+   * {@link https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html|Metric Filters}
+   *
+   * ```
+   * { $.req.id = "1617655289640:533c1e381364:1671:kn526tbx:10000" }
+   * ```
+   */
+  _formatLogPacket (message, data) {
+    return {
+      message,
+      ...data,
+      req: {
+        id: this._id
+      }
+    }
   }
 }
 
