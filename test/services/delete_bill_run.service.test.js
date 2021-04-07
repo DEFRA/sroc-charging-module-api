@@ -3,8 +3,9 @@
 // Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
+const Sinon = require('sinon')
 
-const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
@@ -29,9 +30,26 @@ describe('Delete Bill Run service', () => {
     await TransactionHelper.addTransaction(billRun.id)
   })
 
+  afterEach(async () => {
+    Sinon.restore()
+  })
+
   describe('When a valid bill run is supplied', () => {
+    it("sets the bill run status to 'deleting'", async () => {
+      // We stub the part that actually deletes the bill run for this test so we can confirm the bill run status is
+      // updated
+      Sinon.stub(DeleteBillRunService, '_deleteBillRun')
+      await DeleteBillRunService.go(billRun)
+
+      const refreshedBillRun = await billRun.$query()
+
+      expect(refreshedBillRun.status).to.equal('deleting')
+    })
+
     it('deletes the bill run', async () => {
       await DeleteBillRunService.go(billRun)
+      // We need a delay because the service returns before the delete finishes which causes the tests to fail
+      await GeneralHelper.sleep(500)
 
       const refreshedBillRun = await billRun.$query()
 
@@ -40,6 +58,8 @@ describe('Delete Bill Run service', () => {
 
     it('deletes the bill run invoices', async () => {
       await DeleteBillRunService.go(billRun)
+      // We need a delay because the service returns before the delete finishes which causes the tests to fail
+      await GeneralHelper.sleep(500)
 
       const invoices = await billRun.$relatedQuery('invoices')
 
@@ -48,6 +68,8 @@ describe('Delete Bill Run service', () => {
 
     it('deletes the bill run licences', async () => {
       await DeleteBillRunService.go(billRun)
+      // We need a delay because the service returns before the delete finishes which causes the tests to fail
+      await GeneralHelper.sleep(500)
 
       const licences = await billRun.$relatedQuery('licences')
 
@@ -56,6 +78,8 @@ describe('Delete Bill Run service', () => {
 
     it('deletes the bill run transactions', async () => {
       await DeleteBillRunService.go(billRun)
+      // We need a delay because the service returns before the delete finishes which causes the tests to fail
+      await GeneralHelper.sleep(500)
 
       const transactions = await billRun.$relatedQuery('transactions')
 
