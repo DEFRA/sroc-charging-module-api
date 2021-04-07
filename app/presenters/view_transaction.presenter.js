@@ -16,7 +16,6 @@ class ViewTransactionPresenter extends BasePresenter {
       clientId: data.clientId,
       chargeValue: data.chargeValue,
       credit: data.chargeCredit,
-      status: data.status,
       subjectToMinimumCharge: data.subjectToMinimumCharge,
       minimumChargeAdjustment: data.minimumChargeAdjustment,
       lineDescription: data.lineDescription,
