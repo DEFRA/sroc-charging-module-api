@@ -12,7 +12,7 @@ const { BasePresenter } = require('../../app/presenters')
 // Thing under test
 const { CustomerFileHeadPresenter } = require('../../app/presenters')
 
-describe.only('Customer File Head presenter', () => {
+describe('Customer File Head presenter', () => {
   const data = {
     index: 0,
     region: 'A',
