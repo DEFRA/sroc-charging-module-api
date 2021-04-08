@@ -48,8 +48,8 @@ class SendCustomerFileService {
 
         generatedFile = await this._generateAndSend(regime, region)
 
-        // Clean up
         await this._clearCustomerTable(regime, region)
+
         if (this._removeTemporaryFiles()) {
           await DeleteFileService.go(generatedFile)
         }
@@ -60,7 +60,7 @@ class SendCustomerFileService {
   }
 
   /**
-   * Returns true if there are customer records for this regime and region, and false if there aren't
+   * Returns true if there are customer records for this regime and region, or false if there aren't
    */
   static async _checkIfFileNeeded (regime, region) {
     const customers = await CustomerModel.query()
@@ -86,11 +86,17 @@ class SendCustomerFileService {
     return generatedFile
   }
 
+  /**
+   * Obtains a file reference for the given regime and region and returns the resulting filename
+   */
   static async _filename (regime, region) {
     const fileReference = await NextCustomerFileReferenceService.go(regime, region)
     return `${fileReference}.dat`
   }
 
+  /**
+   * Returns the state of the `removeTemporaryFiles` config setting. Kept in a separate method for ease of testing.
+   */
   static _removeTemporaryFiles () {
     return removeTemporaryFiles
   }
