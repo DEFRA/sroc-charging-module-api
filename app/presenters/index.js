@@ -5,6 +5,7 @@ const BillRunStatusPresenter = require('./bill_run_status.presenter')
 const CalculateChargePresenter = require('./calculate_charge.presenter')
 const CreateBillRunPresenter = require('./create_bill_run.presenter')
 const CreateTransactionPresenter = require('./create_transaction.presenter')
+const CustomerFileBodyPresenter = require('./customer_file_body.presenter')
 const JsonPresenter = require('./json.presenter')
 const RulesServicePresenter = require('./rules_service.presenter')
 const TransactionFileBodyPresenter = require('./transaction_file_body.presenter')
@@ -22,6 +23,7 @@ module.exports = {
   CalculateChargePresenter,
   CreateBillRunPresenter,
   CreateTransactionPresenter,
+  CustomerFileBodyPresenter,
   JsonPresenter,
   RulesServicePresenter,
   TransactionFileBodyPresenter,
