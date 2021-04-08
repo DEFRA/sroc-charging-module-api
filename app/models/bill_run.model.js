@@ -120,6 +120,10 @@ class BillRunModel extends BaseModel {
    *
    * A bill run is also uneditable if it's in the middle of generating its summary. We can't allow changes which will
    * cause the generated result to be invalid.
+   *
+   * Finally, a bill run is uneditable if the status is `deleting`. This gets set when a `DELETE` request is received.
+   * We don't expect client systems to ever see this but large bill runs can take some seconds to finish deleting. So,
+   * we set the `deleting` status just in case someone tries to interact with the bill run during this time.
    */
   $editable () {
     return ['initialised', 'generated', 'approved'].includes(this.status)

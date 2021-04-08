@@ -1,5 +1,27 @@
 # Changelog
 
+## [v0.7.2](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.7.2) (2021-04-08)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.7.1...v0.7.2)
+
+**Implemented enhancements:**
+
+- Add Hapi request ID to Notifier [\#339](https://github.com/DEFRA/sroc-charging-module-api/pull/339) ([Cruikshanks](https://github.com/Cruikshanks))
+- Create initial Generate Customer File Service [\#334](https://github.com/DEFRA/sroc-charging-module-api/pull/334) ([StuAA78](https://github.com/StuAA78))
+
+**Fixed bugs:**
+
+- Fix - Move delete invoice to background task [\#345](https://github.com/DEFRA/sroc-charging-module-api/pull/345) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix - Move delete bill run to background task [\#343](https://github.com/DEFRA/sroc-charging-module-api/pull/343) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Merged pull requests:**
+
+- Move test sleep\(\) method to GeneralHelper [\#344](https://github.com/DEFRA/sroc-charging-module-api/pull/344) ([Cruikshanks](https://github.com/Cruikshanks))
+- Simplify the VSCode tasks [\#341](https://github.com/DEFRA/sroc-charging-module-api/pull/341) ([Cruikshanks](https://github.com/Cruikshanks))
+- Remove transaction level status [\#340](https://github.com/DEFRA/sroc-charging-module-api/pull/340) ([Cruikshanks](https://github.com/Cruikshanks))
+- Switch to using Notifier plugin [\#338](https://github.com/DEFRA/sroc-charging-module-api/pull/338) ([Cruikshanks](https://github.com/Cruikshanks))
+- Revert Dependabot SonarCloud workaround [\#337](https://github.com/DEFRA/sroc-charging-module-api/pull/337) ([Cruikshanks](https://github.com/Cruikshanks))
+
 ## [v0.7.1](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.7.1) (2021-04-05)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.7.0...v0.7.1)
@@ -203,7 +225,6 @@
 - Fix inconsistent test bill run controller name [\#231](https://github.com/DEFRA/sroc-charging-module-api/pull/231) ([Cruikshanks](https://github.com/Cruikshanks))
 - Amend remove invoice route [\#227](https://github.com/DEFRA/sroc-charging-module-api/pull/227) ([Cruikshanks](https://github.com/Cruikshanks))
 - Bump knex from 0.21.17 to 0.21.18 [\#225](https://github.com/DEFRA/sroc-charging-module-api/pull/225) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Bump @hapi/lab from 24.1.0 to 24.1.1 [\#222](https://github.com/DEFRA/sroc-charging-module-api/pull/222) ([dependabot[bot]](https://github.com/apps/dependabot))
 
 ## [v0.2.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.2.0) (2021-02-19)
 
@@ -274,6 +295,7 @@
 
 **Merged pull requests:**
 
+- Bump @hapi/lab from 24.1.0 to 24.1.1 [\#222](https://github.com/DEFRA/sroc-charging-module-api/pull/222) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Add seed run script to package.json [\#220](https://github.com/DEFRA/sroc-charging-module-api/pull/220) ([Cruikshanks](https://github.com/Cruikshanks))
 - Make transaction tracking properties consistent [\#218](https://github.com/DEFRA/sroc-charging-module-api/pull/218) ([Cruikshanks](https://github.com/Cruikshanks))
 - Remove pre-sroc \(ruleset\) from view bill run [\#217](https://github.com/DEFRA/sroc-charging-module-api/pull/217) ([Cruikshanks](https://github.com/Cruikshanks))

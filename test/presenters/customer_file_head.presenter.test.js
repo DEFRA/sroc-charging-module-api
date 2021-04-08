@@ -12,28 +12,26 @@ const { BasePresenter } = require('../../app/presenters')
 const { PresenterHelper } = require('../support/helpers')
 
 // Thing under test
-const { TransactionFileHeadPresenter } = require('../../app/presenters')
+const { CustomerFileHeadPresenter } = require('../../app/presenters')
 
-describe('Transaction File Head presenter', () => {
+describe('Customer File Head presenter', () => {
   const data = {
     index: 0,
     region: 'A',
-    fileReference: 'nalri50003',
-    billRunNumber: 10004,
-    billRunUpdatedAt: '2021-01-12T14:41:10.511Z'
+    fileReference: 'nalrc50003'
   }
 
   it('returns the required columns', () => {
-    const testPresenter = new TransactionFileHeadPresenter(data)
+    const testPresenter = new CustomerFileHeadPresenter(data)
     const result = testPresenter.go()
 
-    const expectedFields = PresenterHelper.generateNumberedColumns(8)
+    const expectedFields = PresenterHelper.generateNumberedColumns(7)
 
     expect(result).to.only.include(expectedFields)
   })
 
   it('correctly presents the data', () => {
-    const testPresenter = new TransactionFileHeadPresenter(data)
+    const testPresenter = new CustomerFileHeadPresenter(data)
     const result = testPresenter.go()
 
     const basePresenter = new BasePresenter()
@@ -43,9 +41,8 @@ describe('Transaction File Head presenter', () => {
     expect(result.col02).to.equal('0000000')
     expect(result.col03).to.equal('NAL')
     expect(result.col04).to.equal(data.region)
-    expect(result.col05).to.equal('I')
+    expect(result.col05).to.equal('C')
     expect(result.col06).to.equal('50003')
-    expect(result.col07).to.equal(data.billRunNumber)
-    expect(result.col08).to.equal(date)
+    expect(result.col07).to.equal(date)
   })
 })
