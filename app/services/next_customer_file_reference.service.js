@@ -6,11 +6,11 @@
 
 const BaseNextFileReferenceService = require('./base_next_file_reference.service')
 
+/**
+ * Returns the next customer file reference for the given region and regime, in the format `nalrc50001`. See
+ * `BaseNextFileReferenceService` for further details.
+ */
 class NextCustomerFileReferenceService extends BaseNextFileReferenceService {
-  /**
-   * Returns the next customer file reference for the given region and regime, in the format `nalrc50001`. See
-   * `BaseNextFileReferenceService` for further details.
-   */
   static _field () {
     return 'customerFileNumber'
   }
