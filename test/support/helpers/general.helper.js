@@ -54,6 +54,21 @@ class GeneralHelper {
       return v.toString(16)
     })
   }
+
+  /**
+   * Use where you need to pause within a test
+   *
+   * There are times where we kick off something in the background but we then need to assert the result as part of a
+   * test. For that we have this helper that will pause the test for the number of milliseconds requested.
+   *
+   * **Note** We have noted that a delay of more than 2000ms seems to cause the test to timeout. If you see errors when
+   * using a delay greater than 2 seconds this may be the cause.
+   *
+   * @param {number} ms Time in milliseconds to pause for (1000ms == 1 second)
+   */
+  static sleep (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 }
 
 module.exports = GeneralHelper
