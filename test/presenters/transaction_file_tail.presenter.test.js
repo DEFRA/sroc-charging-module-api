@@ -23,7 +23,7 @@ describe('Transaction File Tail Presenter', () => {
     const presenter = new TransactionFileTailPresenter(data)
     const result = presenter.go()
 
-    const expectedFields = PresenterHelper.generateNumberedCols(5)
+    const expectedFields = PresenterHelper.generateNumberedColumns(5)
 
     expect(result).to.only.include(expectedFields)
   })

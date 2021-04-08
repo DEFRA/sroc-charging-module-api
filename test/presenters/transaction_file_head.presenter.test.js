@@ -27,7 +27,7 @@ describe('Transaction File Head presenter', () => {
     const testPresenter = new TransactionFileHeadPresenter(data)
     const result = testPresenter.go()
 
-    const expectedFields = PresenterHelper.generateNumberedCols(8)
+    const expectedFields = PresenterHelper.generateNumberedColumns(8)
 
     expect(result).to.only.include(expectedFields)
   })

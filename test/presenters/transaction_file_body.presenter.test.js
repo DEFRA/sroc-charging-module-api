@@ -45,7 +45,7 @@ describe('Transaction File Body Presenter', () => {
     const presenter = new TransactionFileBodyPresenter(data)
     const result = presenter.go()
 
-    const expectedFields = PresenterHelper.generateNumberedCols(43)
+    const expectedFields = PresenterHelper.generateNumberedColumns(43)
 
     expect(result).to.only.include(expectedFields)
   })

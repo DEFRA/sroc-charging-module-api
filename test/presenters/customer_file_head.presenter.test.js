@@ -25,7 +25,7 @@ describe('Customer File Head presenter', () => {
     const testPresenter = new CustomerFileHeadPresenter(data)
     const result = testPresenter.go()
 
-    const expectedFields = PresenterHelper.generateNumberedCols(7)
+    const expectedFields = PresenterHelper.generateNumberedColumns(7)
 
     expect(result).to.only.include(expectedFields)
   })

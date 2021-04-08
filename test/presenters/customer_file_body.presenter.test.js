@@ -30,7 +30,7 @@ describe('Customer File Body Presenter', () => {
     const presenter = new CustomerFileBodyPresenter(data)
     const result = presenter.go()
 
-    const expectedFields = PresenterHelper.generateNumberedCols(11)
+    const expectedFields = PresenterHelper.generateNumberedColumns(11)
 
     expect(result).to.only.include(expectedFields)
   })

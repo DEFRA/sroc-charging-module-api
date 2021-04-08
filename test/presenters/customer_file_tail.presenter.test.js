@@ -21,7 +21,7 @@ describe('Customer File Tail Presenter', () => {
     const presenter = new CustomerFileTailPresenter(data)
     const result = presenter.go()
 
-    const expectedFields = PresenterHelper.generateNumberedCols(3)
+    const expectedFields = PresenterHelper.generateNumberedColumns(3)
 
     expect(result).to.only.include(expectedFields)
   })

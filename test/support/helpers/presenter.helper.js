@@ -11,7 +11,7 @@ class PresenterHelper {
    * @param {integer} cols The number of col__ fields to return, starting with col01
    * @returns {array} The array of column fields
    */
-  static generateNumberedCols (cols) {
+  static generateNumberedColumns (cols) {
     const numberedCols = []
 
     for (let fieldNumber = 1; fieldNumber <= cols; fieldNumber++) {
