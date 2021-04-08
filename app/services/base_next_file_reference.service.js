@@ -1,29 +1,29 @@
 'use strict'
 
 /**
- * @module NextFileReferenceService
+ * @module BaseNextFileReferenceService
  */
 
 const { SequenceCounterModel } = require('../models')
 
 const { RulesServiceConfig } = require('../../config')
 
-class NextFileReferenceService {
+class BaseNextFileReferenceService {
   /**
-   * Returns the next file reference for the given region and regime
+   * Base service for retrieving file references.
    *
-   * The file number in the sequence_counters table is the last number issued. Therefore, we increment it by 1
-   * and get the new number. We then take that value and format it as a **file reference**.
+   * File numbers in the sequence_counters table are the last number issued. Therefore, for a given field we increment
+   * it by 1 to get the new number.
    *
    * The format is `nalri50001` where
    *
    * - `nal` is the filename prefix for the regime (set in `RulesServiceConfig`)
    * - `r` is the region lowercased
-   * - `i` is a fixed digit "i"
+   * - `i` is a fixed character dependent on the file type ("i" for transaction files or "c" for customer files)
    * - `50001` is our sequential file number padded which starts at 50000
    *
-   * For example, if the regime was WRLS, the region was 'R' and the next file number was 3 the reference would be
-   * `nalri50003`.
+   * For example, if the regime was WRLS, the region was 'R' and the next file number was 3 the transaction file
+   * reference would be `nalri50003`.
    *
    * If an invalid region & regime pair is supplied, an Objection `NotFoundError` is thrown
    *
@@ -37,7 +37,7 @@ class NextFileReferenceService {
   static async go (regime, region, trx = null) {
     const result = await this._updateSequenceCounter(regime.id, region, trx)
 
-    return this._response(regime.slug, region, result.fileNumber)
+    return this._response(regime.slug, region, result[this._field()])
   }
 
   static async _updateSequenceCounter (regimeId, region, trx) {
@@ -46,8 +46,8 @@ class NextFileReferenceService {
         regime_id: regimeId,
         region
       })
-      .increment('file_number', 1)
-      .returning('file_number')
+      .increment(this._field(), 1)
+      .returning(this._field())
       .throwIfNotFound({
         message: 'Invalid combination of regime and region'
       })
@@ -56,8 +56,22 @@ class NextFileReferenceService {
   static _response (regimeSlug, region, fileNumber) {
     const filenamePrefix = RulesServiceConfig.endpoints[regimeSlug].filenamePrefix
 
-    return `${filenamePrefix}${region.toLowerCase()}i${fileNumber}`
+    return `${filenamePrefix}${region.toLowerCase()}${this._fileFixedChar()}${fileNumber}`
+  }
+
+  /**
+   * Returns the field in the `sequence_counters` table to be used.
+   */
+  static _field () {
+    throw new Error("Extending service must implement '_field()'")
+  }
+
+  /**
+   * Returns the fixed character in the filename, eg. "i" for a transaction file.
+   */
+  static _fileFixedChar () {
+    throw new Error("Extending service must implement '_fileFixedChar()'")
   }
 }
 
-module.exports = NextFileReferenceService
+module.exports = BaseNextFileReferenceService
