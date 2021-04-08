@@ -10,9 +10,7 @@ const { expect } = Code
 
 // Test helpers
 const {
-  BillRunHelper,
   DatabaseHelper,
-  GeneralHelper,
   RegimeHelper
 } = require('../support/helpers')
 
@@ -28,7 +26,6 @@ const { SendCustomerFileService } = require('../../app/services')
 
 describe('Send Customer File service', () => {
   let regime
-  let billRun
   let deleteStub
   let generateStub
   let sendStub
@@ -210,17 +207,19 @@ describe('Send Customer File service', () => {
     })
   })
 
-  // describe('When an invalid bill run is specified', () => {
-  //   describe("because the status is not 'pending'", () => {
-  //     it('throws an error', async () => {
-  //       await SendCustomerFileService.go(regime, billRun, notifierFake)
+  describe('When an error occurs', () => {
+    it('throws an error', async () => {
+      // We stub within the test and not in a before() to ensure it happens after the beforeEach() that first defines
+      // the stub
+      Sinon.restore()
+      Sinon
+        .stub(GenerateCustomerFileService, 'go')
+        .throws()
 
-  //       expect(notifierFake.omfg.callCount).to.equal(1)
+      await SendCustomerFileService.go(regime, ['A'], notifierFake)
 
-  //       expect(notifierFake.omfg.firstArg).to.equal('Error sending transaction file')
-  //       expect(notifierFake.omfg.lastArg.filename).to.be.undefined()
-  //       expect(notifierFake.omfg.lastArg.error.message).to.equal(`Bill run ${billRun.id} does not have a status of 'pending'.`)
-  //     })
-  //   })
-  // })
+      expect(notifierFake.omfg.callCount).to.equal(1)
+      expect(notifierFake.omfg.firstArg).to.equal('Error sending customer file')
+    })
+  })
 })

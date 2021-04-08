@@ -26,10 +26,9 @@ class SendCustomerFileService {
    *
    * @param {module:RegimeModel} regime The regime that the customer file is to be generated for.
    * @param {array} regions An arry of regions we want to send the customer file for.
-   * @param {function} notify The server.methods.notify method, which we pass in as server.methods isn't accessible
-   * within a service.
+   * @param {@module:Notifier} [notifier] Instance of `Notifier` class. Used to report any errors that occur
    */
-  static async go (regime, regions, notify) {
+  static async go (regime, regions, notifier) {
     let generatedFile
 
     for (const region of regions) {
@@ -47,8 +46,7 @@ class SendCustomerFileService {
           await DeleteFileService.go(generatedFile)
         }
       } catch (error) {
-        // TODO: This should use the new plugin and .omfg
-        this._notifyError(notify, 'Error sending customer file', generatedFile, error)
+        notifier.omfg('Error sending customer file', { generatedFile, error })
       }
     }
   }
@@ -97,13 +95,6 @@ class SendCustomerFileService {
       .where('regimeId', regime.id)
       .where('region', region)
       .delete()
-  }
-
-  static _notifyError (notifier, message, filename, error) {
-    notifier(
-      message,
-      { filename, error }
-    )
   }
 }
 
