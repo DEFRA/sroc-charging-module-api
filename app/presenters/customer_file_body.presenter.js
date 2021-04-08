@@ -10,9 +10,9 @@ const BasePresenter = require('./base.presenter')
  * Formats data for the body of a customer file.
  *
  * Note that data.index is added by StreamTransformUsingPresenter and is not part of the data originally read from the
- * source transaction record.
+ * source customer record.
  *
- * With reference to the existing v1 charging module transaction file presenter:
+ * With reference to the existing v1 charging module customer file presenter:
  * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/customer_file_presenter.js
  */
 
