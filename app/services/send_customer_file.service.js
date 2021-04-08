@@ -14,6 +14,7 @@ const { CustomerModel } = require('../../app/models')
 const GenerateCustomerFileService = require('./generate_customer_file.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
 const DeleteFileService = require('./delete_file.service')
+const NextCustomerFileReferenceService = require('./next_customer_file_reference.service')
 
 class SendCustomerFileService {
   /**
@@ -74,7 +75,7 @@ class SendCustomerFileService {
    * Generate and send the customer file. Returns the path and filename of the generated file.
    */
   static async _generateAndSend (regime, region) {
-    const filename = this._filename()
+    const filename = await this._filename(regime, region)
     const generatedFile = await GenerateCustomerFileService.go(regime, region, filename)
 
     // The key is the remote path and filename in the S3 bucket, eg. 'wrls/customer/nalac50001.dat'
@@ -85,9 +86,9 @@ class SendCustomerFileService {
     return generatedFile
   }
 
-  static _filename () {
-    // TODO: Confirm how filename is generated
-    return 'nalac50001.dat'
+  static async _filename (regime, region) {
+    const fileReference = await NextCustomerFileReferenceService.go(regime, region)
+    return `${fileReference}.dat`
   }
 
   static _removeTemporaryFiles () {

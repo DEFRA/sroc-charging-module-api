@@ -19,7 +19,12 @@ const { CustomerModel } = require('../../app/models')
 const { CreateCustomerDetailsService } = require('../../app/services')
 
 // Things we need to stub
-const { DeleteFileService, GenerateCustomerFileService, SendFileToS3Service } = require('../../app/services')
+const {
+  DeleteFileService,
+  GenerateCustomerFileService,
+  NextCustomerFileReferenceService,
+  SendFileToS3Service
+} = require('../../app/services')
 
 // Thing under test
 const { SendCustomerFileService } = require('../../app/services')
@@ -54,6 +59,7 @@ describe('Send Customer File service', () => {
     deleteStub = Sinon.stub(DeleteFileService, 'go').returns(true)
     generateStub = Sinon.stub(GenerateCustomerFileService, 'go').returns('stubFilename')
     sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
+    Sinon.stub(NextCustomerFileReferenceService, 'go').callsFake((_, region) => `nal${region.toLowerCase()}c50001`)
 
     // Create a fake function to stand in place of Notifier.omfg()
     notifierFake = { omfg: Sinon.fake() }
@@ -73,13 +79,12 @@ describe('Send Customer File service', () => {
         expect(generateStub.getCall(0).args[1]).to.equal('A')
       })
 
-      // TODO: Confirm filename
       it('sends the customer file', async () => {
         await SendCustomerFileService.go(regime, ['A'])
 
         expect(sendStub.calledOnce).to.be.true()
         expect(sendStub.getCall(0).firstArg).to.equal('stubFilename')
-        // expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/transaction/${billRun.fileReference}.dat`)
+        expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
       })
 
       it('clears the correct region customers from the customer table', async () => {
@@ -122,15 +127,15 @@ describe('Send Customer File service', () => {
       })
     })
 
-    describe("and a transaction file isn't required", () => {
-      it("doesn't try to generate a transaction file", async () => {
-        await SendCustomerFileService.go(regime, ['X'])
+    describe("and a customer file isn't required", () => {
+      it("doesn't try to generate a file", async () => {
+        await SendCustomerFileService.go(regime, ['X', 'Y'])
 
         expect(generateStub.notCalled).to.be.true()
       })
 
-      it("doesn't try to send the transaction file", async () => {
-        await SendCustomerFileService.go(regime, ['X'])
+      it("doesn't try to send the file", async () => {
+        await SendCustomerFileService.go(regime, ['X', 'Y'])
 
         expect(sendStub.notCalled).to.be.true()
       })
@@ -149,13 +154,14 @@ describe('Send Customer File service', () => {
         expect(generateStub.getCall(1).args[1]).to.equal('W')
       })
 
-      // TODO: Confirm filename
       it('sends the customer file', async () => {
         await SendCustomerFileService.go(regime, ['A', 'W'])
 
         expect(sendStub.calledTwice).to.be.true()
         expect(sendStub.getCall(0).firstArg).to.equal('stubFilename')
-        // expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/transaction/${billRun.fileReference}.dat`)
+        expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
+        expect(sendStub.getCall(1).firstArg).to.equal('stubFilename')
+        expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
       })
 
       it('clears the correct region customers from the customer table', async () => {
@@ -192,15 +198,15 @@ describe('Send Customer File service', () => {
       })
     })
 
-    describe("and a transaction file isn't required", () => {
-      it("doesn't try to generate a transaction file", async () => {
-        await SendCustomerFileService.go(regime, ['X'])
+    describe("and a customer file isn't required", () => {
+      it("doesn't try to generate a file", async () => {
+        await SendCustomerFileService.go(regime, ['X', 'Y'])
 
         expect(generateStub.notCalled).to.be.true()
       })
 
-      it("doesn't try to send the transaction file", async () => {
-        await SendCustomerFileService.go(regime, ['X'])
+      it("doesn't try to send a file", async () => {
+        await SendCustomerFileService.go(regime, ['X', 'Y'])
 
         expect(sendStub.notCalled).to.be.true()
       })
