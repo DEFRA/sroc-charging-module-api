@@ -62,14 +62,14 @@ class BaseNextFileReferenceService {
   /**
    * Returns the field in the `sequence_counters` table to be used.
    */
-  static async _field () {
+  static _field () {
     throw new Error("Extending service must implement '_field()'")
   }
 
   /**
    * Returns the fixed character in the filename, eg. "i" for a transaction file.
    */
-  static async _fileFixedChar () {
+  static _fileFixedChar () {
     throw new Error("Extending service must implement '_fileFixedChar()'")
   }
 }
