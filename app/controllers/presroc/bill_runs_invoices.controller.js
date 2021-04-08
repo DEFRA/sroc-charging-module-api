@@ -7,7 +7,7 @@ const {
 
 class BillRunsInvoicesController {
   static async delete (req, h) {
-    await DeleteInvoiceService.go(req.params.invoiceId, req.params.billRunId)
+    DeleteInvoiceService.go(req.params.invoiceId, req.params.billRunId)
 
     return h.response().code(204)
   }
