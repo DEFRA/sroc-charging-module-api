@@ -17,16 +17,22 @@ const DeleteFileService = require('./delete_file.service')
 
 class SendCustomerFileService {
   /**
-   * Organises the generation and sending of a customer file:
-   * - ...
+   * Organises the generation and sending of a customer file.
    *
    * The service accepts an array of regions. It is expected that when it is called during the "send bill run" process
    * we will receive an array containing just the region of the bill run, and an array will only be passed to it by the
    * automated once-a-week "send all customer files" process.
    *
+   * For each given region it:
+   * - Checks if a file is needed (ie. if there are any customer changes in the db for the given regime and region);
+   * - Calls GenerateCustomerFileService to generate the customer file;
+   * - Calls SendFileToS3Service to send the customer file to the S3 bucket;
+   * - Deletes the customer records for the regime and region from the db;
+   * - Deletes the file if ServerConfig.removeTemporaryFiles is set to `true`.
+   *
    * @param {module:RegimeModel} regime The regime that the customer file is to be generated for.
-   * @param {array} regions An arry of regions we want to send the customer file for.
-   * @param {@module:Notifier} [notifier] Instance of `Notifier` class. Used to report any errors that occur
+   * @param {array} regions An arry of regions we want to send a customer file for.
+   * @param {@module:Notifier} [notifier] Instance of `Notifier` class. Used to report any errors that occur.
    */
   static async go (regime, regions, notifier) {
     let generatedFile
@@ -35,6 +41,7 @@ class SendCustomerFileService {
       try {
         const fileNeeded = await this._checkIfFileNeeded(regime, region)
         if (!fileNeeded) {
+          // No file is needed for this region so break and move on to the next region
           break
         }
 
