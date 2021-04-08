@@ -7,7 +7,7 @@
 const Boom = require('@hapi/boom')
 
 const { BillRunModel } = require('../models')
-const NextFileReferenceService = require('./next_file_reference.service')
+const NextTransactionFileReferenceService = require('./next_transaction_file_reference.service')
 const NextTransactionReferenceService = require('./next_transaction_reference.service')
 
 class SendBillRunReferenceService {
@@ -49,7 +49,7 @@ class SendBillRunReferenceService {
 
       // We only generate a file reference for the bill run if there was 1 or more billable invoices. This avoids gaps
       // in the file references and concern about whether something got lost in transit
-      const fileReference = billableCount ? await NextFileReferenceService.go(regime, billRun.region, trx) : null
+      const fileReference = billableCount ? await NextTransactionFileReferenceService.go(regime, billRun.region, trx) : null
 
       return BillRunModel.query(trx)
         .findById(billRun.id)

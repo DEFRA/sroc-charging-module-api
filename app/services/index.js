@@ -2,6 +2,7 @@
 
 const ApproveBillRunService = require('./approve_bill_run.service')
 const AuthorisationService = require('./authorisation.service')
+const BaseNextFileReferenceService = require('./base_next_file_reference.service')
 const BillRunStatusService = require('./bill_run_status.service')
 const CalculateChargeService = require('./calculate_charge.service')
 const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')
@@ -26,7 +27,8 @@ const GenerateTransactionFileService = require('./generate_transaction_file.serv
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
 const ListRegimesService = require('./list_regimes.service')
 const NextBillRunNumberService = require('./next_bill_run_number.service')
-const NextFileReferenceService = require('./next_file_reference.service')
+const NextCustomerFileReferenceService = require('./next_customer_file_reference.service')
+const NextTransactionFileReferenceService = require('./next_transaction_file_reference.service')
 const NextTransactionReferenceService = require('./next_transaction_reference.service')
 const ObjectCleaningService = require('./object_cleaning.service')
 const RequestBillRunService = require('./request_bill_run.service')
@@ -49,6 +51,7 @@ const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 module.exports = {
   ApproveBillRunService,
   AuthorisationService,
+  BaseNextFileReferenceService,
   BillRunStatusService,
   CalculateChargeService,
   CalculateMinimumChargeService,
@@ -76,7 +79,8 @@ module.exports = {
   RequestBillRunService,
   RulesService,
   NextBillRunNumberService,
-  NextFileReferenceService,
+  NextCustomerFileReferenceService,
+  NextTransactionFileReferenceService,
   NextTransactionReferenceService,
   SendBillRunReferenceService,
   SendFileToS3Service,
