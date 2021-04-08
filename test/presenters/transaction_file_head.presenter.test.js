@@ -9,6 +9,8 @@ const { expect } = Code
 
 const { BasePresenter } = require('../../app/presenters')
 
+const { PresenterHelper } = require('../support/helpers')
+
 // Thing under test
 const { TransactionFileHeadPresenter } = require('../../app/presenters')
 
@@ -25,12 +27,7 @@ describe('Transaction File Head presenter', () => {
     const testPresenter = new TransactionFileHeadPresenter(data)
     const result = testPresenter.go()
 
-    // To avoid writing out col01...col08 we generate an array of them
-    const expectedFields = []
-    for (let fieldNumber = 1; fieldNumber <= 8; fieldNumber++) {
-      const paddedNumber = fieldNumber.toString().padStart(2, '0')
-      expectedFields.push(`col${paddedNumber}`)
-    }
+    const expectedFields = PresenterHelper.generateNumberedCols(8)
 
     expect(result).to.only.include(expectedFields)
   })

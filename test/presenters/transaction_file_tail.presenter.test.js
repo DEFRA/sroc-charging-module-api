@@ -7,6 +7,8 @@ const Code = require('@hapi/code')
 const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
+const { PresenterHelper } = require('../support/helpers')
+
 // Thing under test
 const { TransactionFileTailPresenter } = require('../../app/presenters')
 
@@ -21,12 +23,7 @@ describe('Transaction File Tail Presenter', () => {
     const presenter = new TransactionFileTailPresenter(data)
     const result = presenter.go()
 
-    // To avoid writing out col01...col05 we generate an array of them
-    const expectedFields = []
-    for (let fieldNumber = 1; fieldNumber <= 5; fieldNumber++) {
-      const paddedNumber = fieldNumber.toString().padStart(2, '0')
-      expectedFields.push(`col${paddedNumber}`)
-    }
+    const expectedFields = PresenterHelper.generateNumberedCols(5)
 
     expect(result).to.only.include(expectedFields)
   })
