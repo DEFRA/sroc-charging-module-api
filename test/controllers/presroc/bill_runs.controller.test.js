@@ -29,6 +29,7 @@ const {
 const {
   CreateTransactionService,
   GenerateBillRunService,
+  SendCustomerFileService,
   SendTransactionFileService
 } = require('../../../app/services')
 
@@ -271,6 +272,7 @@ describe('Presroc Bill Runs controller', () => {
   })
 
   describe('Send bill run: PATCH /v2/{regimeId}/bill-runs/{billRunId}/send', () => {
+    let sendCustomerFileStub
     let sendTransactionFileStub
 
     const options = (token, billRunId) => {
@@ -282,7 +284,8 @@ describe('Presroc Bill Runs controller', () => {
     }
 
     beforeEach(async () => {
-      // Stub SendTransactionFileService so we don't try to generate any files
+      // Stub send file services so we don't try to generate any files
+      sendCustomerFileStub = Sinon.stub(SendCustomerFileService, 'go')
       sendTransactionFileStub = Sinon.stub(SendTransactionFileService, 'go')
 
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
@@ -292,6 +295,7 @@ describe('Presroc Bill Runs controller', () => {
     })
 
     afterEach(async () => {
+      sendCustomerFileStub.restore()
       sendTransactionFileStub.restore()
     })
 
@@ -310,6 +314,15 @@ describe('Presroc Bill Runs controller', () => {
         await server.inject(options(authToken, billRun.id))
 
         expect(sendTransactionFileStub.calledOnce).to.be.true()
+      })
+
+      it('calls SendCustomerFileService and passes in the region', async () => {
+        await billRun.$query().patch({ status: 'approved' })
+
+        await server.inject(options(authToken, billRun.id))
+
+        expect(sendCustomerFileStub.calledOnce).to.be.true()
+        expect(sendCustomerFileStub.getCall(0).args[1]).to.equal([billRun.region])
       })
     })
 

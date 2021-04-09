@@ -8,6 +8,7 @@ const {
   GenerateBillRunService,
   GenerateBillRunValidationService,
   SendBillRunReferenceService,
+  SendCustomerFileService,
   SendTransactionFileService,
   ViewBillRunService
 } = require('../../services')
@@ -48,6 +49,7 @@ class BillRunsController {
     const sentBillRun = await SendBillRunReferenceService.go(req.app.regime, req.app.billRun)
 
     SendTransactionFileService.go(req.app.regime, sentBillRun, req.app.notifier)
+    SendCustomerFileService.go(req.app.regime, [sentBillRun.region], req.app.notifier)
 
     return h.response().code(204)
   }
