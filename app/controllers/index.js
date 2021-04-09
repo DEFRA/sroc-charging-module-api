@@ -5,6 +5,7 @@ const RootController = require('./root.controller')
 const RegimesController = require('./admin/regimes.controller')
 const AuthorisedSystemsController = require('./admin/authorised_systems.controller')
 const AirbrakeController = require('./admin/health/airbrake.controller')
+const CustomersController = require('./admin/customers.controller')
 const DatabaseController = require('./admin/health/database.controller')
 const TestBillRunsController = require('./admin/test/test_bill_runs.controller')
 const TestTransactionsController = require('./admin/test/test_transactions.controller')
@@ -20,6 +21,7 @@ module.exports = {
   RegimesController,
   AirbrakeController,
   AuthorisedSystemsController,
+  CustomersController,
   DatabaseController,
   TestBillRunsController,
   TestTransactionsController,
