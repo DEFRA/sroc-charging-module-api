@@ -14,6 +14,8 @@ const path = require('path')
 // Test helpers
 const { DatabaseHelper, RegimeHelper } = require('../support/helpers')
 
+const { BasePresenter } = require('../../app/presenters')
+
 const { temporaryFilePath } = require('../../config/server.config')
 
 const { CreateCustomerDetailsService } = require('../../app/services')
@@ -22,10 +24,10 @@ const { CreateCustomerDetailsService } = require('../../app/services')
 const { GenerateCustomerFileService } = require('../../app/services')
 
 describe('Generate Customer File service', () => {
-  const filename = 'test.txt'
+  const fileReference = 'nalwc50003'
+  const filename = fileReference.concat('.dat')
   const filenameWithPath = path.join(temporaryFilePath, filename)
 
-  let customer
   let regime
 
   const payload = {
@@ -45,7 +47,7 @@ describe('Generate Customer File service', () => {
     await DatabaseHelper.clean()
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    customer = await CreateCustomerDetailsService.go(payload, regime)
+    await CreateCustomerDetailsService.go(payload, regime)
   })
 
   afterEach(async () => {
@@ -53,7 +55,12 @@ describe('Generate Customer File service', () => {
   })
 
   it('creates a file with the correct content', async () => {
-    const returnedFilenameWithPath = await GenerateCustomerFileService.go(regime.id, payload.region, filename)
+    const returnedFilenameWithPath = await GenerateCustomerFileService.go(
+      regime.id,
+      payload.region,
+      filename,
+      fileReference
+    )
 
     const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
     const expectedContent = _expectedContent()
@@ -62,16 +69,57 @@ describe('Generate Customer File service', () => {
   })
 
   it('returns the filename and path', async () => {
-    const returnedFilenameWithPath = await GenerateCustomerFileService.go(regime.id, payload.region, filename)
+    const returnedFilenameWithPath = await GenerateCustomerFileService.go(
+      regime.id,
+      payload.region,
+      filename,
+      fileReference
+    )
 
     expect(returnedFilenameWithPath).to.equal(filenameWithPath)
   })
 
   function _expectedContent () {
-    const head = ['"additionalData"'].join(',').concat('\n')
-    const body = [`"${customer.id}"`, `"${payload.customerReference}"`].join(',').concat('\n')
-    const tail = ['"additionalData"'].join(',').concat('\n')
+    // Get today's date using new Date() and convert it to the format we expect using BaseBresenter._formatDate()
+    const presenter = new BasePresenter()
+    const date = presenter._formatDate(new Date())
+
+    const head = _contentLine([
+      'H',
+      '0000000',
+      'NAL',
+      payload.region,
+      'C',
+      '50003',
+      date
+    ])
+
+    const body = _contentLine([
+      'D',
+      '0000001',
+      payload.customerReference,
+      payload.customerName,
+      payload.addressLine1,
+      payload.addressLine2,
+      payload.addressLine3,
+      payload.addressLine4,
+      payload.addressLine5,
+      payload.addressLine6,
+      payload.postcode
+    ])
+
+    const tail = _contentLine([
+      'T',
+      '0000002',
+      '3'
+    ])
 
     return head.concat(body).concat(tail)
+  }
+
+  function _contentLine (contentArray) {
+    return contentArray.map(item => `"${item}"`)
+      .join(',')
+      .concat('\n')
   }
 })
