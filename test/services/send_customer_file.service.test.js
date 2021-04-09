@@ -158,9 +158,9 @@ describe('Send Customer File service', () => {
         await SendCustomerFileService.go(regime, ['A', 'W'])
 
         expect(sendStub.calledTwice).to.be.true()
-        expect(sendStub.getCall(0).firstArg).to.equal('stubFilename')
+        expect(sendStub.getCall(0).args[0]).to.equal('stubFilename')
         expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
-        expect(sendStub.getCall(1).firstArg).to.equal('stubFilename')
+        expect(sendStub.getCall(1).args[0]).to.equal('stubFilename')
         expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
       })
 
