@@ -6,6 +6,11 @@
 
 const { CustomerModel } = require('../models')
 const TransformRecordsToFileService = require('./transform_records_to_file.service')
+const {
+  CustomerFileBodyPresenter,
+  CustomerFileHeadPresenter,
+  CustomerFileTailPresenter
+} = require('../presenters')
 
 class GenerateCustomerFileService {
   /**
@@ -14,18 +19,20 @@ class GenerateCustomerFileService {
    * @param {string} regimeId Id of the regime to generate the customer file for.
    * @param {string} region The region to generate the customer file for.
    * @param {string} filename The name of the file to be generated.
+   * @param {string} fileReference The file reference to be used in the head of the file.
    * @returns {string} The path and filename of the generated file.
    */
-  static async go (regimeId, region, filename) {
+  static async go (regimeId, region, filename, fileReference) {
     const query = this._query(regimeId, region)
 
-    const additionalData = this._additionalData()
+    // Only data passed in as additionalData is available to the header
+    const additionalData = { region, fileReference }
 
     return TransformRecordsToFileService.go(
       query,
-      this._dummyHeadTailPresenter(),
-      this._dummyBodyPresenter(),
-      this._dummyHeadTailPresenter(),
+      CustomerFileHeadPresenter,
+      CustomerFileBodyPresenter,
+      CustomerFileTailPresenter,
       filename,
       additionalData
     )
@@ -33,48 +40,20 @@ class GenerateCustomerFileService {
 
   static _query (regimeId, region) {
     return CustomerModel.query()
-      .select('*')
+      .select(
+        'region',
+        'customerReference',
+        'customerName',
+        'addressLine1',
+        'addressLine2',
+        'addressLine3',
+        'addressLine4',
+        'addressLine5',
+        'addressLine6',
+        'postcode'
+      )
       .where('regimeId', regimeId)
       .where('region', region)
-  }
-
-  static _additionalData () {
-    return {
-      additionalData: 'additionalData'
-    }
-  }
-
-  static _dummyBodyPresenter () {
-    return _dummyBodyPresenterClass
-  }
-
-  static _dummyHeadTailPresenter () {
-    return _dummyHeadTailPresenterClass
-  }
-}
-
-class _dummyBodyPresenterClass {
-  constructor (data) {
-    this.data = data
-  }
-
-  go () {
-    return {
-      col01: this.data.id,
-      col02: this.data.customerReference
-    }
-  }
-}
-
-class _dummyHeadTailPresenterClass {
-  constructor (data) {
-    this.data = data
-  }
-
-  go () {
-    return {
-      col01: this.data.additionalData
-    }
   }
 }
 

@@ -36,6 +36,7 @@ class GenerateTransactionFileService {
   }
 
   static _query (billRun) {
+    // Note that we use .knexQuery() as Objection's standard .query() does not support streaming
     return TransactionModel
       .knexQuery()
       .join('invoices', 'transactions.invoiceId', 'invoices.id')
