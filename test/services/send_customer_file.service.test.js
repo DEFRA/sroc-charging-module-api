@@ -142,7 +142,7 @@ describe('Send Customer File service', () => {
     })
   })
 
-  describe('When a multiple regions are specified', () => {
+  describe('When multiple regions are specified', () => {
     describe('and a customer file is required', () => {
       it('generates a customer file', async () => {
         await SendCustomerFileService.go(regime, ['A', 'W'])
