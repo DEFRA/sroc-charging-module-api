@@ -48,7 +48,7 @@ describe('Customers controller', () => {
     Sinon.restore()
   })
 
-  describe.only('Sending customer files: PATCH /admin/{regimeId}/customers', () => {
+  describe('Sending customer files: PATCH /admin/{regimeId}/customers', () => {
     const options = token => {
       return {
         method: 'PATCH',
