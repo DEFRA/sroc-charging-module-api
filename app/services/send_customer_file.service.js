@@ -8,9 +8,7 @@ class SendCustomerFileService {
   /**
    * Placeholder service
    */
-  static async go (regime, regions, notifier) {
-    return true
-  }
+  static async go () {}
 }
 
 module.exports = SendCustomerFileService
