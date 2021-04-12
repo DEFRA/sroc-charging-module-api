@@ -19,7 +19,7 @@ const {
   TransactionHelper
 } = require('../support/helpers')
 
-const { InvoiceModel } = require('../../app/models')
+const { InvoiceModel, TransactionModel } = require('../../app/models')
 
 const { BasePresenter } = require('../../app/presenters')
 
@@ -69,6 +69,18 @@ describe('Generate Transaction File service', () => {
   it('excludes invoices without a transaction reference', async () => {
     // Remove the transaction reference
     await InvoiceModel.query().findOne({ billRunId: billRun.id }).patch({ transactionReference: null })
+    const returnedFilenameWithPath = await GenerateTransactionFileService.go(billRun, filename)
+
+    const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
+    const numberOfLines = _numberOfLines(file)
+
+    // The transaction should be excluded so only the head and tail should be written to the file
+    expect(numberOfLines).to.equal(2)
+  })
+
+  it('excludes zero-value transactions', async () => {
+    // Set the charge value to 0
+    await TransactionModel.query().findOne({ billRunId: billRun.id }).patch({ chargeValue: 0 })
     const returnedFilenameWithPath = await GenerateTransactionFileService.go(billRun, filename)
 
     const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')

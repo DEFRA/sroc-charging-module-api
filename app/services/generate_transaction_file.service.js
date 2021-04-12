@@ -70,6 +70,7 @@ class GenerateTransactionFileService {
       .orderBy('regimeValue17') // then sort by compensation charge, where non-compensation charge (ie. false) is first
       .where('transactions.billRunId', billRun.id)
       .whereNotNull('invoices.transactionReference')
+      .whereNot('chargeValue', 0)
   }
 
   static _additionalData (billRun) {
