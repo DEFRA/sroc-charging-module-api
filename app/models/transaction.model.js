@@ -56,24 +56,6 @@ class TransactionModel extends BaseModel {
       }
     }
   }
-
-  /**
-   * Modifiers allow us to reuse logic in queries, eg. to select all transactions which are not zero value:
-   *
-   * return TransactionModel.$query()
-   *   .modify('hasChargeValue')
-   */
-  static get modifiers () {
-    return {
-      /**
-       * hasChargeValue modifier selects transactions which have a charge value (ie. excludes zero-value transactions)
-       */
-      hasChargeValue (query) {
-        query
-          .whereNot('chargeValue', 0)
-      }
-    }
-  }
 }
 
 module.exports = TransactionModel
