@@ -75,8 +75,10 @@ class SendCustomerFileService {
    * Generate and send the customer file. Returns the path and filename of the generated file.
    */
   static async _generateAndSend (regime, region) {
-    const filename = await this._filename(regime, region)
-    const generatedFile = await GenerateCustomerFileService.go(regime, region, filename)
+    const fileReference = await this._fileReference(regime, region)
+    const filename = this._filename(fileReference)
+
+    const generatedFile = await GenerateCustomerFileService.go(regime.id, region, filename, fileReference)
 
     // The key is the remote path and filename in the S3 bucket, eg. 'wrls/customer/nalac50001.dat'
     const key = path.join(regime.slug, 'customer', filename)
@@ -89,8 +91,11 @@ class SendCustomerFileService {
   /**
    * Obtains a file reference for the given regime and region and returns the resulting filename
    */
-  static async _filename (regime, region) {
-    const fileReference = await NextCustomerFileReferenceService.go(regime, region)
+  static async _fileReference (regime, region) {
+    return NextCustomerFileReferenceService.go(regime, region)
+  }
+
+  static _filename (fileReference) {
     return `${fileReference}.dat`
   }
 
