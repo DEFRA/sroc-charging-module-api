@@ -75,7 +75,7 @@ describe('Send Customer File service', () => {
         await SendCustomerFileService.go(regime, ['A'])
 
         expect(generateStub.calledOnce).to.be.true()
-        expect(generateStub.getCall(0).args[0]).to.equal(regime)
+        expect(generateStub.getCall(0).args[0]).to.equal(regime.id)
         expect(generateStub.getCall(0).args[1]).to.equal('A')
       })
 
@@ -148,9 +148,9 @@ describe('Send Customer File service', () => {
         await SendCustomerFileService.go(regime, ['A', 'W'])
 
         expect(generateStub.calledTwice).to.be.true()
-        expect(generateStub.getCall(0).args[0]).to.equal(regime)
+        expect(generateStub.getCall(0).args[0]).to.equal(regime.id)
         expect(generateStub.getCall(0).args[1]).to.equal('A')
-        expect(generateStub.getCall(1).args[0]).to.equal(regime)
+        expect(generateStub.getCall(1).args[0]).to.equal(regime.id)
         expect(generateStub.getCall(1).args[1]).to.equal('W')
       })
 
