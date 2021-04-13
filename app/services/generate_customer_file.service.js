@@ -54,6 +54,7 @@ class GenerateCustomerFileService {
       )
       .where('regimeId', regimeId)
       .where('region', region)
+      .orderBy('customerReference')
   }
 }
 
