@@ -53,6 +53,16 @@ describe('Create Customer Details service', () => {
       expect(result.addressLine6).to.equal(payload.addressLine6)
       expect(result.postcode).to.equal(payload.postcode)
     })
+
+    it('overwrites a previous change for the customer', async () => {
+      await CreateCustomerDetailsService.go(payload, regime)
+      await CreateCustomerDetailsService.go({ ...payload, postcode: 'NEW_POSTCODE' }, regime)
+
+      const result = await CustomerModel.query()
+
+      expect(result.length).to.equal(1)
+      expect(result[0].postcode).to.equal('NEW_POSTCODE')
+    })
   })
 
   describe('When an invalid payload is supplied', () => {
