@@ -26,7 +26,8 @@ class SendTransactionFileService {
    * @param {module:RegimeModel} regime The regime that the bill run belongs to. The regime slug will form part of the
    * path we upload to.
    * @param {module:BillRunModel} billRun The bill run we want to send the transaction file for.
-   * @param {@module:Notifier} [notifier] Instance of `Notifier` class. Used to report any errors that occur
+   * @param {@module:Notifier} notifier Instance of `Notifier` class. We use it to log errors rather than throwing them
+   * as this service is intended to run in the background.
    */
   static async go (regime, billRun, notifier) {
     let generatedFile
