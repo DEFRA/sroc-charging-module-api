@@ -83,7 +83,7 @@ describe('Delete Bill Run service', () => {
     })
   })
 
-  describe.only('When an error occurs', () => {
+  describe('When an error occurs', () => {
     it('calls the notifier', async () => {
       Sinon.stub(DeleteBillRunService, '_deleteBillRun').throws()
       await DeleteBillRunService.go(billRun, notifierFake)
