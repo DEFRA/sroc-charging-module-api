@@ -21,6 +21,7 @@ const { DeleteBillRunService } = require('../../app/services')
 
 describe('Delete Bill Run service', () => {
   let billRun
+  let notifierFake
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
@@ -28,6 +29,9 @@ describe('Delete Bill Run service', () => {
     billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
 
     await TransactionHelper.addTransaction(billRun.id)
+
+    // Create a fake function to stand in place of Notifier.omfg()
+    notifierFake = { omfg: Sinon.fake() }
   })
 
   afterEach(async () => {
@@ -76,6 +80,16 @@ describe('Delete Bill Run service', () => {
       const transactions = await billRun.$relatedQuery('transactions')
 
       expect(transactions).to.be.empty()
+    })
+  })
+
+  describe.only('When an error occurs', () => {
+    it('calls the notifier', async () => {
+      Sinon.stub(DeleteBillRunService, '_deleteBillRun').throws()
+      await DeleteBillRunService.go(billRun, notifierFake)
+
+      expect(notifierFake.omfg.callCount).to.equal(1)
+      expect(notifierFake.omfg.firstArg).to.equal('Error deleting bill run')
     })
   })
 })
