@@ -10,7 +10,9 @@ const { raw } = require('../models/base.model')
 class DeleteInvoiceService {
   /**
    * Deletes an invoice along with its licences and transactions, and updates the figures of the bill run that the
-   * invoice belongs to. Note that the invoice will be validated to ensure it is linked to the bill run.
+   * invoice belongs to. Intended to be run as a background task by a controller, ie. called without an await. Note that
+   * the invoice will _not_ be validated to ensure it is linked to the bill run; it is expected that this will be done
+   * from the calling controller so that it can present the appropriate error to the user immediately.
    *
    * @param {module:InvoiceModel} invoice The invoice to be deleted.
    * @param {string} billRunId The id of the bill run that the invoice belongs to.
