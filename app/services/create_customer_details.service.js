@@ -33,8 +33,11 @@ class CreateCustomerDetailsService {
   }
 
   static _create (translator) {
+    // Implements UPSERT by specifying that the new data should be merged in case of a conflict
     return CustomerModel.query()
       .insert({ ...translator })
+      .onConflict('customerReference')
+      .merge()
   }
 }
 
