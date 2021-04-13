@@ -37,7 +37,6 @@ describe('Send Customer File service', () => {
   let notifierFake
 
   const payload = {
-    customerReference: 'AB12345678',
     customerName: 'CUSTOMER_NAME',
     addressLine1: 'ADDRESS_LINE_1',
     addressLine2: 'ADDRESS_LINE_2',
@@ -53,8 +52,8 @@ describe('Send Customer File service', () => {
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
 
-    await CreateCustomerDetailsService.go({ ...payload, region: 'A' }, regime)
-    await CreateCustomerDetailsService.go({ ...payload, region: 'W' }, regime)
+    await CreateCustomerDetailsService.go({ ...payload, region: 'A', customerReference: 'AA12345678' }, regime)
+    await CreateCustomerDetailsService.go({ ...payload, region: 'W', customerReference: 'WA87654321' }, regime)
 
     deleteStub = Sinon.stub(DeleteFileService, 'go').returns(true)
     generateStub = Sinon.stub(GenerateCustomerFileService, 'go').returns('stubFilename')
