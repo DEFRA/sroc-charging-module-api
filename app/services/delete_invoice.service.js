@@ -7,35 +7,37 @@
 const { BillRunModel, InvoiceModel } = require('../models')
 const { raw } = require('../models/base.model')
 
-// Files in the same folder cannot be destructured from index.js so have to be required directly
-const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill_run_invoice.service')
-
 class DeleteInvoiceService {
   /**
    * Deletes an invoice along with its licences and transactions, and updates the figures of the bill run that the
-   * invoice belongs to. Note that the invoice will be validated to ensure it is linked to the bill run.
+   * invoice belongs to. Intended to be run as a background task by a controller, ie. called without an await. Note that
+   * the invoice will _not_ be validated to ensure it is linked to the bill run; it is expected that this will be done
+   * from the calling controller so that it can present the appropriate error to the user immediately.
    *
-   * @param {string} invoiceId The id of the invoice to be deleted.
+   * @param {module:InvoiceModel} invoice The invoice to be deleted.
    * @param {string} billRunId The id of the bill run that the invoice belongs to.
    */
-  static async go (invoiceId, billRunId) {
-    const invoice = await FetchAndValidateBillRunInvoiceService.go(billRunId, invoiceId)
-    const billRunPatch = this._billRunPatch(invoice)
+  static async go (invoice, billRunId, notifier) {
+    try {
+      const billRunPatch = this._billRunPatch(invoice)
 
-    await InvoiceModel.transaction(async trx => {
-      // We only need to delete the invoice as the deletion will cascade down to the licence level, and from there down
-      // to the transaction level.
-      await InvoiceModel
-        .query(trx)
-        .deleteById(invoiceId)
+      await InvoiceModel.transaction(async trx => {
+        // We only need to delete the invoice as the deletion will cascade down to the licence level, and from there down
+        // to the transaction level.
+        await InvoiceModel
+          .query(trx)
+          .deleteById(invoice.id)
 
-      await BillRunModel
-        .query(trx)
-        .findById(billRunId)
-        .patch(billRunPatch)
+        await BillRunModel
+          .query(trx)
+          .findById(billRunId)
+          .patch(billRunPatch)
 
-      await this._setBillRunStatusIfEmpty(billRunId, trx)
-    })
+        await this._setBillRunStatusIfEmpty(billRunId, trx)
+      })
+    } catch (error) {
+      notifier.omfg('Error deleting invoice', { id: invoice.id, error })
+    }
   }
 
   /**
