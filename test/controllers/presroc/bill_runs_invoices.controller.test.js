@@ -22,7 +22,9 @@ const {
   TransactionHelper
 } = require('../../support/helpers')
 
-const { DeleteInvoiceService } = require('../../../app/services')
+const Boom = require('@hapi/boom')
+
+const { DeleteInvoiceService, FetchAndValidateBillRunInvoiceService } = require('../../../app/services')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -66,12 +68,61 @@ describe('Presroc Invoices controller', () => {
     }
 
     describe('When the request is valid', () => {
-      it('returns a 204 response', async () => {
-        Sinon.stub(DeleteInvoiceService, 'go').returns()
+      let fetchStub
+      let deleteStub
 
+      before(async () => {
+        fetchStub = Sinon.stub(FetchAndValidateBillRunInvoiceService, 'go').returns()
+        deleteStub = Sinon.stub(DeleteInvoiceService, 'go').returns()
+      })
+
+      after(async () => {
+        fetchStub.restore()
+        deleteStub.restore()
+      })
+
+      it('returns a 204 response', async () => {
         const response = await server.inject(options(authToken, billRun.id, 'INVOICE'))
 
         expect(response.statusCode).to.equal(204)
+      })
+    })
+
+    describe('When the request is invalid', () => {
+      describe('because the invoice does not exist', () => {
+        let fetchStub
+
+        before(async () => {
+          fetchStub = Sinon.stub(FetchAndValidateBillRunInvoiceService, 'go').throws(Boom.notFound())
+        })
+
+        after(async () => {
+          fetchStub.restore()
+        })
+
+        it('returns error status 404', async () => {
+          const response = await server.inject(options(authToken, billRun.id, 'INVOICE'))
+
+          expect(response.statusCode).to.equal(404)
+        })
+      })
+
+      describe('because the invoice is not linked to the bill run', () => {
+        let fetchStub
+
+        before(async () => {
+          fetchStub = Sinon.stub(FetchAndValidateBillRunInvoiceService, 'go').throws(Boom.conflict())
+        })
+
+        after(async () => {
+          fetchStub.restore()
+        })
+
+        it('returns error status 409', async () => {
+          const response = await server.inject(options(authToken, billRun.id, 'INVOICE'))
+
+          expect(response.statusCode).to.equal(409)
+        })
       })
     })
   })

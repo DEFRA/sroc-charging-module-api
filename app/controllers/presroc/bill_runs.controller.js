@@ -55,7 +55,7 @@ class BillRunsController {
   }
 
   static async delete (req, h) {
-    DeleteBillRunService.go(req.app.billRun)
+    DeleteBillRunService.go(req.app.billRun, req.app.notifier)
 
     return h.response().code(204)
   }
