@@ -79,6 +79,32 @@ describe('Generate Customer File service', () => {
     expect(returnedFilenameWithPath).to.equal(filenameWithPath)
   })
 
+  it('creates a file sorted by customer reference', async () => {
+    await CreateCustomerDetailsService.go({ ...payload, customerReference: 'CB12345678' }, regime)
+    await CreateCustomerDetailsService.go({ ...payload, customerReference: 'BB12345678' }, regime)
+
+    const returnedFilenameWithPath = await GenerateCustomerFileService.go(
+      regime.id,
+      payload.region,
+      filename,
+      fileReference
+    )
+
+    const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
+
+    const lines = file
+      // Split the file into an array of lines
+      .split('\n')
+      // Each line is split into an array of items
+      .map(line => line.split(','))
+      // We filter out any lines which aren't data lines
+      .filter(line => line[0] === '"D"')
+
+    expect(lines[0][2]).to.equal('"AB12345678"')
+    expect(lines[1][2]).to.equal('"BB12345678"')
+    expect(lines[2][2]).to.equal('"CB12345678"')
+  })
+
   function _expectedContent () {
     // Get today's date using new Date() and convert it to the format we expect using BaseBresenter._formatDate()
     const presenter = new BasePresenter()
