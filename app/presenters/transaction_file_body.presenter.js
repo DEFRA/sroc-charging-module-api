@@ -74,11 +74,12 @@ class TransactionFileBodyPresenter extends BasePresenter {
 
   /**
    * Several fields rely on whether or not this transaction is a compensation charge. This is held in regimeValue17 as a
-   * string so we add a helper function to return it as a boolean
+   * string so we add a helper function to return it as a boolean.
    */
   _compensationCharge (data) {
-    // We don't expect to store anything other than lower case but we change case just to be safe
-    return data.regimeValue17.toLowerCase() === 'true'
+    // We don't expect to store anything other than lower case but we change case just to be safe. We use optional
+    // chaining as regimeValue17 is null for minimum charge transactions.
+    return data.regimeValue17?.toLowerCase() === 'true'
   }
 
   /**

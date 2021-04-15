@@ -165,9 +165,10 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns correct values when minimum charge adjustment is true', () => {
+    // regimeValue17 is null for minimum charge transactions
     const presenter = new TransactionFileBodyPresenter({
       ...data,
-      regimeValue17: 'false',
+      regimeValue17: null,
       minimumChargeAdjustment: true
     })
 
