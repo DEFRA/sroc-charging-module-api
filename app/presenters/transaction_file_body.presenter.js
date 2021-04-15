@@ -73,18 +73,27 @@ class TransactionFileBodyPresenter extends BasePresenter {
   }
 
   /**
-   * Returns an empty string if this is a compensation charge, ie. if regimeValue17 is `true`
-   * Also returns an empty string if this is a minimum charge adjustment
+   * Several fields rely on whether or not this transaction is a compensation charge. This is held in regimeValue17 as a
+   * string so we add a helper function to return it as a boolean
    */
-  _blankIfCompensationChargeOrMinimumCharge (value, data) {
-    return data.regimeValue17 || data.minimumChargeAdjustment ? '' : value
+  _compensationCharge (data) {
+    // We don't expect to store anything other than lower case but we change case just to be safe
+    return data.regimeValue17.toLowerCase() === 'true'
   }
 
   /**
-   * Returns an empty string if this is not a compensation charge, ie. if regimeValue17 is `false`
+   * Returns an empty string if this is a compensation charge
+   * Also returns an empty string if this is a minimum charge adjustment
+   */
+  _blankIfCompensationChargeOrMinimumCharge (value, data) {
+    return this._compensationCharge(data) || data.minimumChargeAdjustment ? '' : value
+  }
+
+  /**
+   * Returns an empty string if this is not a compensation charge
    */
   _blankIfNotCompensationCharge (value, data) {
-    return data.regimeValue17 ? value : ''
+    return this._compensationCharge(data) ? value : ''
   }
 
   /**
