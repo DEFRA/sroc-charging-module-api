@@ -177,10 +177,14 @@ class CalculateChargeTranslator extends BaseTranslator {
    *
    * For example, if billable days is 12 and authorised days is 6 it will return `012/006`.
    *
+   * The exception is if this is a two-part tariff (ie. regimeValue16 is true); in this case, it returns `000/000`.
+   *
    * @returns {String} Billable days and authorised days as a formatted string
    */
   _prorataDays () {
-    return `${this._padNumber(this.regimeValue4)}/${this._padNumber(this.regimeValue5)}`
+    return this.regimeValue16
+      ? '000/000'
+      : `${this._padNumber(this.regimeValue4)}/${this._padNumber(this.regimeValue5)}`
   }
 
   /**
