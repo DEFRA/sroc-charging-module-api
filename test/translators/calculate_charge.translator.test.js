@@ -79,6 +79,19 @@ describe('Calculate Charge translator', () => {
 
       expect(testTranslator.lineAttr3).to.equal('008/016')
     })
+
+    it("correctly uses '000/000' for a 2-part tariff", async () => {
+      const proraratPayload = {
+        ...payload,
+        billableDays: 8,
+        authorisedDays: 16,
+        twoPartTariff: true
+      }
+
+      const testTranslator = new CalculateChargeTranslator(data(proraratPayload))
+
+      expect(testTranslator.lineAttr3).to.equal('000/000')
+    })
   })
 
   describe('calculating the financial year', () => {
