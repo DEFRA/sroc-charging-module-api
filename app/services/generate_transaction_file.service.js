@@ -60,6 +60,7 @@ class GenerateTransactionFileService {
         'lineAttr10',
         'lineAttr13',
         'lineAttr14',
+        'regimeValue17',
         'minimumChargeAdjustment',
         'invoices.transactionReference',
         'invoices.creditLineValue',
