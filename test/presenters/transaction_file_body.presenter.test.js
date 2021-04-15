@@ -37,6 +37,7 @@ describe('Transaction File Body Presenter', () => {
     lineAttr10: 'TEST',
     lineAttr13: '0',
     lineAttr14: '0',
+    // Note that the generic field regimeValue17 stores this as a string, not a boolean
     regimeValue17: 'false',
     minimumChargeAdjustment: false
   }
@@ -116,7 +117,12 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns correct values when compensation charge and minimum charge adjustment are false', () => {
-    const presenter = new TransactionFileBodyPresenter({ ...data, regimeValue17: false, minimumChargeAdjustment: false })
+    const presenter = new TransactionFileBodyPresenter({
+      ...data,
+      regimeValue17: 'false',
+      minimumChargeAdjustment: false
+    })
+
     const result = presenter.go()
 
     expect(result.col26).to.equal(data.lineAttr1)
@@ -135,7 +141,12 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns correct values when compensation charge is true', () => {
-    const presenter = new TransactionFileBodyPresenter({ ...data, regimeValue17: true, minimumChargeAdjustment: false })
+    const presenter = new TransactionFileBodyPresenter({
+      ...data,
+      regimeValue17: 'true',
+      minimumChargeAdjustment: false
+    })
+
     const result = presenter.go()
 
     expect(result.col26).to.equal('')
@@ -154,7 +165,12 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns correct values when minimum charge adjustment is true', () => {
-    const presenter = new TransactionFileBodyPresenter({ ...data, regimeValue17: false, minimumChargeAdjustment: true })
+    const presenter = new TransactionFileBodyPresenter({
+      ...data,
+      regimeValue17: 'false',
+      minimumChargeAdjustment: true
+    })
+
     const result = presenter.go()
 
     expect(result.col26).to.equal('')
@@ -173,7 +189,12 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns the correct value for col30', () => {
-    const presenter = new TransactionFileBodyPresenter({ ...data, regimeValue17: false, minimumChargeAdjustment: false })
+    const presenter = new TransactionFileBodyPresenter({
+      ...data,
+      regimeValue17: 'false',
+      minimumChargeAdjustment: false
+    })
+
     const result = presenter.go()
 
     expect(result.col30).to.equal('1.23 Ml')
