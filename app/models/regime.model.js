@@ -35,6 +35,14 @@ class RegimeModel extends BaseModel {
           to: 'billRuns.regimeId'
         }
       },
+      customerFiles: {
+        relation: Model.HasManyRelation,
+        modelClass: 'customer_file.model',
+        join: {
+          from: 'regimes.id',
+          to: 'customerFiles.regimeId'
+        }
+      },
       sequenceCounters: {
         relation: Model.ManyToManyRelation,
         modelClass: 'sequence_counters.model',
