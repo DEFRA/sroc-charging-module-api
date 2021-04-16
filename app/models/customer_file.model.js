@@ -1,32 +1,32 @@
 'use strict'
 
 /**
- * @module CustomerModel
+ * @module CustomerFileModel
  */
 
 const { Model } = require('objection')
 const BaseModel = require('./base.model')
 
-class CustomerModel extends BaseModel {
+class CustomerFileModel extends BaseModel {
   static get tableName () {
-    return 'customers'
+    return 'customer_files'
   }
 
   static get relationMappings () {
     return {
-      customerFile: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'customer_file.model',
+      customers: {
+        relation: Model.HasManyRelation,
+        modelClass: 'customer.model',
         join: {
-          from: 'customers.customerFileId',
-          to: 'customerFiles.id'
+          from: 'customerFiles.id',
+          to: 'customers.customerFileId'
         }
       },
       regime: {
         relation: Model.BelongsToOneRelation,
         modelClass: 'regime.model',
         join: {
-          from: 'customers.regimeId',
+          from: 'customerFiles.regimeId',
           to: 'regimes.id'
         }
       }
@@ -34,4 +34,4 @@ class CustomerModel extends BaseModel {
   }
 }
 
-module.exports = CustomerModel
+module.exports = CustomerFileModel
