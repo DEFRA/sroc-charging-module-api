@@ -43,8 +43,8 @@ class SendCustomerFileService {
       try {
         const fileNeeded = await this._checkIfFileNeeded(regime, region)
         if (!fileNeeded) {
-          // No file is needed for this region so break and move on to the next region
-          break
+          // No file is needed for this region so continue to the next region
+          continue
         }
 
         generatedFile = await this._generateAndSend(regime, region)
