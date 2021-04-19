@@ -70,25 +70,23 @@ describe('Send Customer File service', () => {
 
   describe('When a single region is specified', () => {
     describe('and a customer file is required', () => {
-      it('generates a customer file', async () => {
+      beforeEach(async () => {
         await SendCustomerFileService.go(regime, ['A'])
+      })
 
+      it('generates a customer file', async () => {
         expect(generateStub.calledOnce).to.be.true()
         expect(generateStub.getCall(0).args[0]).to.equal(regime.id)
         expect(generateStub.getCall(0).args[1]).to.equal('A')
       })
 
       it('sends the customer file', async () => {
-        await SendCustomerFileService.go(regime, ['A'])
-
         expect(sendStub.calledOnce).to.be.true()
         expect(sendStub.getCall(0).firstArg).to.equal('stubFilename')
         expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
       })
 
       it('clears the correct region customers from the customer table', async () => {
-        await SendCustomerFileService.go(regime, ['A'])
-
         const customersRegionA = await CustomerModel.query()
           .select('id')
           .where('region', 'A')
@@ -107,8 +105,6 @@ describe('Send Customer File service', () => {
         })
 
         it('deletes the file', async () => {
-          await SendCustomerFileService.go(regime, ['A'])
-
           expect(deleteStub.calledOnce).to.equal(true)
         })
       })
@@ -119,33 +115,33 @@ describe('Send Customer File service', () => {
         })
 
         it("doesn't delete the file", async () => {
-          await SendCustomerFileService.go(regime, ['A'])
-
           expect(deleteStub.called).to.equal(false)
         })
       })
     })
 
     describe("and a customer file isn't required", () => {
-      it("doesn't try to generate a file", async () => {
-        await SendCustomerFileService.go(regime, ['X', 'Y'])
+      beforeEach(async () => {
+        await SendCustomerFileService.go(regime, ['X'])
+      })
 
+      it("doesn't try to generate a file", async () => {
         expect(generateStub.notCalled).to.be.true()
       })
 
       it("doesn't try to send the file", async () => {
-        await SendCustomerFileService.go(regime, ['X', 'Y'])
-
         expect(sendStub.notCalled).to.be.true()
       })
     })
   })
 
   describe('When multiple regions are specified', () => {
-    describe('and a customer file is required', () => {
-      it('generates a customer file', async () => {
+    describe('and a customer file is required for each region', () => {
+      beforeEach(async () => {
         await SendCustomerFileService.go(regime, ['A', 'W'])
+      })
 
+      it('generates a customer file', async () => {
         expect(generateStub.calledTwice).to.be.true()
         expect(generateStub.getCall(0).args[0]).to.equal(regime.id)
         expect(generateStub.getCall(0).args[1]).to.equal('A')
@@ -154,8 +150,6 @@ describe('Send Customer File service', () => {
       })
 
       it('sends the customer file', async () => {
-        await SendCustomerFileService.go(regime, ['A', 'W'])
-
         expect(sendStub.calledTwice).to.be.true()
         expect(sendStub.getCall(0).args[0]).to.equal('stubFilename')
         expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
@@ -164,8 +158,6 @@ describe('Send Customer File service', () => {
       })
 
       it('clears the correct region customers from the customer table', async () => {
-        await SendCustomerFileService.go(regime, ['A', 'W'])
-
         const customers = await CustomerModel.query()
           .select('id')
 
@@ -178,8 +170,6 @@ describe('Send Customer File service', () => {
         })
 
         it('deletes the file', async () => {
-          await SendCustomerFileService.go(regime, ['A', 'W'])
-
           expect(deleteStub.calledTwice).to.equal(true)
         })
       })
@@ -190,23 +180,70 @@ describe('Send Customer File service', () => {
         })
 
         it("doesn't delete the file", async () => {
-          await SendCustomerFileService.go(regime, ['A', 'W'])
-
           expect(deleteStub.called).to.equal(false)
         })
       })
     })
 
-    describe("and a customer file isn't required", () => {
-      it("doesn't try to generate a file", async () => {
-        await SendCustomerFileService.go(regime, ['X', 'Y'])
+    describe('and a customer file is only required for some regions', () => {
+      beforeEach(async () => {
+        await SendCustomerFileService.go(regime, ['A', 'B', 'W'])
+      })
 
+      it('generates all required customer files', async () => {
+        expect(generateStub.calledTwice).to.be.true()
+        expect(generateStub.getCall(0).args[0]).to.equal(regime.id)
+        expect(generateStub.getCall(0).args[1]).to.equal('A')
+        expect(generateStub.getCall(1).args[0]).to.equal(regime.id)
+        expect(generateStub.getCall(1).args[1]).to.equal('W')
+      })
+
+      it('sends all required customer files', async () => {
+        expect(sendStub.calledTwice).to.be.true()
+        expect(sendStub.getCall(0).args[0]).to.equal('stubFilename')
+        expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
+        expect(sendStub.getCall(1).args[0]).to.equal('stubFilename')
+        expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
+      })
+
+      it('clears the correct region customers from the customer table', async () => {
+        const customers = await CustomerModel.query()
+          .select('id')
+
+        expect(customers).to.be.empty()
+      })
+
+      describe('and removeTemporary files is set to `true`', () => {
+        before(async () => {
+          Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(true)
+        })
+
+        it('deletes the file', async () => {
+          expect(deleteStub.calledTwice).to.equal(true)
+        })
+      })
+
+      describe('and removeTemporary files is set to `false`', () => {
+        before(async () => {
+          Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(false)
+        })
+
+        it("doesn't delete the file", async () => {
+          expect(deleteStub.called).to.equal(false)
+        })
+      })
+    })
+
+    describe("and a customer file isn't required for any region", () => {
+      beforeEach(async () => {
+        await SendCustomerFileService.go(regime, ['X', 'Y'])
+      })
+
+      it("doesn't try to generate a file", async () => {
         expect(generateStub.notCalled).to.be.true()
       })
 
       it("doesn't try to send a file", async () => {
-        await SendCustomerFileService.go(regime, ['X', 'Y'])
-
         expect(sendStub.notCalled).to.be.true()
       })
     })
