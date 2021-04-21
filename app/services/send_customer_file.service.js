@@ -26,9 +26,11 @@ class SendCustomerFileService {
    *
    * For each given region it:
    * - Checks if a file is needed (ie. if there are any customer changes in the db for the given regime and region);
+   * - Creates an appropriate entry in the customer_files table and sets the status to `pending`;
    * - Calls GenerateCustomerFileService to generate the customer file;
    * - Calls SendFileToS3Service to send the customer file to the S3 bucket;
    * - Deletes the customer records for the regime and region from the db;
+   * - Sets the customer_files record status to `exported` and exportedDate to the current date;
    * - Deletes the file if ServerConfig.removeTemporaryFiles is set to `true`.
    *
    * @param {module:RegimeModel} regime The regime that the customer file is to be generated for.
