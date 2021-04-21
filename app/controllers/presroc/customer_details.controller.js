@@ -6,7 +6,7 @@ class PresrocCustomerDetailsController {
   static async create (req, h) {
     await CreateCustomerDetailsService.go(req.payload, req.app.regime)
 
-    return h.response().code(204)
+    return h.response().code(201)
   }
 }
 
