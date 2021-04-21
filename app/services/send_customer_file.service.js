@@ -54,6 +54,8 @@ class SendCustomerFileService {
         if (this._removeTemporaryFiles()) {
           await DeleteFileService.go(generatedFile)
         }
+
+        notifier.omg('Completed sending customer file', { regime: regime.slug, region, generatedFile })
       } catch (error) {
         notifier.omfg(
           `Error sending customer file for ${regime.slug} ${region}`,
