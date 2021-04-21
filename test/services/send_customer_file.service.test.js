@@ -261,7 +261,7 @@ describe('Send Customer File service', () => {
       await SendCustomerFileService.go(regime, ['A'], notifierFake)
 
       expect(notifierFake.omfg.callCount).to.equal(1)
-      expect(notifierFake.omfg.firstArg).to.equal('Error sending customer file')
+      expect(notifierFake.omfg.firstArg).to.equal(`Error sending customer file for ${regime.slug} A`)
     })
   })
 })

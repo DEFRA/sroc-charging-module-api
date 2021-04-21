@@ -55,7 +55,10 @@ class SendCustomerFileService {
           await DeleteFileService.go(generatedFile)
         }
       } catch (error) {
-        notifier.omfg('Error sending customer file', { generatedFile, error })
+        notifier.omfg(
+          `Error sending customer file for ${regime.slug} ${region}`,
+          { regime: regime.slug, region, generatedFile, error }
+        )
       }
     }
   }
