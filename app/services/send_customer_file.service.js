@@ -115,7 +115,7 @@ class SendCustomerFileService {
   /**
    * Generate and send the customer file. Returns the path and filename of the generated file.
    */
-  static async _generateAndSend (regime, region, fileReference, customerFile) {
+  static async _generateAndSend (regime, region, fileReference) {
     const filename = this._filename(fileReference)
 
     const generatedFile = await GenerateCustomerFileService.go(regime.id, region, filename, fileReference)
