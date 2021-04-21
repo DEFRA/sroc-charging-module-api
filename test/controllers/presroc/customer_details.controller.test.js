@@ -65,7 +65,7 @@ describe('Customer Details controller', () => {
         // We can pass an empty payload as we've stubbed the service
         const response = await server.inject(options(authToken, {}))
 
-        expect(response.statusCode).to.equal(204)
+        expect(response.statusCode).to.equal(201)
       })
     })
   })
