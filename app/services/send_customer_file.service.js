@@ -9,7 +9,7 @@ const path = require('path')
 const { ServerConfig } = require('../../config')
 const { removeTemporaryFiles } = ServerConfig
 
-const { CustomerModel } = require('../../app/models')
+const { CustomerFileModel, CustomerModel } = require('../../app/models')
 
 const GenerateCustomerFileService = require('./generate_customer_file.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
@@ -47,9 +47,17 @@ class SendCustomerFileService {
           continue
         }
 
-        generatedFile = await this._generateAndSend(regime, region)
+        const fileReference = await this._fileReference(regime, region)
+
+        const customerFile = await this._createCustomerFile(regime.id, region, fileReference)
+
+        await this._setPendingStatus(customerFile)
+
+        generatedFile = await this._generateAndSend(regime, region, fileReference)
 
         await this._clearCustomerTable(regime, region)
+
+        await this._setExportedStatusAndDate(customerFile)
 
         if (this._removeTemporaryFiles()) {
           await DeleteFileService.go(generatedFile)
@@ -73,10 +81,39 @@ class SendCustomerFileService {
   }
 
   /**
+   * Creates and returns a record in the customer_file table
+   */
+  static async _createCustomerFile (regimeId, region, fileReference) {
+    return CustomerFileModel.query().insert({
+      regimeId,
+      region,
+      fileReference
+    })
+  }
+
+  /**
+   * Sets the status of a customer file to 'pending'
+   */
+  static async _setPendingStatus (customerFile) {
+    await customerFile.$query()
+      .patch({ status: 'pending' })
+  }
+
+  /**
+   * Sets the status of a customer file to 'exported' and sets exportDate to the current date
+   */
+  static async _setExportedStatusAndDate (customerFile) {
+    await customerFile.$query()
+      .patch({
+        status: 'exported',
+        exportDate: new Date().toISOString()
+      })
+  }
+
+  /**
    * Generate and send the customer file. Returns the path and filename of the generated file.
    */
-  static async _generateAndSend (regime, region) {
-    const fileReference = await this._fileReference(regime, region)
+  static async _generateAndSend (regime, region, fileReference, customerFile) {
     const filename = this._filename(fileReference)
 
     const generatedFile = await GenerateCustomerFileService.go(regime.id, region, filename, fileReference)

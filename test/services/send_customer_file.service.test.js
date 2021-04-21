@@ -14,7 +14,7 @@ const {
   RegimeHelper
 } = require('../support/helpers')
 
-const { CustomerModel } = require('../../app/models')
+const { CustomerFileModel, CustomerModel } = require('../../app/models')
 
 const { CreateCustomerDetailsService } = require('../../app/services')
 
@@ -35,6 +35,7 @@ describe('Send Customer File service', () => {
   let generateStub
   let sendStub
   let notifierFake
+  let querySpy
 
   const payload = {
     customerName: 'CUSTOMER_NAME',
@@ -62,6 +63,8 @@ describe('Send Customer File service', () => {
 
     // Create a fake function to stand in place of Notifier.omfg()
     notifierFake = { omfg: Sinon.fake() }
+
+    querySpy = Sinon.spy(CustomerFileModel, 'query')
   })
 
   afterEach(() => {
@@ -116,6 +119,52 @@ describe('Send Customer File service', () => {
 
         it("doesn't delete the file", async () => {
           expect(deleteStub.called).to.equal(false)
+        })
+      })
+
+      describe('it creates an entry in the customer_files table', () => {
+        it('has the correct details', async () => {
+          const customerFile = await CustomerFileModel.query().first()
+
+          expect(customerFile.regimeId).to.equal(regime.id)
+          expect(customerFile.region).to.equal('A')
+          expect(customerFile.fileReference).to.equal('nalac50001')
+        })
+
+        it("sets the status to 'pending' during file generaton", async () => {
+          /**
+           * Iterate over each query call to get the underlying SQL query:
+           *   .getCall gives us the given call
+           *   The Objection function we spy on returns a query object so we get the returnValue
+           *   .toKnexQuery() gives us the underlying Knex query
+           *   .toString() gives us the SQL query as a string
+           *
+           * Finally, we push query strings to the queries array if they set the status to 'pending'.
+           */
+          const queries = []
+          for (let call = 0; call < querySpy.callCount; call++) {
+            const queryString = querySpy.getCall(call).returnValue.toKnexQuery().toString()
+            if (queryString.includes('set "status" = \'pending\'')) {
+              queries.push(queryString)
+            }
+          }
+
+          expect(queries.length).to.equal(1)
+        })
+
+        it("sets the status to 'exported' after exporting", async () => {
+          const customerFile = await CustomerFileModel.query().first()
+
+          expect(customerFile.status).to.equal('exported')
+        })
+
+        it('sets the date after exporting', async () => {
+          const customerFile = await CustomerFileModel.query().first()
+          const exportedDate = new Date(customerFile.exportDate)
+
+          expect(exportedDate.getDate()).to.equal(new Date().getDate())
+          expect(exportedDate.getMonth()).to.equal(new Date().getMonth())
+          expect(exportedDate.getFullYear()).to.equal(new Date().getFullYear())
         })
       })
     })
@@ -183,6 +232,60 @@ describe('Send Customer File service', () => {
           expect(deleteStub.called).to.equal(false)
         })
       })
+
+      describe('it creates an entry in the customer_files table', () => {
+        it('has the correct details', async () => {
+          const customerFiles = await CustomerFileModel.query()
+
+          expect(customerFiles[0].regimeId).to.equal(regime.id)
+          expect(customerFiles[0].region).to.equal('A')
+          expect(customerFiles[0].fileReference).to.equal('nalac50001')
+
+          expect(customerFiles[1].regimeId).to.equal(regime.id)
+          expect(customerFiles[1].region).to.equal('W')
+          expect(customerFiles[1].fileReference).to.equal('nalwc50001')
+        })
+
+        it("sets the status to 'pending' during file generaton", async () => {
+          /**
+           * Iterate over each query call to get the underlying SQL query:
+           *   .getCall gives us the given call
+           *   The Objection function we spy on returns a query object so we get the returnValue
+           *   .toKnexQuery() gives us the underlying Knex query
+           *   .toString() gives us the SQL query as a string
+           *
+           * Finally, we push query strings to the queries array if they set the status to 'pending'.
+           */
+          const queries = []
+          for (let call = 0; call < querySpy.callCount; call++) {
+            const queryString = querySpy.getCall(call).returnValue.toKnexQuery().toString()
+            if (queryString.includes('set "status" = \'pending\'')) {
+              queries.push(queryString)
+            }
+          }
+
+          expect(queries.length).to.equal(2)
+        })
+
+        it("sets the status to 'exported' after exporting", async () => {
+          const customerFiles = await CustomerFileModel.query()
+
+          expect(customerFiles[0].status).to.equal('exported')
+          expect(customerFiles[1].status).to.equal('exported')
+        })
+
+        it('sets the date after exporting', async () => {
+          const customerFiles = await CustomerFileModel.query()
+          const exportedDates = customerFiles.map(file => new Date(file.exportDate))
+
+          expect(exportedDates[0].getDate()).to.equal(new Date().getDate())
+          expect(exportedDates[0].getMonth()).to.equal(new Date().getMonth())
+          expect(exportedDates[0].getFullYear()).to.equal(new Date().getFullYear())
+          expect(exportedDates[1].getDate()).to.equal(new Date().getDate())
+          expect(exportedDates[1].getMonth()).to.equal(new Date().getMonth())
+          expect(exportedDates[1].getFullYear()).to.equal(new Date().getFullYear())
+        })
+      })
     })
 
     describe('and a customer file is only required for some regions', () => {
@@ -230,6 +333,60 @@ describe('Send Customer File service', () => {
 
         it("doesn't delete the file", async () => {
           expect(deleteStub.called).to.equal(false)
+        })
+      })
+
+      describe('it creates an entry in the customer_files table', () => {
+        it('has the correct details', async () => {
+          const customerFiles = await CustomerFileModel.query()
+
+          expect(customerFiles[0].regimeId).to.equal(regime.id)
+          expect(customerFiles[0].region).to.equal('A')
+          expect(customerFiles[0].fileReference).to.equal('nalac50001')
+
+          expect(customerFiles[1].regimeId).to.equal(regime.id)
+          expect(customerFiles[1].region).to.equal('W')
+          expect(customerFiles[1].fileReference).to.equal('nalwc50001')
+        })
+
+        it("sets the status to 'pending' during file generaton", async () => {
+          /**
+           * Iterate over each query call to get the underlying SQL query:
+           *   .getCall gives us the given call
+           *   The Objection function we spy on returns a query object so we get the returnValue
+           *   .toKnexQuery() gives us the underlying Knex query
+           *   .toString() gives us the SQL query as a string
+           *
+           * Finally, we push query strings to the queries array if they set the status to 'pending'.
+           */
+          const queries = []
+          for (let call = 0; call < querySpy.callCount; call++) {
+            const queryString = querySpy.getCall(call).returnValue.toKnexQuery().toString()
+            if (queryString.includes('set "status" = \'pending\'')) {
+              queries.push(queryString)
+            }
+          }
+
+          expect(queries.length).to.equal(2)
+        })
+
+        it("sets the status to 'exported' after exporting", async () => {
+          const customerFiles = await CustomerFileModel.query()
+
+          expect(customerFiles[0].status).to.equal('exported')
+          expect(customerFiles[1].status).to.equal('exported')
+        })
+
+        it('sets the date after exporting', async () => {
+          const customerFiles = await CustomerFileModel.query()
+          const exportedDates = customerFiles.map(file => new Date(file.exportDate))
+
+          expect(exportedDates[0].getDate()).to.equal(new Date().getDate())
+          expect(exportedDates[0].getMonth()).to.equal(new Date().getMonth())
+          expect(exportedDates[0].getFullYear()).to.equal(new Date().getFullYear())
+          expect(exportedDates[1].getDate()).to.equal(new Date().getDate())
+          expect(exportedDates[1].getMonth()).to.equal(new Date().getMonth())
+          expect(exportedDates[1].getFullYear()).to.equal(new Date().getFullYear())
         })
       })
     })
