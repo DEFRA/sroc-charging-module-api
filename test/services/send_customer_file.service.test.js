@@ -122,7 +122,7 @@ describe('Send Customer File service', () => {
         })
       })
 
-      describe('it creates an entry in the customer_files table', () => {
+      describe("and the 'customer_files' record it creates", () => {
         it('has the correct details', async () => {
           const customerFile = await CustomerFileModel.query().first()
 
@@ -131,7 +131,7 @@ describe('Send Customer File service', () => {
           expect(customerFile.fileReference).to.equal('nalac50001')
         })
 
-        it("sets the status to 'pending' during file generaton", async () => {
+        it("sets its status to 'pending' during file generation", async () => {
           /**
            * Iterate over each query call to get the underlying SQL query:
            *   .getCall gives us the given call
@@ -152,13 +152,13 @@ describe('Send Customer File service', () => {
           expect(queries.length).to.equal(1)
         })
 
-        it("sets the status to 'exported' after exporting", async () => {
+        it("sets its status to 'exported' after exporting", async () => {
           const customerFile = await CustomerFileModel.query().first()
 
           expect(customerFile.status).to.equal('exported')
         })
 
-        it('sets the date after exporting', async () => {
+        it('sets its date after exporting', async () => {
           const customerFile = await CustomerFileModel.query().first()
           const exportedDate = new Date(customerFile.exportedAt)
 
@@ -232,8 +232,8 @@ describe('Send Customer File service', () => {
         })
       })
 
-      describe('it creates an entry in the customer_files table', () => {
-        it('has the correct details', async () => {
+      describe("and the 'customer_files' record it creates", () => {
+        it('have the correct details', async () => {
           const customerFiles = await CustomerFileModel.query()
 
           expect(customerFiles[0].regimeId).to.equal(regime.id)
@@ -245,7 +245,7 @@ describe('Send Customer File service', () => {
           expect(customerFiles[1].fileReference).to.equal('nalwc50001')
         })
 
-        it("sets the status to 'pending' during file generaton", async () => {
+        it("have a status of 'pending' during file generation", async () => {
           /**
            * Iterate over each query call to get the underlying SQL query:
            *   .getCall gives us the given call
@@ -266,14 +266,14 @@ describe('Send Customer File service', () => {
           expect(queries.length).to.equal(2)
         })
 
-        it("sets the status to 'exported' after exporting", async () => {
+        it("have a status of 'exported' after exporting", async () => {
           const customerFiles = await CustomerFileModel.query()
 
           expect(customerFiles[0].status).to.equal('exported')
           expect(customerFiles[1].status).to.equal('exported')
         })
 
-        it('sets the date after exporting', async () => {
+        it('have the date set after exporting', async () => {
           const customerFiles = await CustomerFileModel.query()
           const exportedDates = customerFiles.map(file => new Date(file.exportedAt))
 
@@ -333,8 +333,8 @@ describe('Send Customer File service', () => {
         })
       })
 
-      describe('it creates an entry in the customer_files table', () => {
-        it('has the correct details', async () => {
+      describe("and the 'customer_files' records it creates", () => {
+        it('have the correct details', async () => {
           const customerFiles = await CustomerFileModel.query()
 
           expect(customerFiles[0].regimeId).to.equal(regime.id)
@@ -346,7 +346,7 @@ describe('Send Customer File service', () => {
           expect(customerFiles[1].fileReference).to.equal('nalwc50001')
         })
 
-        it("sets the status to 'pending' during file generaton", async () => {
+        it("have a status of 'pending' during file generation", async () => {
           /**
            * Iterate over each query call to get the underlying SQL query:
            *   .getCall gives us the given call
@@ -367,14 +367,14 @@ describe('Send Customer File service', () => {
           expect(queries.length).to.equal(2)
         })
 
-        it("sets the status to 'exported' after exporting", async () => {
+        it("have a status of 'exported' after exporting", async () => {
           const customerFiles = await CustomerFileModel.query()
 
           expect(customerFiles[0].status).to.equal('exported')
           expect(customerFiles[1].status).to.equal('exported')
         })
 
-        it('sets the date after exporting', async () => {
+        it('have the date set after exporting', async () => {
           const customerFiles = await CustomerFileModel.query()
           const exportedDates = customerFiles.map(file => new Date(file.exportedAt))
 
