@@ -183,4 +183,20 @@ describe('Presroc Invoices controller', () => {
       })
     })
   })
+
+  describe('Rebill bill run invoice: GET /v2/{regimeId}/bill-runs/{billRunId}/invoice/{invoiceId}/rebill', () => {
+    const options = (token, billRunId, invoiceId) => {
+      return {
+        method: 'PATCH',
+        url: `/v2/wrls/bill-runs/${billRunId}/invoices/${invoiceId}/rebill`,
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    it('returns success status 204', async () => {
+      const response = await server.inject(options(authToken, billRun.id))
+
+      expect(response.statusCode).to.equal(204)
+    })
+  })
 })

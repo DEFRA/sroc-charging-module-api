@@ -22,6 +22,10 @@ class BillRunsInvoicesController {
 
     return h.response(result).code(200)
   }
+
+  static async rebill (_req, h) {
+    return h.response().code(204)
+  }
 }
 
 module.exports = BillRunsInvoicesController
