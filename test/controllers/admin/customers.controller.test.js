@@ -69,4 +69,20 @@ describe('Customers controller', () => {
       expect(serviceStub.calledOnce).to.be.true()
     })
   })
+
+  describe('Show customer files: GET /admin/{regimeId}/customers', () => {
+    const options = token => {
+      return {
+        method: 'GET',
+        url: '/admin/wrls/customers',
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    it('returns success status 204', async () => {
+      const response = await server.inject(options(authToken))
+
+      expect(response.statusCode).to.equal(204)
+    })
+  })
 })
