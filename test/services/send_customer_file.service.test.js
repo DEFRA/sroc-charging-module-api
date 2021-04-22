@@ -160,11 +160,10 @@ describe('Send Customer File service', () => {
 
         it('sets the date after exporting', async () => {
           const customerFile = await CustomerFileModel.query().first()
-          const exportedDate = new Date(customerFile.exportDate)
+          const exportedDate = new Date(customerFile.exportedAt)
 
-          expect(exportedDate.getDate()).to.equal(new Date().getDate())
-          expect(exportedDate.getMonth()).to.equal(new Date().getMonth())
-          expect(exportedDate.getFullYear()).to.equal(new Date().getFullYear())
+          expect(exportedDate).to.be.a.date()
+          expect(compareDateToNow(exportedDate)).to.be.true()
         })
       })
     })
@@ -276,14 +275,12 @@ describe('Send Customer File service', () => {
 
         it('sets the date after exporting', async () => {
           const customerFiles = await CustomerFileModel.query()
-          const exportedDates = customerFiles.map(file => new Date(file.exportDate))
+          const exportedDates = customerFiles.map(file => new Date(file.exportedAt))
 
-          expect(exportedDates[0].getDate()).to.equal(new Date().getDate())
-          expect(exportedDates[0].getMonth()).to.equal(new Date().getMonth())
-          expect(exportedDates[0].getFullYear()).to.equal(new Date().getFullYear())
-          expect(exportedDates[1].getDate()).to.equal(new Date().getDate())
-          expect(exportedDates[1].getMonth()).to.equal(new Date().getMonth())
-          expect(exportedDates[1].getFullYear()).to.equal(new Date().getFullYear())
+          for (const date of exportedDates) {
+            expect(date).to.be.a.date()
+            expect(compareDateToNow(date)).to.be.true()
+          }
         })
       })
     })
@@ -379,14 +376,12 @@ describe('Send Customer File service', () => {
 
         it('sets the date after exporting', async () => {
           const customerFiles = await CustomerFileModel.query()
-          const exportedDates = customerFiles.map(file => new Date(file.exportDate))
+          const exportedDates = customerFiles.map(file => new Date(file.exportedAt))
 
-          expect(exportedDates[0].getDate()).to.equal(new Date().getDate())
-          expect(exportedDates[0].getMonth()).to.equal(new Date().getMonth())
-          expect(exportedDates[0].getFullYear()).to.equal(new Date().getFullYear())
-          expect(exportedDates[1].getDate()).to.equal(new Date().getDate())
-          expect(exportedDates[1].getMonth()).to.equal(new Date().getMonth())
-          expect(exportedDates[1].getFullYear()).to.equal(new Date().getFullYear())
+          for (const date of exportedDates) {
+            expect(date).to.be.a.date()
+            expect(compareDateToNow(date)).to.be.true()
+          }
         })
       })
     })
@@ -421,4 +416,11 @@ describe('Send Customer File service', () => {
       expect(notifierFake.omfg.firstArg).to.equal('Error sending customer file')
     })
   })
+
+  /**
+   * Compares a date/time object to the current date/time and returns true if they are within a second of each other.
+   */
+  function compareDateToNow (date) {
+    return new Date() - date.getTime() < 1000
+  }
 })

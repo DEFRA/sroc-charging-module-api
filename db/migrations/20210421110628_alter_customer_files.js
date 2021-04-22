@@ -7,7 +7,7 @@ exports.up = async function (knex) {
     .schema
     .alterTable(tableName, table => {
       table.string('status').notNullable().defaultTo('initialised')
-      table.date('export_date')
+      table.dateTime('exported_at')
     })
 }
 
@@ -17,7 +17,7 @@ exports.down = async function (knex) {
     .alterTable(tableName, table => {
       table.dropColumns(
         'status',
-        'export_date'
+        'exported_at'
       )
     })
 }

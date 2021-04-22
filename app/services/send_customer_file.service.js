@@ -102,13 +102,13 @@ class SendCustomerFileService {
   }
 
   /**
-   * Sets the status of a customer file to 'exported' and sets exportDate to the current date
+   * Sets the status of a customer file to 'exported' and sets exportedAt to the current date
    */
   static async _setExportedStatusAndDate (customerFile) {
     await customerFile.$query()
       .patch({
         status: 'exported',
-        exportDate: new Date().toISOString()
+        exportedAt: new Date()
       })
   }
 
