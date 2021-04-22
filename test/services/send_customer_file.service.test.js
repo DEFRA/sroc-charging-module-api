@@ -60,8 +60,8 @@ describe('Send Customer File service', () => {
     sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
     Sinon.stub(NextCustomerFileReferenceService, 'go').callsFake((_, region) => `nal${region.toLowerCase()}c50001`)
 
-    // Create a fake function to stand in place of Notifier.omfg()
-    notifierFake = { omfg: Sinon.fake() }
+    // Create fake functions to stand in place of Notifier.omg() and Notifier.omfg()
+    notifierFake = { omg: Sinon.fake(), omfg: Sinon.fake() }
   })
 
   afterEach(() => {
@@ -71,7 +71,7 @@ describe('Send Customer File service', () => {
   describe('When a single region is specified', () => {
     describe('and a customer file is required', () => {
       beforeEach(async () => {
-        await SendCustomerFileService.go(regime, ['A'])
+        await SendCustomerFileService.go(regime, ['A'], notifierFake)
       })
 
       it('generates a customer file', async () => {
@@ -122,7 +122,7 @@ describe('Send Customer File service', () => {
 
     describe("and a customer file isn't required", () => {
       beforeEach(async () => {
-        await SendCustomerFileService.go(regime, ['X'])
+        await SendCustomerFileService.go(regime, ['X'], notifierFake)
       })
 
       it("doesn't try to generate a file", async () => {
@@ -138,7 +138,7 @@ describe('Send Customer File service', () => {
   describe('When multiple regions are specified', () => {
     describe('and a customer file is required for each region', () => {
       beforeEach(async () => {
-        await SendCustomerFileService.go(regime, ['A', 'W'])
+        await SendCustomerFileService.go(regime, ['A', 'W'], notifierFake)
       })
 
       it('generates a customer file', async () => {
@@ -187,7 +187,7 @@ describe('Send Customer File service', () => {
 
     describe('and a customer file is only required for some regions', () => {
       beforeEach(async () => {
-        await SendCustomerFileService.go(regime, ['A', 'B', 'W'])
+        await SendCustomerFileService.go(regime, ['A', 'B', 'W'], notifierFake)
       })
 
       it('generates all required customer files', async () => {
@@ -236,7 +236,7 @@ describe('Send Customer File service', () => {
 
     describe("and a customer file isn't required for any region", () => {
       beforeEach(async () => {
-        await SendCustomerFileService.go(regime, ['X', 'Y'])
+        await SendCustomerFileService.go(regime, ['X', 'Y'], notifierFake)
       })
 
       it("doesn't try to generate a file", async () => {
@@ -261,7 +261,7 @@ describe('Send Customer File service', () => {
       await SendCustomerFileService.go(regime, ['A'], notifierFake)
 
       expect(notifierFake.omfg.callCount).to.equal(1)
-      expect(notifierFake.omfg.firstArg).to.equal('Error sending customer file')
+      expect(notifierFake.omfg.firstArg).to.equal(`Error sending customer file for ${regime.slug} A`)
     })
   })
 })
