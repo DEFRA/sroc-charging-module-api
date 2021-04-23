@@ -4,7 +4,7 @@
  * @module RequestNotifier
  */
 
-const { BaseNotifier } = require('./base_notifier')
+const BaseNotifier = require('./base_notifier')
 
 /**
  * Intended to be bound to the {@link https://hapi.dev/api/?v=20.1.2#request|Hapi request object}

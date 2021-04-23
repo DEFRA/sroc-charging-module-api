@@ -4,7 +4,7 @@
  * @module TaskNotifier
  */
 
-const { BaseNotifier } = require('./base_notifier')
+const BaseNotifier = require('./base_notifier')
 
 /**
  * A combined logging and Airbrake (Errbit) notification manager for tasks that take place outside of a

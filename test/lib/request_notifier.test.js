@@ -12,7 +12,7 @@ const { expect } = Code
 const { GeneralHelper } = require('../support/helpers')
 
 // Things we need to stub
-const { BaseNotifier, Pino } = require('../../app/lib/base_notifier')
+const { BaseNotifier } = require('../../app/lib')
 
 // Thing under test
 const { RequestNotifier } = require('../../app/lib')
@@ -30,7 +30,7 @@ describe('RequestNotifier class', () => {
     Sinon.stub(BaseNotifier.prototype, '_setNotifier').returns(airbrakeFake)
 
     pinoFake = { info: Sinon.fake(), error: Sinon.fake() }
-    Sinon.stub(Pino, 'child').returns(pinoFake)
+    Sinon.stub(BaseNotifier.prototype, '_setLogger').returns(pinoFake)
 
     notifier = new RequestNotifier(id)
   })

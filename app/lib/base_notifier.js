@@ -5,7 +5,7 @@
  */
 
 const { Notifier } = require('@airbrake/node')
-const Pino = require('pino')()
+const Pino = require('pino')
 
 const { AirbrakeConfig } = require('../../config')
 
@@ -107,25 +107,9 @@ class BaseNotifier {
    *
    * Returns an instance of {@link https://github.com/pinojs/pino|Pino} the logger our dependency Hapi-pino brings in.
    * We can then call `info()` and `error()` on it in order to create our log entries.
-   *
-   * ## Testing note
-   *
-   * The README for Pino says you should
-   *
-   * ```
-   * const logger = require('pino')()
-   * logger.info('hello world')
-   * ```
-   *
-   * Note the immediate call on the `require`. Our first change is we prefer to name what we are actually bringing in,
-   * hence `const Pino = require('pino')()`. The second is we then return `Pino.child(Pino.bindings)` instead of just
-   * `Pino`. This is to make it possible to stub it in our tests. It is a pain to stub because of the way the main
-   * file has been configured and its use of meta-programming for the `info()` and `error()` calls. So, also note we
-   * export both the class and the instance of `Pino` from this file to allow stubbing to work. Thanks go to
-   * https://stackoverflow.com/a/63716859/6117745 for inspiring us with our solution.
    */
   _setLogger () {
-    return Pino.child(Pino.bindings)
+    return Pino()
   }
 
   _setNotifier () {
@@ -139,7 +123,4 @@ class BaseNotifier {
   }
 }
 
-module.exports = {
-  Pino,
-  BaseNotifier
-}
+module.exports = BaseNotifier
