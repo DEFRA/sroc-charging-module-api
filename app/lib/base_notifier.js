@@ -80,8 +80,13 @@ class BaseNotifier {
     this._notifier(this._formatNotifyPacket(message, data))
       .then((notice) => {
         if (!notice.id) {
-          this.omg(`${this.constructor.name} - Airbrake failed`, { error: notice.error })
+          this._logger.error(
+            this._formatLogPacket(`${this.constructor.name} - Airbrake failed`, { error: notice.error })
+          )
         }
+      })
+      .catch((err) => {
+        this._logger.error(this._formatLogPacket(`${this.constructor.name} - Airbrake errored`, { error: err }))
       })
   }
 

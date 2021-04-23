@@ -113,7 +113,9 @@ describe('TaskNotifier class', () => {
       let error
 
       beforeEach(async () => {
-        pinoFake = { info: Sinon.stub(), error: Sinon.fake() }
+        // We specifically use a stub instead of a fake so we can then use Sinon's callsFake() function. See the test
+        // below where callsFake() is used for more details.
+        pinoFake = { info: Sinon.fake(), error: Sinon.stub() }
         Sinon.stub(BaseNotifier.prototype, '_setLogger').returns(pinoFake)
 
         error = new Error('Airbrake failed')
@@ -121,33 +123,64 @@ describe('TaskNotifier class', () => {
         Sinon.stub(BaseNotifier.prototype, '_setNotifier').returns(airbrakeFake)
       })
 
-      it("logs an 'error' message", () => {
-        const expectedArgs = {
-          message,
-          id
-        }
+      it("does not log an 'info' message", () => {
         const testNotifier = new TaskNotifier()
-        testNotifier.omfg(message, { id })
+        testNotifier.omfg(message, data)
 
-        expect(pinoFake.error.calledOnceWith(expectedArgs)).to.be.true()
+        expect(pinoFake.info.notCalled).to.be.true()
       })
 
-      it("logs an 'info' message with details of the Airbrake error", async () => {
-        const expectedArgs = {
-          message: 'TaskNotifier - Airbrake failed',
-          error
-        }
+      it("logs 2 'error' messages, the second containing details of the Airbrake failure", async () => {
+        const expectedArgs = [
+          { message, ...data },
+          { message: 'TaskNotifier - Airbrake failed', error }
+        ]
         const testNotifier = new TaskNotifier()
         testNotifier.omfg(message, { id })
 
         // We use Sinon callsFake() here in order to test our expectations. This is because Airbrake notify() actually
         // returns a promise, and it is on the calling code to handle the responses back. When we test sending the
         // Airbrake notification control immediately comes back to us whilst work continues in the background. If we
-        // assert pinoFake.info.calledOnceWith() it always fails because the promise which calls it has not yet
+        // assert pinoFake.error.secondCall.calledWith() it always fails because the promise which calls it has not yet
         // resolved. So, callsFake() tells Sinon to call our anonymous function below that includes our assertion only
-        // when pinoFake.info is called i.e. the Airbrake.notify() promise has resolved.
-        pinoFake.info.callsFake(() => {
-          expect(pinoFake.info.calledOnceWith(expectedArgs)).to.be.true()
+        // when pinoFake.error is called i.e. the Airbrake.notify() promise has resolved.
+        pinoFake.error.callsFake(() => {
+          expect(pinoFake.error.firstCall.calledWith(expectedArgs[0]))
+          expect(pinoFake.error.secondCall.calledWith(expectedArgs[1]))
+        })
+      })
+    })
+
+    describe('when the Airbrake notification errors', () => {
+      let error
+
+      beforeEach(async () => {
+        pinoFake = { info: Sinon.fake(), error: Sinon.stub() }
+        Sinon.stub(BaseNotifier.prototype, '_setLogger').returns(pinoFake)
+
+        error = new Error('Airbrake errored')
+        airbrakeFake = Sinon.fake.resolves({ error })
+        Sinon.stub(BaseNotifier.prototype, '_setNotifier').returns(airbrakeFake)
+      })
+
+      it("does not log an 'info' message", () => {
+        const testNotifier = new TaskNotifier()
+        testNotifier.omfg(message, data)
+
+        expect(pinoFake.info.notCalled).to.be.true()
+      })
+
+      it("logs 2 'error' messages, the second containing details of the Airbrake errors", async () => {
+        const expectedArgs = [
+          { message, ...data },
+          { message: 'TaskNotifier - Airbrake failed', error }
+        ]
+        const testNotifier = new TaskNotifier()
+        testNotifier.omfg(message, { id })
+
+        pinoFake.error.callsFake(() => {
+          expect(pinoFake.error.firstCall.calledWith(expectedArgs[0]))
+          expect(pinoFake.error.secondCall.calledWith(expectedArgs[1]))
         })
       })
     })
