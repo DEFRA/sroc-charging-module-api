@@ -26,7 +26,7 @@ describe('TaskNotifier class', () => {
   beforeEach(async () => {
     id = GeneralHelper.uuid4()
 
-    airbrakeFake = { notify: Sinon.fake.resolves({ id: 1 }) }
+    airbrakeFake = Sinon.fake.resolves({ id: 1 })
     Sinon.stub(BaseNotifier.prototype, '_setNotifier').returns(airbrakeFake)
 
     pinoFake = { info: Sinon.fake(), error: Sinon.fake() }
@@ -55,7 +55,7 @@ describe('TaskNotifier class', () => {
     it("does not send a notification to 'Errbit'", () => {
       notifier.omg(message)
 
-      expect(airbrakeFake.notify.notCalled).to.be.true()
+      expect(airbrakeFake.notCalled).to.be.true()
     })
 
     it("does not log an 'error' message", () => {
@@ -84,7 +84,7 @@ describe('TaskNotifier class', () => {
       }
       notifier.omfg(message, data)
 
-      expect(airbrakeFake.notify.calledOnceWith(expectedArgs)).to.be.true()
+      expect(airbrakeFake.calledOnceWith(expectedArgs)).to.be.true()
     })
 
     it("logs an 'error' message", () => {

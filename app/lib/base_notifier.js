@@ -22,11 +22,16 @@ const { AirbrakeConfig } = require('../../config')
  * >
  * > This is a very 'serious' project dealing with very dry finance and regulation rules. We love what we do but having
  * > the opportunity to use `omg('The bill run looks fantastic!')` in our work day can only help us smile more!
+ *
+ * @param {Object} [logger] An instance of {@link https://github.com/pinojs/pino|pino}. If 'null' the class will
+ * create a new instance instead.
+ * @param {Object} [notifier] An instance of the {@link https://github.com/airbrake/airbrake-js|airbrake-js} `notify()`
+ * method which our 'AirbrakePlugin` adds to Hapi. If 'null' the class will create a new instance instead.
  */
 class BaseNotifier {
-  constructor () {
-    this._logger = this._setLogger()
-    this._notifier = this._setNotifier()
+  constructor (logger = null, notifier = null) {
+    this._logger = this._setLogger(logger)
+    this._notifier = this._setNotifier(notifier)
   }
 
   /**
@@ -72,7 +77,7 @@ class BaseNotifier {
   omfg (message, data = {}) {
     this._logger.error(this._formatLogPacket(message, data))
 
-    this._notifier.notify(this._formatNotifyPacket(message, data))
+    this._notifier(this._formatNotifyPacket(message, data))
       .then((notice) => {
         if (!notice.id) {
           this.omg(`${this.constructor.name} - Airbrake failed`, { error: notice.error })
@@ -107,19 +112,39 @@ class BaseNotifier {
    *
    * Returns an instance of {@link https://github.com/pinojs/pino|Pino} the logger our dependency Hapi-pino brings in.
    * We can then call `info()` and `error()` on it in order to create our log entries.
+   *
+   * @param {Object} [logger] An instance of {@link https://github.com/pinojs/pino|pino}. If 'null' the method will
+   * create a new instance.
    */
-  _setLogger () {
+  _setLogger (logger) {
+    if (logger) {
+      return logger
+    }
+
     return Pino()
   }
 
-  _setNotifier () {
+  /**
+   * Return the 'notify' instance
+   *
+   * Returns an instance of {@link https://github.com/airbrake/airbrake-js|airbrake-js} `notify()` method which when
+   * called will record notifications in our Errbit instance.
+   *
+   * @param {Object} [notifier] An instance of the {@link https://github.com/airbrake/airbrake-js|airbrake-js} `notify()`
+   * method. If 'null' the class will create a new instance instead.
+   */
+  _setNotifier (notifier) {
+    if (notifier) {
+      return notifier
+    }
+
     return new Notifier({
       host: AirbrakeConfig.host,
       projectId: AirbrakeConfig.projectId,
       projectKey: AirbrakeConfig.projectKey,
       environment: AirbrakeConfig.environment,
       performanceStats: false
-    })
+    }).notify
   }
 }
 

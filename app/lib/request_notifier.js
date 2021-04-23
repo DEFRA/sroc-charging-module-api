@@ -7,7 +7,13 @@
 const BaseNotifier = require('./base_notifier')
 
 /**
- * Intended to be bound to the {@link https://hapi.dev/api/?v=20.1.2#request|Hapi request object}
+ * A combined logging and Airbrake (Errbit) notification manager for actions that take place within a
+ * {@link https://hapi.dev/api/?v=20.1.2#request|Hapi request}
+ *
+ * This is used in conjunction with the `RequestNotifierPlugin` to make both logging via
+ * {@link https://github.com/pinojs/pino|pino} and sending notifications to Errbit via
+ * {@link https://github.com/airbrake/airbrake-js|airbrake-js} available to our controllers and their underlying
+ * services.
  *
  * This extends the `BaseNotifier` to also ensure the request ID is included in all output. We can then identify all
  * related log entries and Errbit notifications by using the ID.
@@ -18,9 +24,13 @@ class RequestNotifier extends BaseNotifier {
    *
    * @param {string} id The request ID taken from a {@link https://hapi.dev/api/?v=20.1.2#request|Hapi request}
    * instance. Used to link notifications to the requests that generated them
+   * @param {Object} logger An instance of {@link https://github.com/pinojs/pino|pino}, a Node JSON logger
+   * which the {@link https://github.com/pinojs/hapi-pino|hapi-pino} plugin adds to Hapi
+   * @param {Object} notifier An instance of the {@link https://github.com/airbrake/airbrake-js|airbrake-js} `notify()`
+   * method which our 'AirbrakePlugin` adds to Hapi
    */
-  constructor (id) {
-    super()
+  constructor (id, logger, notifier) {
+    super(logger, notifier)
     this._id = id
   }
 

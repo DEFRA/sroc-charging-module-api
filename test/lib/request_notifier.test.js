@@ -11,9 +11,6 @@ const { expect } = Code
 // Test helpers
 const { GeneralHelper } = require('../support/helpers')
 
-// Things we need to stub
-const { BaseNotifier } = require('../../app/lib')
-
 // Thing under test
 const { RequestNotifier } = require('../../app/lib')
 
@@ -26,13 +23,10 @@ describe('RequestNotifier class', () => {
   beforeEach(async () => {
     id = GeneralHelper.uuid4()
 
-    airbrakeFake = { notify: Sinon.fake.resolves({ id: 1 }) }
-    Sinon.stub(BaseNotifier.prototype, '_setNotifier').returns(airbrakeFake)
-
+    airbrakeFake = Sinon.fake.resolves({ id: 1 })
     pinoFake = { info: Sinon.fake(), error: Sinon.fake() }
-    Sinon.stub(BaseNotifier.prototype, '_setLogger').returns(pinoFake)
 
-    notifier = new RequestNotifier(id)
+    notifier = new RequestNotifier(id, pinoFake, airbrakeFake)
   })
 
   afterEach(() => {
@@ -57,7 +51,7 @@ describe('RequestNotifier class', () => {
     it("does not send a notification to 'Errbit'", () => {
       notifier.omg(message)
 
-      expect(airbrakeFake.notify.notCalled).to.be.true()
+      expect(airbrakeFake.notCalled).to.be.true()
     })
 
     it("does not log an 'error' message", () => {
@@ -89,7 +83,7 @@ describe('RequestNotifier class', () => {
       }
       notifier.omfg(message, data)
 
-      expect(airbrakeFake.notify.calledOnceWith(expectedArgs)).to.be.true()
+      expect(airbrakeFake.calledOnceWith(expectedArgs)).to.be.true()
     })
 
     it("logs an 'error' message", () => {
