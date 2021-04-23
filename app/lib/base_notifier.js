@@ -1,0 +1,145 @@
+'use strict'
+
+/**
+ * @module BaseNotifier
+ */
+
+const { Notifier } = require('@airbrake/node')
+const Pino = require('pino')()
+
+const { AirbrakeConfig } = require('../../config')
+
+/**
+ * Based class for combined logging and Airbrake (Errbit) notification managers
+ *
+ * This is used to make both logging via {@link https://github.com/pinojs/pino|pino} and sending notifications to
+ * Errbit via {@link https://github.com/airbrake/airbrake-js|airbrake-js} available in the service.
+ *
+ * Most functionality is maintained in this `BaseNotifier` with the expectation that classes will extend it for their
+ * particular scenario, for example, the `RequestNotifier` handles including the request ID in its output.
+ *
+ * > ***So, `omg()` and `omfg()`. What's that all about!?***
+ * >
+ * > This is a very 'serious' project dealing with very dry finance and regulation rules. We love what we do but having
+ * > the opportunity to use `omg('The bill run looks fantastic!')` in our work day can only help us smile more!
+ */
+class BaseNotifier {
+  constructor () {
+    this._logger = this._setLogger()
+    this._notifier = this._setNotifier()
+  }
+
+  /**
+   * Use to add a message to the log
+   *
+   * The message will be added as an `INFO` level log message.
+   *
+   * @param {string} message Message to add to the log (INFO)
+   * @param {Object} data Any params or values, for example, a bill run ID to be included with the log message
+   */
+  omg (message, data = {}) {
+    this._logger.info(this._formatLogPacket(message, data))
+  }
+
+  /**
+   * Use to add an 'error' message to the log and send a notification to Errbit
+   *
+   * Intended to be used when we want to record an error both in the logs and in Errbit.
+   *
+   * ## Notifications to Errbit
+   *
+   * Other than making errors more visible and accessible, the main benefit of Errbit is its ability to group instances
+   * of the same error. But it can only do this if the 'error signature' is consistent. It is important that what we
+   * send has a consistent 'message'. We can send whatever we like in the data as this is not used to generate the
+   * signature.
+   *
+   * So, you should avoid
+   *
+   * ```
+   * notifier.omfg(`Bill run id ${billRun.id} failed to generate.`)
+   * ```
+   *
+   * Instead use
+   *
+   * ```
+   * notifier.omfg('Bill run failed to generate.', { id: billRun.id })
+   * ```
+   *
+   * @param {string} message Message to add to the log (ERROR)
+   * @param {Object} data Any params or values, for example, a bill run ID to be included with the log message and sent
+   * with the notification to Errbit
+   */
+  omfg (message, data = {}) {
+    this._logger.error(this._formatLogPacket(message, data))
+
+    this._notifier.notify(this._formatNotifyPacket(message, data))
+      .then((notice) => {
+        if (!notice.id) {
+          this.omg(`${this.constructor.name} - Airbrake failed`, { error: notice.error })
+        }
+      })
+  }
+
+  async flush () {
+    await this._notifier.flush()
+  }
+
+  /**
+   * Used to format the 'packet' of information sent to the log
+   *
+   * **Must be overridden by extending class**
+   */
+  _formatLogPacket (_message, _data) {
+    throw new Error("Extending class must implement '_formatLogPacket()'")
+  }
+
+  /**
+   * Used to format the 'packet' of information sent to Errbit
+   *
+   * **Must be overridden by extending class**
+   */
+  _formatNotifyPacket (_message, _data) {
+    throw new Error("Extending class must implement '_formatNotifyPacket()'")
+  }
+
+  /**
+   * Return the 'logger' instance
+   *
+   * Returns an instance of {@link https://github.com/pinojs/pino|Pino} the logger our dependency Hapi-pino brings in.
+   * We can then call `info()` and `error()` on it in order to create our log entries.
+   *
+   * ## Testing note
+   *
+   * The README for Pino says you should
+   *
+   * ```
+   * const logger = require('pino')()
+   * logger.info('hello world')
+   * ```
+   *
+   * Note the immediate call on the `require`. Our first change is we prefer to name what we are actually bringing in,
+   * hence `const Pino = require('pino')()`. The second is we then return `Pino.child(Pino.bindings)` instead of just
+   * `Pino`. This is to make it possible to stub it in our tests. It is a pain to stub because of the way the main
+   * file has been configured and its use of meta-programming for the `info()` and `error()` calls. So, also note we
+   * export both the class and the instance of `Pino` from this file to allow stubbing to work. Thanks go to
+   * https://stackoverflow.com/a/63716859/6117745 for inspiring us with our solution.
+   */
+  _setLogger () {
+    return Pino.child(Pino.bindings)
+  }
+
+  _setNotifier () {
+    return new Notifier({
+      host: AirbrakeConfig.host,
+      projectId: AirbrakeConfig.projectId,
+      projectKey: AirbrakeConfig.projectKey,
+      environment: AirbrakeConfig.environment,
+      performanceStats: false
+    })
+  }
+}
+
+module.exports = {
+  Pino,
+  BaseNotifier
+}
