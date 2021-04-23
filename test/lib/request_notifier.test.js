@@ -11,25 +11,28 @@ const { expect } = Code
 // Test helpers
 const { GeneralHelper } = require('../support/helpers')
 
-// Thing under test
-const { Notifier } = require('../../app/lib')
+// Things we need to stub
+const { BaseNotifier, Pino } = require('../../app/lib/base_notifier')
 
-describe('Notifier class', () => {
+// Thing under test
+const { RequestNotifier } = require('../../app/lib')
+
+describe('RequestNotifier class', () => {
   let id
-  let loggerFake
-  let notifyFake
+  let airbrakeFake
+  let pinoFake
   let notifier
 
   beforeEach(async () => {
     id = GeneralHelper.uuid4()
 
-    loggerFake = {
-      info: Sinon.fake(),
-      error: Sinon.fake()
-    }
-    notifyFake = Sinon.fake()
+    airbrakeFake = { notify: Sinon.fake.resolves({ id: 1 }) }
+    Sinon.stub(BaseNotifier.prototype, '_setNotifier').returns(airbrakeFake)
 
-    notifier = new Notifier(id, loggerFake, notifyFake)
+    pinoFake = { info: Sinon.fake(), error: Sinon.fake() }
+    Sinon.stub(Pino, 'child').returns(pinoFake)
+
+    notifier = new RequestNotifier(id)
   })
 
   afterEach(() => {
@@ -48,19 +51,19 @@ describe('Notifier class', () => {
       }
       notifier.omg(message)
 
-      expect(loggerFake.info.calledOnceWith(expectedArgs)).to.be.true()
+      expect(pinoFake.info.calledOnceWith(expectedArgs)).to.be.true()
     })
 
     it("does not send a notification to 'Errbit'", () => {
       notifier.omg(message)
 
-      expect(notifyFake.notCalled).to.be.true()
+      expect(airbrakeFake.notify.notCalled).to.be.true()
     })
 
     it("does not log an 'error' message", () => {
       notifier.omg(message)
 
-      expect(loggerFake.error.notCalled).to.be.true()
+      expect(pinoFake.error.notCalled).to.be.true()
     })
   })
 
@@ -71,13 +74,22 @@ describe('Notifier class', () => {
     it("does not log an 'info' message", () => {
       notifier.omfg(message, data)
 
-      expect(loggerFake.info.notCalled).to.be.true()
+      expect(pinoFake.info.notCalled).to.be.true()
     })
 
     it("sends a notification to 'Errbit'", () => {
+      const expectedArgs = {
+        message,
+        session: {
+          ...data,
+          req: {
+            id
+          }
+        }
+      }
       notifier.omfg(message, data)
 
-      expect(notifyFake.calledOnceWith(message, { id, data })).to.be.true()
+      expect(airbrakeFake.notify.calledOnceWith(expectedArgs)).to.be.true()
     })
 
     it("logs an 'error' message", () => {
@@ -91,7 +103,7 @@ describe('Notifier class', () => {
 
       notifier.omfg(message, data)
 
-      expect(loggerFake.error.calledOnceWith(expectedArgs)).to.be.true()
+      expect(pinoFake.error.calledOnceWith(expectedArgs)).to.be.true()
     })
   })
 })
