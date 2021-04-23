@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
@@ -45,6 +45,10 @@ describe('Customers controller', () => {
   })
 
   afterEach(async () => {
+    serviceStub.restore()
+  })
+
+  after(async () => {
     Sinon.restore()
   })
 
@@ -67,6 +71,22 @@ describe('Customers controller', () => {
       await server.inject(options(authToken))
 
       expect(serviceStub.calledOnce).to.be.true()
+    })
+  })
+
+  describe('Show customer files: GET /admin/{regimeId}/customers', () => {
+    const options = token => {
+      return {
+        method: 'GET',
+        url: '/admin/wrls/customers',
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    it('returns success status 204', async () => {
+      const response = await server.inject(options(authToken))
+
+      expect(response.statusCode).to.equal(204)
     })
   })
 })

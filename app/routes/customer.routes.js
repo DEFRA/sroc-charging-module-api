@@ -12,6 +12,16 @@ const routes = [
         scope: ['admin']
       }
     }
+  },
+  {
+    method: 'GET',
+    path: '/admin/{regimeId}/customers',
+    handler: CustomersController.show,
+    options: {
+      auth: {
+        scope: ['admin']
+      }
+    }
   }
 ]
 
