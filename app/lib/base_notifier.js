@@ -78,14 +78,14 @@ class BaseNotifier {
     this._logger.error(this._formatLogPacket(message, data))
 
     this._notifier(this._formatNotifyPacket(message, data))
-      .then((notice) => {
+      .then(notice => {
         if (!notice.id) {
           this._logger.error(
             this._formatLogPacket(`${this.constructor.name} - Airbrake failed`, { error: notice.error })
           )
         }
       })
-      .catch((err) => {
+      .catch(err => {
         this._logger.error(this._formatLogPacket(`${this.constructor.name} - Airbrake errored`, { error: err }))
       })
   }
