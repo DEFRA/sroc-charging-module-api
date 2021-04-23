@@ -14,7 +14,7 @@ const {
   RegimeHelper
 } = require('../support/helpers')
 
-const { CustomerModel } = require('../../app/models')
+const { CustomerFileModel, CustomerModel } = require('../../app/models')
 
 const { CreateCustomerDetailsService } = require('../../app/services')
 
@@ -35,6 +35,7 @@ describe('Send Customer File service', () => {
   let generateStub
   let sendStub
   let notifierFake
+  let querySpy
 
   const payload = {
     customerName: 'CUSTOMER_NAME',
@@ -62,6 +63,8 @@ describe('Send Customer File service', () => {
 
     // Create fake functions to stand in place of Notifier.omg() and Notifier.omfg()
     notifierFake = { omg: Sinon.fake(), omfg: Sinon.fake() }
+
+    querySpy = Sinon.spy(CustomerFileModel, 'query')
   })
 
   afterEach(() => {
@@ -116,6 +119,51 @@ describe('Send Customer File service', () => {
 
         it("doesn't delete the file", async () => {
           expect(deleteStub.called).to.equal(false)
+        })
+      })
+
+      describe("and the 'customer_files' record it creates", () => {
+        it('has the correct details', async () => {
+          const customerFile = await CustomerFileModel.query().first()
+
+          expect(customerFile.regimeId).to.equal(regime.id)
+          expect(customerFile.region).to.equal('A')
+          expect(customerFile.fileReference).to.equal('nalac50001')
+        })
+
+        it("sets its status to 'pending' during file generation", async () => {
+          /**
+           * Iterate over each query call to get the underlying SQL query:
+           *   .getCall gives us the given call
+           *   The Objection function we spy on returns a query object so we get the returnValue
+           *   .toKnexQuery() gives us the underlying Knex query
+           *   .toString() gives us the SQL query as a string
+           *
+           * Finally, we push query strings to the queries array if they set the status to 'pending'.
+           */
+          const queries = []
+          for (let call = 0; call < querySpy.callCount; call++) {
+            const queryString = querySpy.getCall(call).returnValue.toKnexQuery().toString()
+            if (queryString.includes('set "status" = \'pending\'')) {
+              queries.push(queryString)
+            }
+          }
+
+          expect(queries.length).to.equal(1)
+        })
+
+        it("sets its status to 'exported' after exporting", async () => {
+          const customerFile = await CustomerFileModel.query().first()
+
+          expect(customerFile.status).to.equal('exported')
+        })
+
+        it('sets its date after exporting', async () => {
+          const customerFile = await CustomerFileModel.query().first()
+          const exportedDate = new Date(customerFile.exportedAt)
+
+          expect(exportedDate).to.be.a.date()
+          expect(compareDateToNow(exportedDate)).to.be.true()
         })
       })
     })
@@ -183,6 +231,58 @@ describe('Send Customer File service', () => {
           expect(deleteStub.called).to.equal(false)
         })
       })
+
+      describe("and the 'customer_files' record it creates", () => {
+        it('have the correct details', async () => {
+          const customerFiles = await CustomerFileModel.query()
+
+          expect(customerFiles[0].regimeId).to.equal(regime.id)
+          expect(customerFiles[0].region).to.equal('A')
+          expect(customerFiles[0].fileReference).to.equal('nalac50001')
+
+          expect(customerFiles[1].regimeId).to.equal(regime.id)
+          expect(customerFiles[1].region).to.equal('W')
+          expect(customerFiles[1].fileReference).to.equal('nalwc50001')
+        })
+
+        it("have a status of 'pending' during file generation", async () => {
+          /**
+           * Iterate over each query call to get the underlying SQL query:
+           *   .getCall gives us the given call
+           *   The Objection function we spy on returns a query object so we get the returnValue
+           *   .toKnexQuery() gives us the underlying Knex query
+           *   .toString() gives us the SQL query as a string
+           *
+           * Finally, we push query strings to the queries array if they set the status to 'pending'.
+           */
+          const queries = []
+          for (let call = 0; call < querySpy.callCount; call++) {
+            const queryString = querySpy.getCall(call).returnValue.toKnexQuery().toString()
+            if (queryString.includes('set "status" = \'pending\'')) {
+              queries.push(queryString)
+            }
+          }
+
+          expect(queries.length).to.equal(2)
+        })
+
+        it("have a status of 'exported' after exporting", async () => {
+          const customerFiles = await CustomerFileModel.query()
+
+          expect(customerFiles[0].status).to.equal('exported')
+          expect(customerFiles[1].status).to.equal('exported')
+        })
+
+        it('have the date set after exporting', async () => {
+          const customerFiles = await CustomerFileModel.query()
+          const exportedDates = customerFiles.map(file => new Date(file.exportedAt))
+
+          for (const date of exportedDates) {
+            expect(date).to.be.a.date()
+            expect(compareDateToNow(date)).to.be.true()
+          }
+        })
+      })
     })
 
     describe('and a customer file is only required for some regions', () => {
@@ -232,6 +332,58 @@ describe('Send Customer File service', () => {
           expect(deleteStub.called).to.equal(false)
         })
       })
+
+      describe("and the 'customer_files' records it creates", () => {
+        it('have the correct details', async () => {
+          const customerFiles = await CustomerFileModel.query()
+
+          expect(customerFiles[0].regimeId).to.equal(regime.id)
+          expect(customerFiles[0].region).to.equal('A')
+          expect(customerFiles[0].fileReference).to.equal('nalac50001')
+
+          expect(customerFiles[1].regimeId).to.equal(regime.id)
+          expect(customerFiles[1].region).to.equal('W')
+          expect(customerFiles[1].fileReference).to.equal('nalwc50001')
+        })
+
+        it("have a status of 'pending' during file generation", async () => {
+          /**
+           * Iterate over each query call to get the underlying SQL query:
+           *   .getCall gives us the given call
+           *   The Objection function we spy on returns a query object so we get the returnValue
+           *   .toKnexQuery() gives us the underlying Knex query
+           *   .toString() gives us the SQL query as a string
+           *
+           * Finally, we push query strings to the queries array if they set the status to 'pending'.
+           */
+          const queries = []
+          for (let call = 0; call < querySpy.callCount; call++) {
+            const queryString = querySpy.getCall(call).returnValue.toKnexQuery().toString()
+            if (queryString.includes('set "status" = \'pending\'')) {
+              queries.push(queryString)
+            }
+          }
+
+          expect(queries.length).to.equal(2)
+        })
+
+        it("have a status of 'exported' after exporting", async () => {
+          const customerFiles = await CustomerFileModel.query()
+
+          expect(customerFiles[0].status).to.equal('exported')
+          expect(customerFiles[1].status).to.equal('exported')
+        })
+
+        it('have the date set after exporting', async () => {
+          const customerFiles = await CustomerFileModel.query()
+          const exportedDates = customerFiles.map(file => new Date(file.exportedAt))
+
+          for (const date of exportedDates) {
+            expect(date).to.be.a.date()
+            expect(compareDateToNow(date)).to.be.true()
+          }
+        })
+      })
     })
 
     describe("and a customer file isn't required for any region", () => {
@@ -264,4 +416,11 @@ describe('Send Customer File service', () => {
       expect(notifierFake.omfg.firstArg).to.equal(`Error sending customer file for ${regime.slug} A`)
     })
   })
+
+  /**
+   * Compares a date/time object to the current date/time and returns true if they are within a second of each other.
+   */
+  function compareDateToNow (date) {
+    return new Date() - date.getTime() < 1000
+  }
 })
