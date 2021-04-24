@@ -25,8 +25,8 @@ const { AirbrakeConfig } = require('../../config')
  *
  * @param {Object} [logger] An instance of {@link https://github.com/pinojs/pino|pino}. If 'null' the class will
  * create a new instance instead.
- * @param {Object} [notifier] An instance of the {@link https://github.com/airbrake/airbrake-js|airbrake-js} `notify()`
- * method which our 'AirbrakePlugin` adds to Hapi. If 'null' the class will create a new instance instead.
+ * @param {Object} [notifier] An instance of {@link https://github.com/airbrake/airbrake-js|airbrake-js} `Notifier`
+ * which our 'AirbrakePlugin` adds to Hapi. If 'null' the class will create a new instance instead.
  */
 class BaseNotifier {
   constructor (logger = null, notifier = null) {
@@ -77,7 +77,7 @@ class BaseNotifier {
   omfg (message, data = {}) {
     this._logger.error(this._formatLogPacket(message, data))
 
-    this._notifier(this._formatNotifyPacket(message, data))
+    this._notifier.notify(this._formatNotifyPacket(message, data))
       .then(notice => {
         if (!notice.id) {
           this._logger.error(
@@ -130,13 +130,13 @@ class BaseNotifier {
   }
 
   /**
-   * Return the 'notify' instance
+   * Returns the 'notifier' instance
    *
-   * Returns an instance of {@link https://github.com/airbrake/airbrake-js|airbrake-js} `notify()` method which when
-   * called will record notifications in our Errbit instance.
+   * Returns an instance of {@link https://github.com/airbrake/airbrake-js|airbrake-js} `Notifier` which when called
+   * with `notify()` will record errors in our Errbit instance.
    *
-   * @param {Object} [notifier] An instance of the {@link https://github.com/airbrake/airbrake-js|airbrake-js} `notify()`
-   * method. If 'null' the class will create a new instance instead.
+   * @param {Object} [notifier] An instance of the {@link https://github.com/airbrake/airbrake-js|airbrake-js}
+   * `Notifier`. If 'null' the class will create a new instance instead.
    */
   _setNotifier (notifier) {
     if (notifier) {
@@ -149,7 +149,7 @@ class BaseNotifier {
       projectKey: AirbrakeConfig.projectKey,
       environment: AirbrakeConfig.environment,
       performanceStats: false
-    }).notify
+    })
   }
 }
 

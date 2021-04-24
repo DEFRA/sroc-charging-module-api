@@ -22,7 +22,7 @@ describe('RequestNotifier class', () => {
   beforeEach(async () => {
     id = GeneralHelper.uuid4()
 
-    airbrakeFake = Sinon.fake.resolves({ id: 1 })
+    airbrakeFake = { notify: Sinon.fake.resolves({ id: 1 }) }
     pinoFake = { info: Sinon.fake(), error: Sinon.fake() }
   })
 
@@ -50,7 +50,7 @@ describe('RequestNotifier class', () => {
       const testNotifier = new RequestNotifier(id, pinoFake, airbrakeFake)
       testNotifier.omg(message)
 
-      expect(airbrakeFake.notCalled).to.be.true()
+      expect(airbrakeFake.notify.notCalled).to.be.true()
     })
 
     it("does not log an 'error' message", () => {
@@ -86,7 +86,7 @@ describe('RequestNotifier class', () => {
         const testNotifier = new RequestNotifier(id, pinoFake, airbrakeFake)
         testNotifier.omfg(message, data)
 
-        expect(airbrakeFake.calledOnceWith(expectedArgs)).to.be.true()
+        expect(airbrakeFake.notify.calledOnceWith(expectedArgs)).to.be.true()
       })
 
       it("logs an 'error' message", () => {
@@ -114,7 +114,7 @@ describe('RequestNotifier class', () => {
         pinoFake = { info: Sinon.fake(), error: Sinon.stub() }
 
         error = new Error('Airbrake failed')
-        airbrakeFake = Sinon.fake.resolves({ error })
+        airbrakeFake = { notify: Sinon.fake.resolves({ error }) }
       })
 
       it("does not log an 'info' message", () => {
@@ -152,7 +152,7 @@ describe('RequestNotifier class', () => {
         pinoFake = { info: Sinon.fake(), error: Sinon.stub() }
 
         error = new Error('Airbrake errored')
-        airbrakeFake = Sinon.fake.rejects({ error })
+        airbrakeFake = { notify: Sinon.fake.rejects({ error }) }
       })
 
       it("does not log an 'info' message", () => {

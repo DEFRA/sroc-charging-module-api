@@ -17,7 +17,7 @@ describe('BaseNotifier class', () => {
 
   beforeEach(async () => {
     // We use these fakes and stubs to avoid Pino or Airbrake being instantiated during the test
-    airbrakeFake = Sinon.fake.resolves({ id: 1 })
+    airbrakeFake = { notify: Sinon.fake.resolves({ id: 1 }) }
     Sinon.stub(BaseNotifier.prototype, '_setNotifier').returns(airbrakeFake)
 
     pinoFake = { info: Sinon.fake(), error: Sinon.fake() }
