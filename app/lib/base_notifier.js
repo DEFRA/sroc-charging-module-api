@@ -90,6 +90,17 @@ class BaseNotifier {
       })
   }
 
+  /**
+   * Flush any outstanding Airbrake notifications
+   *
+   * It's not immediately obvious but Airbrake notifications are actually queued and sent in the background. This is
+   * fine when the API is running. We expect it to always be running so there is plenty of time for the notifications
+   * to be sent.
+   *
+   * In the case of tasks though, they are one time calls that expect to process.exit as soon as the work is done. Our
+   * testing highlighted that should an error occur and we don't `flush()` Airbrake's queue, we never see them in
+   * Errbit. So, we expose Airbrake's `flush()` using this method which notifiers that extend the base can make use of.
+   */
   async flush () {
     await this._notifier.flush()
   }

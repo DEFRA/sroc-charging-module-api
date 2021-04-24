@@ -22,7 +22,7 @@ describe('RequestNotifier class', () => {
   beforeEach(async () => {
     id = GeneralHelper.uuid4()
 
-    airbrakeFake = { notify: Sinon.fake.resolves({ id: 1 }) }
+    airbrakeFake = { notify: Sinon.fake.resolves({ id: 1 }), flush: Sinon.fake() }
     pinoFake = { info: Sinon.fake(), error: Sinon.fake() }
   })
 
@@ -175,6 +175,15 @@ describe('RequestNotifier class', () => {
           expect(pinoFake.error.secondCall.calledWith(expectedArgs[1]))
         })
       })
+    })
+  })
+
+  describe('#flush()', () => {
+    it('tells the underlying Airbrake notifier to flush its queue of notifications', () => {
+      const testNotifier = new RequestNotifier(id, pinoFake, airbrakeFake)
+      testNotifier.flush()
+
+      expect(airbrakeFake.flush.called).to.be.true()
     })
   })
 })

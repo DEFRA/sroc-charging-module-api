@@ -25,7 +25,7 @@ describe('TaskNotifier class', () => {
   beforeEach(async () => {
     id = GeneralHelper.uuid4()
 
-    airbrakeFake = { notify: Sinon.fake.resolves({ id: 1 }) }
+    airbrakeFake = { notify: Sinon.fake.resolves({ id: 1 }), flush: Sinon.fake() }
     pinoFake = { info: Sinon.fake(), error: Sinon.fake() }
   })
 
@@ -182,6 +182,19 @@ describe('TaskNotifier class', () => {
           expect(pinoFake.error.firstCall.calledWith(expectedArgs[0]))
           expect(pinoFake.error.secondCall.calledWith(expectedArgs[1]))
         })
+      })
+    })
+
+    describe('#flush()', () => {
+      beforeEach(async () => {
+        Sinon.stub(BaseNotifier.prototype, '_setNotifier').returns(airbrakeFake)
+      })
+
+      it('tells the underlying Airbrake notifier to flush its queue of notifications', () => {
+        const testNotifier = new TaskNotifier()
+        testNotifier.flush()
+
+        expect(airbrakeFake.flush.called).to.be.true()
       })
     })
   })
