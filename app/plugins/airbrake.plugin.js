@@ -47,11 +47,11 @@ const AirbrakePlugin = {
         })
         .then(notice => {
           if (!notice.id) {
-            server.log(['ERROR'], `Airbrake notification failed: ${notice.error}`)
+            server.logger.error({ message: `Airbrake notification failed: ${notice.error}`, error: notice.error })
           }
         })
-        .catch(err => {
-          server.log(['ERROR'], `Airbrake notification failed: ${err}`)
+        .catch(error => {
+          server.logger.error({ message: `Airbrake notification errored: ${error}`, error: error })
         })
     })
   }
