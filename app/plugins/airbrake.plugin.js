@@ -1,6 +1,10 @@
 'use strict'
 
 /**
+ * @module AirbrakePlugin
+ */
+
+/**
  * We use Airbrake to capture errors thrown within the service and send them tovan instance of Errbit we maintain in
  * Defra.
  *
@@ -11,36 +15,28 @@
  *
  * {@link https://github.com/DEFRA/node-hapi-airbrake/blob/master/lib/index.js}
  * {@link https://github.com/DEFRA/charging-module-api/blob/master/app/plugins/airbrake.js}
- *
- * @module AirbrakePlugin
  */
-const Airbrake = require('@airbrake/node')
+
+const { Notifier } = require('@airbrake/node')
 const { AirbrakeConfig } = require('../../config')
-
-const airbrakeNotifier = new Airbrake.Notifier({
-  host: AirbrakeConfig.host,
-  projectId: AirbrakeConfig.projectId,
-  projectKey: AirbrakeConfig.projectKey,
-  environment: AirbrakeConfig.environment,
-  performanceStats: false
-})
-
-const notificationLogged = (server, notice) => {
-  if (!notice.id) {
-    server.log(['ERROR'], `Airbrake notification failed: ${notice.error}`)
-  }
-}
-const notificationDropped = (server, error) => {
-  server.log(['ERROR'], `Airbrake notification failed: ${error}`)
-}
 
 const AirbrakePlugin = {
   name: 'airbrake',
   register: (server, _options) => {
-    // When Hapi emits a request event with an error we capture the details and
-    // use Airbrake to send a request to our Errbit instance
+    // We add an instance of the Airbrake Notifier so we can send notifications via Airbrake to Errbit manually if
+    // needed. It's main use is when passed in as a param to RequestNotifier in the RequestNotifierPlugin
+    server.app.airbrake = new Notifier({
+      host: AirbrakeConfig.host,
+      projectId: AirbrakeConfig.projectId,
+      projectKey: AirbrakeConfig.projectKey,
+      environment: AirbrakeConfig.environment,
+      performanceStats: false
+    })
+
+    // When Hapi emits a request event with an error we capture the details and use Airbrake to send a request to our
+    // Errbit instance
     server.events.on({ name: 'request', channels: 'error' }, (req, event, _tags) => {
-      airbrakeNotifier
+      server.app.airbrake
         .notify({
           error: event.error,
           session: {
@@ -49,22 +45,14 @@ const AirbrakePlugin = {
             url: req.url.href
           }
         })
-        .then(notice => notificationLogged(server, notice))
-        .catch(err => notificationDropped(server, err))
-    })
-
-    // To enable us to send notifications via Airbrake to Errbit manually we
-    // register a method with the server
-    //
-    // https://hapi.dev/api/?v=20.0.0#-servermethods
-    server.method('notify', (error, session) => {
-      airbrakeNotifier
-        .notify({
-          error: error,
-          session: session
+        .then(notice => {
+          if (!notice.id) {
+            server.log(['ERROR'], `Airbrake notification failed: ${notice.error}`)
+          }
         })
-        .then(notice => notificationLogged(server, notice))
-        .catch(err => notificationDropped(server, err))
+        .catch(err => {
+          server.log(['ERROR'], `Airbrake notification failed: ${err}`)
+        })
     })
   }
 }
