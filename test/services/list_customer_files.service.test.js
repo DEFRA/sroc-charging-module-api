@@ -35,10 +35,12 @@ describe('List Customer Files service', () => {
       })
     })
 
-    it('returns an empty array', async () => {
-      const result = await ListCustomerFilesService.go(regime)
+    describe('for any regimes', () => {
+      it('returns an empty array', async () => {
+        const result = await ListCustomerFilesService.go(regime)
 
-      expect(result).to.equal([])
+        expect(result).to.equal([])
+      })
     })
   })
 
