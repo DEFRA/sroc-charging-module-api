@@ -66,19 +66,18 @@ describe('Move Customers To Exported Table service', () => {
 
     it('only handles customers of the specified regime and region', async () => {
       const wrongRegime = await RegimeHelper.addRegime('wrng', 'WRNG')
-      CreateCustomerDetailsService.go({ ...payload, customerReference: 'A_WRNG' }, wrongRegime)
-      CreateCustomerDetailsService.go({ ...payload, customerReference: 'W_WRLS', region: 'W' }, regime)
+      await CreateCustomerDetailsService.go({ ...payload, customerReference: 'A_WRNG' }, wrongRegime)
+      await CreateCustomerDetailsService.go({ ...payload, customerReference: 'W_WRLS', region: 'W' }, regime)
 
       await MoveCustomersToExportedTableService.go(regime, payload.region, customerFile.id)
 
       const customers = await CustomerModel.query()
-      expect(customers.length).to.equal(2)
-      expect(customers[0].customerReference).to.equal('A_WRNG')
-      expect(customers[1].customerReference).to.equal('W_WRLS')
+      const customerReferences = customers.map(customer => customer.customerReference)
+      expect(customerReferences).to.only.include(['A_WRNG', 'W_WRLS'])
 
       const exportedCustomers = await ExportedCustomerModel.query()
-      expect(exportedCustomers.length).to.equal(1)
-      expect(exportedCustomers[0].customerReference).to.equal(payload.customerReference)
+      const exportedCustomerReferences = exportedCustomers.map(customer => customer.customerReference)
+      expect(exportedCustomerReferences).to.only.include(payload.customerReference)
     })
   })
 })
