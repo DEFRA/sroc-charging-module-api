@@ -22,6 +22,14 @@ class CustomerFileModel extends BaseModel {
           to: 'customers.customerFileId'
         }
       },
+      exportedCustomers: {
+        relation: Model.HasManyRelation,
+        modelClass: 'exported_customer.model',
+        join: {
+          from: 'customerFiles.id',
+          to: 'exportedCustomers.customerFileId'
+        }
+      },
       regime: {
         relation: Model.BelongsToOneRelation,
         modelClass: 'regime.model',
