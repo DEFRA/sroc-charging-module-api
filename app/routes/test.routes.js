@@ -2,6 +2,7 @@
 
 const {
   TestBillRunsController,
+  TestCustomerFilesController,
   TestTransactionsController
 } = require('../controllers')
 
@@ -23,6 +24,17 @@ const routes = [
     handler: TestTransactionsController.show,
     options: {
       description: "Used by the delivery team to check all a transaction's data.",
+      auth: {
+        scope: ['admin']
+      }
+    }
+  },
+  {
+    method: 'GET',
+    path: '/admin/test/{regimeId}/customer-files',
+    handler: TestCustomerFilesController.index,
+    options: {
+      description: 'Used by the delivery team to list all customer files for a regime.',
       auth: {
         scope: ['admin']
       }
