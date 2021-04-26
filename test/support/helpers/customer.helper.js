@@ -31,11 +31,7 @@ class CustomerFileHelper {
   }
 
   static _regimeId (regime) {
-    if (!regime) {
-      return GeneralHelper.uuid4()
-    }
-
-    return regime.id
+    return regime?.id ?? GeneralHelper.uuid4()
   }
 
   static _exportedAt (status) {
