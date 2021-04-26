@@ -1,13 +1,13 @@
 'use strict'
 
 /**
- * @module CustomerModel
+ * @module ExportedCustomerModel
  */
 
 const { Model } = require('objection')
 const BaseModel = require('./base.model')
 
-class CustomerModel extends BaseModel {
+class ExportedCustomerModel extends BaseModel {
   static get tableName () {
     return 'exported_customers'
   }
@@ -26,4 +26,4 @@ class CustomerModel extends BaseModel {
   }
 }
 
-module.exports = CustomerModel
+module.exports = ExportedCustomerModel
