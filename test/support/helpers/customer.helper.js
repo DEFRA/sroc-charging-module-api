@@ -37,5 +37,6 @@ class CustomerFileHelper {
   static _exportedAt (status) {
     return status === 'exported' ? new Date().toISOString() : null
   }
+}
 
 module.exports = CustomerFileHelper
