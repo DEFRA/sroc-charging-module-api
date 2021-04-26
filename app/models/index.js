@@ -5,6 +5,7 @@ const BaseModel = require('./base.model')
 const BillRunModel = require('./bill_run.model')
 const CustomerFileModel = require('./customer_file.model')
 const CustomerModel = require('./customer.model')
+const ExportedCustomerModel = require('./exported_customer.model')
 const InvoiceModel = require('./invoice.model')
 const LicenceModel = require('./licence.model')
 const RegimeModel = require('./regime.model')
@@ -17,6 +18,7 @@ module.exports = {
   BillRunModel,
   CustomerFileModel,
   CustomerModel,
+  ExportedCustomerModel,
   InvoiceModel,
   LicenceModel,
   RegimeModel,
