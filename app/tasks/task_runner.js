@@ -4,6 +4,7 @@
  * @module TaskRunner
  */
 
+const { TaskNotifier } = require('../lib')
 const CustomerFilesTask = require('./customer_files.task')
 
 /**
@@ -57,17 +58,7 @@ class TaskRunner {
   }
 
   static _notifier () {
-    return {
-      omg: (message, data = {}) => {
-        console.log(message, data)
-      },
-      omfg: (message, data = {}) => {
-        console.error(message, data)
-      },
-      flush: async () => {
-        console.log('Flushed!')
-      }
-    }
+    return new TaskNotifier()
   }
 }
 
