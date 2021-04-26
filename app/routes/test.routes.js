@@ -39,6 +39,17 @@ const routes = [
         scope: ['admin']
       }
     }
+  },
+  {
+    method: 'GET',
+    path: '/admin/test/customer-files/{id}',
+    handler: TestCustomerFilesController.show,
+    options: {
+      description: 'Used by the delivery team to show a customer file and its exported customers.',
+      auth: {
+        scope: ['admin']
+      }
+    }
   }
 ]
 

@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
@@ -21,31 +21,29 @@ const {
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { ListCustomerFilesService } = require('../../../../app/services')
+const { ListCustomerFilesService, ShowCustomerFileService } = require('../../../../app/services')
 
 describe('Test customer files controller', () => {
   let server
   let authToken
   let regime
 
-  before(async () => {
+  beforeEach(async () => {
+    await DatabaseHelper.clean()
+
     server = await deployment()
     authToken = AuthorisationHelper.adminToken()
 
     Sinon
       .stub(JsonWebToken, 'verify')
       .returns(AuthorisationHelper.decodeToken(authToken))
-  })
-
-  beforeEach(async () => {
-    await DatabaseHelper.clean()
 
     const authSystem = await AuthorisedSystemHelper.addAdminSystem()
     const regimes = await authSystem.$relatedQuery('regimes')
     regime = regimes.filter(r => r.slug === 'wrls')[0]
   })
 
-  after(async () => {
+  afterEach(async () => {
     Sinon.restore()
   })
 
@@ -86,6 +84,56 @@ describe('Test customer files controller', () => {
         expect(response.statusCode).to.equal(200)
         expect(payload.length).to.equal(2)
         expect(payload[1].fileReference).to.equal('nalac50002')
+      })
+    })
+  })
+
+  describe('Show customer file: GET /admin/test/customer-files/{id}', () => {
+    let customerFileId
+    const options = (id, token) => {
+      return {
+        method: 'GET',
+        url: `/admin/test/customer-files/${id}`,
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    beforeEach(async () => {
+      customerFileId = GeneralHelper.uuid4()
+    })
+
+    describe('When the customer file exists', () => {
+      beforeEach(async () => {
+        Sinon.stub(ShowCustomerFileService, 'go').returns({
+          id: customerFileId,
+          regimeId: regime.id,
+          region: 'A',
+          fileReference: 'nalac50001',
+          status: 'exported',
+          exportedCustomers: [
+            { id: GeneralHelper.uuid4(), customerReference: 'AA02BEEB', customerFileId },
+            { id: GeneralHelper.uuid4(), customerReference: 'BB02BEEB', customerFileId }
+          ]
+        })
+      })
+
+      it('returns the matching customer file', async () => {
+        const response = await server.inject(options(customerFileId, authToken))
+        const payload = JSON.parse(response.payload)
+
+        expect(response.statusCode).to.equal(200)
+        expect(payload.fileReference).to.equal('nalac50001')
+      })
+    })
+
+    describe('When the customer file does not exist', () => {
+      it("returns a 404 'not found' response", async () => {
+        const response = await server.inject(options(customerFileId, authToken))
+
+        const payload = JSON.parse(response.payload)
+
+        expect(response.statusCode).to.equal(404)
+        expect(payload.message).to.equal(`No customer file found with id ${customerFileId}`)
       })
     })
   })
