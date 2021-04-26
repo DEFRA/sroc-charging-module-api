@@ -73,6 +73,7 @@ describe('Task Runner', () => {
       const err = await expect(TaskRunner.go('FooTask')).to.reject()
 
       expect(err).to.be.an.error()
+      expect(err.message).to.equal("Unknown class name 'footask' passed to task runner")
       expect(taskStub.called).to.be.false()
     })
   })
