@@ -12,6 +12,7 @@ const { removeTemporaryFiles } = ServerConfig
 const { CustomerFileModel, CustomerModel } = require('../../app/models')
 
 const GenerateCustomerFileService = require('./generate_customer_file.service')
+const MoveCustomersToExportedTableService = require('./move_customers_to_exported_table.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
 const DeleteFileService = require('./delete_file.service')
 const NextCustomerFileReferenceService = require('./next_customer_file_reference.service')
@@ -57,7 +58,7 @@ class SendCustomerFileService {
 
         generatedFile = await this._generateAndSend(regime, region, fileReference)
 
-        await this._clearCustomerTable(regime, region)
+        await MoveCustomersToExportedTableService.go(regime, region, customerFile.id)
 
         await this._setExportedStatusAndDate(customerFile)
 
@@ -149,16 +150,6 @@ class SendCustomerFileService {
    */
   static _removeTemporaryFiles () {
     return removeTemporaryFiles
-  }
-
-  /**
-   * Deletes customer records for the given regime and region
-   */
-  static async _clearCustomerTable (regime, region) {
-    await CustomerModel.query()
-      .where('regimeId', regime.id)
-      .where('region', region)
-      .delete()
   }
 }
 
