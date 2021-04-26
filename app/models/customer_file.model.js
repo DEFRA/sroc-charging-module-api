@@ -9,7 +9,7 @@ const BaseModel = require('./base.model')
 
 class CustomerFileModel extends BaseModel {
   static get tableName () {
-    return 'customer_files'
+    return 'customerFiles'
   }
 
   static get relationMappings () {
