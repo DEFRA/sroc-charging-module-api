@@ -35,8 +35,8 @@ class SendCustomerFileService {
    *
    * @param {module:RegimeModel} regime The regime that the customer file is to be generated for.
    * @param {array} regions An arry of regions we want to send a customer file for.
-   * @param {@module:Notifier} notifier Instance of `Notifier` class. We use it to log errors rather than throwing them
-   * as this service is intended to run in the background.
+   * @param {@module:RequestNotifier} notifier Instance of `RequestNotifier` class. We use it to log errors rather than
+   * throwing them as this service is intended to run in the background.
    */
   static async go (regime, regions, notifier) {
     let generatedFile

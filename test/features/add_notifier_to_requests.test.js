@@ -20,7 +20,7 @@ const options = (url) => {
   }
 }
 
-describe("Adding a 'Notifier' instance to all requests to support logging and Errbit notifications", () => {
+describe("Adding a 'RequestNotifier' instance to all requests to support logging and Errbit notifications", () => {
   let server
 
   // Create server before each test
@@ -30,7 +30,7 @@ describe("Adding a 'Notifier' instance to all requests to support logging and Er
   })
 
   describe('When a request is made', () => {
-    it("adds an instance of 'Notifier' to the request", async () => {
+    it("adds an instance of 'RequestNotifier' to the request", async () => {
       const response = await server.inject(options('/test/notifier'))
       const responsePayload = JSON.parse(response.payload)
 
