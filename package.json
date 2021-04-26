@@ -16,7 +16,8 @@
     "rollbackdb": "knex migrate:rollback --all",
     "rollbackdbtest": "NODE_ENV=test knex migrate:rollback --all",
     "seeddb": "knex seed:run",
-    "unit-test": "lab --silent-skips --shuffle"
+    "unit-test": "lab --silent-skips --shuffle",
+    "customer-files-task": "node app/tasks/index.js CustomerFilesTask"
   },
   "repository": {
     "type": "git",
