@@ -10,7 +10,7 @@ class CustomerFileHelper {
   /**
    * Create a `customer_file` record
    *
-   * @param {module:RegimeModel} [regime] Instance of `RegimeModel` to assign  the customer file to. If nulll it will
+   * @param {module:RegimeModel} [regime] Instance of `RegimeModel` to assign the customer file to. If null it will
    * generate a random UUID and use that instead
    * @param {string} [region] Region to use. Defaults to 'A'
    * @param {string} [fileReference] File reference to use. Defaults to 'nalac50001'
