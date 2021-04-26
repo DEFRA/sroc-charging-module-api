@@ -14,9 +14,10 @@ const {
   RegimeHelper
 } = require('../support/helpers')
 
-const { CustomerFileModel, CustomerModel } = require('../../app/models')
+const { CustomerFileModel } = require('../../app/models')
 
 const { CreateCustomerDetailsService } = require('../../app/services')
+const { MoveCustomersToExportedTableService } = require('../../app/services')
 
 // Things we need to stub
 const {
@@ -34,6 +35,7 @@ describe('Send Customer File service', () => {
   let deleteStub
   let generateStub
   let sendStub
+  let moveStub
   let notifierFake
   let querySpy
 
@@ -59,6 +61,7 @@ describe('Send Customer File service', () => {
     deleteStub = Sinon.stub(DeleteFileService, 'go').returns(true)
     generateStub = Sinon.stub(GenerateCustomerFileService, 'go').returns('stubFilename')
     sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
+    moveStub = Sinon.stub(MoveCustomersToExportedTableService, 'go').returns(true)
     Sinon.stub(NextCustomerFileReferenceService, 'go').callsFake((_, region) => `nal${region.toLowerCase()}c50001`)
 
     // Create fake functions to stand in place of Notifier.omg() and Notifier.omfg()
@@ -89,17 +92,14 @@ describe('Send Customer File service', () => {
         expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
       })
 
-      it('clears the correct region customers from the customer table', async () => {
-        const customersRegionA = await CustomerModel.query()
-          .select('id')
-          .where('region', 'A')
+      it('moves the customers to the exported customers table', async () => {
+        const customerFile = await CustomerFileModel.query().first()
 
-        const customersRegionW = await CustomerModel.query()
-          .select('id')
-          .where('region', 'W')
-
-        expect(customersRegionA).to.be.empty()
-        expect(customersRegionW).to.not.be.empty()
+        const { args } = moveStub.getCall(0)
+        expect(moveStub.calledOnce).to.be.true()
+        expect(args[0].id).to.equal(regime.id)
+        expect(args[1]).to.equal('A')
+        expect(args[2]).to.equal(customerFile.id)
       })
 
       describe('and removeTemporary files is set to `true`', () => {
@@ -205,11 +205,18 @@ describe('Send Customer File service', () => {
         expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
       })
 
-      it('clears the correct region customers from the customer table', async () => {
-        const customers = await CustomerModel.query()
-          .select('id')
+      it('moves the customers to the exported customers table', async () => {
+        const customerFiles = await CustomerFileModel.query()
 
-        expect(customers).to.be.empty()
+        const { args: firstArgs } = moveStub.getCall(0)
+        const { args: secondArgs } = moveStub.getCall(1)
+        expect(moveStub.calledTwice).to.be.true()
+        expect(firstArgs[0].id).to.equal(regime.id)
+        expect(firstArgs[1]).to.equal('A')
+        expect(firstArgs[2]).to.equal(customerFiles[0].id)
+        expect(secondArgs[0].id).to.equal(regime.id)
+        expect(secondArgs[1]).to.equal('W')
+        expect(secondArgs[2]).to.equal(customerFiles[1].id)
       })
 
       describe('and removeTemporary files is set to `true`', () => {
@@ -306,11 +313,18 @@ describe('Send Customer File service', () => {
         expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
       })
 
-      it('clears the correct region customers from the customer table', async () => {
-        const customers = await CustomerModel.query()
-          .select('id')
+      it('moves the customers to the exported customers table', async () => {
+        const customerFiles = await CustomerFileModel.query()
 
-        expect(customers).to.be.empty()
+        const { args: firstArgs } = moveStub.getCall(0)
+        const { args: secondArgs } = moveStub.getCall(1)
+        expect(moveStub.calledTwice).to.be.true()
+        expect(firstArgs[0].id).to.equal(regime.id)
+        expect(firstArgs[1]).to.equal('A')
+        expect(firstArgs[2]).to.equal(customerFiles[0].id)
+        expect(secondArgs[0].id).to.equal(regime.id)
+        expect(secondArgs[1]).to.equal('W')
+        expect(secondArgs[2]).to.equal(customerFiles[1].id)
       })
 
       describe('and removeTemporary files is set to `true`', () => {
