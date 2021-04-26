@@ -14,8 +14,8 @@ const {
   HapiPinoPlugin,
   InvalidCharactersPlugin,
   MissingPayloadPlugin,
-  NotifierPlugin,
   PayloadCleanerPlugin,
+  RequestNotifierPlugin,
   RouterPlugin,
   StopPlugin,
   VersionInfoPlugin
@@ -35,9 +35,9 @@ exports.deployment = async start => {
   await server.register(StopPlugin)
   await server.register(AuthorisationPlugin)
   await server.register(RouterPlugin)
-  await server.register(AirbrakePlugin)
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
-  await server.register(NotifierPlugin)
+  await server.register(AirbrakePlugin)
+  await server.register(RequestNotifierPlugin)
   await server.register(MissingPayloadPlugin)
   await server.register(InvalidCharactersPlugin)
   await server.register(PayloadCleanerPlugin)

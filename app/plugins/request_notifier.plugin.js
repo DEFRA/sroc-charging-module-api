@@ -1,25 +1,25 @@
 'use strict'
 
 /**
- * Add an instance of `Notifier` to the `request.app` as part of every request.
+ * Add an instance of `RequestNotifier` to the `request.app` as part of every request.
  *
  * This makes writing to the log and sending notifications to Errbit more accesible, easier to use, and more consistent
  * in the controllers and their underlying services.
  *
- * @module NotifierPlugin
+ * @module RequestNotifierPlugin
  */
 
-const { Notifier } = require('../lib')
+const { RequestNotifier } = require('../lib')
 
-const NotifierPlugin = {
+const RequestNotifierPlugin = {
   name: 'Notifier',
   register: (server, _options) => {
     server.ext('onRequest', (request, h) => {
-      request.app.notifier = new Notifier(request.info.id, server.logger, server.methods.notify)
+      request.app.notifier = new RequestNotifier(request.info.id, server.logger, server.app.airbrake)
 
       return h.continue
     })
   }
 }
 
-module.exports = NotifierPlugin
+module.exports = RequestNotifierPlugin
