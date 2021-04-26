@@ -45,12 +45,15 @@ class TaskRunner {
   }
 
   static _determineTaskClass (className) {
-    switch (className) {
-      case 'customerfilestask':
-        return CustomerFilesTask
-      default:
-        throw new Error(`Unknown class name '${className}' passed to task runner`)
+    const taskClasses = {
+      customerfilestask: CustomerFilesTask
     }
+
+    if (!taskClasses[className]) {
+      throw new Error(`Unknown class name '${className}' passed to task runner`)
+    }
+
+    return taskClasses[className]
   }
 
   static _notifier () {
