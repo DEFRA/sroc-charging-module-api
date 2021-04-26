@@ -50,19 +50,22 @@ class DbErrorsService {
   }
 
   static _uniqueViolationError (error, data) {
-    let message
+    let boomError
 
     if (error.constraint === 'transactions_regime_id_client_id_unique') {
-      const regimeId = data.params.regimeId
-      message = `A transaction with Client ID '${data.payload.clientId}' for Regime '${regimeId}' already exists.`
+      boomError = new Boom.Boom(
+        `A transaction with Client ID '${data.payload.clientId}' for Regime '${data.params.regimeId}' already exists.`,
+        { statusCode: 409 }
+      )
+      boomError.output.payload.clientId = data.payload.clientId
     } else {
-      message = `${error.name} - ${error.nativeError.detail}`
+      boomError = new Boom.Boom(
+        `${error.name} - ${error.nativeError.detail}`,
+        { statusCode: 409 }
+      )
     }
 
-    return new Boom.Boom(
-      message,
-      { statusCode: 409 }
-    )
+    return boomError
   }
 
   static _dbError (error) {

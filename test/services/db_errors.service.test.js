@@ -50,7 +50,7 @@ describe('Db Errors service', () => {
       })
 
       describe('specifically a duplicate client Id for the same regime', () => {
-        it("returns a '409' Boom error with a tailored message", () => {
+        it("returns a '409' Boom error with a tailored response", () => {
           const args = {
             client: 'postgresql',
             constraint: 'transactions_regime_id_client_id_unique',
@@ -74,6 +74,7 @@ describe('Db Errors service', () => {
           expect(result.output.payload.message).to.equal(
             "A transaction with Client ID 'DOUBLEIMPACT' for Regime 'wrls' already exists."
           )
+          expect(result.output.payload.clientId).to.equal('DOUBLEIMPACT')
         })
       })
     })
