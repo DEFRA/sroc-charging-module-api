@@ -47,7 +47,7 @@ describe('Show Customer File service', () => {
   })
 
   describe('When there is no matching customer file', () => {
-    it('returns throws an error', async () => {
+    it('throws an error', async () => {
       const id = GeneralHelper.uuid4()
       const err = await expect(ShowCustomerFileService.go(id)).to.reject(Error, `No customer file found with id ${id}`)
 
