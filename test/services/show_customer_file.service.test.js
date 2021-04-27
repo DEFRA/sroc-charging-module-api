@@ -56,7 +56,7 @@ describe('Show Customer File service', () => {
   })
 
   describe('When an invalid UUID is used', () => {
-    it('returns throws an error', async () => {
+    it('throws an error', async () => {
       const err = await expect(ShowCustomerFileService.go('123456789')).to.reject(DataError)
 
       expect(err).to.be.an.error()
