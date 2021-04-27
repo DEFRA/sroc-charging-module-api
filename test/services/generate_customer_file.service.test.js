@@ -20,6 +20,8 @@ const { temporaryFilePath } = require('../../config/server.config')
 
 const { CreateCustomerDetailsService } = require('../../app/services')
 
+const { CustomerFileModel, CustomerModel } = require('../../app/models')
+
 // Thing under test
 const { GenerateCustomerFileService } = require('../../app/services')
 
@@ -29,6 +31,7 @@ describe('Generate Customer File service', () => {
   const filenameWithPath = path.join(temporaryFilePath, filename)
 
   let regime
+  let customerFile
 
   const payload = {
     region: 'A',
@@ -47,7 +50,16 @@ describe('Generate Customer File service', () => {
     await DatabaseHelper.clean()
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    await CreateCustomerDetailsService.go(payload, regime)
+    const customer = await CreateCustomerDetailsService.go(payload, regime)
+
+    customerFile = await CustomerFileModel.query().insert({
+      regimeId: regime.id,
+      region: payload.region,
+      fileReference
+    })
+
+    // We need to set customer.customerFileId to ensure it is included in customerFile by GenerateCustomerFileService
+    await customer.$query().patch({ customerFileId: customerFile.id })
   })
 
   afterEach(async () => {
@@ -55,12 +67,7 @@ describe('Generate Customer File service', () => {
   })
 
   it('creates a file with the correct content', async () => {
-    const returnedFilenameWithPath = await GenerateCustomerFileService.go(
-      regime.id,
-      payload.region,
-      filename,
-      fileReference
-    )
+    const returnedFilenameWithPath = await GenerateCustomerFileService.go(customerFile)
 
     const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
     const expectedContent = _expectedContent()
@@ -69,40 +76,47 @@ describe('Generate Customer File service', () => {
   })
 
   it('returns the filename and path', async () => {
-    const returnedFilenameWithPath = await GenerateCustomerFileService.go(
-      regime.id,
-      payload.region,
-      filename,
-      fileReference
-    )
+    const returnedFilenameWithPath = await GenerateCustomerFileService.go(customerFile)
 
     expect(returnedFilenameWithPath).to.equal(filenameWithPath)
   })
 
-  it('creates a file sorted by customer reference', async () => {
-    await CreateCustomerDetailsService.go({ ...payload, customerReference: 'CB12345678' }, regime)
-    await CreateCustomerDetailsService.go({ ...payload, customerReference: 'BB12345678' }, regime)
+  describe('when multiple customer details are present', () => {
+    it('only includes customer changes intended for the customer file', async () => {
+      // We add an additional customer change but don't set customerFileId for it
+      await CreateCustomerDetailsService.go({ ...payload, customerReference: 'BB12345678' }, regime)
 
-    const returnedFilenameWithPath = await GenerateCustomerFileService.go(
-      regime.id,
-      payload.region,
-      filename,
-      fileReference
-    )
+      const returnedFilenameWithPath = await GenerateCustomerFileService.go(customerFile)
 
-    const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
+      const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
+      const expectedContent = _expectedContent()
 
-    const lines = file
+      expect(file).to.equal(expectedContent)
+    })
+
+    it('creates a file sorted by customer reference', async () => {
+      await CreateCustomerDetailsService.go({ ...payload, customerReference: 'CB12345678' }, regime)
+      await CreateCustomerDetailsService.go({ ...payload, customerReference: 'BB12345678' }, regime)
+
+      // Ensure customerFileId is set for all customer detils
+      await CustomerModel.query().patch({ customerFileId: customerFile.id })
+
+      const returnedFilenameWithPath = await GenerateCustomerFileService.go(customerFile)
+
+      const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
+
+      const lines = file
       // Split the file into an array of lines
-      .split('\n')
+        .split('\n')
       // Each line is split into an array of items
-      .map(line => line.split(','))
+        .map(line => line.split(','))
       // We filter out any lines which aren't data lines
-      .filter(line => line[0] === '"D"')
+        .filter(line => line[0] === '"D"')
 
-    expect(lines[0][2]).to.equal('"AB12345678"')
-    expect(lines[1][2]).to.equal('"BB12345678"')
-    expect(lines[2][2]).to.equal('"CB12345678"')
+      expect(lines[0][2]).to.equal('"AB12345678"')
+      expect(lines[1][2]).to.equal('"BB12345678"')
+      expect(lines[2][2]).to.equal('"CB12345678"')
+    })
   })
 
   function _expectedContent () {
