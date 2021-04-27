@@ -3,6 +3,7 @@
 const AuthorisationHelper = require('./authorisation.helper')
 const AuthorisedSystemHelper = require('./authorised_system.helper')
 const BillRunHelper = require('./bill_run.helper')
+const CustomerHelper = require('./customer.helper')
 const DatabaseHelper = require('./database.helper')
 const GeneralHelper = require('./general.helper')
 const InvoiceHelper = require('./invoice.helper')
@@ -19,6 +20,7 @@ module.exports = {
   AuthorisationHelper,
   AuthorisedSystemHelper,
   BillRunHelper,
+  CustomerHelper,
   DatabaseHelper,
   GeneralHelper,
   InvoiceHelper,

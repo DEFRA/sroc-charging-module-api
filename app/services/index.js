@@ -25,6 +25,7 @@ const GenerateBillRunValidationService = require('./generate_bill_run_validation
 const GenerateCustomerFileService = require('./generate_customer_file.service')
 const GenerateTransactionFileService = require('./generate_transaction_file.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
+const ListCustomerFilesService = require('./list_customer_files.service')
 const ListRegimesService = require('./list_regimes.service')
 const MoveCustomersToExportedTableService = require('./move_customers_to_exported_table.service')
 const NextBillRunNumberService = require('./next_bill_run_number.service')
@@ -76,6 +77,7 @@ module.exports = {
   GenerateCustomerFileService,
   GenerateTransactionFileService,
   ListAuthorisedSystemsService,
+  ListCustomerFilesService,
   ListRegimesService,
   ObjectCleaningService,
   RequestBillRunService,
