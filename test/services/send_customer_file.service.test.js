@@ -14,7 +14,7 @@ const {
   RegimeHelper
 } = require('../support/helpers')
 
-const { CustomerFileModel } = require('../../app/models')
+const { CustomerFileModel, CustomerModel } = require('../../app/models')
 
 const { CreateCustomerDetailsService } = require('../../app/services')
 const { MoveCustomersToExportedTableService } = require('../../app/services')
@@ -418,6 +418,36 @@ describe('Send Customer File service', () => {
 
       it("doesn't try to send a file", async () => {
         expect(sendStub.notCalled).to.be.true()
+      })
+    })
+  })
+
+  describe("When a 'stuck' customer change exists", () => {
+    describe('and a customer file is required', () => {
+      let stuckCustomerFile
+
+      beforeEach(async () => {
+        stuckCustomerFile = await CustomerFileModel.query().insert({
+          regimeId: regime.id,
+          region: 'A',
+          fileReference: 'STUCK'
+        })
+
+        const stuckCustomer = await CreateCustomerDetailsService.go({
+          ...payload,
+          region: 'A',
+          customerReference: 'STUCK'
+        }, regime)
+
+        await stuckCustomer.$query().patch({ customerFileId: stuckCustomerFile.id })
+
+        await SendCustomerFileService.go(regime, ['A'], notifierFake)
+      })
+
+      it("doesn't change its customer file id", async () => {
+        const result = await CustomerModel.query().where('customerReference', 'STUCK').first()
+
+        expect(result.customerFileId).to.equal(stuckCustomerFile.id)
       })
     })
   })
