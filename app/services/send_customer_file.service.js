@@ -56,7 +56,9 @@ class SendCustomerFileService {
 
         await this._setPendingStatus(customerFile)
 
-        generatedFile = await this._generateAndSend(regime, region, fileReference)
+        await this._selectCustomerChanges(customerFile)
+
+        generatedFile = await this._generateAndSend(regime, customerFile)
 
         await MoveCustomersToExportedTableService.go(regime, region, customerFile.id)
 
@@ -108,6 +110,20 @@ class SendCustomerFileService {
   }
 
   /**
+   * Selects the records to be included in the file by patching `customer_file_id` of the records to customerFile.id.
+   * We select by regimeId and region of customerFile, and only patch records where customerFileId is `null` to ensure
+   * we don't overwrite existing entries which may still be in the table due to an error during a previous send (and
+   * which we want to ensure aren't included in a future file)
+   */
+  static async _selectCustomerChanges (customerFile) {
+    await CustomerModel.query()
+      .patch({ customerFileId: customerFile.id })
+      .where('regimeId', customerFile.regimeId)
+      .where('region', customerFile.region)
+      .where('customerFileId', null)
+  }
+
+  /**
    * Sets the status of a customer file to 'exported' and sets exportedAt to the current date
    */
   static async _setExportedStatusAndDate (customerFile) {
@@ -121,10 +137,9 @@ class SendCustomerFileService {
   /**
    * Generate and send the customer file. Returns the path and filename of the generated file.
    */
-  static async _generateAndSend (regime, region, fileReference) {
-    const filename = this._filename(fileReference)
-
-    const generatedFile = await GenerateCustomerFileService.go(regime.id, region, filename, fileReference)
+  static async _generateAndSend (regime, customerFile) {
+    const generatedFile = await GenerateCustomerFileService.go(customerFile)
+    const filename = path.basename(generatedFile)
 
     // The key is the remote path and filename in the S3 bucket, eg. 'wrls/customer/nalac50001.dat'
     const key = path.join(regime.slug, 'customer', filename)
@@ -139,10 +154,6 @@ class SendCustomerFileService {
    */
   static async _fileReference (regime, region) {
     return NextCustomerFileReferenceService.go(regime, region)
-  }
-
-  static _filename (fileReference) {
-    return `${fileReference}.dat`
   }
 
   /**

@@ -14,16 +14,13 @@ const {
 
 class GenerateCustomerFileService {
   /**
-   * Generates and writes a customer file for a region to a given filename in the temp folder.
+   * Generates and writes a customer file to a given filename in the temp folder.
    *
-   * @param {string} regimeId Id of the regime to generate the customer file for.
-   * @param {string} region The region to generate the customer file for.
-   * @param {string} filename The name of the file to be generated.
-   * @param {string} fileReference The file reference to be used in the head of the file.
+   * @param {module:CustomerFileModel} customerFile Instance of `CustomerFileModel` which a file will be generated for.
    * @returns {string} The path and filename of the generated file.
    */
-  static async go (regimeId, region, filename, fileReference) {
-    const query = this._query(regimeId, region)
+  static async go ({ id, region, fileReference }) {
+    const query = this._query(id)
 
     // Only data passed in as additionalData is available to the header
     const additionalData = { region, fileReference }
@@ -33,12 +30,12 @@ class GenerateCustomerFileService {
       CustomerFileHeadPresenter,
       CustomerFileBodyPresenter,
       CustomerFileTailPresenter,
-      filename,
+      this._filename(fileReference),
       additionalData
     )
   }
 
-  static _query (regimeId, region) {
+  static _query (customerFileId) {
     return CustomerModel.query()
       .select(
         'region',
@@ -52,9 +49,12 @@ class GenerateCustomerFileService {
         'addressLine6',
         'postcode'
       )
-      .where('regimeId', regimeId)
-      .where('region', region)
+      .where('customerFileId', customerFileId)
       .orderBy('customerReference')
+  }
+
+  static _filename (fileReference) {
+    return `${fileReference}.dat`
   }
 }
 

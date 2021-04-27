@@ -14,7 +14,7 @@ const {
   RegimeHelper
 } = require('../support/helpers')
 
-const { CustomerFileModel } = require('../../app/models')
+const { CustomerFileModel, CustomerModel } = require('../../app/models')
 
 const { CreateCustomerDetailsService } = require('../../app/services')
 const { MoveCustomersToExportedTableService } = require('../../app/services')
@@ -59,7 +59,7 @@ describe('Send Customer File service', () => {
     await CreateCustomerDetailsService.go({ ...payload, region: 'W', customerReference: 'WA87654321' }, regime)
 
     deleteStub = Sinon.stub(DeleteFileService, 'go').returns(true)
-    generateStub = Sinon.stub(GenerateCustomerFileService, 'go').returns('stubFilename')
+    generateStub = Sinon.stub(GenerateCustomerFileService, 'go').callsFake(file => `${file.fileReference}.dat`)
     sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
     moveStub = Sinon.stub(MoveCustomersToExportedTableService, 'go').returns(true)
     Sinon.stub(NextCustomerFileReferenceService, 'go').callsFake((_, region) => `nal${region.toLowerCase()}c50001`)
@@ -81,14 +81,17 @@ describe('Send Customer File service', () => {
       })
 
       it('generates a customer file', async () => {
+        const [customerFile] = generateStub.getCall(0).args
+
         expect(generateStub.calledOnce).to.be.true()
-        expect(generateStub.getCall(0).args[0]).to.equal(regime.id)
-        expect(generateStub.getCall(0).args[1]).to.equal('A')
+        expect(customerFile).to.be.an.instanceOf(CustomerFileModel)
+        expect(customerFile.regimeId).to.equal(regime.id)
+        expect(customerFile.region).to.equal('A')
       })
 
       it('sends the customer file', async () => {
         expect(sendStub.calledOnce).to.be.true()
-        expect(sendStub.getCall(0).firstArg).to.equal('stubFilename')
+        expect(sendStub.getCall(0).firstArg).to.equal('nalac50001.dat')
         expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
       })
 
@@ -191,17 +194,19 @@ describe('Send Customer File service', () => {
 
       it('generates a customer file', async () => {
         expect(generateStub.calledTwice).to.be.true()
-        expect(generateStub.getCall(0).args[0]).to.equal(regime.id)
-        expect(generateStub.getCall(0).args[1]).to.equal('A')
-        expect(generateStub.getCall(1).args[0]).to.equal(regime.id)
-        expect(generateStub.getCall(1).args[1]).to.equal('W')
+        expect(generateStub.getCall(0).args[0]).to.be.an.instanceOf(CustomerFileModel)
+        expect(generateStub.getCall(0).args[0].regimeId).to.equal(regime.id)
+        expect(generateStub.getCall(0).args[0].region).to.equal('A')
+        expect(generateStub.getCall(1).args[0]).to.be.an.instanceOf(CustomerFileModel)
+        expect(generateStub.getCall(1).args[0].regimeId).to.equal(regime.id)
+        expect(generateStub.getCall(1).args[0].region).to.equal('W')
       })
 
       it('sends the customer file', async () => {
         expect(sendStub.calledTwice).to.be.true()
-        expect(sendStub.getCall(0).args[0]).to.equal('stubFilename')
+        expect(sendStub.getCall(0).args[0]).to.equal('nalac50001.dat')
         expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
-        expect(sendStub.getCall(1).args[0]).to.equal('stubFilename')
+        expect(sendStub.getCall(1).args[0]).to.equal('nalwc50001.dat')
         expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
       })
 
@@ -299,17 +304,19 @@ describe('Send Customer File service', () => {
 
       it('generates all required customer files', async () => {
         expect(generateStub.calledTwice).to.be.true()
-        expect(generateStub.getCall(0).args[0]).to.equal(regime.id)
-        expect(generateStub.getCall(0).args[1]).to.equal('A')
-        expect(generateStub.getCall(1).args[0]).to.equal(regime.id)
-        expect(generateStub.getCall(1).args[1]).to.equal('W')
+        expect(generateStub.getCall(0).args[0]).to.be.an.instanceOf(CustomerFileModel)
+        expect(generateStub.getCall(0).args[0].regimeId).to.equal(regime.id)
+        expect(generateStub.getCall(0).args[0].region).to.equal('A')
+        expect(generateStub.getCall(1).args[0]).to.be.an.instanceOf(CustomerFileModel)
+        expect(generateStub.getCall(1).args[0].regimeId).to.equal(regime.id)
+        expect(generateStub.getCall(1).args[0].region).to.equal('W')
       })
 
       it('sends all required customer files', async () => {
         expect(sendStub.calledTwice).to.be.true()
-        expect(sendStub.getCall(0).args[0]).to.equal('stubFilename')
+        expect(sendStub.getCall(0).args[0]).to.equal('nalac50001.dat')
         expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
-        expect(sendStub.getCall(1).args[0]).to.equal('stubFilename')
+        expect(sendStub.getCall(1).args[0]).to.equal('nalwc50001.dat')
         expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
       })
 
@@ -411,6 +418,36 @@ describe('Send Customer File service', () => {
 
       it("doesn't try to send a file", async () => {
         expect(sendStub.notCalled).to.be.true()
+      })
+    })
+  })
+
+  describe("When a 'stuck' customer change exists", () => {
+    describe('and a customer file is required', () => {
+      let stuckCustomerFile
+
+      beforeEach(async () => {
+        stuckCustomerFile = await CustomerFileModel.query().insert({
+          regimeId: regime.id,
+          region: 'A',
+          fileReference: 'STUCK'
+        })
+
+        const stuckCustomer = await CreateCustomerDetailsService.go({
+          ...payload,
+          region: 'A',
+          customerReference: 'STUCK'
+        }, regime)
+
+        await stuckCustomer.$query().patch({ customerFileId: stuckCustomerFile.id })
+
+        await SendCustomerFileService.go(regime, ['A'], notifierFake)
+      })
+
+      it("doesn't change its customer file id", async () => {
+        const result = await CustomerModel.query().where('customerReference', 'STUCK').first()
+
+        expect(result.customerFileId).to.equal(stuckCustomerFile.id)
       })
     })
   })
