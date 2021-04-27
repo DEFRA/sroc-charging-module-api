@@ -30,7 +30,7 @@ describe('Show Customer File service', () => {
 
       const result = await ShowCustomerFileService.go(customerFile.id)
 
-      expect(result instanceof CustomerFileModel).to.equal(true)
+      expect(result).to.be.an.instanceOf(CustomerFileModel)
       expect(result.id).to.equal(customerFile.id)
     })
 
