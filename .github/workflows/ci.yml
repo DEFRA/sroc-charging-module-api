@@ -113,7 +113,7 @@ jobs:
       # https://community.sonarsource.com/t/code-coverage-doesnt-work-with-github-action/16747/6
       - name: Run unit tests
         run: |
-          npm run unit-test
+          npm test
           sed -i 's/\/home\/runner\/work\/sroc-charging-module-api\/sroc-charging-module-api\//\/github\/workspace\//g' coverage/lcov.info
 
       - name: Analyze with SonarCloud

@@ -8,7 +8,7 @@
     "start": "node server.js",
     "watch": "./node_modules/nodemon/bin/nodemon.js --watch ./app --watch server.js -x node server.js",
     "lint": "standard",
-    "test": "npm run lint && npm run migratedbtest && npm run unit-test",
+    "test": "lab --silent-skips --shuffle",
     "createdb": "node db/create_database.js",
     "createdbtest": "NODE_ENV=test node db/create_database.js",
     "migratedb": "knex migrate:latest",
@@ -16,7 +16,6 @@
     "rollbackdb": "knex migrate:rollback --all",
     "rollbackdbtest": "NODE_ENV=test knex migrate:rollback --all",
     "seeddb": "knex seed:run",
-    "unit-test": "lab --silent-skips --shuffle",
     "customer-files-task": "node app/tasks/index.js CustomerFilesTask"
   },
   "repository": {
