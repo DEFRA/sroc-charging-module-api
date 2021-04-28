@@ -9,7 +9,7 @@ const BaseModel = require('./base.model')
 
 class SequenceCounterModel extends BaseModel {
   static get tableName () {
-    return 'sequence_counters'
+    return 'sequenceCounters'
   }
 
   static get relationMappings () {

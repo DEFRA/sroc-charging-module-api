@@ -9,7 +9,7 @@ const BaseModel = require('./base.model')
 
 class CustomerFileModel extends BaseModel {
   static get tableName () {
-    return 'customer_files'
+    return 'customerFiles'
   }
 
   static get relationMappings () {
@@ -20,6 +20,14 @@ class CustomerFileModel extends BaseModel {
         join: {
           from: 'customerFiles.id',
           to: 'customers.customerFileId'
+        }
+      },
+      exportedCustomers: {
+        relation: Model.HasManyRelation,
+        modelClass: 'exported_customer.model',
+        join: {
+          from: 'customerFiles.id',
+          to: 'exportedCustomers.customerFileId'
         }
       },
       regime: {

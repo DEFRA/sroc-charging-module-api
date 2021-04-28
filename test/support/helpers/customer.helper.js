@@ -1,6 +1,6 @@
 'use strict'
 
-const { CustomerFileModel } = require('../../../app/models')
+const { CustomerFileModel, ExportedCustomerModel } = require('../../../app/models')
 const GeneralHelper = require('./general.helper')
 
 /**
@@ -30,12 +30,34 @@ class CustomerFileHelper {
       .returning('*')
   }
 
+  /**
+   * Create a `exported_customer` record
+   *
+   * @param {module:CustomerFileModel} [customerFile] Instance of `CustomerFileModel` to assign the exported customer
+   * to. If null it will generate a random UUID and use that instead
+   * @param {string} [customerReference] customer reference to use. Defaults to 'AA02BEEB'
+   *
+   * @returns {module:ExportedCustomerModel} The newly created instance of `ExportedCustomerModel`
+   */
+  static addExportedCustomer (customerFile = null, customerReference = 'AA02BEEB') {
+    return ExportedCustomerModel.query()
+      .insert({
+        customerFileId: this._customerFileId(customerFile),
+        customerReference
+      })
+      .returning('*')
+  }
+
   static _regimeId (regime) {
     return regime?.id ?? GeneralHelper.uuid4()
   }
 
   static _exportedAt (status) {
     return status === 'exported' ? new Date().toISOString() : null
+  }
+
+  static _customerFileId (customerFile) {
+    return customerFile?.id ?? GeneralHelper.uuid4()
   }
 }
 

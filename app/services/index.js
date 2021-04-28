@@ -40,6 +40,7 @@ const SendCustomerFileService = require('./send_customer_file.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
 const SendTransactionFileService = require('./send_transaction_file.service')
 const ShowAuthorisedSystemService = require('./show_authorised_system.service')
+const ShowCustomerFileService = require('./show_customer_file.service')
 const ShowRegimeService = require('./show_regime.service')
 const ShowTransactionService = require('./show_transaction.service')
 const StreamReadableDataService = require('./streams/stream_readable_data.service')
@@ -92,6 +93,7 @@ module.exports = {
   SendFileToS3Service,
   SendTransactionFileService,
   ShowAuthorisedSystemService,
+  ShowCustomerFileService,
   ShowRegimeService,
   ShowTransactionService,
   StreamReadableDataService,

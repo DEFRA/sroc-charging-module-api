@@ -9,7 +9,7 @@ const BaseModel = require('./base.model')
 
 class ExportedCustomerModel extends BaseModel {
   static get tableName () {
-    return 'exported_customers'
+    return 'exportedCustomers'
   }
 
   static get relationMappings () {
