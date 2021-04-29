@@ -1,5 +1,50 @@
 # Changelog
 
+## [v0.8.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.8.0) (2021-04-29)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.7.3...v0.8.0)
+
+**Implemented enhancements:**
+
+- Add test Show customer file endpoint [\#385](https://github.com/DEFRA/sroc-charging-module-api/pull/385) ([Cruikshanks](https://github.com/Cruikshanks))
+- Send Customer File Service moves customers to exported\_customers [\#384](https://github.com/DEFRA/sroc-charging-module-api/pull/384) ([StuAA78](https://github.com/StuAA78))
+- Move Customers To Exported Table service [\#382](https://github.com/DEFRA/sroc-charging-module-api/pull/382) ([StuAA78](https://github.com/StuAA78))
+- Add customer files test endpoint [\#381](https://github.com/DEFRA/sroc-charging-module-api/pull/381) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add TaskNotifier and refactor existing Notifier [\#379](https://github.com/DEFRA/sroc-charging-module-api/pull/379) ([Cruikshanks](https://github.com/Cruikshanks))
+- Admin customer changes dummy endpoint [\#375](https://github.com/DEFRA/sroc-charging-module-api/pull/375) ([StuAA78](https://github.com/StuAA78))
+- Add customer file to customer\_file table [\#371](https://github.com/DEFRA/sroc-charging-module-api/pull/371) ([StuAA78](https://github.com/StuAA78))
+- Add generate customer file task [\#370](https://github.com/DEFRA/sroc-charging-module-api/pull/370) ([Cruikshanks](https://github.com/Cruikshanks))
+- Create exported\_customers table [\#369](https://github.com/DEFRA/sroc-charging-module-api/pull/369) ([StuAA78](https://github.com/StuAA78))
+- Create customer file model [\#366](https://github.com/DEFRA/sroc-charging-module-api/pull/366) ([StuAA78](https://github.com/StuAA78))
+- Link customers table to customer\_files [\#365](https://github.com/DEFRA/sroc-charging-module-api/pull/365) ([StuAA78](https://github.com/StuAA78))
+- Create customer files table [\#364](https://github.com/DEFRA/sroc-charging-module-api/pull/364) ([StuAA78](https://github.com/StuAA78))
+- Overwrite existing customer details entry [\#355](https://github.com/DEFRA/sroc-charging-module-api/pull/355) ([StuAA78](https://github.com/StuAA78))
+
+**Fixed bugs:**
+
+- Fix previous changes in customer file export [\#386](https://github.com/DEFRA/sroc-charging-module-api/pull/386) ([StuAA78](https://github.com/StuAA78))
+- Fix - add client ID back into conflict response [\#380](https://github.com/DEFRA/sroc-charging-module-api/pull/380) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix SendCustomerFileService error logging [\#373](https://github.com/DEFRA/sroc-charging-module-api/pull/373) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix POST /customer-changes response code [\#372](https://github.com/DEFRA/sroc-charging-module-api/pull/372) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix multiple region customer file generation [\#368](https://github.com/DEFRA/sroc-charging-module-api/pull/368) ([StuAA78](https://github.com/StuAA78))
+- Fix transaction file minimum charge defect [\#362](https://github.com/DEFRA/sroc-charging-module-api/pull/362) ([StuAA78](https://github.com/StuAA78))
+- Correctly record prorata days for two-part tariffs [\#361](https://github.com/DEFRA/sroc-charging-module-api/pull/361) ([StuAA78](https://github.com/StuAA78))
+- Fix transaction file compensation charge defect [\#360](https://github.com/DEFRA/sroc-charging-module-api/pull/360) ([StuAA78](https://github.com/StuAA78))
+
+**Merged pull requests:**
+
+- Use consistent naming convention package scripts [\#388](https://github.com/DEFRA/sroc-charging-module-api/pull/388) ([Cruikshanks](https://github.com/Cruikshanks))
+- Update TaskRunner to use TaskNotifier [\#383](https://github.com/DEFRA/sroc-charging-module-api/pull/383) ([Cruikshanks](https://github.com/Cruikshanks))
+- Bump @hapi/lab from 24.1.1 to 24.2.0 [\#378](https://github.com/DEFRA/sroc-charging-module-api/pull/378) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump mock-fs from 4.13.0 to 4.14.0 [\#377](https://github.com/DEFRA/sroc-charging-module-api/pull/377) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.13.0 to 3.13.1 [\#376](https://github.com/DEFRA/sroc-charging-module-api/pull/376) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Initial Invoice Rebilling endpoint [\#374](https://github.com/DEFRA/sroc-charging-module-api/pull/374) ([Cruikshanks](https://github.com/Cruikshanks))
+- Bump @airbrake/node from 2.1.3 to 2.1.4 [\#367](https://github.com/DEFRA/sroc-charging-module-api/pull/367) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.12.0 to 3.13.0 [\#363](https://github.com/DEFRA/sroc-charging-module-api/pull/363) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pg from 8.5.1 to 8.6.0 [\#359](https://github.com/DEFRA/sroc-charging-module-api/pull/359) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pg-query-stream from 4.0.0 to 4.1.0 [\#358](https://github.com/DEFRA/sroc-charging-module-api/pull/358) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.11.0 to 3.12.0 [\#351](https://github.com/DEFRA/sroc-charging-module-api/pull/351) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.7.3](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.7.3) (2021-04-13)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.7.2...v0.7.3)
@@ -151,7 +196,6 @@
 **Implemented enhancements:**
 
 - Connect Delete Bill Run service to endpoint [\#279](https://github.com/DEFRA/sroc-charging-module-api/pull/279) ([StuAA78](https://github.com/StuAA78))
-- Link invoices table to bill\_runs table [\#269](https://github.com/DEFRA/sroc-charging-module-api/pull/269) ([StuAA78](https://github.com/StuAA78))
 - Delete Bill Run service [\#268](https://github.com/DEFRA/sroc-charging-module-api/pull/268) ([StuAA78](https://github.com/StuAA78))
 
 **Fixed bugs:**
@@ -163,6 +207,7 @@
 **Merged pull requests:**
 
 - Update the view bill run response [\#278](https://github.com/DEFRA/sroc-charging-module-api/pull/278) ([Cruikshanks](https://github.com/Cruikshanks))
+- Limit create transaction returning\(\) fields [\#264](https://github.com/DEFRA/sroc-charging-module-api/pull/264) ([Cruikshanks](https://github.com/Cruikshanks))
 
 ## [v0.5.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.5.0) (2021-03-08)
 
@@ -173,6 +218,7 @@
 - Hook up /send bill run endpoint to new service [\#275](https://github.com/DEFRA/sroc-charging-module-api/pull/275) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add SendBillRunReferenceService [\#272](https://github.com/DEFRA/sroc-charging-module-api/pull/272) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add NextFileReferenceService and migration [\#270](https://github.com/DEFRA/sroc-charging-module-api/pull/270) ([Cruikshanks](https://github.com/Cruikshanks))
+- Link invoices table to bill\_runs table [\#269](https://github.com/DEFRA/sroc-charging-module-api/pull/269) ([StuAA78](https://github.com/StuAA78))
 - Initial Delete Bill Run endpoint [\#267](https://github.com/DEFRA/sroc-charging-module-api/pull/267) ([StuAA78](https://github.com/StuAA78))
 - Customer Details controller and endpoint [\#266](https://github.com/DEFRA/sroc-charging-module-api/pull/266) ([StuAA78](https://github.com/StuAA78))
 - Add NextTransactionReferenceService and migration [\#265](https://github.com/DEFRA/sroc-charging-module-api/pull/265) ([Cruikshanks](https://github.com/Cruikshanks))
@@ -184,7 +230,6 @@
 **Merged pull requests:**
 
 - Bump nock from 13.0.10 to 13.0.11 [\#274](https://github.com/DEFRA/sroc-charging-module-api/pull/274) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Limit create transaction returning\(\) fields [\#264](https://github.com/DEFRA/sroc-charging-module-api/pull/264) ([Cruikshanks](https://github.com/Cruikshanks))
 - Rename & refactor licence service to use patch [\#263](https://github.com/DEFRA/sroc-charging-module-api/pull/263) ([Cruikshanks](https://github.com/Cruikshanks))
 - Rename & refactor invoice service to use patch [\#261](https://github.com/DEFRA/sroc-charging-module-api/pull/261) ([Cruikshanks](https://github.com/Cruikshanks))
 - Rename & refactor bill run service to use patch [\#259](https://github.com/DEFRA/sroc-charging-module-api/pull/259) ([Cruikshanks](https://github.com/Cruikshanks))
@@ -215,6 +260,7 @@
 - Bump nock from 13.0.8 to 13.0.9 [\#249](https://github.com/DEFRA/sroc-charging-module-api/pull/249) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump got from 11.8.1 to 11.8.2 [\#248](https://github.com/DEFRA/sroc-charging-module-api/pull/248) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Housekeeping - correct test file name [\#242](https://github.com/DEFRA/sroc-charging-module-api/pull/242) ([Cruikshanks](https://github.com/Cruikshanks))
+- Correct view bill run zero line count property [\#240](https://github.com/DEFRA/sroc-charging-module-api/pull/240) ([Cruikshanks](https://github.com/Cruikshanks))
 
 ## [v0.3.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.3.0) (2021-02-26)
 
@@ -234,6 +280,7 @@
 - Add admin test view transaction endpoint [\#223](https://github.com/DEFRA/sroc-charging-module-api/pull/223) ([Cruikshanks](https://github.com/Cruikshanks))
 - Create Delete Invoice Service [\#221](https://github.com/DEFRA/sroc-charging-module-api/pull/221) ([StuAA78](https://github.com/StuAA78))
 - Add get bill run plugin [\#204](https://github.com/DEFRA/sroc-charging-module-api/pull/204) ([Cruikshanks](https://github.com/Cruikshanks))
+- Title case loss, season & source values in charge [\#202](https://github.com/DEFRA/sroc-charging-module-api/pull/202) ([Cruikshanks](https://github.com/Cruikshanks))
 
 **Fixed bugs:**
 
@@ -242,7 +289,6 @@
 
 **Merged pull requests:**
 
-- Correct view bill run zero line count property [\#240](https://github.com/DEFRA/sroc-charging-module-api/pull/240) ([Cruikshanks](https://github.com/Cruikshanks))
 - Bump nock from 13.0.7 to 13.0.8 [\#238](https://github.com/DEFRA/sroc-charging-module-api/pull/238) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Remove redundant bill run 'gets' and 'checks' [\#233](https://github.com/DEFRA/sroc-charging-module-api/pull/233) ([Cruikshanks](https://github.com/Cruikshanks))
 - Move bill run transaction actions to own ctrlr [\#232](https://github.com/DEFRA/sroc-charging-module-api/pull/232) ([Cruikshanks](https://github.com/Cruikshanks))
@@ -264,7 +310,6 @@
 - Amend transactions and invoices tables [\#208](https://github.com/DEFRA/sroc-charging-module-api/pull/208) ([StuAA78](https://github.com/StuAA78))
 - Add bill run ID to generate bill run time logging [\#206](https://github.com/DEFRA/sroc-charging-module-api/pull/206) ([Cruikshanks](https://github.com/Cruikshanks))
 - Minimum charge invoice flag [\#205](https://github.com/DEFRA/sroc-charging-module-api/pull/205) ([StuAA78](https://github.com/StuAA78))
-- Title case loss, season & source values in charge [\#202](https://github.com/DEFRA/sroc-charging-module-api/pull/202) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add test only bill run generator [\#199](https://github.com/DEFRA/sroc-charging-module-api/pull/199) ([Cruikshanks](https://github.com/Cruikshanks))
 - Create View Bill Run Service [\#198](https://github.com/DEFRA/sroc-charging-module-api/pull/198) ([StuAA78](https://github.com/StuAA78))
 - Validate water undertaker is boolean in charge [\#197](https://github.com/DEFRA/sroc-charging-module-api/pull/197) ([Cruikshanks](https://github.com/Cruikshanks))
@@ -294,6 +339,7 @@
 - Allow access to validatedData in translators [\#108](https://github.com/DEFRA/sroc-charging-module-api/pull/108) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add create transaction service [\#107](https://github.com/DEFRA/sroc-charging-module-api/pull/107) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add create transaction presenter [\#106](https://github.com/DEFRA/sroc-charging-module-api/pull/106) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add stop \(SIGTERM\) plugin [\#105](https://github.com/DEFRA/sroc-charging-module-api/pull/105) ([Cruikshanks](https://github.com/Cruikshanks))
 
 **Fixed bugs:**
 
@@ -380,7 +426,6 @@
 
 **Implemented enhancements:**
 
-- Add stop \(SIGTERM\) plugin [\#105](https://github.com/DEFRA/sroc-charging-module-api/pull/105) ([Cruikshanks](https://github.com/Cruikshanks))
 - Transaction translator [\#104](https://github.com/DEFRA/sroc-charging-module-api/pull/104) ([StuAA78](https://github.com/StuAA78))
 - Add --shuffle parameter to lab [\#102](https://github.com/DEFRA/sroc-charging-module-api/pull/102) ([StuAA78](https://github.com/StuAA78))
 - Multi-stage docker build [\#101](https://github.com/DEFRA/sroc-charging-module-api/pull/101) ([StuAA78](https://github.com/StuAA78))
