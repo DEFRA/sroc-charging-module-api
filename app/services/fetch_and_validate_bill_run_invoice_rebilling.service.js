@@ -16,10 +16,8 @@ class FetchAndValidateBillRunInvoiceRebillingService {
   * - The bill run it is being rebilled to has a status of 'billed' or 'approved';
   * - The region of the bill run it is being rebilled to matches the region of its current bill run.
   *
-  * @param {module:BillRunModel} newBillRun An instance of `BillRunModel` for the bill run the invoice is to be rebilled
-  * to.
+  * @param {module:BillRunModel} newBillRun An instance of `BillRunModel` for the bill run we will rebill to
   * @param {string} invoiceId Id of the invoice to find and validate
-  *
   * @returns {@module:InvoiceModel} an instance of `InvoiceModel` for the matching invoice, else a `404` error if not
   * found or a `409` error if the request is conflicting (eg. incorrect status or invalid destination bill run)
   */
@@ -51,6 +49,14 @@ class FetchAndValidateBillRunInvoiceRebillingService {
     return await BillRunModel.query().findById(invoice.billRunId)
   }
 
+  static _validateNotOnNewBillRun (currentBillRun, newBillRun, invoiceId) {
+    if (currentBillRun.id === newBillRun.id) {
+      throw Boom.conflict(
+          `Invoice ${invoiceId} is already on bill run ${newBillRun.id}.`
+      )
+    }
+  }
+
   static _validateCurrentBillRunStatus (billRun) {
     if (!billRun.$billed()) {
       throw Boom.conflict(`Bill run ${billRun.id} does not have a status of 'billed'.`)
@@ -60,14 +66,6 @@ class FetchAndValidateBillRunInvoiceRebillingService {
   static _validateNewBillRunStatus (billRun) {
     if (!billRun.$billed() && !billRun.$approved()) {
       throw Boom.conflict(`Bill run ${billRun.id} does not have a status of 'billed' or 'approved'.`)
-    }
-  }
-
-  static _validateNotOnNewBillRun (currentBillRun, newBillRun, invoiceId) {
-    if (currentBillRun.id === newBillRun.id) {
-      throw Boom.conflict(
-          `Invoice ${invoiceId} is already on bill run ${newBillRun.id}.`
-      )
     }
   }
 

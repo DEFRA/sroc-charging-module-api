@@ -80,7 +80,7 @@ describe('Fetch and Validate Bill Run Invoice Rebilling service', () => {
 
       describe('because the status of its bill run is not valid', () => {
         it('throws an error', async () => {
-          const invalidCurrentBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A')
+          const invalidCurrentBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'INVALID')
           const invoice = await InvoiceHelper.addInvoice(invalidCurrentBillRun.id, 'CUSTOMER REFERENCE', 2020)
 
           const err = await expect(
@@ -103,7 +103,7 @@ describe('Fetch and Validate Bill Run Invoice Rebilling service', () => {
 
     describe('because its status is not valid', () => {
       it('throws an error', async () => {
-        const invalidNewBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'initialised')
+        const invalidNewBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'INVALID')
         const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
 
         const err = await expect(
