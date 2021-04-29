@@ -19,6 +19,7 @@ const DbErrorsService = require('./db_errors.service')
 const DeleteBillRunService = require('./delete_bill_run.service')
 const DeleteFileService = require('./delete_file.service')
 const DeleteInvoiceService = require('./delete_invoice.service')
+const FetchAndValidateBillRunInvoiceRebillingService = require('./fetch_and_validate_bill_run_invoice_rebilling.service')
 const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill_run_invoice.service')
 const GenerateBillRunService = require('./generate_bill_run.service')
 const GenerateBillRunValidationService = require('./generate_bill_run_validation.service')
@@ -72,6 +73,7 @@ module.exports = {
   DeleteBillRunService,
   DeleteFileService,
   DeleteInvoiceService,
+  FetchAndValidateBillRunInvoiceRebillingService,
   FetchAndValidateBillRunInvoiceService,
   GenerateBillRunService,
   GenerateBillRunValidationService,
