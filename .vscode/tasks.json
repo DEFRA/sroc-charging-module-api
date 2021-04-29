@@ -82,7 +82,7 @@
       "label": "✅ TEST (CMA)",
       "detail": "Run unit tests in docker",
       "type": "shell",
-      "command": "docker-compose exec app npm run unit-test",
+      "command": "docker-compose exec app npm test",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -112,7 +112,7 @@
       "label": "🗄️✅ DB TEST (CMA)",
       "detail": "Will rollback all changes then re-run migrations and seeds for the test db",
       "type": "shell",
-      "command": "docker-compose exec app /bin/sh -c 'npm run createdbtest && npm run rollbackdbtest && npm run migratedbtest'",
+      "command": "docker-compose exec app /bin/sh -c 'npm run create-test-db && npm run rollback-test-db && npm run migrate-test-db'",
       "group": "test",
       "presentation": {
         "echo": true,

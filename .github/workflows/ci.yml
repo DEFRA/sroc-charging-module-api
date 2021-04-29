@@ -104,7 +104,7 @@ jobs:
 
       - name: Database migrations
         run: |
-          npm run migratedbtest
+          npm run migrate-test-db
 
       # This includes an extra run step. The sonarcloud analysis will be run in a docker container with the current
       # folder mounted as `/github/workspace`. The problem is when the lcov.info file is generated it will reference the
@@ -113,7 +113,7 @@ jobs:
       # https://community.sonarsource.com/t/code-coverage-doesnt-work-with-github-action/16747/6
       - name: Run unit tests
         run: |
-          npm run unit-test
+          npm test
           sed -i 's/\/home\/runner\/work\/sroc-charging-module-api\/sroc-charging-module-api\//\/github\/workspace\//g' coverage/lcov.info
 
       - name: Analyze with SonarCloud

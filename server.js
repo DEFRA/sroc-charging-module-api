@@ -2,7 +2,7 @@
 
 const Hapi = require('@hapi/hapi')
 const { ServerConfig, TestConfig } = require('./config')
-const { JwtStrategyAuth } = require('./app/auth')
+const { JwtStrategyAuth } = require('./app/lib')
 const {
   AirbrakePlugin,
   AuthorisationPlugin,
