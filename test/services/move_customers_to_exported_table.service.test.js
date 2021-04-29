@@ -37,7 +37,7 @@ describe('Move Customers To Exported Table service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    CreateCustomerDetailsService.go(payload, regime)
+    await CreateCustomerDetailsService.go(payload, regime)
 
     customerFile = await CustomerFileModel.query().insert({
       regimeId: regime.id,
