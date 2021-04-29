@@ -13,7 +13,7 @@ class FetchAndValidateBillRunInvoiceRebillingService {
   * Fetches then validates that an invoice exists and that it is suitable for rebilling:
   * - The invoice does not already belong to the bill run it is being rebilled to;
   * - The status of its current bill run is 'billed';
-  * - The bill run it is being rebilled to has a status of 'billed' or 'approved';
+  * - The bill run it is being rebilled to has an "editable" status;
   * - The region of the bill run it is being rebilled to matches the region of its current bill run.
   *
   * @param {module:BillRunModel} newBillRun An instance of `BillRunModel` for the bill run we will rebill to
@@ -64,8 +64,8 @@ class FetchAndValidateBillRunInvoiceRebillingService {
   }
 
   static _validateNewBillRunStatus (billRun) {
-    if (!billRun.$billed() && !billRun.$approved()) {
-      throw Boom.conflict(`Bill run ${billRun.id} does not have a status of 'billed' or 'approved'.`)
+    if (!billRun.$editable()) {
+      throw Boom.conflict(`Bill run ${billRun.id} has a status of '${billRun.status}'.`)
     }
   }
 
