@@ -19,7 +19,6 @@ const DbErrorsService = require('./plugins/db_errors.service')
 const DeleteBillRunService = require('./delete_bill_run.service')
 const DeleteFileService = require('./delete_file.service')
 const DeleteInvoiceService = require('./delete_invoice.service')
-const FetchAndValidateBillRunInvoiceRebillingService = require('./fetch_and_validate_bill_run_invoice_rebilling.service')
 const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill_run_invoice.service')
 const GenerateBillRunService = require('./generate_bill_run.service')
 const GenerateBillRunValidationService = require('./generate_bill_run_validation.service')
@@ -51,6 +50,7 @@ const StreamTransformCSVService = require('./streams/stream_transform_csv.servic
 const StreamTransformUsingPresenterService = require('./streams/stream_transform_using_presenter.service')
 const StreamWritableFileService = require('./streams/stream_writable_file.service')
 const TransformRecordsToFileService = require('./transform_records_to_file.service')
+const ValidateBillRunInvoiceRebillingService = require('./validate_bill_run_invoice_rebilling.service')
 const ViewBillRunService = require('./view_bill_run.service')
 const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 
@@ -74,7 +74,6 @@ module.exports = {
   DeleteBillRunService,
   DeleteFileService,
   DeleteInvoiceService,
-  FetchAndValidateBillRunInvoiceRebillingService,
   FetchAndValidateBillRunInvoiceService,
   GenerateBillRunService,
   GenerateBillRunValidationService,
@@ -106,6 +105,7 @@ module.exports = {
   StreamTransformUsingPresenterService,
   StreamWritableFileService,
   TransformRecordsToFileService,
+  ValidateBillRunInvoiceRebillingService,
   ViewBillRunService,
   ViewBillRunInvoiceService
 }

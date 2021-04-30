@@ -12,15 +12,14 @@ const {
   AuthorisedSystemHelper,
   BillRunHelper,
   DatabaseHelper,
-  GeneralHelper,
   InvoiceHelper,
   RegimeHelper
 } = require('../support/helpers')
 
 // Thing under test
-const { FetchAndValidateBillRunInvoiceRebillingService } = require('../../app/services')
+const { ValidateBillRunInvoiceRebillingService } = require('../../app/services')
 
-describe('Fetch and Validate Bill Run Invoice Rebilling service', () => {
+describe('Validate Bill Run Invoice Rebilling service', () => {
   let currentBillRun
   let newBillRun
   let authorisedSystem
@@ -40,35 +39,22 @@ describe('Fetch and Validate Bill Run Invoice Rebilling service', () => {
     })
 
     describe('and a valid invoice ID', () => {
-      it("returns the validated 'invoice'", async () => {
+      it('returns `true`', async () => {
         const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
 
-        const result = await FetchAndValidateBillRunInvoiceRebillingService.go(newBillRun, invoice.id)
+        const result = await ValidateBillRunInvoiceRebillingService.go(newBillRun, invoice)
 
-        expect(result.id).to.equal(invoice.id)
+        expect(result).to.be.true()
       })
     })
 
     describe('and an invalid invoice ID', () => {
-      describe('because it is unknown', () => {
-        it('throws an error', async () => {
-          const unknownInvoiceId = GeneralHelper.uuid4()
-
-          const err = await expect(
-            FetchAndValidateBillRunInvoiceRebillingService.go(newBillRun, unknownInvoiceId)
-          ).to.reject()
-
-          expect(err).to.be.an.error()
-          expect(err.output.payload.message).to.equal(`Invoice ${unknownInvoiceId} is unknown.`)
-        })
-      })
-
       describe('because it already belongs to the specified bill run', () => {
         it('throws an error', async () => {
           const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
 
           const err = await expect(
-            FetchAndValidateBillRunInvoiceRebillingService.go(currentBillRun, invoice.id)
+            ValidateBillRunInvoiceRebillingService.go(currentBillRun, invoice)
           ).to.reject()
 
           expect(err).to.be.an.error()
@@ -84,7 +70,7 @@ describe('Fetch and Validate Bill Run Invoice Rebilling service', () => {
           const invoice = await InvoiceHelper.addInvoice(invalidCurrentBillRun.id, 'CUSTOMER REFERENCE', 2020)
 
           const err = await expect(
-            FetchAndValidateBillRunInvoiceRebillingService.go(newBillRun, invoice.id)
+            ValidateBillRunInvoiceRebillingService.go(newBillRun, invoice)
           ).to.reject()
 
           expect(err).to.be.an.error()
@@ -107,7 +93,7 @@ describe('Fetch and Validate Bill Run Invoice Rebilling service', () => {
         const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
 
         const err = await expect(
-          FetchAndValidateBillRunInvoiceRebillingService.go(invalidNewBillRun, invoice.id)
+          ValidateBillRunInvoiceRebillingService.go(invalidNewBillRun, invoice)
         ).to.reject()
 
         expect(err).to.be.an.error()
