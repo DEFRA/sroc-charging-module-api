@@ -142,6 +142,26 @@ class RouteHelper {
     })
   }
 
+  static addRequestAppCheckRoute (server, type) {
+    const paths = {
+      billRun: '/test/{regimeId}/bill-runs/{billRunId}',
+      invoice: '/test/{regimeId}/invoices/{invoiceId}'
+    }
+
+    server.route({
+      method: 'GET',
+      path: paths[type],
+      handler: (request, _h) => {
+        return { id: request.app[type].id }
+      },
+      options: {
+        auth: {
+          scope: ['system']
+        }
+      }
+    })
+  }
+
   /**
    * Adds a route to a Hapi server instance which is used to test the 'Notifier' plugin
    *
