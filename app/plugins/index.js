@@ -11,6 +11,7 @@ const HapiPinoPlugin = require('./hapi_pino.plugin')
 const InvalidCharactersPlugin = require('./invalid_characters.plugin')
 const MissingPayloadPlugin = require('./missing_payload.plugin')
 const PayloadCleanerPlugin = require('./payload_cleaner.plugin')
+const RequestInvoicePlugin = require('./request_invoice.plugin')
 const RequestNotifierPlugin = require('./request_notifier.plugin')
 const RouterPlugin = require('./router.plugin')
 const StopPlugin = require('./stop.plugin')
@@ -43,6 +44,7 @@ module.exports = {
   MissingPayloadPlugin,
   PayloadCleanerPlugin,
   RequestNotifierPlugin,
+  RequestInvoicePlugin,
   RouterPlugin,
   StopPlugin,
   VersionInfoPlugin
