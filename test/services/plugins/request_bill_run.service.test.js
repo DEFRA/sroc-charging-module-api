@@ -8,10 +8,10 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { BillRunHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = require('../support/helpers')
+const { BillRunHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = require('../../support/helpers')
 
 // Thing under test
-const { RequestBillRunService } = require('../../app/services')
+const { RequestBillRunService } = require('../../../app/services')
 
 describe('Request bill run service', () => {
   let regime
