@@ -101,22 +101,6 @@ describe('Fetch and Validate Bill Run Invoice Rebilling service', () => {
       currentBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'billed')
     })
 
-    describe('because its status is not valid', () => {
-      it('throws an error', async () => {
-        const invalidNewBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'INVALID')
-        const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
-
-        const err = await expect(
-          FetchAndValidateBillRunInvoiceRebillingService.go(invalidNewBillRun, invoice.id)
-        ).to.reject()
-
-        expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal(
-          `Bill run ${invalidNewBillRun.id} has a status of '${invalidNewBillRun.status}'.`
-        )
-      })
-    })
-
     describe("because its region does not match the invoice's current region", () => {
       it('throws an error', async () => {
         const invalidNewBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'B')

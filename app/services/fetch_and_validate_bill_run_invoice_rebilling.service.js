@@ -29,7 +29,6 @@ class FetchAndValidateBillRunInvoiceRebillingService {
 
     this._validateNotOnNewBillRun(currentBillRun, newBillRun, invoice.id)
     this._validateCurrentBillRunStatus(currentBillRun)
-    this._validateNewBillRunStatus(newBillRun)
     this._validateRegion(currentBillRun, newBillRun, invoice.id)
 
     return invoice
@@ -60,12 +59,6 @@ class FetchAndValidateBillRunInvoiceRebillingService {
   static _validateCurrentBillRunStatus (billRun) {
     if (!billRun.$billed()) {
       throw Boom.conflict(`Bill run ${billRun.id} does not have a status of 'billed'.`)
-    }
-  }
-
-  static _validateNewBillRunStatus (billRun) {
-    if (!billRun.$editable()) {
-      throw Boom.conflict(`Bill run ${billRun.id} has a status of '${billRun.status}'.`)
     }
   }
 
