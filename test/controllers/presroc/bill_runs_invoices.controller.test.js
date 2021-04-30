@@ -19,7 +19,8 @@ const {
   DatabaseHelper,
   GeneralHelper,
   RegimeHelper,
-  TransactionHelper
+  TransactionHelper,
+  InvoiceHelper
 } = require('../../support/helpers')
 
 const Boom = require('@hapi/boom')
@@ -36,6 +37,7 @@ describe('Presroc Invoices controller', () => {
   let regime
   let authorisedSystem
   let billRun
+  let invoice
 
   before(async () => {
     server = await deployment()
@@ -52,6 +54,7 @@ describe('Presroc Invoices controller', () => {
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
     billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    invoice = await InvoiceHelper.addInvoice(billRun.id, 'CUSTOMER', '2020')
   })
 
   after(async () => {
@@ -82,7 +85,7 @@ describe('Presroc Invoices controller', () => {
       })
 
       it('returns a 204 response', async () => {
-        const response = await server.inject(options(authToken, billRun.id, 'INVOICE'))
+        const response = await server.inject(options(authToken, billRun.id, invoice.id))
 
         expect(response.statusCode).to.equal(204)
       })
@@ -101,7 +104,7 @@ describe('Presroc Invoices controller', () => {
         })
 
         it('returns error status 404', async () => {
-          const response = await server.inject(options(authToken, billRun.id, 'INVOICE'))
+          const response = await server.inject(options(authToken, billRun.id, invoice.id))
 
           expect(response.statusCode).to.equal(404)
         })
@@ -119,7 +122,7 @@ describe('Presroc Invoices controller', () => {
         })
 
         it('returns error status 409', async () => {
-          const response = await server.inject(options(authToken, billRun.id, 'INVOICE'))
+          const response = await server.inject(options(authToken, billRun.id, invoice.id))
 
           expect(response.statusCode).to.equal(409)
         })
@@ -194,7 +197,7 @@ describe('Presroc Invoices controller', () => {
     }
 
     it('returns success status 204', async () => {
-      const response = await server.inject(options(authToken, billRun.id))
+      const response = await server.inject(options(authToken, billRun.id, invoice.id))
 
       expect(response.statusCode).to.equal(204)
     })
