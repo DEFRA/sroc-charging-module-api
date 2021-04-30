@@ -15,6 +15,7 @@ const {
   InvalidCharactersPlugin,
   MissingPayloadPlugin,
   PayloadCleanerPlugin,
+  RequestInvoicePlugin,
   RequestNotifierPlugin,
   RouterPlugin,
   StopPlugin,
@@ -44,6 +45,9 @@ exports.deployment = async start => {
   await server.register(DbErrorsPlugin)
   await server.register(VersionInfoPlugin)
   await server.register(BillRunPlugin)
+  // We register the invoice plugin after the bill run plugin as the bill run plugin performs validation that is assumed
+  // to be done by the time we get to the invoice plugin
+  await server.register(RequestInvoicePlugin)
 
   // Register non-production plugins
   if (ServerConfig.environment === 'development') {
