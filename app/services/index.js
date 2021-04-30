@@ -50,9 +50,10 @@ const StreamTransformCSVService = require('./streams/stream_transform_csv.servic
 const StreamTransformUsingPresenterService = require('./streams/stream_transform_using_presenter.service')
 const StreamWritableFileService = require('./streams/stream_writable_file.service')
 const TransformRecordsToFileService = require('./transform_records_to_file.service')
-const ValidateBillRunInvoiceRebillingService = require('./validate_bill_run_invoice_rebilling.service')
 const ViewBillRunService = require('./view_bill_run.service')
 const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
+
+const rebillingServices = require('./rebilling')
 
 module.exports = {
   ApproveBillRunService,
@@ -105,7 +106,7 @@ module.exports = {
   StreamTransformUsingPresenterService,
   StreamWritableFileService,
   TransformRecordsToFileService,
-  ValidateBillRunInvoiceRebillingService,
   ViewBillRunService,
-  ViewBillRunInvoiceService
+  ViewBillRunInvoiceService,
+  ...rebillingServices
 }

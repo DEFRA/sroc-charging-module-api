@@ -14,12 +14,12 @@ const {
   DatabaseHelper,
   InvoiceHelper,
   RegimeHelper
-} = require('../support/helpers')
+} = require('../../support/helpers')
 
 // Thing under test
-const { ValidateBillRunInvoiceRebillingService } = require('../../app/services')
+const { BillRunInvoiceRebillingValidationService } = require('../../../app/services')
 
-describe('Validate Bill Run Invoice Rebilling service', () => {
+describe('Bill Run Invoice Rebilling Validation service', () => {
   let currentBillRun
   let newBillRun
   let authorisedSystem
@@ -42,7 +42,7 @@ describe('Validate Bill Run Invoice Rebilling service', () => {
       it('returns `true`', async () => {
         const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
 
-        const result = await ValidateBillRunInvoiceRebillingService.go(newBillRun, invoice)
+        const result = await BillRunInvoiceRebillingValidationService.go(newBillRun, invoice)
 
         expect(result).to.be.true()
       })
@@ -54,7 +54,7 @@ describe('Validate Bill Run Invoice Rebilling service', () => {
           const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
 
           const err = await expect(
-            ValidateBillRunInvoiceRebillingService.go(currentBillRun, invoice)
+            BillRunInvoiceRebillingValidationService.go(currentBillRun, invoice)
           ).to.reject()
 
           expect(err).to.be.an.error()
@@ -70,7 +70,7 @@ describe('Validate Bill Run Invoice Rebilling service', () => {
           const invoice = await InvoiceHelper.addInvoice(invalidCurrentBillRun.id, 'CUSTOMER REFERENCE', 2020)
 
           const err = await expect(
-            ValidateBillRunInvoiceRebillingService.go(newBillRun, invoice)
+            BillRunInvoiceRebillingValidationService.go(newBillRun, invoice)
           ).to.reject()
 
           expect(err).to.be.an.error()
@@ -93,7 +93,7 @@ describe('Validate Bill Run Invoice Rebilling service', () => {
         const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
 
         const err = await expect(
-          ValidateBillRunInvoiceRebillingService.go(invalidNewBillRun, invoice)
+          BillRunInvoiceRebillingValidationService.go(invalidNewBillRun, invoice)
         ).to.reject()
 
         expect(err).to.be.an.error()
