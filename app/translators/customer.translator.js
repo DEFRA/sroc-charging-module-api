@@ -1,7 +1,13 @@
 'use strict'
 
-const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
+
+const BaseTranslator = require('./base.translator')
+
+// TODO: Use commented out version once 'module exports inside circular dependency' issue resolved
+// See https://github.com/DEFRA/sroc-service-team/issues/66
+// const { StaticLookup } = require('../lib')
+const StaticLookup = require('../lib/static_lookup')
 
 class CustomerTranslator extends BaseTranslator {
   _schema () {
@@ -37,7 +43,7 @@ class CustomerTranslator extends BaseTranslator {
   }
 
   _validRegions () {
-    return ['A', 'B', 'E', 'N', 'S', 'T', 'W', 'Y']
+    return StaticLookup.regions
   }
 }
 
