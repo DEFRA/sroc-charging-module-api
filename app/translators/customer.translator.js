@@ -9,14 +9,14 @@ class CustomerTranslator extends BaseTranslator {
       regimeId: Joi.string().required(),
       region: Joi.string().uppercase().valid(...this._validRegions()).required(),
       customerReference: Joi.string().uppercase().max(12).required(),
-      customerName: Joi.string().required(),
-      addressLine1: Joi.string().required(),
-      addressLine2: Joi.string(),
-      addressLine3: Joi.string(),
-      addressLine4: Joi.string(),
-      addressLine5: Joi.string(),
-      addressLine6: Joi.string(),
-      postcode: Joi.string()
+      customerName: Joi.string().max(360).required(),
+      addressLine1: Joi.string().max(340).required(),
+      addressLine2: Joi.string().max(240),
+      addressLine3: Joi.string().max(240),
+      addressLine4: Joi.string().max(240),
+      addressLine5: Joi.string().max(60),
+      addressLine6: Joi.string().max(60),
+      postcode: Joi.string().max(60)
     })
   }
 
