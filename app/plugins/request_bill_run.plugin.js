@@ -1,6 +1,10 @@
 'use strict'
 
 /**
+ * @module RequestBillRunPlugin
+ */
+
+/**
  * Determines if the request is related to a bill run (creating a new bill run being the exception) and does the work
  * of first finding it, then validating if the request is valid
  *
@@ -16,14 +20,12 @@
  * In this case most of the work is done by the {@module RequestBillRunService}. If bill run is found and valid for the
  * request the plugin adds the {@module BillRunModel} instance to `request.app` as per the
  * {@link https://hapi.dev/api/?v=20.1.0#-requestapp|Hapi documentation} to make it available to all controllers.
- *
- * @module BillRunPlugin
  */
 
 const { RequestBillRunService } = require('../services')
 
-const BillRunPlugin = {
-  name: 'bill_run',
+const RequestBillRunPlugin = {
+  name: 'request_bill_run',
   register: (server, _options) => {
     server.ext('onPreHandler', async (request, h) => {
       const { billRunId } = request.params
@@ -34,4 +36,4 @@ const BillRunPlugin = {
   }
 }
 
-module.exports = BillRunPlugin
+module.exports = RequestBillRunPlugin

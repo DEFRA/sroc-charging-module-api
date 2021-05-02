@@ -4,13 +4,13 @@ const { ServerConfig } = require('../../config')
 
 const AirbrakePlugin = require('./airbrake.plugin')
 const AuthorisationPlugin = require('./authorisation.plugin')
-const BillRunPlugin = require('./bill_run.plugin')
 const DbErrorsPlugin = require('./db_errors.plugin')
 const HapiNowAuthPlugin = require('./hapi_now_auth.plugin')
 const HapiPinoPlugin = require('./hapi_pino.plugin')
 const InvalidCharactersPlugin = require('./invalid_characters.plugin')
 const MissingPayloadPlugin = require('./missing_payload.plugin')
 const PayloadCleanerPlugin = require('./payload_cleaner.plugin')
+const RequestBillRunPlugin = require('./request_bill_run.plugin')
 const RequestInvoicePlugin = require('./request_invoice.plugin')
 const RequestNotifierPlugin = require('./request_notifier.plugin')
 const RouterPlugin = require('./router.plugin')
@@ -34,7 +34,6 @@ if (ServerConfig.environment === 'development') {
 module.exports = {
   AirbrakePlugin,
   AuthorisationPlugin,
-  BillRunPlugin,
   BlippPlugin,
   DbErrorsPlugin,
   HpalDebugPlugin,
@@ -43,6 +42,7 @@ module.exports = {
   InvalidCharactersPlugin,
   MissingPayloadPlugin,
   PayloadCleanerPlugin,
+  RequestBillRunPlugin,
   RequestNotifierPlugin,
   RequestInvoicePlugin,
   RouterPlugin,
