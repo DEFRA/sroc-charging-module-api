@@ -97,7 +97,7 @@
       "label": "🗄️ DB (CMA)",
       "detail": "Will rollback all changes then re-run migrations and seeds for the main db",
       "type": "shell",
-      "command": "docker-compose exec app /bin/sh -c 'npm run rollbackdb && npm run migratedb && npm run seeddb'",
+      "command": "docker-compose exec app /bin/sh -c 'npm run rollback-db && npm run migrate-db && npm run seed-db'",
       "group": "test",
       "presentation": {
         "echo": true,
