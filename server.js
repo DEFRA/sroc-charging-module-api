@@ -6,7 +6,6 @@ const { JwtStrategyAuth } = require('./app/lib')
 const {
   AirbrakePlugin,
   AuthorisationPlugin,
-  BillRunPlugin,
   BlippPlugin,
   DbErrorsPlugin,
   HpalDebugPlugin,
@@ -15,6 +14,7 @@ const {
   InvalidCharactersPlugin,
   MissingPayloadPlugin,
   PayloadCleanerPlugin,
+  RequestBillRunPlugin,
   RequestInvoicePlugin,
   RequestNotifierPlugin,
   RouterPlugin,
@@ -44,7 +44,7 @@ exports.deployment = async start => {
   await server.register(PayloadCleanerPlugin)
   await server.register(DbErrorsPlugin)
   await server.register(VersionInfoPlugin)
-  await server.register(BillRunPlugin)
+  await server.register(RequestBillRunPlugin)
   // We register the invoice plugin after the bill run plugin as the bill run plugin performs validation that is assumed
   // to be done by the time we get to the invoice plugin
   await server.register(RequestInvoicePlugin)
