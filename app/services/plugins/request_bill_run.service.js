@@ -53,8 +53,8 @@ class RequestBillRunService {
     return /\/bill-runs\//i.test(path)
   }
 
-  static async _billRun (billRunId) {
-    return await BillRunModel.query().findById(billRunId)
+  static _billRun (billRunId) {
+    return BillRunModel.query().findById(billRunId)
   }
 
   static _validateBillRun (billRun, billRunId, regime, method) {

@@ -1,7 +1,13 @@
 'use strict'
 
-const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
+
+const BaseTranslator = require('./base.translator')
+
+// TODO: Use commented out version once 'module exports inside circular dependency' issue resolved
+// See https://github.com/DEFRA/sroc-service-team/issues/66
+// const { StaticLookup } = require('../lib')
+const StaticLookup = require('../lib/static_lookup')
 
 class CustomerTranslator extends BaseTranslator {
   _schema () {
@@ -9,14 +15,14 @@ class CustomerTranslator extends BaseTranslator {
       regimeId: Joi.string().required(),
       region: Joi.string().uppercase().valid(...this._validRegions()).required(),
       customerReference: Joi.string().uppercase().max(12).required(),
-      customerName: Joi.string().required(),
-      addressLine1: Joi.string().required(),
-      addressLine2: Joi.string(),
-      addressLine3: Joi.string(),
-      addressLine4: Joi.string(),
-      addressLine5: Joi.string(),
-      addressLine6: Joi.string(),
-      postcode: Joi.string()
+      customerName: Joi.string().max(360).required(),
+      addressLine1: Joi.string().max(240).required(),
+      addressLine2: Joi.string().max(240),
+      addressLine3: Joi.string().max(240),
+      addressLine4: Joi.string().max(240),
+      addressLine5: Joi.string().max(60),
+      addressLine6: Joi.string().max(60),
+      postcode: Joi.string().max(60)
     })
   }
 
@@ -37,7 +43,7 @@ class CustomerTranslator extends BaseTranslator {
   }
 
   _validRegions () {
-    return ['A', 'B', 'E', 'N', 'S', 'T', 'W', 'Y']
+    return StaticLookup.regions
   }
 }
 
