@@ -20,12 +20,17 @@ class InvoiceRebillingInitialiseService {
    * @returns {Object} An `object` containing `cancelInvoice`, `rebillInvoice` and `response`.
    * @returns {module:InvoiceModel} `object.cancelInvoice` The cancel invoice.
    * @returns {module:InvoiceModel} `object.rebillInvoice` The rebill invoice.
-   * @returns {Array} `object.response` The response to be passed back from the API. This service is intended to be
+   * @returns {Object} `object.response` The response to be passed back from the API. This service is intended to be
    * called from within a controller so this allows the controller to send the response directly to the caller.
    */
   static async go (billRun, invoice) {
-    const cancelInvoice = await this._createInvoice(billRun, invoice, 'C')
-    const rebillInvoice = await this._createInvoice(billRun, invoice, 'R')
+    let cancelInvoice
+    let rebillInvoice
+
+    await InvoiceModel.transaction(async trx => {
+      cancelInvoice = await this._createInvoice(billRun, invoice, 'C', trx)
+      rebillInvoice = await this._createInvoice(billRun, invoice, 'R', trx)
+    })
 
     const response = this._response(cancelInvoice, rebillInvoice)
 
@@ -42,8 +47,8 @@ class InvoiceRebillingInitialiseService {
     return presenter.go()
   }
 
-  static _createInvoice (billRun, invoice, rebilledType) {
-    return InvoiceModel.query().insert({
+  static _createInvoice (billRun, invoice, rebilledType, trx) {
+    return InvoiceModel.query(trx).insert({
       billRunId: billRun.id,
       customerReference: invoice.customerReference,
       financialYear: invoice.financialYear,
