@@ -16,7 +16,7 @@ class CustomerTranslator extends BaseTranslator {
       region: Joi.string().uppercase().valid(...this._validRegions()).required(),
       customerReference: Joi.string().uppercase().max(12).required(),
       customerName: Joi.string().max(360).required(),
-      addressLine1: Joi.string().max(340).required(),
+      addressLine1: Joi.string().max(240).required(),
       addressLine2: Joi.string().max(240),
       addressLine3: Joi.string().max(240),
       addressLine4: Joi.string().max(240),
