@@ -5,7 +5,7 @@
  */
 
 const { InvoiceModel } = require('../models')
-const { RebillingInvoicesPresenter } = require('../presenters')
+const { InvoiceRebillingPresenter } = require('../presenters')
 
 class InvoiceRebillingInitialiseService {
   /**
@@ -37,7 +37,7 @@ class InvoiceRebillingInitialiseService {
   }
 
   static _response (cancelInvoice, rebillInvoice) {
-    const presenter = new RebillingInvoicesPresenter([cancelInvoice, rebillInvoice])
+    const presenter = new InvoiceRebillingPresenter([cancelInvoice, rebillInvoice])
 
     return presenter.go()
   }

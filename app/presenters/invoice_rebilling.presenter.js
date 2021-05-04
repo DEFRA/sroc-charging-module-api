@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module RebillingInvoicesPresenter
+ * @module InvoiceRebillingPresenter
  */
 
 const BasePresenter = require('./base.presenter')
@@ -11,7 +11,7 @@ const BasePresenter = require('./base.presenter')
  *
  * Receives an array of invoices and returns the id and rebilled type of each one.
  */
-class RebillingInvoicesPresenter extends BasePresenter {
+class InvoiceRebillingPresenter extends BasePresenter {
   _presentation (data) {
     return {
       invoices: data.map(invoice => {
@@ -24,4 +24,4 @@ class RebillingInvoicesPresenter extends BasePresenter {
   }
 }
 
-module.exports = RebillingInvoicesPresenter
+module.exports = InvoiceRebillingPresenter

@@ -11,16 +11,16 @@ const { expect } = Code
 const { GeneralHelper } = require('../support/helpers')
 
 // Thing under test
-const { RebillingInvoicesPresenter } = require('../../app/presenters')
+const { InvoiceRebillingPresenter } = require('../../app/presenters')
 
-describe('Rebilling Invoices presenter', () => {
+describe('Invoice Rebilling presenter', () => {
   it('correctly presents the data', () => {
     const data = [
       { id: GeneralHelper.uuid4(), rebilledType: 'C' },
       { id: GeneralHelper.uuid4(), rebilledType: 'R' }
     ]
 
-    const testPresenter = new RebillingInvoicesPresenter(data)
+    const testPresenter = new InvoiceRebillingPresenter(data)
     const { invoices } = testPresenter.go()
 
     expect(invoices).to.have.length(2)
