@@ -137,7 +137,7 @@ class InvoiceModel extends BaseUpsertModel {
    * @returns {string[]} an array of the constraint field names
    */
   static _onConflictContraints () {
-    return ['bill_run_id', 'customer_reference', 'financial_year']
+    return ['bill_run_id', 'customer_reference', 'financial_year', 'rebilled_type']
   }
 
   /**
