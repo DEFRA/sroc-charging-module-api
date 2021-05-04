@@ -17,11 +17,11 @@ class InvoiceRebillingInitialiseService {
    * @param {module:BillRunModel} billRun An instance of `BillRunModel` of the bill run to add the invoices to.
    * @param {module:InvoiceModel} invoice An instance of `InvoiceModel` of the invoice to be rebilled.
    *
-   * @returns {Object} A reponse object containing `cancelInvoice`, `rebillInvoice` and `response`.
-   * @returns {module:InvoiceModel} `resonse.cancelInvoice` The cancel invoice.
-   * @returns {module:InvoiceModel} `response.rebillInvoice` The rebill invoice.
-   * @returns {Array} `response.response` An array containing the cancel invoice id and type `C`, and the rebill invoice
-   * id and type `R`.
+   * @returns {Object} An `object` containing `cancelInvoice`, `rebillInvoice` and `response`.
+   * @returns {module:InvoiceModel} `object.cancelInvoice` The cancel invoice.
+   * @returns {module:InvoiceModel} `object.rebillInvoice` The rebill invoice.
+   * @returns {Array} `object.response` The response to be passed back from the API. This service is intended to be
+   * called from within a controller so this allows the controller to send the response directly to the caller.
    */
   static async go (billRun, invoice) {
     const cancelInvoice = await this._createInvoice(billRun, invoice, 'C')
