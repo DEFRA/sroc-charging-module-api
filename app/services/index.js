@@ -24,6 +24,7 @@ const GenerateBillRunService = require('./generate_bill_run.service')
 const GenerateBillRunValidationService = require('./generate_bill_run_validation.service')
 const GenerateCustomerFileService = require('./generate_customer_file.service')
 const GenerateTransactionFileService = require('./generate_transaction_file.service')
+const InvoiceRebillingValidationService = require('./invoice_rebilling_validation.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
 const ListCustomerFilesService = require('./list_customer_files.service')
 const ListRegimesService = require('./list_regimes.service')
@@ -53,8 +54,6 @@ const TransformRecordsToFileService = require('./transform_records_to_file.servi
 const ViewBillRunService = require('./view_bill_run.service')
 const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 
-const rebillingServices = require('./rebilling')
-
 module.exports = {
   ApproveBillRunService,
   AuthorisationService,
@@ -80,6 +79,7 @@ module.exports = {
   GenerateBillRunValidationService,
   GenerateCustomerFileService,
   GenerateTransactionFileService,
+  InvoiceRebillingValidationService,
   ListAuthorisedSystemsService,
   ListCustomerFilesService,
   ListRegimesService,
@@ -107,6 +107,5 @@ module.exports = {
   StreamWritableFileService,
   TransformRecordsToFileService,
   ViewBillRunService,
-  ViewBillRunInvoiceService,
-  ...rebillingServices
+  ViewBillRunInvoiceService
 }
