@@ -18,6 +18,8 @@ const {
   LicenceHelper
 } = require('../support/helpers')
 
+const { BillRunModel, InvoiceModel, LicenceModel } = require('../../app/models')
+
 // Thing under test
 const { InvoiceRebillingCreateTransactionService } = require('../../app/services')
 
@@ -42,32 +44,53 @@ describe('Invoice Rebilling Create Transaction service', () => {
 
     beforeEach(async () => {
       const invoice = await InvoiceHelper.addInvoice(rebillBillRun.id, 'TH230000222', 2021)
-      licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TH230000222', invoice.id)
+      licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TONY/TF9222/37', invoice.id)
       transaction = await TransactionHelper.addTransaction(originalBillRun.id, { chargeFinancialYear: 2021 })
 
       result = await InvoiceRebillingCreateTransactionService.go(transaction, licence)
     })
 
-    it('creates a transaction', async () => {
-      expect(result.id).to.exist()
-    })
+    describe('a transaction is created', () => {
+      it('on the correct bill run, invoice and licence', async () => {
+        expect(result.billRunId).to.equal(licence.billRunId)
+        expect(result.invoiceId).to.equal(licence.invoiceId)
+        expect(result.licenceId).to.equal(licence.id)
+      })
 
-    it('creates the transaction on the correct bill run, invoice and licence', async () => {
-      expect(result.billRunId).to.equal(licence.billRunId)
-      expect(result.invoiceId).to.equal(licence.invoiceId)
-      expect(result.licenceId).to.equal(licence.id)
-    })
-
-    it('creates the transaction with the correct values', async () => {
+      it('with the correct values', async () => {
       // Create a list of all keys in the transaction object and filter out the ones we don't want to check
-      const transactionKeys = Object.keys(transaction)
-      const keysToSkip = ['id', 'billRunId', 'createdAt', 'updatedAt', 'createdBy', 'invoiceId', 'licenceId']
-      const keysToCheck = transactionKeys.filter(key => !keysToSkip.includes(key))
+        const transactionKeys = Object.keys(transaction)
+        const keysToSkip = ['id', 'billRunId', 'createdAt', 'updatedAt', 'createdBy', 'invoiceId', 'licenceId']
+        const keysToCheck = transactionKeys.filter(key => !keysToSkip.includes(key))
 
-      // Iterate over the remaining keys and check that the result's value matches the original transaction's value
-      for (const key in keysToCheck) {
-        expect(result[key]).to.equal(transaction[key])
-      }
+        // Iterate over the remaining keys and check that the result's value matches the original transaction's value
+        for (const key in keysToCheck) {
+          expect(result[key]).to.equal(transaction[key])
+        }
+      })
+    })
+
+    describe('and the tally', () => {
+      it('is updated for the bill run', async () => {
+        const refreshedRebillBillRun = await BillRunModel.query().findById(result.billRunId)
+
+        expect(refreshedRebillBillRun.debitLineCount).to.equal(1)
+        expect(refreshedRebillBillRun.debitLineValue).to.equal(772)
+      })
+
+      it('is updated for the invoice', async () => {
+        const refreshedRebillInvoice = await InvoiceModel.query().findById(result.invoiceId)
+
+        expect(refreshedRebillInvoice.debitLineCount).to.equal(1)
+        expect(refreshedRebillInvoice.debitLineValue).to.equal(772)
+      })
+
+      it('is updated for the licence', async () => {
+        const refreshedRebillLicence = await LicenceModel.query().findById(result.licenceId)
+
+        expect(refreshedRebillLicence.debitLineCount).to.equal(1)
+        expect(refreshedRebillLicence.debitLineValue).to.equal(772)
+      })
     })
   })
 
@@ -76,7 +99,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
 
     beforeEach(async () => {
       const invoice = await InvoiceHelper.addInvoice(rebillBillRun.id, 'TH230000222', 2021)
-      licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TH230000222', invoice.id)
+      licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TONY/TF9222/37', invoice.id)
     })
 
     describe('when a debit is passed to the service', () => {
