@@ -127,7 +127,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
         result = await InvoiceRebillingCreateTransactionService.go(transaction, licence, true)
       })
 
-      it('creates a credit', async () => {
+      it('creates a debit', async () => {
         expect(result.chargeCredit).to.be.false()
       })
     })
