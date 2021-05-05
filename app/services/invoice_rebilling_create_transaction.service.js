@@ -23,7 +23,11 @@ class InvoiceRebillingCreateTransactionService {
   }
 
   /**
-   * Creates a new transaction ready to be persisted in the db. We set the
+   * Returns a new transaction object ready to be persisted in the db, based on the provided transaction with a few
+   * changes:
+   * - We set the id as undefined to avoid conflicting with the existing transaction;
+   * - We set the bill run, invoice and licence ids based on the provided licence;
+   * - We invert the credit boolean if required.
    */
   static async _prepareTransaction (transaction, licence, invert) {
     return TransactionModel.fromJson({
@@ -36,6 +40,9 @@ class InvoiceRebillingCreateTransactionService {
     })
   }
 
+  /**
+   * Creates a record in the db for the provided transaction and returns it
+   */
   static async _create (transaction) {
     return TransactionModel.transaction(async trx => {
       await BillRunModel.patchTally(transaction, trx)
@@ -44,7 +51,6 @@ class InvoiceRebillingCreateTransactionService {
 
       const newTransaction = await transaction.$query(trx)
         .insert(transaction)
-        .returning('id')
 
       return newTransaction
     })
