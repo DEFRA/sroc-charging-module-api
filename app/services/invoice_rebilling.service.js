@@ -11,7 +11,17 @@ const { LicenceModel, TransactionModel } = require('../models')
 
 class InvoiceRebillingService {
   /**
+   * Service to rebill a given invoice onto the supplied cancel invoice and rebill invoice.
    *
+   * For each licence in the invoice, it will create a corresponding licence on cancelInvoice and rebillInvoice and
+   * populate them with the transactions on the licence (flipping them from credit to debit and vice-versa as
+   * appropriate).
+   *
+   * Note that bill run, invoice and licence tallies will be updated as part of the process.
+   *
+   * @param {module:InvoiceModel} invoice Instance of `InvoiceModel` for the invoice to be rebilled.
+   * @param {module:InvoiceModel} cancelInvoice Instance of `InvoiceModel` for the cancelling invoice.
+   * @param {module:InvoiceModel} rebillInvoice Instance of `InvoiceModel` for the rebilling invoice.
    */
   static async go (invoice, cancelInvoice, rebillInvoice) {
     const licences = await this._licences(invoice)
