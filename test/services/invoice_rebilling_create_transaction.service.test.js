@@ -43,7 +43,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
     let licence
 
     beforeEach(async () => {
-      const invoice = await InvoiceHelper.addInvoice(rebillBillRun.id, 'TH230000222', 2021)
+      const invoice = await addRebillInvoice(rebillBillRun.id, 'TH230000222', 2021, null, 'R')
       licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TONY/TF9222/37', invoice.id)
       transaction = await TransactionHelper.addTransaction(originalBillRun.id, { chargeFinancialYear: 2021 })
 
@@ -98,7 +98,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
     let licence
 
     beforeEach(async () => {
-      const invoice = await InvoiceHelper.addInvoice(rebillBillRun.id, 'TH230000222', 2021)
+      const invoice = await addRebillInvoice(rebillBillRun.id, 'TH230000222', 2021, null, 'C')
       licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TONY/TF9222/37', invoice.id)
     })
 
@@ -132,4 +132,14 @@ describe('Invoice Rebilling Create Transaction service', () => {
       })
     })
   })
+
+  async function addRebillInvoice (billRunId, customerReference, financialYear, rebilledInvoiceId, rebilledType) {
+    return InvoiceHelper.addInvoice(
+      billRunId,
+      customerReference,
+      financialYear,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      rebilledInvoiceId,
+      rebilledType)
+  }
 })
