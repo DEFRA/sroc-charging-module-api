@@ -19,6 +19,9 @@ class InvoiceHelper {
    *  invoice.
    * @param {integer} [subjectToMinimumChargeDebitValue] Total value of minimum charge debit transactions in the
    *  invoice.
+   * @param {string} [rebilledInvoiceId] Id of the invoice this will rebill.
+   * @param {string} [rebilledType] The rebill invoice type: 'C' for cancel invoice, 'R' for rebill invoice (the db
+   * defaults to 'O' for ordinary invoice)
    *
    * @returns {module:InvoiceModel} The newly created instance of `InvoiceModel`.
    */
@@ -33,7 +36,9 @@ class InvoiceHelper {
     zeroLineCount = 0,
     subjectToMinimumChargeCount = 0,
     subjectToMinimumChargeCreditValue = 0,
-    subjectToMinimumChargeDebitValue = 0
+    subjectToMinimumChargeDebitValue = 0,
+    rebilledInvoiceId = undefined,
+    rebilledType = undefined
   ) {
     const flags = this._flags(
       creditLineCount,
@@ -58,6 +63,8 @@ class InvoiceHelper {
         subjectToMinimumChargeCount,
         subjectToMinimumChargeCreditValue,
         subjectToMinimumChargeDebitValue,
+        rebilledInvoiceId,
+        rebilledType,
         ...flags
       })
       .returning('*')
