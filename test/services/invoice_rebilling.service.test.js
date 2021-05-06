@@ -22,7 +22,7 @@ const { LicenceModel, TransactionModel } = require('../../app/models')
 // Thing under test
 const { InvoiceRebillingService } = require('../../app/services')
 
-describe.only('Invoice Rebilling service', () => {
+describe('Invoice Rebilling service', () => {
   let currentBillRun
   let newBillRun
   let authorisedSystem
