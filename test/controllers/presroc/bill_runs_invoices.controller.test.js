@@ -195,7 +195,7 @@ describe('Presroc Invoices controller', () => {
     })
   })
 
-  describe('Rebill bill run invoice: GET /v2/{regimeId}/bill-runs/{billRunId}/invoice/{invoiceId}/rebill', () => {
+  describe('Rebill bill run invoice: PATCH /v2/{regimeId}/bill-runs/{billRunId}/invoice/{invoiceId}/rebill', () => {
     let cancelInvoice
     let rebillInvoice
     let validationStub
