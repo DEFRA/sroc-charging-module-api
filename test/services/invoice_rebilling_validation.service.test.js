@@ -46,6 +46,18 @@ describe('Invoice Rebilling Validation service', () => {
 
         expect(result).to.be.true()
       })
+
+      describe('which is a rebill invoice', () => {
+        it('returns `true`', async () => {
+          const invoice = await InvoiceHelper.addInvoice(
+            currentBillRun.id, 'CUSTOMER REFERENCE', 2020, 0, 0, 0, 0, 0, 0, 0, 0, null, 'R'
+          )
+
+          const result = await InvoiceRebillingValidationService.go(newBillRun, invoice)
+
+          expect(result).to.be.true()
+        })
+      })
     })
 
     describe('and an invalid invoice ID', () => {
@@ -76,6 +88,23 @@ describe('Invoice Rebilling Validation service', () => {
           expect(err).to.be.an.error()
           expect(err.output.payload.message).to.equal(
             `Bill run ${invalidCurrentBillRun.id} does not have a status of 'billed'.`
+          )
+        })
+      })
+
+      describe('because it is a rebill cancel invoice', () => {
+        it('throws an error', async () => {
+          const invoice = await InvoiceHelper.addInvoice(
+            currentBillRun.id, 'CUSTOMER REFERENCE', 2020, 0, 0, 0, 0, 0, 0, 0, 0, null, 'C'
+          )
+
+          const err = await expect(
+            InvoiceRebillingValidationService.go(newBillRun, invoice)
+          ).to.reject()
+
+          expect(err).to.be.an.error()
+          expect(err.output.payload.message).to.equal(
+            `Invoice ${invoice.id} is a rebill cancel invoice and cannot be rebilled.`
           )
         })
       })
