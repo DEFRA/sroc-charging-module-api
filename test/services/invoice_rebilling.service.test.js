@@ -60,7 +60,7 @@ describe('Invoice Rebilling service', () => {
         licences = await LicenceModel.query().where('invoiceId', cancelInvoice.id)
       })
 
-      it('are created for each licence of the invoice', async () => {
+      it('are created for each licence of the original invoice', async () => {
         const licenceNumbers = licences.map(licence => licence.licenceNumber)
 
         expect(licenceNumbers.length).to.equal(3)
