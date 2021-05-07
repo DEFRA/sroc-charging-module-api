@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
@@ -25,7 +25,15 @@ const {
 
 const Boom = require('@hapi/boom')
 
-const { DeleteInvoiceService, FetchAndValidateBillRunInvoiceService } = require('../../../app/services')
+const {
+  DeleteInvoiceService,
+  FetchAndValidateBillRunInvoiceService,
+  InvoiceRebillingInitialiseService,
+  InvoiceRebillingService,
+  InvoiceRebillingValidationService
+} = require('../../../app/services')
+
+const { BillRunModel, InvoiceModel } = require('../../../app/models')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -188,6 +196,35 @@ describe('Presroc Invoices controller', () => {
   })
 
   describe('Rebill bill run invoice: GET /v2/{regimeId}/bill-runs/{billRunId}/invoice/{invoiceId}/rebill', () => {
+    let cancelInvoice
+    let rebillInvoice
+    let validationStub
+    let initialiseStub
+    let rebillStub
+    let response
+
+    beforeEach(async () => {
+      cancelInvoice = { id: GeneralHelper.uuid4() }
+      rebillInvoice = { id: GeneralHelper.uuid4() }
+
+      validationStub = Sinon.stub(InvoiceRebillingValidationService, 'go')
+      initialiseStub = Sinon.stub(InvoiceRebillingInitialiseService, 'go')
+        .returns({
+          cancelInvoice,
+          rebillInvoice,
+          response: { msg: 'REBILL_OK' }
+        })
+      rebillStub = Sinon.stub(InvoiceRebillingService, 'go')
+
+      response = await server.inject(options(authToken, billRun.id, invoice.id))
+    })
+
+    afterEach(async () => {
+      validationStub.restore()
+      initialiseStub.restore()
+      rebillStub.restore()
+    })
+
     const options = (token, billRunId, invoiceId) => {
       return {
         method: 'PATCH',
@@ -196,10 +233,35 @@ describe('Presroc Invoices controller', () => {
       }
     }
 
-    it('returns success status 204', async () => {
-      const response = await server.inject(options(authToken, billRun.id, invoice.id))
+    it('calls InvoiceRebillingValidationService with the specified bill run and invoice', async () => {
+      expect(validationStub.calledOnce).to.be.true()
+      expect(validationStub.getCall(0).args[0]).to.be.an.instanceof(BillRunModel)
+      expect(validationStub.getCall(0).args[0].id).to.equal(billRun.id)
+      expect(validationStub.getCall(0).args[1]).to.be.an.instanceof(InvoiceModel)
+      expect(validationStub.getCall(0).args[1].id).to.equal(invoice.id)
+    })
 
-      expect(response.statusCode).to.equal(204)
+    it('calls InvoiceRebillingInitialiseService with the specified bill run and invoice', async () => {
+      expect(initialiseStub.calledOnce).to.be.true()
+      expect(initialiseStub.getCall(0).args[0]).to.be.an.instanceof(BillRunModel)
+      expect(initialiseStub.getCall(0).args[0].id).to.equal(billRun.id)
+      expect(initialiseStub.getCall(0).args[1]).to.be.an.instanceof(InvoiceModel)
+      expect(initialiseStub.getCall(0).args[1].id).to.equal(invoice.id)
+    })
+
+    it('calls InvoiceRebillingService with the specified invoice and the initialised invoices', async () => {
+      expect(rebillStub.calledOnce).to.be.true()
+      expect(rebillStub.getCall(0).args[0]).to.be.an.instanceof(InvoiceModel)
+      expect(rebillStub.getCall(0).args[0].id).to.equal(invoice.id)
+      expect(rebillStub.getCall(0).args[1].id).to.equal(cancelInvoice.id)
+      expect(rebillStub.getCall(0).args[2].id).to.equal(rebillInvoice.id)
+    })
+
+    it('returns the expected 201 code and response from InvoiceRebillingInitialiseService', async () => {
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(201)
+      expect(responsePayload.msg).to.equal('REBILL_OK')
     })
   })
 })
