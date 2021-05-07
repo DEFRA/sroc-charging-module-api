@@ -116,6 +116,8 @@ class InvoiceModel extends BaseUpsertModel {
   /**
    * Returns an object that contains the minimum (base) properties and values needed when inserting a new invoice
    *
+   * If rebilledType is passed through in the transaction then we use it; otherwise, we set it to 'O'
+   *
    * See `BaseUpsertModel._baseOnInsertObject()` for more details
    *
    * @param {module:TransactionTranslator} transaction translator representing the transaction that will seed the new
@@ -127,7 +129,8 @@ class InvoiceModel extends BaseUpsertModel {
     return {
       billRunId: transaction.billRunId,
       customerReference: transaction.customerReference,
-      financialYear: transaction.chargeFinancialYear
+      financialYear: transaction.chargeFinancialYear,
+      rebilledType: transaction.rebilledType ?? 'O'
     }
   }
 
