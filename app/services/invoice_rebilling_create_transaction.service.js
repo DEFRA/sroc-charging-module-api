@@ -14,11 +14,13 @@ class InvoiceRebillingCreateTransactionService {
    *
    * @param {module:TransactionModel} transaction The transaction to be duplicated.
    * @param {module:LicenceModel} licence The licence the transaction should be created on.
+   * @param {module:AuthorisedSystemModel} authorisedSystem The authorised system making the rebilling request (which
+   * will therefore be set as the authorised system for the transaction).
    * @param {Boolean} [invert] Whether the transaction type should be inverted.
    * @returns {module:TransactionModel} The newly-created transaction.
    */
-  static async go (transaction, licence, invert = false) {
-    const preparedTransaction = await this._prepareTransaction(transaction, licence, invert)
+  static async go (transaction, licence, authorisedSystem, invert = false) {
+    const preparedTransaction = await this._prepareTransaction(transaction, licence, authorisedSystem, invert)
     const rebilledType = this._rebilledType(invert)
 
     return this._create(preparedTransaction, rebilledType)
@@ -27,14 +29,18 @@ class InvoiceRebillingCreateTransactionService {
   /**
    * Returns a new transaction object ready to be persisted in the db, based on the provided transaction with a few
    * changes:
-   * - We set the id as undefined to avoid conflicting with the existing transaction;
+   * - We set the id as `undefined` to avoid conflicting with the existing transaction;
+   * - We set other fields we don't want copying as `undefined`;
    * - We set the bill run, invoice and licence ids based on the provided licence;
    * - We invert the credit boolean if required.
    */
-  static async _prepareTransaction (transaction, licence, invert) {
+  static async _prepareTransaction (transaction, licence, authorisedSystem, invert) {
     return TransactionModel.fromJson({
       ...transaction,
       id: undefined,
+      createdAt: undefined,
+      updatedAt: undefined,
+      createdBy: authorisedSystem.id,
       billRunId: licence.billRunId,
       invoiceId: licence.invoiceId,
       licenceId: licence.id,
