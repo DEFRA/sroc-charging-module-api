@@ -16,7 +16,13 @@ const routes = [
   {
     method: 'PATCH',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill',
-    handler: PresrocBillRunsInvoicesController.rebill
+    handler: PresrocBillRunsInvoicesController.rebill,
+    options: {
+      description: 'Feature not yet complete.',
+      auth: {
+        scope: ['admin']
+      }
+    }
   }
 ]
 
