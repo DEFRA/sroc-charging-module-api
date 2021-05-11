@@ -27,7 +27,8 @@ class InvoiceRebillingCreateTransactionService {
   /**
    * Returns a new transaction object ready to be persisted in the db, based on the provided transaction with a few
    * changes:
-   * - We set the id as undefined to avoid conflicting with the existing transaction;
+   * - We set the id as `undefined` to avoid conflicting with the existing transaction;
+   * - We set other fields we don't want copying as `undefined`;
    * - We set the bill run, invoice and licence ids based on the provided licence;
    * - We invert the credit boolean if required.
    */
@@ -35,6 +36,8 @@ class InvoiceRebillingCreateTransactionService {
     return TransactionModel.fromJson({
       ...transaction,
       id: undefined,
+      createdAt: undefined,
+      updatedAt: undefined,
       billRunId: licence.billRunId,
       invoiceId: licence.invoiceId,
       licenceId: licence.id,
