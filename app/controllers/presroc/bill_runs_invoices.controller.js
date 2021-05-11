@@ -3,11 +3,11 @@
 const {
   DeleteInvoiceService,
   FetchAndValidateBillRunInvoiceService,
-  ViewBillRunInvoiceService,
+  InvoiceRebillingInitialiseService,
+  InvoiceRebillingService,
   InvoiceRebillingValidationService,
-  InvoiceRebillingInitialiseService
+  ViewBillRunInvoiceService
 } = require('../../services')
-const InvoiceRebillingService = require('../../services/invoice_rebilling.service')
 
 class BillRunsInvoicesController {
   static async delete (req, h) {
