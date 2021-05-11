@@ -27,6 +27,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
   let originalBillRun
   let rebillBillRun
   let authorisedSystem
+  let rebillAuthorisedSystem
   let regime
   let transaction
   let result
@@ -35,6 +36,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
     await DatabaseHelper.clean()
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
+    rebillAuthorisedSystem = await AuthorisedSystemHelper.addSystem('987654321', 'REBILLING', [regime])
     originalBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
     rebillBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
   })
@@ -47,7 +49,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
       licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TONY/TF9222/37', invoice.id)
       transaction = await TransactionHelper.addTransaction(originalBillRun.id, { chargeFinancialYear: 2021 })
 
-      result = await InvoiceRebillingCreateTransactionService.go(transaction, licence)
+      result = await InvoiceRebillingCreateTransactionService.go(transaction, licence, rebillAuthorisedSystem)
     })
 
     describe('a transaction is created', () => {
@@ -57,15 +59,31 @@ describe('Invoice Rebilling Create Transaction service', () => {
         expect(result.licenceId).to.equal(licence.id)
       })
 
-      it('with the correct values', async () => {
+      it('with the correct authorised system', async () => {
+        expect(result.createdBy).to.equal(rebillAuthorisedSystem.id)
+      })
+
+      it('with the correct values duplicated', async () => {
       // Create a list of all keys in the transaction object and filter out the ones we don't want to check
         const transactionKeys = Object.keys(transaction)
         const keysToSkip = ['id', 'billRunId', 'createdAt', 'updatedAt', 'createdBy', 'invoiceId', 'licenceId']
         const keysToCheck = transactionKeys.filter(key => !keysToSkip.includes(key))
 
         // Iterate over the remaining keys and check that the result's value matches the original transaction's value
-        for (const key in keysToCheck) {
+        for (const key of keysToCheck) {
           expect(result[key]).to.equal(transaction[key])
+        }
+      })
+
+      it('with the correct values not duplicated', async () => {
+        // Create a list of all keys in the transaction object and filter out the ones we don't want to check
+        const transactionKeys = Object.keys(transaction)
+        const keysToInclude = ['id', 'billRunId', 'createdAt', 'updatedAt', 'createdBy', 'invoiceId', 'licenceId']
+        const keysToCheck = transactionKeys.filter(key => keysToInclude.includes(key))
+
+        // Iterate over the remaining keys and check that the result's value matches the original transaction's value
+        for (const key of keysToCheck) {
+          expect(result[key]).to.not.equal(transaction[key])
         }
       })
     })
@@ -109,7 +127,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
           chargeCredit: false
         })
 
-        result = await InvoiceRebillingCreateTransactionService.go(transaction, licence, true)
+        result = await InvoiceRebillingCreateTransactionService.go(transaction, licence, rebillAuthorisedSystem, true)
       })
 
       it('creates a credit', async () => {
@@ -124,7 +142,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
           chargeCredit: true
         })
 
-        result = await InvoiceRebillingCreateTransactionService.go(transaction, licence, true)
+        result = await InvoiceRebillingCreateTransactionService.go(transaction, licence, rebillAuthorisedSystem, true)
       })
 
       it('creates a debit', async () => {
