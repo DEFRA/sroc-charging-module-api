@@ -16,6 +16,8 @@
     "rollback-db": "knex migrate:rollback --all",
     "rollback-test-db": "NODE_ENV=test knex migrate:rollback --all",
     "seed-db": "knex seed:run",
+    "clean-db": "node db/clean.database.js",
+    "clean-test-db": "NODE_ENV=test node db/clean.database.js",
     "customer-files-task": "node app/tasks/index.js CustomerFilesTask"
   },
   "repository": {
