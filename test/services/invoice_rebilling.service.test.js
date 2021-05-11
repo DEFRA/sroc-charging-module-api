@@ -50,7 +50,7 @@ describe('Invoice Rebilling service', () => {
       cancelInvoice = await addRebillInvoice(newBillRun.id, 'CUSTOMER_REFERENCE', 2020, invoice.id, 'C')
       rebillInvoice = await addRebillInvoice(newBillRun.id, 'CUSTOMER_REFERENCE', 2020, invoice.id, 'R')
 
-      await InvoiceRebillingService.go(invoice, cancelInvoice, rebillInvoice)
+      await InvoiceRebillingService.go(invoice, cancelInvoice, rebillInvoice, authorisedSystem)
     })
 
     describe('cancel licences', () => {
