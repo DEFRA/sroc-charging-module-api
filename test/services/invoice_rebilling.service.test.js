@@ -114,7 +114,7 @@ describe('Invoice Rebilling service', () => {
     })
   })
 
-  describe.only('When an error occurs', () => {
+  describe('When an error occurs', () => {
     it('calls the notifier', async () => {
       Sinon.stub(InvoiceRebillingService, '_licences').throws()
       await InvoiceRebillingService.go(
