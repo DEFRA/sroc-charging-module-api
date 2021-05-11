@@ -21,12 +21,15 @@ class AuthorisedSystemHelper {
    * @param {string} [clientId] If not set will default to the configured admin client ID.
    * @param {string} [name='active'] Name to be set for the new user
    * @param {string} [status='active'] Status to be set for the new user
+   * @param {module:RegimeModel} [regime] If not set will automatically create a regime to use
    *
    * @returns {module:AuthorisedSystemModel} The result of the db insertion for your reference
    */
-  static async addAdminSystem (clientId, name = 'admin', status = 'active') {
+  static async addAdminSystem (clientId, name = 'admin', status = 'active', regime = null) {
     const systemId = clientId || AuthenticationConfig.adminClientId
-    const regime = await RegimeHelper.addRegime('wrls', 'water')
+    if (!regime) {
+      regime = await RegimeHelper.addRegime('wrls', 'water')
+    }
 
     return this._insertSystem(systemId, name, true, status, [regime])
   }
