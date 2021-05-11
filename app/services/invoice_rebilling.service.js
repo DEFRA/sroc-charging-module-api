@@ -22,23 +22,24 @@ class InvoiceRebillingService {
    * @param {module:InvoiceModel} invoice Instance of `InvoiceModel` for the invoice to be rebilled.
    * @param {module:InvoiceModel} cancelInvoice Instance of `InvoiceModel` for the cancelling invoice.
    * @param {module:InvoiceModel} rebillInvoice Instance of `InvoiceModel` for the rebilling invoice.
+   * @param {module:AuthorisedSystemModel} authorisedSystem The authorised system making the rebilling request.
    */
-  static async go (invoice, cancelInvoice, rebillInvoice) {
+  static async go (invoice, cancelInvoice, rebillInvoice, authorisedSystem) {
     const licences = await this._licences(invoice)
 
     for (const licence of licences) {
       const cancelLicence = await InvoiceRebillingCreateLicenceService.go(cancelInvoice, licence.licenceNumber)
       const rebillLicence = await InvoiceRebillingCreateLicenceService.go(rebillInvoice, licence.licenceNumber)
-      await this._populateRebillingLicences(licence, cancelLicence, rebillLicence)
+      await this._populateRebillingLicences(licence, cancelLicence, rebillLicence, authorisedSystem)
     }
   }
 
-  static async _populateRebillingLicences (licence, cancelLicence, rebillLicence) {
+  static async _populateRebillingLicences (licence, cancelLicence, rebillLicence, authorisedSystem) {
     const transactions = await this._transactions(licence)
 
     for (const transaction of transactions) {
-      await InvoiceRebillingCreateTransactionService.go(transaction, rebillLicence)
-      await InvoiceRebillingCreateTransactionService.go(transaction, cancelLicence, true)
+      await InvoiceRebillingCreateTransactionService.go(transaction, rebillLicence, authorisedSystem)
+      await InvoiceRebillingCreateTransactionService.go(transaction, cancelLicence, authorisedSystem, true)
     }
   }
 
