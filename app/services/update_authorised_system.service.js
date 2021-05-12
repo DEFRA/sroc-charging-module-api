@@ -33,7 +33,7 @@ class UpdateAuthorisedSystemService {
       patch.status = payload.status
     }
     if (payload.name) {
-      patch.name = payload.name.trim()
+      patch.name = payload.name
     }
 
     return patch
@@ -74,7 +74,7 @@ class UpdateAuthorisedSystemService {
 
   static _validatePayloadName (payload) {
     if (payload.name) {
-      if (payload.name.trim().toLowerCase() === 'admin') {
+      if (payload.name.toLowerCase() === 'admin') {
         throw Boom.badData(`You cannot use the name ${payload.name}. There can be only one!`)
       }
     }
