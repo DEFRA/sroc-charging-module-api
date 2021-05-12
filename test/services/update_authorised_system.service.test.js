@@ -78,6 +78,18 @@ describe('Update Authorised System service', () => {
       })
     })
 
+    describe('but the payload contains an invalid name', () => {
+      it('throws an error', async () => {
+        const payload = { name: 'admin' }
+        const id = updateAuthSystem.id
+        const err = await expect(UpdateAuthorisedSystemService.go(id, payload))
+          .to
+          .reject(Error, `You cannot use the name ${payload.name}. There can be only one!`)
+
+        expect(err).to.be.an.error()
+      })
+    })
+
     describe('but the payload contains an unknown regime', () => {
       it('throws an error', async () => {
         const payload = { status: 'active', regimes: ['ice', 'fire'] }

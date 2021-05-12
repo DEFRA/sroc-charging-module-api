@@ -60,6 +60,7 @@ class UpdateAuthorisedSystemService {
       throw Boom.badData('The payload was empty.')
     }
     this._validatePayloadStatus(payload)
+    this._validatePayloadName(payload)
     await this._validatePayloadRegimes(payload)
   }
 
@@ -67,6 +68,14 @@ class UpdateAuthorisedSystemService {
     if (payload.status) {
       if (!['active', 'inactive'].includes(payload.status)) {
         throw Boom.badData(`${payload.status} is not valid a status. Can only be active or inactive.`)
+      }
+    }
+  }
+
+  static _validatePayloadName (payload) {
+    if (payload.name) {
+      if (payload.name.trim().toLowerCase() === 'admin') {
+        throw Boom.badData(`You cannot use the name ${payload.name}. There can be only one!`)
       }
     }
   }
