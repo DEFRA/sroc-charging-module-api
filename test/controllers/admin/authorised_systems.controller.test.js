@@ -159,19 +159,21 @@ describe('Authorised systems controller', () => {
   })
 
   describe('Updating an authorised system: PATCH /admin/authorised-systems/{id}', () => {
-    const options = (id, token) => {
+    const options = (id, token, payload) => {
       return {
         method: 'PATCH',
         url: `/admin/authorised-systems/${id}`,
-        headers: { authorization: `Bearer ${token}` }
+        headers: { authorization: `Bearer ${token}` },
+        payload: payload
       }
     }
 
     describe('When the request is valid', () => {
       it('returns success status 204', async () => {
+        const payload = { status: 'inactive' }
         const authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1')
 
-        const response = await server.inject(options(authorisedSystem.id, authToken))
+        const response = await server.inject(options(authorisedSystem.id, authToken, payload))
 
         expect(response.statusCode).to.equal(204)
       })
