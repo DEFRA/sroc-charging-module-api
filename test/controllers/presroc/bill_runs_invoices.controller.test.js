@@ -49,11 +49,6 @@ describe('Presroc Invoices controller', () => {
 
   before(async () => {
     server = await deployment()
-    authToken = AuthorisationHelper.nonAdminToken(clientID)
-
-    Sinon
-      .stub(JsonWebToken, 'verify')
-      .returns(AuthorisationHelper.decodeToken(authToken))
   })
 
   beforeEach(async () => {
@@ -65,7 +60,7 @@ describe('Presroc Invoices controller', () => {
     invoice = await InvoiceHelper.addInvoice(billRun.id, 'CUSTOMER', '2020')
   })
 
-  after(async () => {
+  afterEach(async () => {
     Sinon.restore()
   })
 
@@ -77,6 +72,14 @@ describe('Presroc Invoices controller', () => {
         headers: { authorization: `Bearer ${token}` }
       }
     }
+
+    beforeEach(async () => {
+      authToken = AuthorisationHelper.nonAdminToken(clientID)
+
+      Sinon
+        .stub(JsonWebToken, 'verify')
+        .returns(AuthorisationHelper.decodeToken(authToken))
+    })
 
     describe('When the request is valid', () => {
       let fetchStub
@@ -147,6 +150,14 @@ describe('Presroc Invoices controller', () => {
       }
     }
 
+    beforeEach(async () => {
+      authToken = AuthorisationHelper.nonAdminToken(clientID)
+
+      Sinon
+        .stub(JsonWebToken, 'verify')
+        .returns(AuthorisationHelper.decodeToken(authToken))
+    })
+
     describe('When the request is valid', () => {
       it('returns success status 200', async () => {
         await TransactionHelper.addTransaction(billRun.id)
@@ -203,7 +214,23 @@ describe('Presroc Invoices controller', () => {
     let rebillStub
     let response
 
+    const options = (token, billRunId, invoiceId) => {
+      return {
+        method: 'PATCH',
+        url: `/v2/wrls/bill-runs/${billRunId}/invoices/${invoiceId}/rebill`,
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
     beforeEach(async () => {
+      // TODO: Remove use of admin system once rebill feature complete and admin auth scope removed
+      // Until rebilling is feature complete you need to be an admin user to access it
+      authToken = AuthorisationHelper.adminToken()
+      Sinon
+        .stub(JsonWebToken, 'verify')
+        .returns(AuthorisationHelper.decodeToken(authToken))
+      await AuthorisedSystemHelper.addAdminSystem(null, 'admin', 'active', regime)
+
       cancelInvoice = { id: GeneralHelper.uuid4() }
       rebillInvoice = { id: GeneralHelper.uuid4() }
 
@@ -224,14 +251,6 @@ describe('Presroc Invoices controller', () => {
       initialiseStub.restore()
       rebillStub.restore()
     })
-
-    const options = (token, billRunId, invoiceId) => {
-      return {
-        method: 'PATCH',
-        url: `/v2/wrls/bill-runs/${billRunId}/invoices/${invoiceId}/rebill`,
-        headers: { authorization: `Bearer ${token}` }
-      }
-    }
 
     it('calls InvoiceRebillingValidationService with the specified bill run and invoice', async () => {
       expect(validationStub.calledOnce).to.be.true()
