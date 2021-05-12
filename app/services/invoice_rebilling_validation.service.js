@@ -6,12 +6,13 @@
 
 const Boom = require('@hapi/boom')
 
-const { BillRunModel } = require('../models')
+const { BillRunModel, InvoiceModel } = require('../models')
 
 class InvoiceRebillingValidationService {
-  /**
+/**
   * Validates that an invoice exists and that it is suitable for rebilling:
   * - The invoice does not already belong to the bill run it is being rebilled to;
+  * - The invoice is not already subject to a rebilling request;
   * - The status of its current bill run is 'billed';
   * - The region of the bill run it is being rebilled to matches the region of its current bill run;
   * - It is not a rebill cancel invoice.
@@ -28,6 +29,7 @@ class InvoiceRebillingValidationService {
     const currentBillRun = await this._currentBillRun(invoice)
 
     this._validateNotOnNewBillRun(currentBillRun, newBillRun, invoice.id)
+    await this._validateNotCurrentlyRebilled(invoice.id)
     this._validateCurrentBillRunStatus(currentBillRun)
     this._validateRegion(currentBillRun, newBillRun, invoice.id)
     this._validateNotCancelInvoice(invoice)
@@ -42,6 +44,16 @@ class InvoiceRebillingValidationService {
   static _validateNotOnNewBillRun (currentBillRun, newBillRun, invoiceId) {
     if (currentBillRun.id === newBillRun.id) {
       throw Boom.conflict(`Invoice ${invoiceId} is already on bill run ${newBillRun.id}.`)
+    }
+  }
+
+  static async _validateNotCurrentlyRebilled (invoiceId) {
+    const rebillInvoiceIds = await InvoiceModel.query()
+      .select('id')
+      .where('rebilledInvoiceId', invoiceId)
+
+    if (rebillInvoiceIds.length) {
+      throw Boom.conflict(`Invoice ${invoiceId} has already been rebilled.`)
     }
   }
 
