@@ -95,9 +95,9 @@
     },
     {
       "label": "🗄️ DB (CMA)",
-      "detail": "Will rollback all changes then re-run migrations and seeds for the main db",
+      "detail": "Will clean the DB then rollback all changes and re-run migrations and seeds for the main db",
       "type": "shell",
-      "command": "docker-compose exec app /bin/sh -c 'npm run rollback-db && npm run migrate-db && npm run seed-db'",
+      "command": "docker-compose exec app npm run reset-db",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -110,9 +110,9 @@
     },
     {
       "label": "🗄️✅ DB TEST (CMA)",
-      "detail": "Will rollback all changes then re-run migrations and seeds for the test db",
+      "detail": "Will clean the DB then rollback all changes and re-run migrations for the test db",
       "type": "shell",
-      "command": "docker-compose exec app /bin/sh -c 'npm run create-test-db && npm run rollback-test-db && npm run migrate-test-db'",
+      "command": "docker-compose exec app /bin/sh -c 'npm run create-test-db && npm run reset-test-db'",
       "group": "test",
       "presentation": {
         "echo": true,
