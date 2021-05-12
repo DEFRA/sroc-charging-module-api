@@ -24,6 +24,10 @@ class AuthorisedSystemsController {
 
     return h.response(result).code(201)
   }
+
+  static async update (req, h) {
+    return h.response().code(204)
+  }
 }
 
 module.exports = AuthorisedSystemsController

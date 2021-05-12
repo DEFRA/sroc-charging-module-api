@@ -32,6 +32,16 @@ const routes = [
         scope: ['admin']
       }
     }
+  },
+  {
+    method: 'PATCH',
+    path: '/admin/authorised-systems/{id}',
+    handler: AuthorisedSystemsController.update,
+    options: {
+      auth: {
+        scope: ['admin']
+      }
+    }
   }
 ]
 
