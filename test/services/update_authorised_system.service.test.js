@@ -32,7 +32,21 @@ describe('Update Authorised System service', () => {
     describe('but the payload is empty', () => {
       it('throws an error', async () => {
         const id = updateAuthSystem.id
-        const err = await expect(UpdateAuthorisedSystemService.go(id)).to.reject(Error, 'The payload was empty.')
+        const err = await expect(UpdateAuthorisedSystemService.go(id))
+          .to
+          .reject(Error, 'The payload was empty.')
+
+        expect(err).to.be.an.error()
+      })
+    })
+
+    describe('but the payload contains an invalid status', () => {
+      it('throws an error', async () => {
+        const payload = { status: 'Happy' }
+        const id = updateAuthSystem.id
+        const err = await expect(UpdateAuthorisedSystemService.go(id, payload))
+          .to
+          .reject(Error, `${payload.status} is not valid a status. Can only be active or inactive.`)
 
         expect(err).to.be.an.error()
       })
@@ -43,7 +57,9 @@ describe('Update Authorised System service', () => {
     describe('because there is no matching authorised system', () => {
       it('throws an error', async () => {
         const id = GeneralHelper.uuid4()
-        const err = await expect(UpdateAuthorisedSystemService.go(id)).to.reject(Error, `No authorised system found with id ${id}`)
+        const err = await expect(UpdateAuthorisedSystemService.go(id))
+          .to
+          .reject(Error, `No authorised system found with id ${id}`)
 
         expect(err).to.be.an.error()
       })
@@ -52,7 +68,9 @@ describe('Update Authorised System service', () => {
     describe("because it's the admin authorised system", () => {
       it('throws an error', async () => {
         const id = adminAuthSystem.id
-        const err = await expect(UpdateAuthorisedSystemService.go(id)).to.reject(Error, 'You cannot update the main admin.')
+        const err = await expect(UpdateAuthorisedSystemService.go(id))
+          .to
+          .reject(Error, 'You cannot update the main admin.')
 
         expect(err).to.be.an.error()
       })
@@ -60,7 +78,9 @@ describe('Update Authorised System service', () => {
 
     describe('because the UUID is invalid', () => {
       it('returns throws an error', async () => {
-        const err = await expect(UpdateAuthorisedSystemService.go('123456789')).to.reject(DataError)
+        const err = await expect(UpdateAuthorisedSystemService.go('123456789'))
+          .to
+          .reject(DataError)
 
         expect(err).to.be.an.error()
       })
