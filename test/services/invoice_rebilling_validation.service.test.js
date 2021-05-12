@@ -92,6 +92,29 @@ describe('Invoice Rebilling Validation service', () => {
         })
       })
 
+      describe('because it is already being rebilled', () => {
+        it('throws an error', async () => {
+          const invoice = await InvoiceHelper.addInvoice(
+            currentBillRun.id, 'CUSTOMER REFERENCE', 2020, 0, 0, 0, 0, 0, 0, 0, 0, null, 'O'
+          )
+          await InvoiceHelper.addInvoice(
+            currentBillRun.id, 'CUSTOMER REFERENCE', 2020, 0, 0, 0, 0, 0, 0, 0, 0, invoice.id, 'R'
+          )
+          await InvoiceHelper.addInvoice(
+            currentBillRun.id, 'CUSTOMER REFERENCE', 2020, 0, 0, 0, 0, 0, 0, 0, 0, invoice.id, 'C'
+          )
+
+          const err = await expect(
+            InvoiceRebillingValidationService.go(newBillRun, invoice)
+          ).to.reject()
+
+          expect(err).to.be.an.error()
+          expect(err.output.payload.message).to.equal(
+            `Invoice ${invoice.id} has already been rebilled.`
+          )
+        })
+      })
+
       describe('because it is a rebill cancel invoice', () => {
         it('throws an error', async () => {
           const invoice = await InvoiceHelper.addInvoice(
