@@ -27,6 +27,10 @@ class UpdateAuthorisedSystemService {
       .withGraphFetched('regimes')
   }
 
+  static _regimes (regimes, trx = null) {
+    return RegimeModel.query(trx).select('id').whereIn('slug', regimes)
+  }
+
   static _patch (payload) {
     const patch = {}
     if (payload.status) {
@@ -44,7 +48,7 @@ class UpdateAuthorisedSystemService {
       await authorisedSystem.$query(trx).patch(patch)
 
       if (regimes) {
-        const result = await RegimeModel.query(trx).select('id').whereIn('slug', regimes)
+        const result = await this._regimes(regimes, trx)
         await authorisedSystem.$relatedQuery('regimes', trx).unrelate()
         await authorisedSystem.$relatedQuery('regimes', trx).relate(result)
       }
@@ -90,9 +94,9 @@ class UpdateAuthorisedSystemService {
 
   static async _validatePayloadRegimes (payload) {
     if (payload.regimes) {
-      const result = await RegimeModel.query().count('id').whereIn('slug', payload.regimes)
+      const result = await this._regimes(payload.regimes)
 
-      if (result[0].count !== payload.regimes.length) {
+      if (result.length !== payload.regimes.length) {
         throw Boom.badData('One or more of the regimes is unrecognised.')
       }
     }
