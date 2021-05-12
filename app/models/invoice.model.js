@@ -68,6 +68,7 @@ class InvoiceModel extends BaseUpsertModel {
         query
           .whereRaw('debit_line_value - credit_line_value > 0')
           .whereRaw('debit_line_value - credit_line_value < ?', DEMINIMIS_LIMIT)
+          .modify('originalInvoice')
       },
 
       /**
@@ -75,14 +76,24 @@ class InvoiceModel extends BaseUpsertModel {
        */
       minimumCharge (query) {
         query
-          .where(() => {
-            this.where('subjectToMinimumChargeCreditValue', '>', 0)
-              .where('subjectToMinimumChargeCreditValue', '<', MINIMUM_CHARGE_LIMIT)
-          })
-          .orWhere(() => {
-            this.where('subjectToMinimumChargeDebitValue', '>', 0)
-              .where('subjectToMinimumChargeDebitValue', '<', MINIMUM_CHARGE_LIMIT)
-          })
+          .where(builder => builder
+            .where('subjectToMinimumChargeCreditValue', '>', 0)
+            .where('subjectToMinimumChargeCreditValue', '<', MINIMUM_CHARGE_LIMIT)
+          )
+          .orWhere(builder => builder
+            .where('subjectToMinimumChargeDebitValue', '>', 0)
+            .where('subjectToMinimumChargeDebitValue', '<', MINIMUM_CHARGE_LIMIT)
+          )
+          .modify('originalInvoice')
+      },
+
+      /**
+       * original invoice modifier selects all invoices where rebilledType is `O` (ie. excludes invoices generated as
+       * part of the rebilling process where rebilledType is `C` or `R`)
+       */
+      originalInvoice (query) {
+        query
+          .where('rebilledType', 'O')
       },
 
       /**
