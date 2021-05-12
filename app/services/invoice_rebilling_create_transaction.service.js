@@ -16,14 +16,15 @@ class InvoiceRebillingCreateTransactionService {
    * @param {module:LicenceModel} licence The licence the transaction should be created on.
    * @param {module:AuthorisedSystemModel} authorisedSystem The authorised system making the rebilling request (which
    * will therefore be set as the authorised system for the transaction).
+   * @param {Object} [trx] Optional DB transaction this is being performed as part of.
    * @param {Boolean} [invert] Whether the transaction type should be inverted.
    * @returns {module:TransactionModel} The newly-created transaction.
    */
-  static async go (transaction, licence, authorisedSystem, invert = false) {
+  static async go (transaction, licence, authorisedSystem, trx = null, invert = false) {
     const preparedTransaction = await this._prepareTransaction(transaction, licence, authorisedSystem, invert)
     const rebilledType = this._rebilledType(invert)
 
-    return this._create(preparedTransaction, rebilledType)
+    return this._create(preparedTransaction, rebilledType, trx)
   }
 
   /**
@@ -59,17 +60,15 @@ class InvoiceRebillingCreateTransactionService {
   /**
    * Creates a record in the db for the provided transaction and returns it
    */
-  static async _create (transaction, rebilledType) {
-    return TransactionModel.transaction(async trx => {
-      await BillRunModel.patchTally(transaction, trx)
-      await InvoiceModel.updateTally({ ...transaction, rebilledType }, trx)
-      await LicenceModel.updateTally(transaction, trx)
+  static async _create (transaction, rebilledType, trx) {
+    await BillRunModel.patchTally(transaction, trx)
+    await InvoiceModel.updateTally({ ...transaction, rebilledType }, trx)
+    await LicenceModel.updateTally(transaction, trx)
 
-      const newTransaction = await transaction.$query(trx)
-        .insert(transaction)
+    const newTransaction = await transaction.$query(trx)
+      .insert(transaction)
 
-      return newTransaction
-    })
+    return newTransaction
   }
 }
 
