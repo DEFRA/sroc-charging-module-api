@@ -114,18 +114,14 @@ class UpdateAuthorisedSystemService {
   }
 
   static _validatePayloadStatus (payload) {
-    if (payload.status) {
-      if (!['active', 'inactive'].includes(payload.status)) {
-        throw Boom.badData(`${payload.status} is not valid a status. Can only be active or inactive.`)
-      }
+    if (payload.status && !['active', 'inactive'].includes(payload.status)) {
+      throw Boom.badData(`${payload.status} is not valid a status. Can only be active or inactive.`)
     }
   }
 
   static _validatePayloadName (payload) {
-    if (payload.name) {
-      if (payload.name.toLowerCase() === 'admin') {
-        throw Boom.badData(`You cannot use the name ${payload.name}. There can be only one!`)
-      }
+    if (payload.name && payload.name.toLowerCase() === 'admin') {
+      throw Boom.badData(`You cannot use the name ${payload.name}. There can be only one!`)
     }
   }
 
