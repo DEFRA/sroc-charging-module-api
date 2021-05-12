@@ -11,6 +11,43 @@ const { AuthorisedSystemModel, RegimeModel } = require('../models')
 const { AuthenticationConfig } = require('../../config')
 
 class UpdateAuthorisedSystemService {
+  /**
+   * Update the details of an authorised system record
+   *
+   * Intended to be used with the `AuthorisedSystemsController.update()` action it allows us to update certain details
+   * of an authorised system record.
+   *
+   * The request is first validated in a number of ways
+   *
+   * - the authorised system to be updated exists
+   * - the request is not attempting to update the main 'admin' record
+   * - if specified the new status is a recognised one
+   * - if specified the new name is not 'admin' (there can be only one!)
+   * - if specified the regimes listed are all recognised
+   *
+   * As the list infers, the update can be for one thing or all of them as long as its valid.
+   *
+   * ```
+   * {
+   *   "status": "inactive",
+   *   "name": "Old WRLS Account",
+   *   "regimes": ["cfd", "wrls"]
+   * }
+   * ```
+   *
+   * On regimes, the update
+   * will replace the existing ones with whatever is specified. So, if for example the authorised system was linked to
+   * 'cfd' and you also wanted to add 'wrls', your payload would need to be
+   *
+   * ```
+   * {
+   *   regimes: ['cfd', 'wrls']
+   * }
+   * ```
+   *
+   * @param {string} id Id of the authorised system to be updated
+   * @param {Object} payload Details of the changes to be made to the autorised system
+   */
   static async go (id, payload) {
     const authorisedSystem = await this._authorisedSystem(id)
 
