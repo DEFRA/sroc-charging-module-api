@@ -18,7 +18,7 @@ class UpdateAuthorisedSystemService {
     await this._validatePayload(payload)
 
     const patch = this._patch(payload)
-    await this._update(authorisedSystem, patch)
+    await this._update(authorisedSystem, patch, payload.regimes)
   }
 
   static _authorisedSystem (id) {
@@ -39,8 +39,16 @@ class UpdateAuthorisedSystemService {
     return patch
   }
 
-  static async _update (authorisedSystem, patch) {
-    await authorisedSystem.$query().patch(patch)
+  static async _update (authorisedSystem, patch, regimes) {
+    await AuthorisedSystemModel.transaction(async trx => {
+      await authorisedSystem.$query(trx).patch(patch)
+
+      if (regimes) {
+        const result = await RegimeModel.query(trx).select('id').whereIn('slug', regimes)
+        await authorisedSystem.$relatedQuery('regimes', trx).unrelate()
+        await authorisedSystem.$relatedQuery('regimes', trx).relate(result)
+      }
+    })
   }
 
   static _validateAuthorisedSystem (id, authorisedSystem) {

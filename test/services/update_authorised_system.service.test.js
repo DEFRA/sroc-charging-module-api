@@ -55,6 +55,27 @@ describe('Update Authorised System service', () => {
       })
     })
 
+    describe('and the payload contains a regime change', () => {
+      let newRegime
+
+      beforeEach(async () => {
+        newRegime = await RegimeHelper.addRegime('fire', 'Fire')
+      })
+
+      it('applies the update', async () => {
+        const payload = { regimes: [newRegime.slug] }
+        const id = updateAuthSystem.id
+
+        await UpdateAuthorisedSystemService.go(id, payload)
+
+        const refreshedAuthSystem = await updateAuthSystem.$query().withGraphFetched('regimes')
+
+        expect(refreshedAuthSystem.regimes.length).to.equal(1)
+        expect(refreshedAuthSystem.regimes[0].slug).to.equal(newRegime.slug)
+        expect(refreshedAuthSystem.regimes[0].id).to.equal(newRegime.id)
+      })
+    })
+
     describe('but the payload is empty', () => {
       it('throws an error', async () => {
         const id = updateAuthSystem.id
