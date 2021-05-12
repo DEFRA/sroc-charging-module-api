@@ -16,12 +16,28 @@ class UpdateAuthorisedSystemService {
 
     this._validateAuthorisedSystem(id, authorisedSystem)
     await this._validatePayload(payload)
+
+    const patch = this._patch(payload)
+    await this._update(authorisedSystem, patch)
   }
 
   static _authorisedSystem (id) {
     return AuthorisedSystemModel.query()
       .findById(id)
       .withGraphFetched('regimes')
+  }
+
+  static _patch (payload) {
+    const patch = {}
+    if (payload.status) {
+      patch.status = payload.status
+    }
+
+    return patch
+  }
+
+  static async _update (authorisedSystem, patch) {
+    await authorisedSystem.$query().patch(patch)
   }
 
   static _validateAuthorisedSystem (id, authorisedSystem) {

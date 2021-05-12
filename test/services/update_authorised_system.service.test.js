@@ -29,6 +29,19 @@ describe('Update Authorised System service', () => {
   })
 
   describe('When a valid authorised system ID is supplied', () => {
+    describe('and the payload contains a status change', () => {
+      it('applies the update', async () => {
+        const payload = { status: 'inactive' }
+        const id = updateAuthSystem.id
+
+        await UpdateAuthorisedSystemService.go(id, payload)
+
+        const refreshedAuthSystem = await updateAuthSystem.$query()
+
+        expect(refreshedAuthSystem.status).to.equal('inactive')
+      })
+    })
+
     describe('but the payload is empty', () => {
       it('throws an error', async () => {
         const id = updateAuthSystem.id
