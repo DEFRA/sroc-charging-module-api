@@ -51,6 +51,18 @@ describe('Update Authorised System service', () => {
         expect(err).to.be.an.error()
       })
     })
+
+    describe('but the payload contains an unknown regime', () => {
+      it('throws an error', async () => {
+        const payload = { status: 'active', regimes: ['ice', 'fire'] }
+        const id = updateAuthSystem.id
+        const err = await expect(UpdateAuthorisedSystemService.go(id, payload))
+          .to
+          .reject(Error, 'One or more of the regimes is unrecognised.')
+
+        expect(err).to.be.an.error()
+      })
+    })
   })
 
   describe('When an invalid authorised system ID is supplied', () => {
