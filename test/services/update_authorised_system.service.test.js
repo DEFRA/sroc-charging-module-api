@@ -42,6 +42,19 @@ describe('Update Authorised System service', () => {
       })
     })
 
+    describe('and the payload contains a name change', () => {
+      it('applies the update', async () => {
+        const payload = { name: 'fiddle' }
+        const id = updateAuthSystem.id
+
+        await UpdateAuthorisedSystemService.go(id, payload)
+
+        const refreshedAuthSystem = await updateAuthSystem.$query()
+
+        expect(refreshedAuthSystem.name).to.equal('fiddle')
+      })
+    })
+
     describe('but the payload is empty', () => {
       it('throws an error', async () => {
         const id = updateAuthSystem.id

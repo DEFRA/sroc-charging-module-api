@@ -32,6 +32,9 @@ class UpdateAuthorisedSystemService {
     if (payload.status) {
       patch.status = payload.status
     }
+    if (payload.name) {
+      patch.name = payload.name.trim()
+    }
 
     return patch
   }
