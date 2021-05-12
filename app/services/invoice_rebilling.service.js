@@ -23,23 +23,31 @@ class InvoiceRebillingService {
    * @param {module:InvoiceModel} cancelInvoice Instance of `InvoiceModel` for the cancelling invoice.
    * @param {module:InvoiceModel} rebillInvoice Instance of `InvoiceModel` for the rebilling invoice.
    * @param {module:AuthorisedSystemModel} authorisedSystem The authorised system making the rebilling request.
+   * @param {@module:RequestNotifier} notifier Instance of `RequestNotifier` class. We use it to log errors rather than
+   * throwing them as this service is intended to run in the background.
    */
-  static async go (invoice, cancelInvoice, rebillInvoice, authorisedSystem) {
-    const licences = await this._licences(invoice)
+  static async go (invoice, cancelInvoice, rebillInvoice, authorisedSystem, notifier) {
+    try {
+      const licences = await this._licences(invoice)
 
-    for (const licence of licences) {
-      const cancelLicence = await InvoiceRebillingCreateLicenceService.go(cancelInvoice, licence.licenceNumber)
-      const rebillLicence = await InvoiceRebillingCreateLicenceService.go(rebillInvoice, licence.licenceNumber)
-      await this._populateRebillingLicences(licence, cancelLicence, rebillLicence, authorisedSystem)
+      await LicenceModel.transaction(async trx => {
+        for (const licence of licences) {
+          const cancelLicence = await InvoiceRebillingCreateLicenceService.go(cancelInvoice, licence.licenceNumber, trx)
+          const rebillLicence = await InvoiceRebillingCreateLicenceService.go(rebillInvoice, licence.licenceNumber, trx)
+          await this._populateRebillingLicences(licence, cancelLicence, rebillLicence, authorisedSystem, trx)
+        }
+      })
+    } catch (error) {
+      notifier.omfg('Error rebilling invoice', { id: invoice.id, error })
     }
   }
 
-  static async _populateRebillingLicences (licence, cancelLicence, rebillLicence, authorisedSystem) {
-    const transactions = await this._transactions(licence)
+  static async _populateRebillingLicences (licence, cancelLicence, rebillLicence, authorisedSystem, trx) {
+    const transactions = await this._transactions(licence, trx)
 
     for (const transaction of transactions) {
-      await InvoiceRebillingCreateTransactionService.go(transaction, rebillLicence, authorisedSystem)
-      await InvoiceRebillingCreateTransactionService.go(transaction, cancelLicence, authorisedSystem, true)
+      await InvoiceRebillingCreateTransactionService.go(transaction, rebillLicence, authorisedSystem, trx)
+      await InvoiceRebillingCreateTransactionService.go(transaction, cancelLicence, authorisedSystem, trx, true)
     }
   }
 
@@ -49,8 +57,8 @@ class InvoiceRebillingService {
       .select(['id', 'licenceNumber'])
   }
 
-  static _transactions (licence) {
-    return TransactionModel.query()
+  static _transactions (licence, trx) {
+    return TransactionModel.query(trx)
       .where('licenceId', licence.id)
   }
 }
