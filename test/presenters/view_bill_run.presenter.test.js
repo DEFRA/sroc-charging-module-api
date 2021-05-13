@@ -40,6 +40,8 @@ describe('View Bill Run Presenter', () => {
         minimumChargeInvoice: false,
         transactionReference: null,
         netTotal: 2093,
+        rebilledType: 'R',
+        rebilledInvoiceId: GeneralHelper.uuid4(),
         licences: [
           {
             id: GeneralHelper.uuid4(),
@@ -83,7 +85,9 @@ describe('View Bill Run Presenter', () => {
       'transactionReference',
       'creditLineValue',
       'debitLineValue',
-      'netTotal'
+      'netTotal',
+      'rebilledType',
+      'rebilledInvoiceId'
     ])
   })
 
