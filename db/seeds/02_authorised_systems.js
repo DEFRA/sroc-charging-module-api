@@ -30,20 +30,27 @@ exports.seed = async function (knex) {
       regime_id: regime.id
     })
   }
-
+  const otherClients = []
   if (config.systemClientId) {
+    otherClients.push({ clientId: config.systemClientId, name: 'system' })
+  }
+  if (config.testClientId) {
+    otherClients.push({ clientId: config.testClientId, name: 'test' })
+  }
+
+  for (const client of otherClients) {
     result = await knex('authorised_systems')
       .returning('id')
       .insert({
-        client_id: config.systemClientId,
-        name: 'system',
+        client_id: client.clientId,
+        name: client.name,
         admin: false,
         status: 'active'
       })
-    const systemUserId = result[0]
+    const userId = result[0]
     const wrlsRegime = regimes.filter(regime => regime.slug === 'wrls')[0]
     await knex('authorised_systems_regimes').insert({
-      authorised_system_id: systemUserId,
+      authorised_system_id: userId,
       regime_id: wrlsRegime.id
     })
   }
