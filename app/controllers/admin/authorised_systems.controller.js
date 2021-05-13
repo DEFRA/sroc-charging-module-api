@@ -3,7 +3,8 @@
 const {
   CreateAuthorisedSystemService,
   ListAuthorisedSystemsService,
-  ShowAuthorisedSystemService
+  ShowAuthorisedSystemService,
+  UpdateAuthorisedSystemService
 } = require('../../services')
 
 class AuthorisedSystemsController {
@@ -23,6 +24,12 @@ class AuthorisedSystemsController {
     const result = await CreateAuthorisedSystemService.go(req.payload)
 
     return h.response(result).code(201)
+  }
+
+  static async update (req, h) {
+    await UpdateAuthorisedSystemService.go(req.params.id, req.payload)
+
+    return h.response().code(204)
   }
 }
 
