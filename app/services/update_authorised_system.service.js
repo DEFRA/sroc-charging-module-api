@@ -35,9 +35,8 @@ class UpdateAuthorisedSystemService {
    * }
    * ```
    *
-   * On regimes, the update
-   * will replace the existing ones with whatever is specified. So, if for example the authorised system was linked to
-   * 'cfd' and you also wanted to add 'wrls', your payload would need to be
+   * On regimes, the update will replace the existing ones with whatever is specified. So, if for example the authorised
+   * system was linked to 'cfd' and you also wanted to add 'wrls', your payload would need to be
    *
    * ```
    * {
