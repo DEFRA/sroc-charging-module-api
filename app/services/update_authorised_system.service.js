@@ -114,7 +114,7 @@ class UpdateAuthorisedSystemService {
 
   static _validatePayloadStatus (payload) {
     if (payload.status && !['active', 'inactive'].includes(payload.status)) {
-      throw Boom.badData(`${payload.status} is not valid a status. Can only be active or inactive.`)
+      throw Boom.badData(`${payload.status} is not a valid status. Can only be active or inactive.`)
     }
   }
 
