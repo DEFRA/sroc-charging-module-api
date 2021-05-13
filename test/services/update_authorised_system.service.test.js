@@ -93,7 +93,7 @@ describe('Update Authorised System service', () => {
         const id = updateAuthSystem.id
         const err = await expect(UpdateAuthorisedSystemService.go(id, payload))
           .to
-          .reject(Error, `${payload.status} is not valid a status. Can only be active or inactive.`)
+          .reject(Error, `${payload.status} is not a valid status. Can only be active or inactive.`)
 
         expect(err).to.be.an.error()
       })
