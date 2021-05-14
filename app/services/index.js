@@ -38,6 +38,7 @@ const NextCustomerFileReferenceService = require('./next_customer_file_reference
 const NextTransactionFileReferenceService = require('./next_transaction_file_reference.service')
 const NextTransactionReferenceService = require('./next_transaction_reference.service')
 const ObjectCleaningService = require('./plugins/object_cleaning.service')
+const PrepareCustomerFileService = require('./prepare_customer_file.service')
 const RequestBillRunService = require('./plugins/request_bill_run.service')
 const RequestInvoiceService = require('./plugins/request_invoice.service')
 const RulesService = require('./rules.service')
@@ -56,8 +57,8 @@ const StreamTransformUsingPresenterService = require('./streams/stream_transform
 const StreamWritableFileService = require('./streams/stream_writable_file.service')
 const TransformRecordsToFileService = require('./transform_records_to_file.service')
 const UpdateAuthorisedSystemService = require('./update_authorised_system.service')
-const ViewBillRunService = require('./view_bill_run.service')
 const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
+const ViewBillRunService = require('./view_bill_run.service')
 
 module.exports = {
   ApproveBillRunService,
@@ -68,9 +69,9 @@ module.exports = {
   CalculateMinimumChargeService,
   CognitoJwtToPemService,
   CreateAuthorisedSystemService,
+  CreateBillRunService,
   CreateCustomerDetailsService,
   CreateMinimumChargeAdjustmentService,
-  CreateBillRunService,
   CreateTransactionBillRunValidationService,
   CreateTransactionService,
   CreateTransactionTallyService,
@@ -92,15 +93,16 @@ module.exports = {
   ListAuthorisedSystemsService,
   ListCustomerFilesService,
   ListRegimesService,
-  ObjectCleaningService,
-  RequestBillRunService,
-  RequestInvoiceService,
-  RulesService,
   MoveCustomersToExportedTableService,
   NextBillRunNumberService,
   NextCustomerFileReferenceService,
   NextTransactionFileReferenceService,
   NextTransactionReferenceService,
+  ObjectCleaningService,
+  PrepareCustomerFileService,
+  RequestBillRunService,
+  RequestInvoiceService,
+  RulesService,
   SendBillRunReferenceService,
   SendCustomerFileService,
   SendFileToS3Service,
@@ -116,6 +118,6 @@ module.exports = {
   StreamWritableFileService,
   TransformRecordsToFileService,
   UpdateAuthorisedSystemService,
-  ViewBillRunService,
-  ViewBillRunInvoiceService
+  ViewBillRunInvoiceService,
+  ViewBillRunService
 }
