@@ -37,7 +37,9 @@ class ViewBillRunInvoiceService {
         'minimumChargeInvoice',
         'transactionReference',
         'debitLineValue',
-        'creditLineValue'
+        'creditLineValue',
+        'rebilledType',
+        'rebilledInvoiceId'
       )
       .withGraphFetched('licences.transactions')
       .modifyGraph('licences', (builder) => {
