@@ -1,7 +1,7 @@
 'use strict'
 
 const ApproveBillRunService = require('./approve_bill_run.service')
-const AuthorisationService = require('./authorisation.service')
+const AuthorisationService = require('./plugins/authorisation.service')
 const BaseNextFileReferenceService = require('./base_next_file_reference.service')
 const BillRunStatusService = require('./bill_run_status.service')
 const CalculateChargeService = require('./calculate_charge.service')
