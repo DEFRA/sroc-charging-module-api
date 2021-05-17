@@ -63,7 +63,7 @@ class RequestBillRunService {
   /**
    * Validate that the bill run exists and is linked to the specified regime.
    */
-  static _validateBillRun (billRun, billRunId, regime, method) {
+  static _validateBillRun (billRun, billRunId, regime) {
     if (!billRun) {
       throw Boom.notFound(`Bill run ${billRunId} is unknown.`)
     }
