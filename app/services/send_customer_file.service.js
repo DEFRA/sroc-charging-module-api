@@ -9,30 +9,32 @@ const path = require('path')
 const { ServerConfig } = require('../../config')
 const { removeTemporaryFiles } = ServerConfig
 
-const { CustomerFileModel, CustomerModel } = require('../../app/models')
+const { CustomerFileModel } = require('../../app/models')
 
+const DeleteFileService = require('./delete_file.service')
 const GenerateCustomerFileService = require('./generate_customer_file.service')
 const MoveCustomersToExportedTableService = require('./move_customers_to_exported_table.service')
+const PrepareCustomerFileService = require('./prepare_customer_file.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
-const DeleteFileService = require('./delete_file.service')
-const NextCustomerFileReferenceService = require('./next_customer_file_reference.service')
 
 class SendCustomerFileService {
   /**
-   * Organises the generation and sending of a customer file.
+   * Orchestrates the generation and sending of customer files to SSCL.
    *
    * The service accepts an array of regions. It is expected that when it is called during the "send bill run" process
    * we will receive an array containing just the region of the bill run, and an array will only be passed to it by the
    * automated once-a-week "send all customer files" process.
    *
    * For each given region it:
-   * - Checks if a file is needed (ie. if there are any customer changes in the db for the given regime and region);
-   * - Creates an appropriate entry in the customer_files table and sets the status to `pending`;
-   * - Calls GenerateCustomerFileService to generate the customer file;
-   * - Calls SendFileToS3Service to send the customer file to the S3 bucket;
-   * - Deletes the customer records for the regime and region from the db;
-   * - Sets the customer_files record status to `exported` and exportedDate to the current date;
-   * - Deletes the file if ServerConfig.removeTemporaryFiles is set to `true`.
+   * - Checks for any unprocessed customer changes in the `customers` table
+   * - If there are, creates a `customer_file` record with a status of 'pending' and links it to the changes
+   *
+   * It then iterates through all pending `customer_file` records and:
+   * - Calls GenerateCustomerFileService to generate the customer file
+   * - Calls SendFileToS3Service to send the customer file to the S3 bucket
+   * - Deletes the linked customer change records
+   * - Sets the `customer_file`s record status to `exported` and `exportedDate` to the current date;
+   * - Deletes the file if `ServerConfig.removeTemporaryFiles` is set to `true`.
    *
    * @param {module:RegimeModel} regime The regime that the customer file is to be generated for.
    * @param {array} regions An arry of regions we want to send a customer file for.
@@ -40,24 +42,53 @@ class SendCustomerFileService {
    * throwing them as this service is intended to run in the background.
    */
   static async go (regime, regions, notifier) {
-    let generatedFile
-
     for (const region of regions) {
+      const preparedFiles = await this._prepareFiles(regime, region, notifier)
+      await this._processPreparedFiles(preparedFiles, regime, region, notifier)
+    }
+  }
+
+  /**
+   * Calls PrepareCustomerFileService for the given regime and region and if there are customer changes it handles
+   * creating the 'customer file' record and linking it to them
+   */
+  static async _prepareFiles (regime, region, notifier) {
+    try {
+      await PrepareCustomerFileService.go(regime, region)
+    } catch (error) {
+      notifier.omfg(
+        `Error preparing customer file for ${regime.slug} ${region}`,
+        { regime: regime.slug, region, error }
+      )
+    }
+
+    // We return the query regardless of whether the try/catch fails to ensure that even if it does fail, we still
+    // return any `pending` files that already exist, or an empty array if there are none.
+    return CustomerFileModel.query()
+      .select('id', 'region', 'fileReference')
+      .where('status', 'pending')
+      .andWhere('regimeId', regime.id)
+      .andWhere('region', region)
+  }
+
+  /**
+   * Given an array of `customer files` it iterates through them, generating the file, sending it to S3 and recording
+   * the result
+   *
+   * Specifically it
+   *
+   * - Generates the file
+   * - Send it to the S3 uploads bucket
+   * - Sends a copy to the S3 archive bucket
+   * - Moves the customer change records to the exported_customers table;
+   * - Sets the 'customer file' status to `exported` along with the export date
+   * - Deletes the temp file (if configured to)
+   */
+  static async _processPreparedFiles (preparedFiles, regime, region, notifier) {
+    for (const customerFile of preparedFiles) {
+      let generatedFile
+
       try {
-        const fileNeeded = await this._checkIfFileNeeded(regime, region)
-        if (!fileNeeded) {
-          // No file is needed for this region so continue to the next region
-          continue
-        }
-
-        const fileReference = await this._fileReference(regime, region)
-
-        const customerFile = await this._createCustomerFile(regime.id, region, fileReference)
-
-        await this._setPendingStatus(customerFile)
-
-        await this._selectCustomerChanges(customerFile)
-
         generatedFile = await this._generateAndSend(regime, customerFile)
 
         await MoveCustomersToExportedTableService.go(regime, region, customerFile.id)
@@ -79,52 +110,7 @@ class SendCustomerFileService {
   }
 
   /**
-   * Returns true if there are customer records for this regime and region, or false if there aren't
-   */
-  static async _checkIfFileNeeded (regime, region) {
-    const customers = await CustomerModel.query()
-      .select('id')
-      .where('regimeId', regime.id)
-      .where('region', region)
-
-    return customers.length !== 0
-  }
-
-  /**
-   * Creates and returns a record in the customer_file table
-   */
-  static async _createCustomerFile (regimeId, region, fileReference) {
-    return CustomerFileModel.query().insert({
-      regimeId,
-      region,
-      fileReference
-    })
-  }
-
-  /**
-   * Sets the status of a customer file to 'pending'
-   */
-  static async _setPendingStatus (customerFile) {
-    await customerFile.$query()
-      .patch({ status: 'pending' })
-  }
-
-  /**
-   * Selects the records to be included in the file by patching `customer_file_id` of the records to customerFile.id.
-   * We select by regimeId and region of customerFile, and only patch records where customerFileId is `null` to ensure
-   * we don't overwrite existing entries which may still be in the table due to an error during a previous send (and
-   * which we want to ensure aren't included in a future file)
-   */
-  static async _selectCustomerChanges (customerFile) {
-    await CustomerModel.query()
-      .patch({ customerFileId: customerFile.id })
-      .where('regimeId', customerFile.regimeId)
-      .where('region', customerFile.region)
-      .where('customerFileId', null)
-  }
-
-  /**
-   * Sets the status of a customer file to 'exported' and sets exportedAt to the current date
+   * Sets the status of a customer file to 'exported' and sets exportedAt to the current date time
    */
   static async _setExportedStatusAndDate (customerFile) {
     await customerFile.$query()
@@ -147,13 +133,6 @@ class SendCustomerFileService {
     await SendFileToS3Service.go(generatedFile, key)
 
     return generatedFile
-  }
-
-  /**
-   * Obtains a file reference for the given regime and region and returns the resulting filename
-   */
-  static async _fileReference (regime, region) {
-    return NextCustomerFileReferenceService.go(regime, region)
   }
 
   /**

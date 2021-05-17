@@ -24,6 +24,7 @@ const {
   DeleteFileService,
   GenerateCustomerFileService,
   NextCustomerFileReferenceService,
+  PrepareCustomerFileService,
   SendFileToS3Service
 } = require('../../app/services')
 
@@ -32,12 +33,7 @@ const { SendCustomerFileService } = require('../../app/services')
 
 describe('Send Customer File service', () => {
   let regime
-  let deleteStub
-  let generateStub
-  let sendStub
-  let moveStub
   let notifierFake
-  let querySpy
 
   const payload = {
     customerName: 'CUSTOMER_NAME',
@@ -55,416 +51,337 @@ describe('Send Customer File service', () => {
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
 
-    await CreateCustomerDetailsService.go({ ...payload, region: 'A', customerReference: 'AA12345678' }, regime)
-    await CreateCustomerDetailsService.go({ ...payload, region: 'W', customerReference: 'WA87654321' }, regime)
-
-    deleteStub = Sinon.stub(DeleteFileService, 'go').returns(true)
-    generateStub = Sinon.stub(GenerateCustomerFileService, 'go').callsFake(file => `${file.fileReference}.dat`)
-    sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
-    moveStub = Sinon.stub(MoveCustomersToExportedTableService, 'go').returns(true)
-    Sinon.stub(NextCustomerFileReferenceService, 'go').callsFake((_, region) => `nal${region.toLowerCase()}c50001`)
-
     // Create fake functions to stand in place of Notifier.omg() and Notifier.omfg()
     notifierFake = { omg: Sinon.fake(), omfg: Sinon.fake() }
-
-    querySpy = Sinon.spy(CustomerFileModel, 'query')
   })
 
   afterEach(() => {
     Sinon.restore()
   })
 
-  describe('When a single region is specified', () => {
-    describe('and a customer file is required', () => {
-      beforeEach(async () => {
-        await SendCustomerFileService.go(regime, ['A'], notifierFake)
-      })
+  describe('When the service is called', () => {
+    let deleteStub
+    let generateStub
+    let sendStub
+    let moveStub
 
-      it('generates a customer file', async () => {
-        const [customerFile] = generateStub.getCall(0).args
+    beforeEach(async () => {
+      await CreateCustomerDetailsService.go({ ...payload, region: 'A', customerReference: 'AA12345678' }, regime)
+      await CreateCustomerDetailsService.go({ ...payload, region: 'W', customerReference: 'WA87654321' }, regime)
 
-        expect(generateStub.calledOnce).to.be.true()
-        expect(customerFile).to.be.an.instanceOf(CustomerFileModel)
-        expect(customerFile.regimeId).to.equal(regime.id)
-        expect(customerFile.region).to.equal('A')
-      })
+      deleteStub = Sinon.stub(DeleteFileService, 'go').returns(true)
+      generateStub = Sinon.stub(GenerateCustomerFileService, 'go').callsFake(file => `${file.fileReference}.dat`)
+      sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
+      moveStub = Sinon.stub(MoveCustomersToExportedTableService, 'go').returns(true)
+      Sinon.stub(NextCustomerFileReferenceService, 'go').callsFake((_, region) => `nal${region.toLowerCase()}c50001`)
+    })
 
-      it('sends the customer file', async () => {
-        expect(sendStub.calledOnce).to.be.true()
-        expect(sendStub.getCall(0).firstArg).to.equal('nalac50001.dat')
-        expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
-      })
-
-      it('moves the customers to the exported customers table', async () => {
-        const customerFile = await CustomerFileModel.query().first()
-
-        const { args } = moveStub.getCall(0)
-        expect(moveStub.calledOnce).to.be.true()
-        expect(args[0].id).to.equal(regime.id)
-        expect(args[1]).to.equal('A')
-        expect(args[2]).to.equal(customerFile.id)
-      })
-
-      describe('and removeTemporary files is set to `true`', () => {
-        before(async () => {
-          Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(true)
+    describe('and a single region is specified', () => {
+      describe('and a customer file is required', () => {
+        beforeEach(async () => {
+          await SendCustomerFileService.go(regime, ['A'], notifierFake)
         })
 
-        it('deletes the file', async () => {
-          expect(deleteStub.calledOnce).to.equal(true)
-        })
-      })
+        it('generates a customer file', async () => {
+          const [customerFile] = generateStub.getCall(0).args
 
-      describe('and removeTemporary files is set to `false`', () => {
-        before(async () => {
-          Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(false)
-        })
-
-        it("doesn't delete the file", async () => {
-          expect(deleteStub.called).to.equal(false)
-        })
-      })
-
-      describe("and the 'customer_files' record it creates", () => {
-        it('has the correct details', async () => {
-          const customerFile = await CustomerFileModel.query().first()
-
-          expect(customerFile.regimeId).to.equal(regime.id)
+          expect(generateStub.calledOnce).to.be.true()
+          expect(customerFile).to.be.an.instanceOf(CustomerFileModel)
           expect(customerFile.region).to.equal('A')
-          expect(customerFile.fileReference).to.equal('nalac50001')
         })
 
-        it("sets its status to 'pending' during file generation", async () => {
-          /**
-           * Iterate over each query call to get the underlying SQL query:
-           *   .getCall gives us the given call
-           *   The Objection function we spy on returns a query object so we get the returnValue
-           *   .toKnexQuery() gives us the underlying Knex query
-           *   .toString() gives us the SQL query as a string
-           *
-           * Finally, we push query strings to the queries array if they set the status to 'pending'.
-           */
-          const queries = []
-          for (let call = 0; call < querySpy.callCount; call++) {
-            const queryString = querySpy.getCall(call).returnValue.toKnexQuery().toString()
-            if (queryString.includes('set "status" = \'pending\'')) {
-              queries.push(queryString)
-            }
-          }
-
-          expect(queries.length).to.equal(1)
+        it('sends the customer file', async () => {
+          expect(sendStub.calledOnce).to.be.true()
+          expect(sendStub.getCall(0).firstArg).to.equal('nalac50001.dat')
+          expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
         })
 
-        it("sets its status to 'exported' after exporting", async () => {
+        it('moves the customers to the exported customers table', async () => {
           const customerFile = await CustomerFileModel.query().first()
 
-          expect(customerFile.status).to.equal('exported')
+          const { args } = moveStub.getCall(0)
+          expect(moveStub.calledOnce).to.be.true()
+          expect(args[0].id).to.equal(regime.id)
+          expect(args[1]).to.equal('A')
+          expect(args[2]).to.equal(customerFile.id)
         })
 
-        it('sets its date after exporting', async () => {
-          const customerFile = await CustomerFileModel.query().first()
-          const exportedDate = new Date(customerFile.exportedAt)
+        describe('and when removeTemporary files is set to `true`', () => {
+          before(async () => {
+            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(true)
+          })
 
-          expect(exportedDate).to.be.a.date()
-          expect(compareDateToNow(exportedDate)).to.be.true()
+          it('deletes the file', async () => {
+            expect(deleteStub.calledOnce).to.equal(true)
+          })
+        })
+
+        describe('and when removeTemporary files is set to `false`', () => {
+          before(async () => {
+            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(false)
+          })
+
+          it("doesn't delete the file", async () => {
+            expect(deleteStub.called).to.equal(false)
+          })
+        })
+
+        describe("on the matching 'customer_files' record", () => {
+          it("sets its status to 'exported' after exporting", async () => {
+            const customerFile = await CustomerFileModel.query().first()
+
+            expect(customerFile.status).to.equal('exported')
+          })
+
+          it("sets its 'exportedDate' field after exporting", async () => {
+            const customerFile = await CustomerFileModel.query().first()
+            const exportedDate = new Date(customerFile.exportedAt)
+
+            expect(exportedDate).to.be.a.date()
+            expect(compareDateToNow(exportedDate)).to.be.true()
+          })
+        })
+      })
+
+      describe("and a customer file isn't required", () => {
+        beforeEach(async () => {
+          await SendCustomerFileService.go(regime, ['X'], notifierFake)
+        })
+
+        it("doesn't try to generate a file", async () => {
+          expect(generateStub.notCalled).to.be.true()
+        })
+
+        it("doesn't try to send the file", async () => {
+          expect(sendStub.notCalled).to.be.true()
         })
       })
     })
 
-    describe("and a customer file isn't required", () => {
-      beforeEach(async () => {
-        await SendCustomerFileService.go(regime, ['X'], notifierFake)
-      })
-
-      it("doesn't try to generate a file", async () => {
-        expect(generateStub.notCalled).to.be.true()
-      })
-
-      it("doesn't try to send the file", async () => {
-        expect(sendStub.notCalled).to.be.true()
-      })
-    })
-  })
-
-  describe('When multiple regions are specified', () => {
-    describe('and a customer file is required for each region', () => {
-      beforeEach(async () => {
-        await SendCustomerFileService.go(regime, ['A', 'W'], notifierFake)
-      })
-
-      it('generates a customer file', async () => {
-        expect(generateStub.calledTwice).to.be.true()
-        expect(generateStub.getCall(0).args[0]).to.be.an.instanceOf(CustomerFileModel)
-        expect(generateStub.getCall(0).args[0].regimeId).to.equal(regime.id)
-        expect(generateStub.getCall(0).args[0].region).to.equal('A')
-        expect(generateStub.getCall(1).args[0]).to.be.an.instanceOf(CustomerFileModel)
-        expect(generateStub.getCall(1).args[0].regimeId).to.equal(regime.id)
-        expect(generateStub.getCall(1).args[0].region).to.equal('W')
-      })
-
-      it('sends the customer file', async () => {
-        expect(sendStub.calledTwice).to.be.true()
-        expect(sendStub.getCall(0).args[0]).to.equal('nalac50001.dat')
-        expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
-        expect(sendStub.getCall(1).args[0]).to.equal('nalwc50001.dat')
-        expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
-      })
-
-      it('moves the customers to the exported customers table', async () => {
-        const customerFiles = await CustomerFileModel.query()
-
-        const { args: firstArgs } = moveStub.getCall(0)
-        const { args: secondArgs } = moveStub.getCall(1)
-        expect(moveStub.calledTwice).to.be.true()
-        expect(firstArgs[0].id).to.equal(regime.id)
-        expect(firstArgs[1]).to.equal('A')
-        expect(firstArgs[2]).to.equal(customerFiles[0].id)
-        expect(secondArgs[0].id).to.equal(regime.id)
-        expect(secondArgs[1]).to.equal('W')
-        expect(secondArgs[2]).to.equal(customerFiles[1].id)
-      })
-
-      describe('and removeTemporary files is set to `true`', () => {
-        before(async () => {
-          Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(true)
+    describe('and multiple regions are specified', () => {
+      describe('and a customer file is required for each region', () => {
+        beforeEach(async () => {
+          await SendCustomerFileService.go(regime, ['A', 'W'], notifierFake)
         })
 
-        it('deletes the file', async () => {
-          expect(deleteStub.calledTwice).to.equal(true)
-        })
-      })
-
-      describe('and removeTemporary files is set to `false`', () => {
-        before(async () => {
-          Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(false)
+        it('generates a customer file', async () => {
+          expect(generateStub.calledTwice).to.be.true()
+          expect(generateStub.getCall(0).args[0]).to.be.an.instanceOf(CustomerFileModel)
+          expect(generateStub.getCall(0).args[0].region).to.equal('A')
+          expect(generateStub.getCall(1).args[0]).to.be.an.instanceOf(CustomerFileModel)
+          expect(generateStub.getCall(1).args[0].region).to.equal('W')
         })
 
-        it("doesn't delete the file", async () => {
-          expect(deleteStub.called).to.equal(false)
+        it('sends the customer file', async () => {
+          expect(sendStub.calledTwice).to.be.true()
+          expect(sendStub.getCall(0).args[0]).to.equal('nalac50001.dat')
+          expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
+          expect(sendStub.getCall(1).args[0]).to.equal('nalwc50001.dat')
+          expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
         })
-      })
 
-      describe("and the 'customer_files' record it creates", () => {
-        it('have the correct details', async () => {
+        it('moves the customers to the exported customers table', async () => {
           const customerFiles = await CustomerFileModel.query()
 
-          expect(customerFiles[0].regimeId).to.equal(regime.id)
-          expect(customerFiles[0].region).to.equal('A')
-          expect(customerFiles[0].fileReference).to.equal('nalac50001')
-
-          expect(customerFiles[1].regimeId).to.equal(regime.id)
-          expect(customerFiles[1].region).to.equal('W')
-          expect(customerFiles[1].fileReference).to.equal('nalwc50001')
+          const { args: firstArgs } = moveStub.getCall(0)
+          const { args: secondArgs } = moveStub.getCall(1)
+          expect(moveStub.calledTwice).to.be.true()
+          expect(firstArgs[0].id).to.equal(regime.id)
+          expect(firstArgs[1]).to.equal('A')
+          expect(firstArgs[2]).to.equal(customerFiles[0].id)
+          expect(secondArgs[0].id).to.equal(regime.id)
+          expect(secondArgs[1]).to.equal('W')
+          expect(secondArgs[2]).to.equal(customerFiles[1].id)
         })
 
-        it("have a status of 'pending' during file generation", async () => {
-          /**
-           * Iterate over each query call to get the underlying SQL query:
-           *   .getCall gives us the given call
-           *   The Objection function we spy on returns a query object so we get the returnValue
-           *   .toKnexQuery() gives us the underlying Knex query
-           *   .toString() gives us the SQL query as a string
-           *
-           * Finally, we push query strings to the queries array if they set the status to 'pending'.
-           */
-          const queries = []
-          for (let call = 0; call < querySpy.callCount; call++) {
-            const queryString = querySpy.getCall(call).returnValue.toKnexQuery().toString()
-            if (queryString.includes('set "status" = \'pending\'')) {
-              queries.push(queryString)
+        describe('and when removeTemporary files is set to `true`', () => {
+          before(async () => {
+            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(true)
+          })
+
+          it('deletes the file', async () => {
+            expect(deleteStub.calledTwice).to.equal(true)
+          })
+        })
+
+        describe('and when removeTemporary files is set to `false`', () => {
+          before(async () => {
+            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(false)
+          })
+
+          it("doesn't delete the file", async () => {
+            expect(deleteStub.called).to.equal(false)
+          })
+        })
+
+        describe("on the matching 'customer_files' records", () => {
+          it("sets their status to 'exported' after exporting", async () => {
+            const customerFiles = await CustomerFileModel.query()
+
+            expect(customerFiles[0].status).to.equal('exported')
+            expect(customerFiles[1].status).to.equal('exported')
+          })
+
+          it("sets their 'exportedDate' field after exporting", async () => {
+            const customerFiles = await CustomerFileModel.query()
+            const exportedDates = customerFiles.map(file => new Date(file.exportedAt))
+
+            for (const date of exportedDates) {
+              expect(date).to.be.a.date()
+              expect(compareDateToNow(date)).to.be.true()
             }
-          }
+          })
+        })
+      })
 
-          expect(queries.length).to.equal(2)
+      describe('and a customer file is only required for some regions', () => {
+        beforeEach(async () => {
+          await SendCustomerFileService.go(regime, ['A', 'B', 'W'], notifierFake)
         })
 
-        it("have a status of 'exported' after exporting", async () => {
+        it('generates all required customer files', async () => {
+          expect(generateStub.calledTwice).to.be.true()
+          expect(generateStub.getCall(0).args[0]).to.be.an.instanceOf(CustomerFileModel)
+          expect(generateStub.getCall(0).args[0].region).to.equal('A')
+          expect(generateStub.getCall(1).args[0]).to.be.an.instanceOf(CustomerFileModel)
+          expect(generateStub.getCall(1).args[0].region).to.equal('W')
+        })
+
+        it('sends all required customer files', async () => {
+          expect(sendStub.calledTwice).to.be.true()
+          expect(sendStub.getCall(0).args[0]).to.equal('nalac50001.dat')
+          expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
+          expect(sendStub.getCall(1).args[0]).to.equal('nalwc50001.dat')
+          expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
+        })
+
+        it('moves the customers to the exported customers table', async () => {
           const customerFiles = await CustomerFileModel.query()
 
-          expect(customerFiles[0].status).to.equal('exported')
-          expect(customerFiles[1].status).to.equal('exported')
+          const { args: firstArgs } = moveStub.getCall(0)
+          const { args: secondArgs } = moveStub.getCall(1)
+          expect(moveStub.calledTwice).to.be.true()
+          expect(firstArgs[0].id).to.equal(regime.id)
+          expect(firstArgs[1]).to.equal('A')
+          expect(firstArgs[2]).to.equal(customerFiles[0].id)
+          expect(secondArgs[0].id).to.equal(regime.id)
+          expect(secondArgs[1]).to.equal('W')
+          expect(secondArgs[2]).to.equal(customerFiles[1].id)
         })
 
-        it('have the date set after exporting', async () => {
-          const customerFiles = await CustomerFileModel.query()
-          const exportedDates = customerFiles.map(file => new Date(file.exportedAt))
+        describe('and when removeTemporary files is set to `true`', () => {
+          before(async () => {
+            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(true)
+          })
 
-          for (const date of exportedDates) {
-            expect(date).to.be.a.date()
-            expect(compareDateToNow(date)).to.be.true()
-          }
-        })
-      })
-    })
-
-    describe('and a customer file is only required for some regions', () => {
-      beforeEach(async () => {
-        await SendCustomerFileService.go(regime, ['A', 'B', 'W'], notifierFake)
-      })
-
-      it('generates all required customer files', async () => {
-        expect(generateStub.calledTwice).to.be.true()
-        expect(generateStub.getCall(0).args[0]).to.be.an.instanceOf(CustomerFileModel)
-        expect(generateStub.getCall(0).args[0].regimeId).to.equal(regime.id)
-        expect(generateStub.getCall(0).args[0].region).to.equal('A')
-        expect(generateStub.getCall(1).args[0]).to.be.an.instanceOf(CustomerFileModel)
-        expect(generateStub.getCall(1).args[0].regimeId).to.equal(regime.id)
-        expect(generateStub.getCall(1).args[0].region).to.equal('W')
-      })
-
-      it('sends all required customer files', async () => {
-        expect(sendStub.calledTwice).to.be.true()
-        expect(sendStub.getCall(0).args[0]).to.equal('nalac50001.dat')
-        expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
-        expect(sendStub.getCall(1).args[0]).to.equal('nalwc50001.dat')
-        expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
-      })
-
-      it('moves the customers to the exported customers table', async () => {
-        const customerFiles = await CustomerFileModel.query()
-
-        const { args: firstArgs } = moveStub.getCall(0)
-        const { args: secondArgs } = moveStub.getCall(1)
-        expect(moveStub.calledTwice).to.be.true()
-        expect(firstArgs[0].id).to.equal(regime.id)
-        expect(firstArgs[1]).to.equal('A')
-        expect(firstArgs[2]).to.equal(customerFiles[0].id)
-        expect(secondArgs[0].id).to.equal(regime.id)
-        expect(secondArgs[1]).to.equal('W')
-        expect(secondArgs[2]).to.equal(customerFiles[1].id)
-      })
-
-      describe('and removeTemporary files is set to `true`', () => {
-        before(async () => {
-          Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(true)
+          it('deletes the file', async () => {
+            expect(deleteStub.calledTwice).to.equal(true)
+          })
         })
 
-        it('deletes the file', async () => {
-          expect(deleteStub.calledTwice).to.equal(true)
-        })
-      })
+        describe('and when removeTemporary files is set to `false`', () => {
+          before(async () => {
+            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(false)
+          })
 
-      describe('and removeTemporary files is set to `false`', () => {
-        before(async () => {
-          Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(false)
-        })
-
-        it("doesn't delete the file", async () => {
-          expect(deleteStub.called).to.equal(false)
-        })
-      })
-
-      describe("and the 'customer_files' records it creates", () => {
-        it('have the correct details', async () => {
-          const customerFiles = await CustomerFileModel.query()
-
-          expect(customerFiles[0].regimeId).to.equal(regime.id)
-          expect(customerFiles[0].region).to.equal('A')
-          expect(customerFiles[0].fileReference).to.equal('nalac50001')
-
-          expect(customerFiles[1].regimeId).to.equal(regime.id)
-          expect(customerFiles[1].region).to.equal('W')
-          expect(customerFiles[1].fileReference).to.equal('nalwc50001')
+          it("doesn't delete the file", async () => {
+            expect(deleteStub.called).to.equal(false)
+          })
         })
 
-        it("have a status of 'pending' during file generation", async () => {
-          /**
-           * Iterate over each query call to get the underlying SQL query:
-           *   .getCall gives us the given call
-           *   The Objection function we spy on returns a query object so we get the returnValue
-           *   .toKnexQuery() gives us the underlying Knex query
-           *   .toString() gives us the SQL query as a string
-           *
-           * Finally, we push query strings to the queries array if they set the status to 'pending'.
-           */
-          const queries = []
-          for (let call = 0; call < querySpy.callCount; call++) {
-            const queryString = querySpy.getCall(call).returnValue.toKnexQuery().toString()
-            if (queryString.includes('set "status" = \'pending\'')) {
-              queries.push(queryString)
+        describe("on the matching 'customer_files' records", () => {
+          it("sets their status to 'exported' after exporting", async () => {
+            const customerFiles = await CustomerFileModel.query()
+
+            expect(customerFiles[0].status).to.equal('exported')
+            expect(customerFiles[1].status).to.equal('exported')
+          })
+
+          it("sets their 'exportedDate' field after exporting", async () => {
+            const customerFiles = await CustomerFileModel.query()
+            const exportedDates = customerFiles.map(file => new Date(file.exportedAt))
+
+            for (const date of exportedDates) {
+              expect(date).to.be.a.date()
+              expect(compareDateToNow(date)).to.be.true()
             }
-          }
+          })
+        })
+      })
 
-          expect(queries.length).to.equal(2)
+      describe("and a customer file isn't required for any region", () => {
+        beforeEach(async () => {
+          await SendCustomerFileService.go(regime, ['X', 'Y'], notifierFake)
         })
 
-        it("have a status of 'exported' after exporting", async () => {
-          const customerFiles = await CustomerFileModel.query()
-
-          expect(customerFiles[0].status).to.equal('exported')
-          expect(customerFiles[1].status).to.equal('exported')
+        it("doesn't try to generate a file", async () => {
+          expect(generateStub.notCalled).to.be.true()
         })
 
-        it('have the date set after exporting', async () => {
-          const customerFiles = await CustomerFileModel.query()
-          const exportedDates = customerFiles.map(file => new Date(file.exportedAt))
-
-          for (const date of exportedDates) {
-            expect(date).to.be.a.date()
-            expect(compareDateToNow(date)).to.be.true()
-          }
+        it("doesn't try to send a file", async () => {
+          expect(sendStub.notCalled).to.be.true()
         })
       })
     })
 
-    describe("and a customer file isn't required for any region", () => {
-      beforeEach(async () => {
-        await SendCustomerFileService.go(regime, ['X', 'Y'], notifierFake)
-      })
+    describe("and a 'stuck' customer change exists", () => {
+      describe('and a customer file is required', () => {
+        let stuckCustomerFile
 
-      it("doesn't try to generate a file", async () => {
-        expect(generateStub.notCalled).to.be.true()
-      })
+        beforeEach(async () => {
+          stuckCustomerFile = await CustomerFileModel.query().insert({
+            regimeId: regime.id,
+            region: 'A',
+            fileReference: 'STUCK'
+          })
 
-      it("doesn't try to send a file", async () => {
-        expect(sendStub.notCalled).to.be.true()
-      })
-    })
-  })
+          const stuckCustomer = await CreateCustomerDetailsService.go({
+            ...payload,
+            region: 'A',
+            customerReference: 'STUCK'
+          }, regime)
 
-  describe("When a 'stuck' customer change exists", () => {
-    describe('and a customer file is required', () => {
-      let stuckCustomerFile
+          await stuckCustomer.$query().patch({ customerFileId: stuckCustomerFile.id })
 
-      beforeEach(async () => {
-        stuckCustomerFile = await CustomerFileModel.query().insert({
-          regimeId: regime.id,
-          region: 'A',
-          fileReference: 'STUCK'
+          await SendCustomerFileService.go(regime, ['A'], notifierFake)
         })
 
-        const stuckCustomer = await CreateCustomerDetailsService.go({
-          ...payload,
-          region: 'A',
-          customerReference: 'STUCK'
-        }, regime)
+        it("doesn't change its customer file id", async () => {
+          const result = await CustomerModel.query().where('customerReference', 'STUCK').first()
 
-        await stuckCustomer.$query().patch({ customerFileId: stuckCustomerFile.id })
-
-        await SendCustomerFileService.go(regime, ['A'], notifierFake)
-      })
-
-      it("doesn't change its customer file id", async () => {
-        const result = await CustomerModel.query().where('customerReference', 'STUCK').first()
-
-        expect(result.customerFileId).to.equal(stuckCustomerFile.id)
+          expect(result.customerFileId).to.equal(stuckCustomerFile.id)
+        })
       })
     })
   })
 
   describe('When an error occurs', () => {
-    it('throws an error', async () => {
-      // We stub within the test and not in a before() to ensure it happens after the beforeEach() that first defines
-      // the stub
-      Sinon.restore()
-      Sinon
-        .stub(GenerateCustomerFileService, 'go')
-        .throws()
+    beforeEach(async () => {
+      await CreateCustomerDetailsService.go({ ...payload, region: 'A', customerReference: 'AA12345678' }, regime)
 
-      await SendCustomerFileService.go(regime, ['A'], notifierFake)
+      Sinon.stub(NextCustomerFileReferenceService, 'go').callsFake((_, region) => `nal${region.toLowerCase()}c50001`)
+    })
 
-      expect(notifierFake.omfg.callCount).to.equal(1)
-      expect(notifierFake.omfg.firstArg).to.equal(`Error sending customer file for ${regime.slug} A`)
+    describe('preparing the customer file and changes', () => {
+      it('throws an error', async () => {
+        Sinon.stub(PrepareCustomerFileService, 'go').throws()
+
+        await SendCustomerFileService.go(regime, ['A'], notifierFake)
+
+        expect(notifierFake.omfg.callCount).to.equal(1)
+        expect(notifierFake.omfg.firstArg).to.equal(`Error preparing customer file for ${regime.slug} A`)
+      })
+    })
+
+    describe('during the generate file and send to S3 process', () => {
+      it('throws an error', async () => {
+        Sinon.stub(GenerateCustomerFileService, 'go').throws()
+
+        await SendCustomerFileService.go(regime, ['A'], notifierFake)
+
+        expect(notifierFake.omfg.callCount).to.equal(1)
+        expect(notifierFake.omfg.firstArg).to.equal(`Error sending customer file for ${regime.slug} A`)
+      })
     })
   })
 
