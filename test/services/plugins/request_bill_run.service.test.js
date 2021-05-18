@@ -21,6 +21,10 @@ describe('Request bill run service', () => {
     return `/test/wrls/bill-runs/${id}`
   }
 
+  const adminPath = id => {
+    return `/admin/wrls/bill-runs/${id}`
+  }
+
   beforeEach(async () => {
     await DatabaseHelper.clean()
   })
@@ -43,6 +47,24 @@ describe('Request bill run service', () => {
           const result = await RequestBillRunService.go(billRunPath(billRun.id), 'post', regime, billRun.id)
 
           expect(result.id).to.equal(billRun.id)
+        })
+
+        describe('and the path contains `/admin/`', () => {
+          it('returns the matching bill run', async () => {
+            const result = await RequestBillRunService.go(adminPath(billRun.id), 'post', regime, billRun.id)
+
+            expect(result.id).to.equal(billRun.id)
+          })
+        })
+      })
+
+      describe('that cannot be edited', () => {
+        describe('but the path contains `/admin/`', () => {
+          it('returns the matching bill run', async () => {
+            const result = await RequestBillRunService.go(adminPath(billRun.id), 'post', regime, billRun.id)
+
+            expect(result.id).to.equal(billRun.id)
+          })
         })
       })
     })
@@ -109,6 +131,14 @@ describe('Request bill run service', () => {
         const result = await RequestBillRunService.go('/test/wrls/invoice-runs/12345', 'get', regime, '12345')
 
         expect(result).to.be.null()
+      })
+
+      describe('and the path contains `/admin/`', () => {
+        it("returns 'null'", async () => {
+          const result = await RequestBillRunService.go('/admin/wrls/invoice-runs/12345', 'get', regime, '12345')
+
+          expect(result).to.be.null()
+        })
       })
     })
 
