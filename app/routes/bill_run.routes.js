@@ -1,6 +1,7 @@
 'use strict'
 
 const {
+  AdminBillRunsController,
   NotSupportedController,
   PresrocBillRunsController
 } = require('../controllers')
@@ -45,6 +46,11 @@ const routes = [
     method: 'DELETE',
     path: '/v2/{regimeId}/bill-runs/{billRunId}',
     handler: PresrocBillRunsController.delete
+  },
+  {
+    method: 'PATCH',
+    path: '/admin/{regimeId}/bill-runs/{billRunId}/send',
+    handler: AdminBillRunsController.send
   }
 ]
 
