@@ -13,7 +13,11 @@ exports.up = async function (knex) {
       table.string('client_id').notNullable()
       table.string('name').notNullable()
       table.string('status').notNullable().defaultTo('active')
-      table.boolean('admin').defaultTo(false)
+      table.boolean('admin').notNullable().defaultTo(false)
+
+      // Add unique constraints
+      table.unique('client_id')
+      table.unique('name')
 
       // Automatic timestamps
       table.timestamps(false, true)
