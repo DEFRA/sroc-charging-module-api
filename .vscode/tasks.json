@@ -95,24 +95,9 @@
     },
     {
       "label": "🗄️ DB (CMA)",
-      "detail": "Will clean the DB then rollback all changes and re-run migrations and seeds for the main db",
+      "detail": "Will setup (or reset) both the main and test db's",
       "type": "shell",
-      "command": "docker-compose exec app npm run reset-db",
-      "group": "test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true
-      }
-    },
-    {
-      "label": "🗄️✅ DB TEST (CMA)",
-      "detail": "Will clean the DB then rollback all changes and re-run migrations for the test db",
-      "type": "shell",
-      "command": "docker-compose exec app /bin/sh -c 'npm run create-test-db && npm run reset-test-db'",
+      "command": "docker-compose exec app /bin/sh -c 'npm run reset-db && npm run create-test-db && npm run reset-test-db'",
       "group": "test",
       "presentation": {
         "echo": true,
