@@ -69,7 +69,7 @@ describe('Presroc Bill Runs controller', () => {
     }
 
     beforeEach(async () => {
-      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'pending')
     })
 
     describe('When the request is valid', () => {
