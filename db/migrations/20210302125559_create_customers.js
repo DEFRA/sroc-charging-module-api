@@ -21,6 +21,10 @@ exports.up = async function (knex) {
       table.string('address_line_5')
       table.string('address_line_6')
       table.string('postcode')
+      table.uuid('customer_file_id').references('customer_files.id')
+
+      // Add unique constraint
+      table.unique(['customer_reference'])
 
       // Automatic timestamps
       table.timestamps(false, true)
