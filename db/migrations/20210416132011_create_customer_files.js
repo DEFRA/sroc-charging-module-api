@@ -13,6 +13,8 @@ exports.up = async function (knex) {
       table.uuid('regime_id').notNullable()
       table.string('region').notNullable()
       table.string('file_reference').notNullable()
+      table.string('status').notNullable().defaultTo('initialised')
+      table.dateTime('exported_at')
 
       // Automatic timestamps
       table.timestamps(false, true)
