@@ -52,17 +52,13 @@ With the palette open search for **Run test task** and once highlighted select i
 
 You should see a new terminal open up and [Docker Compose](https://docs.docker.com/compose/) begin to start building the images. Once that is done it will switch to running the API in docker.
 
-### Prep the database
+### Prep the databases
 
-The database is automatically created but you still need to run migrations and seed it. Again using the command palette and the **Run test task** option, find and select **🗄️ DB (CMA)**.
+The main database is automatically created but the 'test' database is not. Plus both need the [DB migrations](/db/migrations) to be run against them, and the main database needs to be [seeded](/db/seeds).
 
-The API should now be ready to use.
+The good news is all this is automated. Again, using the command palette and the **Run test task** option find and select **🗄️ DB (CMA)**. It will setup both databases and leave the API ready for use.
 
-### Prep for testing
-
-Before we can run any tests the 'test' database needs to be created and migrations run against it. Using the command palette and the **Run test task** option, find and select **🗄️✅ DB TEST (CMA)**.
-
-This will both create the test database and run migrations against it. It is also safe to run repeatedly should you need to rebuild it.
+> You can also use this same command to reset the databases at anytime
 
 ### Non-vscode users
 
