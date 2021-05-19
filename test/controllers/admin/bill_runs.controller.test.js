@@ -22,9 +22,9 @@ const {
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { SendTransactionFileService } = require('../../../app/services')
+const { AdminSendTransactionFileService } = require('../../../app/services')
 
-describe('Presroc Bill Runs controller', () => {
+describe('Admin Bill Runs controller', () => {
   const clientID = '1234546789'
   let server
   let authToken
@@ -48,7 +48,7 @@ describe('Presroc Bill Runs controller', () => {
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
 
-    sendStub = Sinon.stub(SendTransactionFileService, 'go')
+    sendStub = Sinon.stub(AdminSendTransactionFileService, 'go')
   })
 
   after(async () => {
@@ -73,10 +73,10 @@ describe('Presroc Bill Runs controller', () => {
     })
 
     describe('When the request is valid', () => {
-      it('returns success status 204', async () => {
+      it('returns success status 201', async () => {
         const response = await server.inject(options(authToken, billRun.id))
 
-        expect(response.statusCode).to.equal(204)
+        expect(response.statusCode).to.equal(201)
       })
 
       it('calls SendTransactionFileService with the regime and bill run', async () => {
