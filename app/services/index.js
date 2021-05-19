@@ -1,5 +1,6 @@
 'use strict'
 
+const AdminSendTransactionFileService = require('./admin_send_transaction_file.service')
 const ApproveBillRunService = require('./approve_bill_run.service')
 const AuthorisationService = require('./plugins/authorisation.service')
 const BaseNextFileReferenceService = require('./base_next_file_reference.service')
@@ -61,6 +62,7 @@ const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 const ViewBillRunService = require('./view_bill_run.service')
 
 module.exports = {
+  AdminSendTransactionFileService,
   ApproveBillRunService,
   AuthorisationService,
   BaseNextFileReferenceService,
