@@ -76,7 +76,7 @@ describe('Admin Bill Runs controller', () => {
       it('returns success status 201', async () => {
         const response = await server.inject(options(authToken, billRun.id))
 
-        expect(response.statusCode).to.equal(201)
+        expect(response.statusCode).to.equal(204)
       })
 
       it('calls SendTransactionFileService with the regime and bill run', async () => {
