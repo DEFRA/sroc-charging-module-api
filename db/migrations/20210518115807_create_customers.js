@@ -1,6 +1,6 @@
 'use strict'
 
-const tableName = 'sequence_counters'
+const tableName = 'customers'
 
 exports.up = async function (knex) {
   await knex
@@ -12,10 +12,19 @@ exports.up = async function (knex) {
       // Data
       table.uuid('regime_id').notNullable()
       table.string('region').notNullable()
-      table.integer('bill_run_number').notNullable().defaultTo(10000)
+      table.string('customer_reference').notNullable()
+      table.string('customer_name').notNullable()
+      table.string('address_line_1').notNullable()
+      table.string('address_line_2')
+      table.string('address_line_3')
+      table.string('address_line_4')
+      table.string('address_line_5')
+      table.string('address_line_6')
+      table.string('postcode')
+      table.uuid('customer_file_id').references('customer_files.id')
 
-      // Set unique constraint
-      table.unique(['regime_id', 'region'])
+      // Add unique constraint
+      table.unique(['customer_reference'])
 
       // Automatic timestamps
       table.timestamps(false, true)

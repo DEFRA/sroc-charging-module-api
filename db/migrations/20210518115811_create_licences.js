@@ -10,22 +10,19 @@ exports.up = async function (knex) {
       table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'))
 
       // Data
-      table.uuid('invoice_id').notNullable()
+      table.uuid('invoice_id').notNullable().references('invoices.id').onDelete('CASCADE')
       table.uuid('bill_run_id').notNullable()
       table.string('licence_number').notNullable()
+      table.integer('credit_line_count').notNullable().defaultTo(0)
+      table.bigInteger('credit_line_value').notNullable().defaultTo(0)
+      table.integer('debit_line_count').notNullable().defaultTo(0)
+      table.bigInteger('debit_line_value').notNullable().defaultTo(0)
+      table.integer('zero_line_count').notNullable().defaultTo(0)
+      table.integer('subject_to_minimum_charge_count').notNullable().defaultTo(0)
+      table.bigInteger('subject_to_minimum_charge_credit_value').notNullable().defaultTo(0)
+      table.bigInteger('subject_to_minimum_charge_debit_value').notNullable().defaultTo(0)
 
-      table.integer('credit_count').notNullable().defaultTo(0)
-      table.bigInteger('credit_value').notNullable().defaultTo(0)
-
-      table.integer('debit_count').notNullable().defaultTo(0)
-      table.bigInteger('debit_value').notNullable().defaultTo(0)
-
-      table.integer('zero_count').notNullable().defaultTo(0)
-
-      table.integer('new_licence_count').notNullable().defaultTo(0)
-
-      // There can only be 1 customer summary per invoice for a licence]
-      // (note that each invoice is unique to a customer and financial year)
+      // Add unique constraints
       table.unique(['invoice_id', 'licence_number'])
 
       // Automatic timestamps

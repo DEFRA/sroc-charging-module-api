@@ -1,6 +1,6 @@
 'use strict'
 
-const tableName = 'bill_runs'
+const tableName = 'authorised_systems'
 
 exports.up = async function (knex) {
   await knex
@@ -10,10 +10,14 @@ exports.up = async function (knex) {
       table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'))
 
       // Data
-      table.uuid('regime_id').notNullable()
-      table.string('region').notNullable()
-      table.string('status').notNullable()
-      table.uuid('created_by').notNullable()
+      table.string('client_id').notNullable()
+      table.string('name').notNullable()
+      table.string('status').notNullable().defaultTo('active')
+      table.boolean('admin').notNullable().defaultTo(false)
+
+      // Add unique constraints
+      table.unique('client_id')
+      table.unique('name')
 
       // Automatic timestamps
       table.timestamps(false, true)
@@ -28,7 +32,7 @@ exports.up = async function (knex) {
   `)
 }
 
-exports.down = async function (knex) {
+exports.down = function (knex) {
   return knex
     .schema
     .dropTableIfExists(tableName)

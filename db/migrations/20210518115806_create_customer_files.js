@@ -1,6 +1,6 @@
 'use strict'
 
-const tableName = 'transactions'
+const tableName = 'customer_files'
 
 exports.up = async function (knex) {
   await knex
@@ -10,9 +10,11 @@ exports.up = async function (knex) {
       table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'))
 
       // Data
-      table.uuid('bill_run_id').notNullable()
-      table.integer('charge_value').notNullable()
-      table.boolean('charge_credit').notNullable()
+      table.uuid('regime_id').notNullable()
+      table.string('region').notNullable()
+      table.string('file_reference').notNullable()
+      table.string('status').notNullable().defaultTo('initialised')
+      table.dateTime('exported_at')
 
       // Automatic timestamps
       table.timestamps(false, true)
