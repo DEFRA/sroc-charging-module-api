@@ -13,14 +13,14 @@ exports.up = async function (knex) {
       table.uuid('regime_id').notNullable()
       table.string('region').notNullable()
       table.string('customer_reference').notNullable()
-      table.string('customer_name').notNullable()
+      table.string('customer_name', 360).notNullable()
       table.string('address_line_1').notNullable()
       table.string('address_line_2')
       table.string('address_line_3')
       table.string('address_line_4')
       table.string('address_line_5')
       table.string('address_line_6')
-      table.string('postcode')
+      table.string('postcode').notNullable()
       table.uuid('customer_file_id').references('customer_files.id')
 
       // Add unique constraint

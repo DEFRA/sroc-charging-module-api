@@ -71,7 +71,15 @@ describe('Create Customer Details service', () => {
         const err = await expect(CreateCustomerDetailsService.go({ INVALID_PAYLOAD: 'INVALID' }, regime)).to.reject()
 
         expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal('"region" is required. "customerReference" is required. "customerName" is required. "addressLine1" is required')
+        const requiredMessages = err.output.payload.message.split('. ')
+
+        expect(requiredMessages).to.only.contain([
+          '"region" is required',
+          '"customerReference" is required',
+          '"customerName" is required',
+          '"addressLine1" is required',
+          '"postcode" is required'
+        ])
       })
     })
   })
