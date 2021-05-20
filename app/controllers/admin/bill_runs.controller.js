@@ -1,11 +1,10 @@
 'use strict'
 
-const { SendTransactionFileService } = require('../../services')
+const { AdminSendTransactionFileService } = require('../../services')
 
 class AdminBillRunsController {
   static async send (req, h) {
-    // Initiate generate/send process in the background
-    SendTransactionFileService.go(req.app.regime, req.app.billRun, req.app.notifier)
+    await AdminSendTransactionFileService.go(req.app.regime, req.app.billRun)
 
     return h.response().code(204)
   }

@@ -26,7 +26,7 @@ class AdminSendTransactionFileService {
   static async go (regime, billRun) {
     this._validate(billRun)
 
-    await SendTransactionFileService.go(regime, billRun, BoomNotifier)
+    await SendTransactionFileService.go(regime, billRun, new BoomNotifier())
   }
 
   static _validate (billRun) {
