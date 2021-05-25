@@ -1,5 +1,6 @@
 'use strict'
 
+const AdminRouterService = require('./plugins/admin_router.service')
 const AdminSendTransactionFileService = require('./admin_send_transaction_file.service')
 const ApproveBillRunService = require('./approve_bill_run.service')
 const AuthorisationService = require('./plugins/authorisation.service')
@@ -62,6 +63,7 @@ const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 const ViewBillRunService = require('./view_bill_run.service')
 
 module.exports = {
+  AdminRouterService,
   AdminSendTransactionFileService,
   ApproveBillRunService,
   AuthorisationService,
