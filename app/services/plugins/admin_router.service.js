@@ -6,21 +6,26 @@
 
 class AdminRouterService {
   static go (route, environment) {
+    let options = {}
+
     if (this._rootPath(route.path)) {
-      route.options = this._noAuthOptions()
+      options = this._noAuthOptions()
     } else if (this._protectRoute(route, environment)) {
-      route.options = this._authOptions()
+      options = this._authOptions()
     }
 
-    return route
+    return {
+      ...route,
+      ...options
+    }
   }
 
   static _authOptions () {
-    return { auth: { scope: ['admin'] } }
+    return { options: { auth: { scope: ['admin'] } } }
   }
 
   static _noAuthOptions () {
-    return { auth: false }
+    return { options: { auth: false } }
   }
 
   static _protectRoute (route, environment) {
