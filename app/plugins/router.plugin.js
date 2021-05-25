@@ -8,7 +8,7 @@
  * things like filter what actually gets registered. A working example might be an endpoints used to support testing and
  * debugging which we don't want registered in the actual production environment.
  *
- * @module router
+ * @module RouterPlugin
  */
 
 const {
@@ -43,11 +43,11 @@ const routes = [
   ...CalculateChargeRoutes
 ]
 
-const router = {
+const RouterPlugin = {
   name: 'router',
   register: (server, _options) => {
     server.route(routes)
   }
 }
 
-module.exports = router
+module.exports = RouterPlugin
