@@ -3,8 +3,9 @@
 // Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
+const Sinon = require('sinon')
 
-const { describe, it } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
@@ -30,11 +31,19 @@ describe('Filter routes service', () => {
   })
 
   describe('when the environment is production', () => {
+    beforeEach(() => {
+      Sinon.stub(FilterRoutesService, '_pathsToBeFiltered').returns(['/v2/bill-runs/unfinished'])
+    })
+
+    afterEach(() => {
+      Sinon.restore()
+    })
+
     it('returns the routes filtered', () => {
       const filteredRoutes = GeneralHelper.cloneObject(routes)
       filteredRoutes.pop()
 
-      const result = FilterRoutesService.go(routes, 'dev')
+      const result = FilterRoutesService.go(routes, 'prd')
 
       expect(result).to.equal(filteredRoutes)
     })
