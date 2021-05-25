@@ -10,7 +10,7 @@ const { expect } = Code
 // Thing under test
 const { AdminRouterService } = require('../../../app/services')
 
-describe.only('Admin router service', () => {
+describe('Admin router service', () => {
   const optionsWithAuth = { auth: { scope: ['admin'] } }
   const baseRoute = {
     method: 'GET',
@@ -55,14 +55,6 @@ describe.only('Admin router service', () => {
         expect(result.options).to.not.exist()
       })
     })
-
-    describe("and the service is passed a 'root' route", () => {
-      it("does not add the 'options' property", () => {
-        const result = AdminRouterService.go(baseRoute, 'dev')
-
-        expect(result.options).to.not.exist()
-      })
-    })
   })
 
   describe('when the environment is production', () => {
@@ -99,14 +91,6 @@ describe.only('Admin router service', () => {
           path: '/v2/bill-runs'
         }
         const result = AdminRouterService.go(standardRoute, 'prd')
-
-        expect(result.options).to.not.exist()
-      })
-    })
-
-    describe("and the service is passed a 'root' route", () => {
-      it("does not add the 'options' property", () => {
-        const result = AdminRouterService.go(baseRoute, 'prd')
 
         expect(result.options).to.not.exist()
       })
