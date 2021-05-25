@@ -49,6 +49,8 @@ const routes = [
 const RouterPlugin = {
   name: 'router',
   register: (server, _options) => {
+    // Filter our any routes which should not be registered. Typically, these will be unfinished endpoints we filter
+    // out when running in production
     const filteredRoutes = FilterRoutesService.go(routes, AuthenticationConfig.environment)
 
     server.route(filteredRoutes)
