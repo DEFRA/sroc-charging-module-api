@@ -11,6 +11,9 @@
  * @module router
  */
 
+const { FilterRoutesService } = require('../services')
+const { AuthenticationConfig } = require('../../config')
+
 const {
   AirbrakeRoutes,
   AuthorisedSystemRoutes,
@@ -46,7 +49,9 @@ const routes = [
 const RouterPlugin = {
   name: 'router',
   register: (server, _options) => {
-    server.route(routes)
+    const filteredRoutes = FilterRoutesService.go(routes, AuthenticationConfig.environment)
+
+    server.route(filteredRoutes)
   }
 }
 
