@@ -49,6 +49,7 @@ const routes = [
 const RouterPlugin = {
   name: 'router',
   register: (server, _options) => {
+    // Use the service to determine which routes need the `options: { auth: ... }` property added to them
     const authCheckedRoutes = routes.map(route => RouteAuthOptionsService.go(route, AuthenticationConfig.environment))
 
     server.route(authCheckedRoutes)
