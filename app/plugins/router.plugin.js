@@ -43,11 +43,11 @@ const routes = [
   ...CalculateChargeRoutes
 ]
 
-const router = {
+const RouterPlugin = {
   name: 'router',
   register: (server, _options) => {
     server.route(routes)
   }
 }
 
-module.exports = router
+module.exports = RouterPlugin
