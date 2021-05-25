@@ -6,42 +6,22 @@ const routes = [
   {
     method: 'GET',
     path: '/admin/authorised-systems',
-    handler: AuthorisedSystemsController.index,
-    options: {
-      auth: {
-        scope: ['admin']
-      }
-    }
+    handler: AuthorisedSystemsController.index
   },
   {
     method: 'GET',
     path: '/admin/authorised-systems/{id}',
-    handler: AuthorisedSystemsController.show,
-    options: {
-      auth: {
-        scope: ['admin']
-      }
-    }
+    handler: AuthorisedSystemsController.show
   },
   {
     method: 'POST',
     path: '/admin/authorised-systems',
-    handler: AuthorisedSystemsController.create,
-    options: {
-      auth: {
-        scope: ['admin']
-      }
-    }
+    handler: AuthorisedSystemsController.create
   },
   {
     method: 'PATCH',
     path: '/admin/authorised-systems/{id}',
-    handler: AuthorisedSystemsController.update,
-    options: {
-      auth: {
-        scope: ['admin']
-      }
-    }
+    handler: AuthorisedSystemsController.update
   }
 ]
 

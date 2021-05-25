@@ -6,22 +6,12 @@ const routes = [
   {
     method: 'PATCH',
     path: '/admin/{regimeId}/customers',
-    handler: CustomersController.send,
-    options: {
-      auth: {
-        scope: ['admin']
-      }
-    }
+    handler: CustomersController.send
   },
   {
     method: 'GET',
     path: '/admin/{regimeId}/customers',
-    handler: CustomersController.show,
-    options: {
-      auth: {
-        scope: ['admin']
-      }
-    }
+    handler: CustomersController.show
   }
 ]
 

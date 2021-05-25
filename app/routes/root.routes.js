@@ -6,18 +6,12 @@ const routes = [
   {
     method: 'GET',
     path: '/',
-    handler: RootController.index,
-    options: {
-      auth: false
-    }
+    handler: RootController.index
   },
   {
     method: 'GET',
     path: '/status',
-    handler: RootController.index,
-    options: {
-      auth: false
-    }
+    handler: RootController.index
   }
 ]
 
