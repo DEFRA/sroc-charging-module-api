@@ -13,6 +13,7 @@ const { AdminRouterService } = require('../../../app/services')
 
 describe('Admin router service', () => {
   const optionsWithAuth = { auth: { scope: ['admin'] } }
+  const optionsWithNoAuth = { auth: false }
   const baseRoute = {
     method: 'GET',
     path: '/',
@@ -54,6 +55,19 @@ describe('Admin router service', () => {
         const result = AdminRouterService.go(standardRoute, 'dev')
 
         expect(result.options).to.not.exist()
+      })
+    })
+
+    describe("and the service is passed a 'root' route", () => {
+      it("adds the no auth 'options' property", () => {
+        const rootRoute = {
+          ...baseRoute,
+          path: '/status'
+        }
+        const result = AdminRouterService.go(rootRoute, 'dev')
+
+        expect(result.options).to.exist()
+        expect(result.options).to.equal(optionsWithNoAuth)
       })
     })
   })
@@ -102,6 +116,19 @@ describe('Admin router service', () => {
         const result = AdminRouterService.go(standardRoute, 'prd')
 
         expect(result.options).to.not.exist()
+      })
+    })
+
+    describe("and the service is passed a 'root' route", () => {
+      it("adds the no auth 'options' property", () => {
+        const rootRoute = {
+          ...baseRoute,
+          path: '/status'
+        }
+        const result = AdminRouterService.go(rootRoute, 'prd')
+
+        expect(result.options).to.exist()
+        expect(result.options).to.equal(optionsWithNoAuth)
       })
     })
   })

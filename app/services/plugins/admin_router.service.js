@@ -6,7 +6,9 @@
 
 class AdminRouterService {
   static go (route, environment) {
-    if (this._protectRoute(route, environment)) {
+    if (this._rootPath(route.path)) {
+      route.options = this._noAuthOptions()
+    } else if (this._protectRoute(route, environment)) {
       route.options = this._authOptions()
     }
 
@@ -15,6 +17,10 @@ class AdminRouterService {
 
   static _authOptions () {
     return { auth: { scope: ['admin'] } }
+  }
+
+  static _noAuthOptions () {
+    return { auth: false }
   }
 
   static _protectRoute (route, environment) {
@@ -26,6 +32,10 @@ class AdminRouterService {
     }
 
     return false
+  }
+
+  static _rootPath (path) {
+    return ['/', '/status'].includes(path)
   }
 
   static _adminPath (path) {
