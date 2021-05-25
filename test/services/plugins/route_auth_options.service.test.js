@@ -9,9 +9,9 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { AdminRouterService } = require('../../../app/services')
+const { RouteAuthOptionsService } = require('../../../app/services')
 
-describe('Admin router service', () => {
+describe('Route auth options service', () => {
   const optionsWithAuth = { auth: { scope: ['admin'] } }
   const optionsWithNoAuth = { auth: false }
   const baseRoute = {
@@ -27,7 +27,7 @@ describe('Admin router service', () => {
           ...baseRoute,
           path: '/admin/test'
         }
-        const result = AdminRouterService.go(adminRoute, 'dev')
+        const result = RouteAuthOptionsService.go(adminRoute, 'dev')
 
         expect(result.options).to.exist()
         expect(result.options).to.equal(optionsWithAuth)
@@ -40,7 +40,7 @@ describe('Admin router service', () => {
           ...baseRoute,
           path: '/v2/bill-runs/protected'
         }
-        const result = AdminRouterService.go(protectedRoute, 'dev')
+        const result = RouteAuthOptionsService.go(protectedRoute, 'dev')
 
         expect(result.options).to.not.exist()
       })
@@ -52,7 +52,7 @@ describe('Admin router service', () => {
           ...baseRoute,
           path: '/v2/bill-runs'
         }
-        const result = AdminRouterService.go(standardRoute, 'dev')
+        const result = RouteAuthOptionsService.go(standardRoute, 'dev')
 
         expect(result.options).to.not.exist()
       })
@@ -64,7 +64,7 @@ describe('Admin router service', () => {
           ...baseRoute,
           path: '/status'
         }
-        const result = AdminRouterService.go(rootRoute, 'dev')
+        const result = RouteAuthOptionsService.go(rootRoute, 'dev')
 
         expect(result.options).to.exist()
         expect(result.options).to.equal(optionsWithNoAuth)
@@ -79,7 +79,7 @@ describe('Admin router service', () => {
           ...baseRoute,
           path: '/admin/test'
         }
-        const result = AdminRouterService.go(adminRoute, 'prd')
+        const result = RouteAuthOptionsService.go(adminRoute, 'prd')
 
         expect(result.options).to.exist()
         expect(result.options).to.equal(optionsWithAuth)
@@ -88,7 +88,7 @@ describe('Admin router service', () => {
 
     describe("and the service is passed a 'protected' route", () => {
       beforeEach(() => {
-        Sinon.stub(AdminRouterService, '_protectedPath').returns(true)
+        Sinon.stub(RouteAuthOptionsService, '_protectedPath').returns(true)
       })
 
       afterEach(() => {
@@ -100,7 +100,7 @@ describe('Admin router service', () => {
           ...baseRoute,
           path: '/v2/bill-runs/protected'
         }
-        const result = AdminRouterService.go(protectedRoute, 'prd')
+        const result = RouteAuthOptionsService.go(protectedRoute, 'prd')
 
         expect(result.options).to.exist()
         expect(result.options).to.equal(optionsWithAuth)
@@ -113,7 +113,7 @@ describe('Admin router service', () => {
           ...baseRoute,
           path: '/v2/bill-runs'
         }
-        const result = AdminRouterService.go(standardRoute, 'prd')
+        const result = RouteAuthOptionsService.go(standardRoute, 'prd')
 
         expect(result.options).to.not.exist()
       })
@@ -125,7 +125,7 @@ describe('Admin router service', () => {
           ...baseRoute,
           path: '/status'
         }
-        const result = AdminRouterService.go(rootRoute, 'prd')
+        const result = RouteAuthOptionsService.go(rootRoute, 'prd')
 
         expect(result.options).to.exist()
         expect(result.options).to.equal(optionsWithNoAuth)

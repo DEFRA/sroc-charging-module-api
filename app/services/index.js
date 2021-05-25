@@ -1,6 +1,5 @@
 'use strict'
 
-const AdminRouterService = require('./plugins/admin_router.service')
 const AdminSendTransactionFileService = require('./admin_send_transaction_file.service')
 const ApproveBillRunService = require('./approve_bill_run.service')
 const AuthorisationService = require('./plugins/authorisation.service')
@@ -43,6 +42,7 @@ const ObjectCleaningService = require('./plugins/object_cleaning.service')
 const PrepareCustomerFileService = require('./prepare_customer_file.service')
 const RequestBillRunService = require('./plugins/request_bill_run.service')
 const RequestInvoiceService = require('./plugins/request_invoice.service')
+const RouteAuthOptionsService = require('./plugins/route_auth_options.service')
 const RulesService = require('./rules.service')
 const SendBillRunReferenceService = require('./send_bill_run_reference.service')
 const SendCustomerFileService = require('./send_customer_file.service')
@@ -63,7 +63,6 @@ const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 const ViewBillRunService = require('./view_bill_run.service')
 
 module.exports = {
-  AdminRouterService,
   AdminSendTransactionFileService,
   ApproveBillRunService,
   AuthorisationService,
@@ -106,6 +105,7 @@ module.exports = {
   PrepareCustomerFileService,
   RequestBillRunService,
   RequestInvoiceService,
+  RouteAuthOptionsService,
   RulesService,
   SendBillRunReferenceService,
   SendCustomerFileService,

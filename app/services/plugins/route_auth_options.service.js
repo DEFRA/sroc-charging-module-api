@@ -1,10 +1,10 @@
 'use strict'
 
 /**
- * @module AdminRouterService
+ * @module RouteAuthOptionsService
  */
 
-class AdminRouterService {
+class RouteAuthOptionsService {
   static go (route, environment) {
     let options = {}
 
@@ -56,4 +56,4 @@ class AdminRouterService {
   }
 }
 
-module.exports = AdminRouterService
+module.exports = RouteAuthOptionsService
