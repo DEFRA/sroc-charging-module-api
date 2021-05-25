@@ -3,8 +3,9 @@
 // Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
+const Sinon = require('sinon')
 
-const { describe, it } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
@@ -72,6 +73,14 @@ describe('Admin router service', () => {
     })
 
     describe("and the service is passed a 'protected' route", () => {
+      beforeEach(() => {
+        Sinon.stub(AdminRouterService, '_protectedPath').returns(true)
+      })
+
+      afterEach(() => {
+        Sinon.restore()
+      })
+
       it("adds the 'options' property with the 'auth' scope set", () => {
         const protectedRoute = {
           ...baseRoute,
