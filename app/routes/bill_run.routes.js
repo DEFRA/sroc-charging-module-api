@@ -50,7 +50,12 @@ const routes = [
   {
     method: 'PATCH',
     path: '/admin/{regimeId}/bill-runs/{billRunId}/send',
-    handler: AdminBillRunsController.send
+    handler: AdminBillRunsController.send,
+    options: {
+      auth: {
+        scope: ['admin']
+      }
+    }
   }
 ]
 
