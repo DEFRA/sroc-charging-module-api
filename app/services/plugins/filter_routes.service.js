@@ -16,6 +16,10 @@ class FilterRoutesService {
    * running in production. We also include pre-production in our protected environments so we can test and ensure
    * an endpoint does not get registered as part of our release testing and sign-off.
    *
+   * We identify routes to filter because they have a custom `excludeFromProd` property which has been added to the
+   * {@link https://hapi.dev/api/?v=20.1.3#-routeoptionsapp|route options app property} the Hapi provided place apps
+   * can store route configuration
+   *
    * This service is used by the `RouterPlugin` to check which routes need filtering before it then registers them with
    * the Hapi server instance.
    *
@@ -38,21 +42,7 @@ class FilterRoutesService {
   }
 
   static _filteredRoutes (routes) {
-    return routes.filter(route => !this._pathsToBeFiltered().includes(route.path))
-  }
-
-  /**
-   * Returns an array of strings, each of which is a path, for example,
-   * `'/v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill'` which should be filtered out when registering
-   * routes in a production environment.
-   *
-   * It is expected we'll generally add to this when we add a new endpoint, and then remove the path when the endpoint
-   * is signed off and ready for use.
-   *
-   * @returns an array of 'paths' to be used when filtering the routes
-   */
-  static _pathsToBeFiltered () {
-    return []
+    return routes.filter(route => !route?.options?.app?.excludeFromProd)
   }
 }
 

@@ -3,9 +3,8 @@
 // Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
-const Sinon = require('sinon')
 
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
@@ -19,7 +18,10 @@ describe('Filter routes service', () => {
     { path: '/' },
     { path: '/admin' },
     { path: '/v2/bill-runs' },
-    { path: '/v2/bill-runs/unfinished' }
+    {
+      path: '/v2/bill-runs/unfinished',
+      options: { app: { excludeFromProd: true } }
+    }
   ]
 
   describe('when the environment is non-production', () => {
@@ -31,14 +33,6 @@ describe('Filter routes service', () => {
   })
 
   describe('when the environment is production', () => {
-    beforeEach(() => {
-      Sinon.stub(FilterRoutesService, '_pathsToBeFiltered').returns(['/v2/bill-runs/unfinished'])
-    })
-
-    afterEach(() => {
-      Sinon.restore()
-    })
-
     it('returns the routes filtered', () => {
       const filteredRoutes = GeneralHelper.cloneObject(routes)
       filteredRoutes.pop()
