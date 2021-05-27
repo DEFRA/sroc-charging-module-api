@@ -27,7 +27,7 @@ describe('Request licence service', () => {
   let invoice
   let licence
 
-  const invoicePath = id => {
+  const licencePath = id => {
     return `/test/wrls/bill-runs/_/licences/${id}`
   }
 
@@ -45,7 +45,7 @@ describe('Request licence service', () => {
 
     describe('and is for a valid licence', () => {
       it('returns the licence', async () => {
-        const result = await RequestLicenceService.go(invoicePath(invoice.id), licence.id)
+        const result = await RequestLicenceService.go(licencePath(invoice.id), licence.id)
 
         expect(result).to.be.an.instanceOf(LicenceModel)
         expect(result.id).to.equal(licence.id)
@@ -57,7 +57,7 @@ describe('Request licence service', () => {
         it('returns null', async () => {
           const unknownLicenceId = GeneralHelper.uuid4()
           const err = await expect(
-            RequestLicenceService.go(invoicePath(unknownLicenceId), unknownLicenceId)
+            RequestLicenceService.go(licencePath(unknownLicenceId), unknownLicenceId)
           ).to.reject()
 
           expect(err).to.be.an.error()
