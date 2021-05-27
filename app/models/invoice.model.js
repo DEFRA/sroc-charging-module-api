@@ -183,7 +183,8 @@ class InvoiceModel extends BaseUpsertModel {
   }
 
   /**
-   * originalInvoice method returns true if this is an original invoice and false if is created from rebilling
+   * originalInvoice method returns true if this is an original invoice or false if it was created by a rebilling
+   * request
    */
   $originalInvoice () {
     return this.rebilledType === 'O'
