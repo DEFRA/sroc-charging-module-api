@@ -8,8 +8,11 @@
  * things like filter what actually gets registered. A working example might be an endpoints used to support testing and
  * debugging which we don't want registered in the actual production environment.
  *
- * @module router
+ * @module RouterPlugin
  */
+
+const { FilterRoutesService } = require('../services')
+const { AuthenticationConfig } = require('../../config')
 
 const {
   AirbrakeRoutes,
@@ -45,11 +48,15 @@ const routes = [
   ...CalculateChargeRoutes
 ]
 
-const router = {
+const RouterPlugin = {
   name: 'router',
   register: (server, _options) => {
-    server.route(routes)
+    // Filter our any routes which should not be registered. Typically, these will be unfinished endpoints we filter
+    // out when running in production
+    const filteredRoutes = FilterRoutesService.go(routes, AuthenticationConfig.environment)
+
+    server.route(filteredRoutes)
   }
 }
 
-module.exports = router
+module.exports = RouterPlugin
