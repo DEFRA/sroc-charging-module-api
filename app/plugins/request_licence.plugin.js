@@ -7,7 +7,7 @@
  * This sits as a partner plugin with RequestBillRun, so that by the time we get to a controller we have already
  * retrieved and validated any bill run and licence included in the url.
  *
- * In this case most of the work is done by the {@module RequestLicednceService}. If licence is found and valid for the
+ * In this case most of the work is done by the {@module RequestLicenceService}. If licence is found and valid for the
  * request the plugin adds the {@module LicenceModel} instance to `request.app` as per the
  * {@link https://hapi.dev/api/?v=20.1.0#-requestapp|Hapi documentation} to make it available to all controllers.
  *
