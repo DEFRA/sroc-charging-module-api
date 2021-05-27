@@ -25,7 +25,6 @@ const JsonWebToken = require('jsonwebtoken')
 const { AdminSendTransactionFileService } = require('../../../app/services')
 
 describe('Admin Bill Runs controller', () => {
-  const clientID = '1234546789'
   let server
   let authToken
   let regime
@@ -35,7 +34,7 @@ describe('Admin Bill Runs controller', () => {
 
   before(async () => {
     server = await deployment()
-    authToken = AuthorisationHelper.nonAdminToken(clientID)
+    authToken = AuthorisationHelper.adminToken()
 
     Sinon
       .stub(JsonWebToken, 'verify')
@@ -46,7 +45,7 @@ describe('Admin Bill Runs controller', () => {
     await DatabaseHelper.clean()
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
+    authorisedSystem = await AuthorisedSystemHelper.addAdminSystem(null, 'admin', 'active', regime)
 
     sendStub = Sinon.stub(AdminSendTransactionFileService, 'go')
   })
