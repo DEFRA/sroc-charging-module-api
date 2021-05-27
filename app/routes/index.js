@@ -4,6 +4,7 @@ const AirbrakeRoutes = require('./airbrake.routes')
 const AuthorisedSystemRoutes = require('./authorised_system.routes')
 const BillRunRoutes = require('./bill_run.routes')
 const BillRunInvoiceRoutes = require('./bill_run_invoice.routes')
+const BillRunLicenceRoutes = require('./bill_run_licence.routes')
 const BillRunTransactionRoutes = require('./bill_run_transaction.routes')
 const CustomerDetailsRoutes = require('./customer_details.routes')
 const CustomerRoutes = require('./customer.routes')
@@ -19,6 +20,7 @@ module.exports = {
   AuthorisedSystemRoutes,
   BillRunRoutes,
   BillRunInvoiceRoutes,
+  BillRunLicenceRoutes,
   BillRunTransactionRoutes,
   CustomerDetailsRoutes,
   CustomerRoutes,
