@@ -29,7 +29,7 @@ const { RulesService } = require('../../app/services')
 // Thing under test
 const { CreateTransactionService } = require('../../app/services')
 
-describe.only('Create Transaction service', () => {
+describe('Create Transaction service', () => {
   let billRun
   let authorisedSystem
   let regime

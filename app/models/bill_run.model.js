@@ -103,10 +103,21 @@ class BillRunModel extends BaseModel {
 
     const { id } = await BillRunModel.query(trx)
       .findById(transaction.billRunId)
-      .patch(patch)
+      .patch(this._addResetPatch(patch))
       .returning('id')
 
     return id
+  }
+
+  static _addResetPatch (currentPatch = {}) {
+    return {
+      ...currentPatch,
+      status: 'initialised',
+      invoiceCount: 0,
+      invoiceValue: 0,
+      creditNoteCount: 0,
+      creditNoteValue: 0
+    }
   }
 
   /**
