@@ -42,6 +42,7 @@ const ObjectCleaningService = require('./plugins/object_cleaning.service')
 const PrepareCustomerFileService = require('./prepare_customer_file.service')
 const RequestBillRunService = require('./plugins/request_bill_run.service')
 const RequestInvoiceService = require('./plugins/request_invoice.service')
+const RequestLicenceService = require('./plugins/request_licence.service')
 const RulesService = require('./rules.service')
 const SendBillRunReferenceService = require('./send_bill_run_reference.service')
 const SendCustomerFileService = require('./send_customer_file.service')
@@ -104,6 +105,7 @@ module.exports = {
   PrepareCustomerFileService,
   RequestBillRunService,
   RequestInvoiceService,
+  RequestLicenceService,
   RulesService,
   SendBillRunReferenceService,
   SendCustomerFileService,

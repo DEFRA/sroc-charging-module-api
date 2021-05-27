@@ -12,6 +12,7 @@ const MissingPayloadPlugin = require('./missing_payload.plugin')
 const PayloadCleanerPlugin = require('./payload_cleaner.plugin')
 const RequestBillRunPlugin = require('./request_bill_run.plugin')
 const RequestInvoicePlugin = require('./request_invoice.plugin')
+const RequestLicencePlugin = require('./request_licence.plugin')
 const RequestNotifierPlugin = require('./request_notifier.plugin')
 const RouterPlugin = require('./router.plugin')
 const StopPlugin = require('./stop.plugin')
@@ -45,6 +46,7 @@ module.exports = {
   RequestBillRunPlugin,
   RequestNotifierPlugin,
   RequestInvoicePlugin,
+  RequestLicencePlugin,
   RouterPlugin,
   StopPlugin,
   VersionInfoPlugin
