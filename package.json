@@ -1,6 +1,6 @@
 {
   "name": "sroc-charging-module-api",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Provides an interface for calculating charges, queuing transactions and generating transaction files used to produce invoices",
   "homepage": "https://github.com/DEFRA/sroc-service-team",
   "main": "server.js",
