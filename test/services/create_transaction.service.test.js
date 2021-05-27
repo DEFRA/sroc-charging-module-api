@@ -51,17 +51,42 @@ describe('Create Transaction service', () => {
   })
 
   describe('When the data is valid', () => {
-    let transaction
-    let result
+    describe('and the bill run has not been generated', () => {
+      let result
 
-    beforeEach(async () => {
-      Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
-      transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
-      result = await TransactionModel.query().findById(transaction.transaction.id)
+      beforeEach(async () => {
+        Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
+        const transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+        result = await TransactionModel.query().findById(transaction.transaction.id)
+      })
+
+      it('creates a transaction', async () => {
+        expect(result.id).to.exist()
+      })
     })
 
-    it('creates a transaction', async () => {
-      expect(result.id).to.exist()
+    describe('and the bill run has been generated', () => {
+      let result
+
+      beforeEach(async () => {
+        Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
+        const transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+        result = await TransactionModel.query().findById(transaction.transaction.id)
+      })
+
+      it('creates a transaction', async () => {
+        expect(result.id).to.exist()
+      })
+
+      it("resets the bill run to 'initialised'", async () => {
+        await BillRunHelper.generateBillRun(billRun.id)
+        await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+
+        const refreshedBillRun = await billRun.$query()
+
+        expect(refreshedBillRun.status).to.equal('initialised')
+        expect(refreshedBillRun.invoiceCount).to.equal(0)
+      })
     })
   })
 

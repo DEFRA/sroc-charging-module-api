@@ -87,6 +87,10 @@ class BillRunModel extends BaseModel {
    * Use this method to update a bill run (determined by the bill run ID in the `transaction` param) based on the
    * transaction.
    *
+   * We also reset it's summary information (`invoiceCount`, `creditNoteCount` etc) and put the status back to
+   * `initialised` to reflect the fact a client system will need to regenerate the bill run so we can take into account
+   * the changes made by the transaction.
+   *
    * > Note - a similar process is done for invoices and licences though they have the additional task of determining
    * if a new invoice or licence record needs to be created first
    *
@@ -103,10 +107,37 @@ class BillRunModel extends BaseModel {
 
     const { id } = await BillRunModel.query(trx)
       .findById(transaction.billRunId)
-      .patch(patch)
+      .patch(this._addResetPatch(patch))
       .returning('id')
 
     return id
+  }
+
+  /**
+   * Add 'reset' details to a patch that is to be used to update the bill run
+   *
+   * When a transaction is added to a bill run, if the bill run has alrerady been generated we need to 'reset' it
+   * because the transaction might have made changes that would invalidate the current information.
+   *
+   * This could be on top of existing changes being made, for example to the tally fields. As this is unique to bill
+   * runs we have the logic here rather than in the `CreateTransactionTallyService`.
+   *
+   * @param {Object} [currentPatch] The current patch about to be applied. Default to an empty object for use cases
+   * where all you want to do is reset the bill run, for example, when removing the last invoice on a generated bill
+   * run
+   *
+   * @returns {Object} a new patch object based on the provided patch and what is needed to reset the bill run summary
+   * information
+   */
+  static _addResetPatch (currentPatch = {}) {
+    return {
+      ...currentPatch,
+      status: 'initialised',
+      invoiceCount: 0,
+      invoiceValue: 0,
+      creditNoteCount: 0,
+      creditNoteValue: 0
+    }
   }
 
   /**
