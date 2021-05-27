@@ -8,7 +8,7 @@
  * things like filter what actually gets registered. A working example might be an endpoints used to support testing and
  * debugging which we don't want registered in the actual production environment.
  *
- * @module router
+ * @module RouterPlugin
  */
 
 const { FilterRoutesService } = require('../services')
