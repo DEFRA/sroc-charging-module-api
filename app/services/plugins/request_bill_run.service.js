@@ -26,7 +26,7 @@ class RequestBillRunService {
    * - that the request relates to an existing bill run (`POST` a new bill run is ignored)
    * - that we can find the bill run
    * - the bill run is linked to the requested regime which ensures the client system has access to it
-   * - that if the request involves editing the bill run its status is such that it can be changed (note that we do not
+   * - that if the request involves changing the bill run its status is such that it can be changed (note that we do not
    *   perform this check if the request path contains `/admin/` to allow eg. retrying transaction file generation of a
    *   pending bill run.)
    *
@@ -78,9 +78,14 @@ class RequestBillRunService {
    * if the path contains `/admin/`.
    */
   static _validateCanEditBillRun (billRun, path, method) {
+    // No validation is required if the request just a GET
+    if (method === 'get') {
+      return
+    }
+
     const adminPath = this._adminPath(path)
 
-    if (!adminPath && !billRun.$editable() && method !== 'get') {
+    if (!adminPath && !billRun.$patchable()) {
       throw Boom.conflict(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
     }
   }
