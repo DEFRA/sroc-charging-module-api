@@ -55,7 +55,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
 
     it('still can create the new rebilling transaction (the DB unique constraint does not block it)', () => {
       expect(result.id).to.exist()
-      expect(result.clientId).to.be.null()
+      expect(result.clientId).to.be.undefined()
     })
   })
 
