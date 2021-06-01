@@ -141,6 +141,23 @@ class BillRunModel extends BaseModel {
   }
 
   /**
+   * Returns whether the bill run can be 'edited'
+   *
+   * If a bill run has a status of `initialised` or `generated` it can be edited. This means transactions can be added,
+   * invoices or licences deleted, or the bill run itself deleted.
+   *
+   * Once `approved` a bill run cannot be edited. This is different from `$patchable()` for example, which is concerned
+   * with processing the bill run. Once `approved` we want to be able to `/send` a bill run but we don't want to allow
+   * a transaction to be added.
+   *
+   * This also protects against trying to make changes when the bill run is being processed. So interim states like
+   * `generating`, `pending`, and `deleting` are also not classed as 'editable'.
+   */
+  $editable () {
+    return ['initialised', 'generated'].includes(this.status)
+  }
+
+  /**
    * Returns whether the bill run can be 'patched'
    *
    * Our PATCH endpoints are `/generate`, `/approve` and `/send` and a bill run can only respond to one of these
