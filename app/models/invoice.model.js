@@ -78,11 +78,9 @@ class InvoiceModel extends BaseUpsertModel {
         query
           .where(builder => builder
             .where('subjectToMinimumChargeCreditValue', '>', 0)
-            .where('subjectToMinimumChargeCreditValue', '<', MINIMUM_CHARGE_LIMIT)
           )
           .orWhere(builder => builder
             .where('subjectToMinimumChargeDebitValue', '>', 0)
-            .where('subjectToMinimumChargeDebitValue', '<', MINIMUM_CHARGE_LIMIT)
           )
           .modify('originalInvoice')
       },
