@@ -81,11 +81,12 @@ class RequestBillRunService {
     switch (method) {
       case 'get':
         // No validation is required if the request just a GET
-        return
+        break
       case 'patch':
-        return this._validateCanPatchBillRun(billRun, path)
+        this._validateCanPatchBillRun(billRun, path)
+        break
       default:
-        return this._validateCanEditBillRun(billRun)
+        this._validateCanEditBillRun(billRun)
     }
   }
 
