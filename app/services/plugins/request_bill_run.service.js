@@ -74,8 +74,12 @@ class RequestBillRunService {
   }
 
   /**
-   * Validate that the bill run can be edited if the http method is one that requires it to be editable. We ignore this
-   * if the path contains `/admin/`.
+   * Validate that the bill run can be updated if the http method is one that requires it to be changed
+   *
+   * If the request is a `PATCH` for a 'billed' bill run we need to reject it. Same for a `POST` or `DELETE` request
+   * for an 'approved' bill run.
+   *
+   * This method determines the validation to apply based on the request type.
    */
   static _validateCanUpdateBillRun (billRun, path, method) {
     switch (method) {
