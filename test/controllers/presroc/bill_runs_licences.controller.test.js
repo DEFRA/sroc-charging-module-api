@@ -74,8 +74,11 @@ describe('Presroc Licences controller', () => {
         .stub(JsonWebToken, 'verify')
         .returns(AuthorisationHelper.decodeToken(authToken))
 
-      validationStub = Sinon.stub(ValidateBillRunLicenceService, 'go').returns()
-      deletionStub = Sinon.stub(DeleteLicenceService, 'go').returns()
+      validationStub = Sinon
+        .stub(ValidateBillRunLicenceService, 'go').returns()
+
+      deletionStub = Sinon
+        .stub(DeleteLicenceService, 'go').returns()
     })
 
     afterEach(async () => {
