@@ -26,7 +26,7 @@ class RequestBillRunService {
    * - that the request relates to an existing bill run (`POST` a new bill run is ignored)
    * - that we can find the bill run
    * - the bill run is linked to the requested regime which ensures the client system has access to it
-   * - that if the request involves editing the bill run its status is such that it can be changed (note that we do not
+   * - that if the request involves changing the bill run its status is such that it can be changed (note that we do not
    *   perform this check if the request path contains `/admin/` to allow eg. retrying transaction file generation of a
    *   pending bill run.)
    *
@@ -47,7 +47,7 @@ class RequestBillRunService {
 
     const billRun = await this._billRun(billRunId)
     this._validateBillRun(billRun, billRunId, regime, method)
-    this._validateCanEditBillRun(billRun, path, method)
+    this._validateCanUpdateBillRun(billRun, path, method)
 
     return billRun
   }
@@ -74,13 +74,36 @@ class RequestBillRunService {
   }
 
   /**
-   * Validate that the bill run can be edited if the http method is one that requires it to be editable. We ignore this
-   * if the path contains `/admin/`.
+   * Validate that the bill run can be updated if the http method is one that requires it to be changed
+   *
+   * If the request is a `PATCH` for a 'billed' bill run we need to reject it. Same for a `POST` or `DELETE` request
+   * for an 'approved' bill run.
+   *
+   * This method determines the validation to apply based on the request type.
    */
-  static _validateCanEditBillRun (billRun, path, method) {
+  static _validateCanUpdateBillRun (billRun, path, method) {
+    switch (method) {
+      case 'get':
+        // No validation is required if the request just a GET
+        break
+      case 'patch':
+        this._validateCanPatchBillRun(billRun, path)
+        break
+      default:
+        this._validateCanEditBillRun(billRun)
+    }
+  }
+
+  static _validateCanPatchBillRun (billRun, path) {
     const adminPath = this._adminPath(path)
 
-    if (!adminPath && !billRun.$editable() && method !== 'get') {
+    if (!adminPath && !billRun.$patchable()) {
+      throw Boom.conflict(`Bill run ${billRun.id} cannot be patched because its status is ${billRun.status}.`)
+    }
+  }
+
+  static _validateCanEditBillRun (billRun) {
+    if (!billRun.$editable()) {
       throw Boom.conflict(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
     }
   }
