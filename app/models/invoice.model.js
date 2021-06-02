@@ -8,7 +8,6 @@ const { Model } = require('objection')
 const BaseUpsertModel = require('./base_upsert.model')
 
 const DEMINIMIS_LIMIT = 500
-const MINIMUM_CHARGE_LIMIT = 2500
 
 class InvoiceModel extends BaseUpsertModel {
   static get tableName () {
