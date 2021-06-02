@@ -60,10 +60,10 @@ describe('Bill Run Model', () => {
       expect(instance.$editable()).to.be.true()
     })
 
-    it("returns 'true' when the status is 'approved'", async () => {
+    it("returns 'false' when the status is 'approved'", async () => {
       const instance = BillRunModel.fromJson({ status: 'approved' })
 
-      expect(instance.$editable()).to.be.true()
+      expect(instance.$editable()).to.be.false()
     })
 
     it("returns 'false' when the status is 'pending'", async () => {
@@ -82,6 +82,62 @@ describe('Bill Run Model', () => {
       const instance = BillRunModel.fromJson({ status: 'billing_not_required' })
 
       expect(instance.$editable()).to.be.false()
+    })
+
+    it("returns 'false' when the status is 'deleting'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'deleting' })
+
+      expect(instance.$editable()).to.be.false()
+    })
+  })
+
+  describe('the $patchable() method', () => {
+    it("returns 'true' when the status is 'initialised'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'initialised' })
+
+      expect(instance.$patchable()).to.be.true()
+    })
+
+    it("returns 'false' when the status is 'generating'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'generating' })
+
+      expect(instance.$patchable()).to.be.false()
+    })
+
+    it("returns 'true' when the status is 'generated'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'generated' })
+
+      expect(instance.$patchable()).to.be.true()
+    })
+
+    it("returns 'true' when the status is 'approved'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'approved' })
+
+      expect(instance.$patchable()).to.be.true()
+    })
+
+    it("returns 'false' when the status is 'pending'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'pending' })
+
+      expect(instance.$patchable()).to.be.false()
+    })
+
+    it("returns 'false' when the status is 'billed'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'billed' })
+
+      expect(instance.$patchable()).to.be.false()
+    })
+
+    it("returns 'false' when the status is 'billing_not_required'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'billing_not_required' })
+
+      expect(instance.$patchable()).to.be.false()
+    })
+
+    it("returns 'false' when the status is 'deleting'", async () => {
+      const instance = BillRunModel.fromJson({ status: 'deleting' })
+
+      expect(instance.$patchable()).to.be.false()
     })
   })
 
