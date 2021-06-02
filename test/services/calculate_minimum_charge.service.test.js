@@ -34,7 +34,7 @@ const MINIMUM_CHARGE_LIMIT = 2500
 // Thing under test
 const { CalculateMinimumChargeService } = require('../../app/services')
 
-describe.only('Calculate Minimum Charge service', () => {
+describe('Calculate Minimum Charge service', () => {
   let authorisedSystem
   let regime
   let payload
