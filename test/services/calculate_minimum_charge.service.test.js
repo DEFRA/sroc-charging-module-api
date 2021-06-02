@@ -150,73 +150,128 @@ describe('Calculate Minimum Charge service', () => {
     })
   })
 
-  describe('When an invoice has a licence over the minimum charge limit', () => {
+  describe('When an invoice has a transaction over the minimum charge limit', () => {
     let minimumTransaction
 
     beforeEach(async () => {
       minimumTransaction = await CreateTransactionService.go({
         ...payload,
         subjectToMinimumCharge: true,
-        licenceNumber: 'UNDER_MINUMUM'
+        licenceNumber: 'L1'
       }, billRun, authorisedSystem, regime)
     })
 
-    describe('and the licence over the limit is subject to minimum charge', () => {
-      beforeEach(async () => {
-        rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
+    describe('and the transaction is on a different licence', () => {
+      describe('and the transaction is subject to minimum charge', () => {
+        beforeEach(async () => {
+          rulesServiceStub.restore()
+          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
 
-        await CreateTransactionService.go({
-          ...payload,
-          licenceNumber: 'OVER_MINUMUM'
-        }, billRun, authorisedSystem, regime)
+          await CreateTransactionService.go({
+            ...payload,
+            licenceNumber: 'L2'
+          }, billRun, authorisedSystem, regime)
+        })
+
+        it('correctly creates one minimum charge', async () => {
+          const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
+
+          expect(calculatedMinimumCharges).to.be.be.an.instanceof(Array)
+          expect(calculatedMinimumCharges).to.have.length(1)
+          expect(calculatedMinimumCharges[0]).to.be.an.instanceOf(TransactionModel)
+        })
+
+        it('correctly calculates the minimum charge', async () => {
+          const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
+          const transactionRecord = await TransactionModel.query().findById(minimumTransaction.transaction.id)
+
+          const minimumChargeTransaction = calculatedMinimumCharges[0]
+          expect(minimumChargeTransaction.chargeValue).to.equal(MINIMUM_CHARGE_LIMIT - transactionRecord.chargeValue)
+          expect(minimumChargeTransaction.chargeCredit).to.equal(false)
+        })
       })
 
-      it('correctly creates one minimum charge', async () => {
-        const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
+      describe('and the transaction is not subject to minimum charge', () => {
+        beforeEach(async () => {
+          rulesServiceStub.restore()
+          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
 
-        expect(calculatedMinimumCharges).to.be.be.an.instanceof(Array)
-        expect(calculatedMinimumCharges).to.have.length(1)
-        expect(calculatedMinimumCharges[0]).to.be.an.instanceOf(TransactionModel)
-      })
+          await CreateTransactionService.go({
+            ...payload,
+            licenceNumber: 'L2',
+            subjectToMinimumCharge: false
+          }, billRun, authorisedSystem, regime)
+        })
 
-      it('correctly calculates the minimum charge', async () => {
-        const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
-        const transactionRecord = await TransactionModel.query().findById(minimumTransaction.transaction.id)
+        it('correctly creates one minimum charge', async () => {
+          const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
 
-        const minimumChargeTransaction = calculatedMinimumCharges[0]
-        expect(minimumChargeTransaction.chargeValue).to.equal(MINIMUM_CHARGE_LIMIT - transactionRecord.chargeValue)
-        expect(minimumChargeTransaction.chargeCredit).to.equal(false)
+          expect(calculatedMinimumCharges).to.be.be.an.instanceof(Array)
+          expect(calculatedMinimumCharges).to.have.length(1)
+          expect(calculatedMinimumCharges[0]).to.be.an.instanceOf(TransactionModel)
+        })
+
+        it('correctly calculates the minimum charge', async () => {
+          const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
+          const transactionRecord = await TransactionModel.query().findById(minimumTransaction.transaction.id)
+
+          const minimumChargeTransaction = calculatedMinimumCharges[0]
+          expect(minimumChargeTransaction.chargeValue).to.equal(MINIMUM_CHARGE_LIMIT - transactionRecord.chargeValue)
+          expect(minimumChargeTransaction.chargeCredit).to.equal(false)
+        })
       })
     })
 
-    describe('and the licence over the limit is not subject to minimum charge', () => {
-      beforeEach(async () => {
-        rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
+    describe('and the transaction is on the same licence', () => {
+      describe('and the transaction is subject to minimum charge', () => {
+        beforeEach(async () => {
+          rulesServiceStub.restore()
+          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
 
-        await CreateTransactionService.go({
-          ...payload,
-          licenceNumber: 'NOT_MINUMUM',
-          subjectToMinimumCharge: false
-        }, billRun, authorisedSystem, regime)
+          await CreateTransactionService.go({
+            ...payload,
+            licenceNumber: 'L1'
+          }, billRun, authorisedSystem, regime)
+        })
+
+        it('returns an empty array', async () => {
+          await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+
+          const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
+
+          expect(calculatedMinimumCharges).to.be.be.an.instanceof(Array)
+          expect(calculatedMinimumCharges).to.be.empty()
+        })
       })
 
-      it('correctly creates a minimum charge', async () => {
-        const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
+      describe('and the transaction is not subject to minimum charge', () => {
+        beforeEach(async () => {
+          rulesServiceStub.restore()
+          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
 
-        expect(calculatedMinimumCharges).to.be.be.an.instanceof(Array)
-        expect(calculatedMinimumCharges).to.have.length(1)
-        expect(calculatedMinimumCharges[0]).to.be.an.instanceOf(TransactionModel)
-      })
+          await CreateTransactionService.go({
+            ...payload,
+            subjectToMinimumCharge: false,
+            licenceNumber: 'L1'
+          }, billRun, authorisedSystem, regime)
+        })
 
-      it('correctly calculates the minimum charge', async () => {
-        const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
-        const transactionRecord = await TransactionModel.query().findById(minimumTransaction.transaction.id)
+        it('correctly creates a minimum charge', async () => {
+          const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
 
-        const minimumChargeTransaction = calculatedMinimumCharges[0]
-        expect(minimumChargeTransaction.chargeValue).to.equal(MINIMUM_CHARGE_LIMIT - transactionRecord.chargeValue)
-        expect(minimumChargeTransaction.chargeCredit).to.equal(false)
+          expect(calculatedMinimumCharges).to.be.be.an.instanceof(Array)
+          expect(calculatedMinimumCharges).to.have.length(1)
+          expect(calculatedMinimumCharges[0]).to.be.an.instanceOf(TransactionModel)
+        })
+
+        it('correctly calculates the minimum charge', async () => {
+          const calculatedMinimumCharges = await CalculateMinimumChargeService.go(billRun)
+          const transactionRecord = await TransactionModel.query().findById(minimumTransaction.transaction.id)
+
+          const minimumChargeTransaction = calculatedMinimumCharges[0]
+          expect(minimumChargeTransaction.chargeValue).to.equal(MINIMUM_CHARGE_LIMIT - transactionRecord.chargeValue)
+          expect(minimumChargeTransaction.chargeCredit).to.equal(false)
+        })
       })
     })
   })
