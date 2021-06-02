@@ -174,6 +174,14 @@ class InvoiceModel extends BaseUpsertModel {
   $creditNote () {
     return this.$transactionType() === 'C'
   }
+
+  /**
+   * originalInvoice method returns true if this is an original invoice or false if it was created by a rebilling
+   * request
+   */
+  $originalInvoice () {
+    return this.rebilledType === 'O'
+  }
 }
 
 module.exports = InvoiceModel

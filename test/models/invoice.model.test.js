@@ -219,4 +219,36 @@ describe('Invoice Model', () => {
       expect(result).to.equal('I')
     })
   })
+
+  describe('$originalInvoice method', () => {
+    it('returns `true` if this is an original invoice', async () => {
+      const invoice = await InvoiceHelper.addInvoice(
+        billRun.id, 'ORI0000001', 2021, 0, 0, 1, 5000, 0, 1, 0, 5000, null, 'O'
+      )
+
+      const result = invoice.$originalInvoice()
+
+      expect(result).to.be.true()
+    })
+
+    it('returns `false` if this is a rebill invoice', async () => {
+      const invoice = await InvoiceHelper.addInvoice(
+        billRun.id, 'REB0000001', 2021, 0, 0, 1, 5000, 0, 1, 0, 5000, GeneralHelper.uuid4(), 'R'
+      )
+
+      const result = invoice.$originalInvoice()
+
+      expect(result).to.be.false()
+    })
+
+    it('returns `false` if this is a cancel invoice', async () => {
+      const invoice = await InvoiceHelper.addInvoice(
+        billRun.id, 'CAN0000001', 2021, 0, 0, 1, 5000, 0, 1, 0, 5000, GeneralHelper.uuid4(), 'C'
+      )
+
+      const result = invoice.$originalInvoice()
+
+      expect(result).to.be.false()
+    })
+  })
 })

@@ -61,6 +61,7 @@ const StreamTransformUsingPresenterService = require('./streams/stream_transform
 const StreamWritableFileService = require('./streams/stream_writable_file.service')
 const TransformRecordsToFileService = require('./transform_records_to_file.service')
 const UpdateAuthorisedSystemService = require('./update_authorised_system.service')
+const ValidateBillRunLicenceService = require('./validate_bill_run_licence.service')
 const ViewBillRunInvoiceService = require('./view_bill_run_invoice.service')
 const ViewBillRunService = require('./view_bill_run.service')
 
@@ -126,6 +127,7 @@ module.exports = {
   StreamWritableFileService,
   TransformRecordsToFileService,
   UpdateAuthorisedSystemService,
+  ValidateBillRunLicenceService,
   ViewBillRunInvoiceService,
   ViewBillRunService
 }
