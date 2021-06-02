@@ -156,7 +156,7 @@ describe('Presroc Bill Runs controller', () => {
           const responsePayload = JSON.parse(response.payload)
 
           expect(response.statusCode).to.equal(409)
-          expect(responsePayload.message).to.equal(`Bill run ${generatingBillRun.id} cannot be edited because its status is generating.`)
+          expect(responsePayload.message).to.equal(`Bill run ${generatingBillRun.id} cannot be patched because its status is generating.`)
         })
       })
     })

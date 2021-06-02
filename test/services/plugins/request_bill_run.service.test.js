@@ -27,41 +27,82 @@ describe('Request bill run service', () => {
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
+
+    regime = await RegimeHelper.addRegime('wrls', 'WRLS')
+    billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), regime.id)
   })
 
-  describe("When the request is 'bill run' related", () => {
-    describe("and is for a valid 'bill run'", () => {
-      beforeEach(async () => {
-        regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-        billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), regime.id)
-      })
+  describe('When the request is bill run related', () => {
+    describe('but no matching bill run exists', () => {
+      it('throws an error', async () => {
+        const unknownBillRunId = GeneralHelper.uuid4()
+        const err = await expect(
+          RequestBillRunService.go(billRunPath(unknownBillRunId), 'get', regime, unknownBillRunId)
+        ).to.reject()
 
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
+      })
+    })
+
+    describe('but the bill run is not linked to the regime requested', () => {
+      it('throws an error', async () => {
+        const requestedRegime = {
+          id: GeneralHelper.uuid4(),
+          slug: 'notme'
+        }
+
+        const err = await expect(
+          RequestBillRunService.go(billRunPath(billRun.id), 'get', requestedRegime, billRun.id)
+        ).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message)
+          .to
+          .equal(`Bill run ${billRun.id} is not linked to regime ${requestedRegime.slug}.`)
+      })
+    })
+
+    describe('and is a GET request', () => {
       it('returns the matching bill run', async () => {
         const result = await RequestBillRunService.go(billRunPath(billRun.id), 'get', regime, billRun.id)
 
         expect(result.id).to.equal(billRun.id)
       })
+    })
 
-      describe('that can be edited', () => {
+    describe('and is a PATCH request', () => {
+      describe('for a patchable bill run', () => {
+        beforeEach(async () => {
+          await billRun.$query().patch({ status: 'approved' })
+        })
+
         it('returns the matching bill run', async () => {
-          const result = await RequestBillRunService.go(billRunPath(billRun.id), 'post', regime, billRun.id)
+          const result = await RequestBillRunService.go(billRunPath(billRun.id), 'patch', regime, billRun.id)
 
           expect(result.id).to.equal(billRun.id)
         })
-
-        describe('and the path contains `/admin/`', () => {
-          it('returns the matching bill run', async () => {
-            const result = await RequestBillRunService.go(adminPath(billRun.id), 'post', regime, billRun.id)
-
-            expect(result.id).to.equal(billRun.id)
-          })
-        })
       })
 
-      describe('that cannot be edited', () => {
+      describe('for an unpatchable bill run', () => {
+        beforeEach(async () => {
+          await billRun.$query().patch({ status: 'pending' })
+        })
+
+        it('throws an error', async () => {
+          const err = await expect(
+            RequestBillRunService.go(billRunPath(billRun.id), 'patch', regime, billRun.id)
+          ).to.reject()
+
+          expect(err).to.be.an.error()
+          expect(err.output.payload.message)
+            .to
+            .equal(`Bill run ${billRun.id} cannot be patched because its status is ${billRun.status}.`)
+        })
+
         describe('but the path contains `/admin/`', () => {
           it('returns the matching bill run', async () => {
-            const result = await RequestBillRunService.go(adminPath(billRun.id), 'post', regime, billRun.id)
+            const result = await RequestBillRunService.go(adminPath(billRun.id), 'patch', regime, billRun.id)
 
             expect(result.id).to.equal(billRun.id)
           })
@@ -69,57 +110,64 @@ describe('Request bill run service', () => {
       })
     })
 
-    describe("but is for an invalid 'bill run'", () => {
-      describe('because no matching bill run exists', () => {
-        it('throws an error', async () => {
-          const unknownBillRunId = GeneralHelper.uuid4()
-          const err = await expect(
-            RequestBillRunService.go(billRunPath(unknownBillRunId), 'get', regime, unknownBillRunId)
-          ).to.reject()
+    describe('and is a POST request', () => {
+      describe('for an editable bill run', () => {
+        beforeEach(async () => {
+          await billRun.$query().patch({ status: 'generated' })
+        })
 
-          expect(err).to.be.an.error()
-          expect(err.output.payload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
+        it('returns the matching bill run', async () => {
+          const result = await RequestBillRunService.go(billRunPath(billRun.id), 'post', regime, billRun.id)
+
+          expect(result.id).to.equal(billRun.id)
         })
       })
 
-      describe("because the 'bill run' requested is not for the 'regime' requested", () => {
+      describe('for an uneditable bill run', () => {
         beforeEach(async () => {
-          billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), regime.id)
+          await billRun.$query().patch({ status: 'approved' })
         })
 
         it('throws an error', async () => {
-          const requestedRegime = {
-            id: GeneralHelper.uuid4(),
-            slug: 'notme'
-          }
-
           const err = await expect(
-            RequestBillRunService.go(billRunPath(billRun.id), 'get', requestedRegime, billRun.id)
+            RequestBillRunService.go(billRunPath(billRun.id), 'post', regime, billRun.id)
           ).to.reject()
 
           expect(err).to.be.an.error()
           expect(err.output.payload.message)
             .to
-            .equal(`Bill run ${billRun.id} is not linked to regime ${requestedRegime.slug}.`)
+            .equal(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
+        })
+      })
+    })
+
+    describe('and is a DELETE request', () => {
+      describe('for an editable bill run', () => {
+        beforeEach(async () => {
+          await billRun.$query().patch({ status: 'generated' })
+        })
+
+        it('returns the matching bill run', async () => {
+          const result = await RequestBillRunService.go(billRunPath(billRun.id), 'delete', regime, billRun.id)
+
+          expect(result.id).to.equal(billRun.id)
         })
       })
 
-      describe('because the request involves making a change to the bill run', () => {
-        describe("but the 'bill run' is not editable", () => {
-          beforeEach(async () => {
-            billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), regime.id, 'A', 'billed')
-          })
+      describe('for an uneditable bill run', () => {
+        beforeEach(async () => {
+          await billRun.$query().patch({ status: 'approved' })
+        })
 
-          it('throws an error', async () => {
-            const err = await expect(
-              RequestBillRunService.go(billRunPath(billRun.id), 'patch', regime, billRun.id)
-            ).to.reject()
+        it('throws an error', async () => {
+          const err = await expect(
+            RequestBillRunService.go(billRunPath(billRun.id), 'delete', regime, billRun.id)
+          ).to.reject()
 
-            expect(err).to.be.an.error()
-            expect(err.output.payload.message)
-              .to
-              .equal(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
-          })
+          expect(err).to.be.an.error()
+          expect(err.output.payload.message)
+            .to
+            .equal(`Bill run ${billRun.id} cannot be edited because its status is ${billRun.status}.`)
         })
       })
     })
@@ -142,7 +190,7 @@ describe('Request bill run service', () => {
       })
     })
 
-    describe("because it's to create a new 'bill run", () => {
+    describe("because it's to create a new bill run (no trailing slash in url)", () => {
       it("returns 'null'", async () => {
         const result = await RequestBillRunService.go('/test/wrls/bill-runs', 'post', regime, null)
 

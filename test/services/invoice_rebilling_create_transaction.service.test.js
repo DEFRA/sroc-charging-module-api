@@ -41,6 +41,24 @@ describe('Invoice Rebilling Create Transaction service', () => {
     rebillBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
   })
 
+  describe('when the original transaction contains a client ID', () => {
+    beforeEach(async () => {
+      const invoice = await addRebillInvoice(rebillBillRun.id, 'TH230000222', 2021, null, 'R')
+      const licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TONY/TF9222/37', invoice.id)
+      transaction = await TransactionHelper.addTransaction(
+        originalBillRun.id,
+        { chargeFinancialYear: 2021, clientId: 'CANBEONLYONE' }
+      )
+
+      result = await InvoiceRebillingCreateTransactionService.go(transaction, licence, rebillAuthorisedSystem)
+    })
+
+    it('still can create the new rebilling transaction (the DB unique constraint does not block it)', () => {
+      expect(result.id).to.exist()
+      expect(result.clientId).to.be.undefined()
+    })
+  })
+
   describe('when the transaction type is not to be inverted', () => {
     let licence
 
@@ -66,7 +84,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
       it('with the correct values duplicated', async () => {
       // Create a list of all keys in the transaction object and filter out the ones we don't want to check
         const transactionKeys = Object.keys(transaction)
-        const keysToSkip = ['id', 'billRunId', 'createdAt', 'updatedAt', 'createdBy', 'invoiceId', 'licenceId']
+        const keysToSkip = ['id', 'billRunId', 'createdAt', 'updatedAt', 'createdBy', 'invoiceId', 'licenceId', 'clientId']
         const keysToCheck = transactionKeys.filter(key => !keysToSkip.includes(key))
 
         // Iterate over the remaining keys and check that the result's value matches the original transaction's value
@@ -78,7 +96,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
       it('with the correct values not duplicated', async () => {
         // Create a list of all keys in the transaction object and filter out the ones we don't want to check
         const transactionKeys = Object.keys(transaction)
-        const keysToInclude = ['id', 'billRunId', 'createdAt', 'updatedAt', 'createdBy', 'invoiceId', 'licenceId']
+        const keysToInclude = ['id', 'billRunId', 'createdAt', 'updatedAt', 'createdBy', 'invoiceId', 'licenceId', 'clientId']
         const keysToCheck = transactionKeys.filter(key => keysToInclude.includes(key))
 
         // Iterate over the remaining keys and check that the result's value matches the original transaction's value
