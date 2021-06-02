@@ -25,6 +25,7 @@ const {
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
+const { DeleteLicenceService, ValidateBillRunLicenceService } = require('../../../app/services')
 
 describe('Presroc Licences controller', () => {
   const clientID = '1234546789'
@@ -55,6 +56,9 @@ describe('Presroc Licences controller', () => {
   })
 
   describe('Delete a licence: DELETE /v2/{regimeId}/bill-runs/{billRunId}/licences/{licenceId}', () => {
+    let validationStub
+    let deletionStub
+
     const options = (token, billRunId, licenceId) => {
       return {
         method: 'DELETE',
@@ -69,6 +73,17 @@ describe('Presroc Licences controller', () => {
       Sinon
         .stub(JsonWebToken, 'verify')
         .returns(AuthorisationHelper.decodeToken(authToken))
+
+      validationStub = Sinon
+        .stub(ValidateBillRunLicenceService, 'go').returns()
+
+      deletionStub = Sinon
+        .stub(DeleteLicenceService, 'go').returns()
+    })
+
+    afterEach(async () => {
+      validationStub.restore()
+      deletionStub.restore()
     })
 
     describe('When the request is valid', () => {
@@ -76,6 +91,18 @@ describe('Presroc Licences controller', () => {
         const response = await server.inject(options(authToken, billRun.id, licence.id))
 
         expect(response.statusCode).to.equal(204)
+      })
+
+      it('calls the licence validation service', async () => {
+        await server.inject(options(authToken, billRun.id, licence.id))
+
+        expect(validationStub.calledOnce).to.be.true()
+      })
+
+      it('calls the licence deletion service', async () => {
+        await server.inject(options(authToken, billRun.id, licence.id))
+
+        expect(deletionStub.calledOnce).to.be.true()
       })
     })
 
@@ -85,6 +112,18 @@ describe('Presroc Licences controller', () => {
           const response = await server.inject(options(authToken, billRun.id, GeneralHelper.uuid4()))
 
           expect(response.statusCode).to.equal(404)
+        })
+
+        it('does not call the licence validation service', async () => {
+          await server.inject(options(authToken, billRun.id, GeneralHelper.uuid4()))
+
+          expect(validationStub.called).to.be.false()
+        })
+
+        it('does not call the licence deletion service', async () => {
+          await server.inject(options(authToken, billRun.id, GeneralHelper.uuid4()))
+
+          expect(deletionStub.called).to.be.false()
         })
       })
     })
