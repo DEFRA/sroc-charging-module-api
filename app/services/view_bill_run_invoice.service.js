@@ -62,6 +62,7 @@ class ViewBillRunInvoiceService {
           'chargePeriodStart',
           'chargePeriodEnd',
           'regimeValue17',
+          'rebilledTransactionId',
           'chargeCalculation'
         )
       })
