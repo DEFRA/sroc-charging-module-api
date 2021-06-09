@@ -30,6 +30,18 @@ describe('Invoice Rebilling Initialise service', () => {
     expect(result.rebillInvoice.billRunId).to.equal(billRun.id)
   })
 
+  it('creates two new invoices with the same flags as the original', async () => {
+    const result = await InvoiceRebillingInitialiseService.go(billRun, invoice)
+
+    // deminimisInvoice
+    expect(result.cancelInvoice.deminimisInvoice).to.equal(invoice.deminimisInvoice)
+    expect(result.rebillInvoice.deminimisInvoice).to.equal(invoice.deminimisInvoice)
+
+    // minimumChargeInvoice
+    expect(result.cancelInvoice.minimumChargeInvoice).to.equal(invoice.minimumChargeInvoice)
+    expect(result.rebillInvoice.minimumChargeInvoice).to.equal(invoice.minimumChargeInvoice)
+  })
+
   it("returns a 'response' object containing the id and type of the invoices", async () => {
     const result = await InvoiceRebillingInitialiseService.go(billRun, invoice)
 
