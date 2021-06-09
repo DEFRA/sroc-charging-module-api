@@ -53,6 +53,8 @@ class InvoiceRebillingInitialiseService {
       customerReference: invoice.customerReference,
       financialYear: invoice.financialYear,
       rebilledInvoiceId: invoice.id,
+      deminimisInvoice: invoice.deminimisInvoice,
+      minimumChargeInvoice: invoice.minimumChargeInvoice,
       rebilledType
     })
   }
