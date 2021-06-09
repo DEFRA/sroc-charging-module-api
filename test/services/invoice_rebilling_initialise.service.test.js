@@ -30,13 +30,6 @@ describe('Invoice Rebilling Initialise service', () => {
     expect(result.rebillInvoice.billRunId).to.equal(billRun.id)
   })
 
-  it('creates two new invoices linked to the bill run', async () => {
-    const result = await InvoiceRebillingInitialiseService.go(billRun, invoice)
-
-    expect(result.cancelInvoice.billRunId).to.equal(billRun.id)
-    expect(result.rebillInvoice.billRunId).to.equal(billRun.id)
-  })
-
   it("returns a 'response' object containing the id and type of the invoices", async () => {
     const result = await InvoiceRebillingInitialiseService.go(billRun, invoice)
 
