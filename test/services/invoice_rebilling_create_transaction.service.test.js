@@ -104,6 +104,10 @@ describe('Invoice Rebilling Create Transaction service', () => {
           expect(result[key]).to.not.equal(transaction[key])
         }
       })
+
+      it('records a link back to the original transaction', async () => {
+        expect(result.rebilledTransactionId).to.equal(transaction.id)
+      })
     })
 
     describe('and the tally', () => {
