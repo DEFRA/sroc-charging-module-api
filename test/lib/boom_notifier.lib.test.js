@@ -9,9 +9,9 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { BoomNotifier } = require('../../app/lib')
+const { BoomNotifierLib } = require('../../app/lib')
 
-describe('BoomNotifier class', () => {
+describe('BoomNotifierLib class', () => {
   const id = '1234567890'
   let airbrakeFake
   let pinoFake
@@ -39,7 +39,7 @@ describe('BoomNotifier class', () => {
           }
         }
       }
-      const testNotifier = new BoomNotifier(id, pinoFake, airbrakeFake)
+      const testNotifier = new BoomNotifierLib(id, pinoFake, airbrakeFake)
 
       // We wrap the call in this assertion so the thrown error doesn't cause the test to fail
       expect(() => testNotifier.omfg(message, data)).to.throw()
@@ -47,7 +47,7 @@ describe('BoomNotifier class', () => {
     })
 
     it('throws a Boom error with the correct message and data', async () => {
-      const testNotifier = new BoomNotifier(id, pinoFake, airbrakeFake)
+      const testNotifier = new BoomNotifierLib(id, pinoFake, airbrakeFake)
 
       expect(() => testNotifier.omfg(message, data)).to.throw(Error, { message, data })
     })
