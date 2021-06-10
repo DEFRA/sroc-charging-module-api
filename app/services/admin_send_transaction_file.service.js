@@ -6,8 +6,8 @@
 
 const SendTransactionFileService = require('./send_transaction_file.service')
 
-// We require BoomNotifier this way as the usual way of destructuring it results in a circular dependency error
-const BoomNotifier = require('../lib/boom_notifier')
+// We require BoomNotifierLib this way as the usual way of destructuring it results in a circular dependency error
+const BoomNotifierLib = require('../lib/boom_notifier.lib')
 
 const Boom = require('@hapi/boom')
 
@@ -26,7 +26,7 @@ class AdminSendTransactionFileService {
   static async go (regime, billRun) {
     this._validate(billRun)
 
-    await SendTransactionFileService.go(regime, billRun, new BoomNotifier())
+    await SendTransactionFileService.go(regime, billRun, new BoomNotifierLib())
   }
 
   static _validate (billRun) {

@@ -9,21 +9,21 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Things we need to stub
-const { BaseNotifier } = require('../../app/lib')
+const { BaseNotifierLib } = require('../../app/lib')
 
 // Thing under test
-const { TaskNotifier } = require('../../app/lib')
+const { TaskNotifierLib } = require('../../app/lib')
 
-describe('TaskNotifier class', () => {
+describe('TaskNotifierLib class', () => {
   let airbrakeFake
   let pinoFake
 
   beforeEach(async () => {
     airbrakeFake = { notify: Sinon.fake.resolves({ id: 1 }), flush: Sinon.fake() }
-    Sinon.stub(BaseNotifier.prototype, '_setNotifier').returns(airbrakeFake)
+    Sinon.stub(BaseNotifierLib.prototype, '_setNotifier').returns(airbrakeFake)
 
     pinoFake = { info: Sinon.fake(), error: Sinon.fake() }
-    Sinon.stub(BaseNotifier.prototype, '_setLogger').returns(pinoFake)
+    Sinon.stub(BaseNotifierLib.prototype, '_setLogger').returns(pinoFake)
   })
 
   afterEach(() => {
@@ -39,7 +39,7 @@ describe('TaskNotifier class', () => {
         message,
         id
       }
-      const testNotifier = new TaskNotifier()
+      const testNotifier = new TaskNotifierLib()
       testNotifier.omg(message, { id })
 
       expect(pinoFake.info.calledOnceWith(expectedArgs)).to.be.true()
@@ -57,7 +57,7 @@ describe('TaskNotifier class', () => {
           ...data
         }
       }
-      const testNotifier = new TaskNotifier()
+      const testNotifier = new TaskNotifierLib()
       testNotifier.omfg(message, data)
 
       expect(airbrakeFake.notify.calledOnceWith(expectedArgs)).to.be.true()

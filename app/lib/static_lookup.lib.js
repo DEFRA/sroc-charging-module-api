@@ -1,16 +1,16 @@
 'use strict'
 
 /**
- * @module StaticLookup
+ * @module StaticLookupLib
  */
 
 /**
  * Class object containing static data that is relevant across multiple services
  */
-class StaticLookup {
+class StaticLookupLib {
   static get regions () {
     return ['A', 'B', 'E', 'N', 'S', 'T', 'W', 'Y']
   }
 }
 
-module.exports = StaticLookup
+module.exports = StaticLookupLib

@@ -1,11 +1,11 @@
 'use strict'
 
 const { SendCustomerFileService } = require('../../services')
-const { StaticLookup } = require('../../lib')
+const { StaticLookupLib } = require('../../lib')
 
 class CustomersController {
   static async send (req, h) {
-    const regions = StaticLookup.regions
+    const regions = StaticLookupLib.regions
 
     // Initiate generate/send process in the background
     SendCustomerFileService.go(req.app.regime, regions, req.app.notifier)

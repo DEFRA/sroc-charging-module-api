@@ -4,7 +4,7 @@
  * @module TaskRunner
  */
 
-const { TaskNotifier } = require('../lib')
+const { TaskNotifierLib } = require('../lib')
 const CustomerFilesTask = require('./customer_files.task')
 
 /**
@@ -58,7 +58,7 @@ class TaskRunner {
   }
 
   static _notifier () {
-    return new TaskNotifier()
+    return new TaskNotifierLib()
   }
 }
 

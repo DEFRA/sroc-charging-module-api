@@ -25,7 +25,7 @@ describe('Task Runner', () => {
     // Our TaskRunner calls this when all the work is done, but if left unstubbed it also kills the tests!
     Sinon.stub(process, 'exit')
 
-    // We stub what _notifier() returns to kill console logs messages messing up the test output. Once `TaskNotifier`
+    // We stub what _notifier() returns to kill console logs messages messing up the test output. Once `TaskNotifierLib`
     // is merged in we can stub it instead.
     // Also, we use a stub rather than a fake for `flush()`. This allows us to then use Sinon's callsFake() function in
     // the test that confirms it was called

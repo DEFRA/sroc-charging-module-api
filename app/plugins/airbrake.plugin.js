@@ -24,7 +24,7 @@ const AirbrakePlugin = {
   name: 'airbrake',
   register: (server, _options) => {
     // We add an instance of the Airbrake Notifier so we can send notifications via Airbrake to Errbit manually if
-    // needed. It's main use is when passed in as a param to RequestNotifier in the RequestNotifierPlugin
+    // needed. It's main use is when passed in as a param to RequestNotifierLib in the RequestNotifierPlugin
     server.app.airbrake = new Notifier({
       host: AirbrakeConfig.host,
       projectId: AirbrakeConfig.projectId,
