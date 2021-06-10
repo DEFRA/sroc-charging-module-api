@@ -4,7 +4,7 @@
  * @module CustomerFilesTask
  */
 
-const { StaticLookup } = require('../lib')
+const { StaticLookupLib } = require('../lib')
 const { RegimeModel } = require('../models')
 const { SendCustomerFileService } = require('../services')
 
@@ -22,7 +22,7 @@ class CustomerFilesTask {
     notifier.omg('Starting sending customer files task')
 
     const regimes = await this._regimes()
-    const regions = StaticLookup.regions
+    const regions = StaticLookupLib.regions
 
     for (const regime of regimes) {
       await SendCustomerFileService.go(regime, regions, notifier)
