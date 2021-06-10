@@ -135,7 +135,7 @@ describe('BaseNotifierLib class', () => {
       it("logs 2 'error' messages, the second containing details of the Airbrake failure", async () => {
         const expectedArgs = [
           { message, ...data },
-          { message: 'TaskNotifier - Airbrake failed', error }
+          { message: 'TaskNotifierLib - Airbrake failed', error }
         ]
         const testNotifier = new BaseNotifierLib()
         testNotifier.omfg(message, { data })
@@ -175,7 +175,7 @@ describe('BaseNotifierLib class', () => {
       it("logs 2 'error' messages, the second containing details of the Airbrake errors", async () => {
         const expectedArgs = [
           { message, ...data },
-          { message: 'TaskNotifier - Airbrake failed', error }
+          { message: 'TaskNotifierLib - Airbrake failed', error }
         ]
         const testNotifier = new BaseNotifierLib()
         testNotifier.omfg(message, { data })

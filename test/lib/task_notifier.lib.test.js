@@ -12,9 +12,9 @@ const { expect } = Code
 const { BaseNotifierLib } = require('../../app/lib')
 
 // Thing under test
-const { TaskNotifier } = require('../../app/lib')
+const { TaskNotifierLib } = require('../../app/lib')
 
-describe('TaskNotifier class', () => {
+describe('TaskNotifierLib class', () => {
   let airbrakeFake
   let pinoFake
 
@@ -39,7 +39,7 @@ describe('TaskNotifier class', () => {
         message,
         id
       }
-      const testNotifier = new TaskNotifier()
+      const testNotifier = new TaskNotifierLib()
       testNotifier.omg(message, { id })
 
       expect(pinoFake.info.calledOnceWith(expectedArgs)).to.be.true()
@@ -57,7 +57,7 @@ describe('TaskNotifier class', () => {
           ...data
         }
       }
-      const testNotifier = new TaskNotifier()
+      const testNotifier = new TaskNotifierLib()
       testNotifier.omfg(message, data)
 
       expect(airbrakeFake.notify.calledOnceWith(expectedArgs)).to.be.true()

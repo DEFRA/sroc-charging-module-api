@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module TaskNotifier
+ * @module TaskNotifierLib
  */
 
 const BaseNotifierLib = require('./base_notifier.lib')
@@ -13,7 +13,7 @@ const BaseNotifierLib = require('./base_notifier.lib')
  * This was initially created to be used with the `npm run customer-files` task but can be used for anywhere that
  * notifications are needed and you don't have a request ID.
  */
-class TaskNotifier extends BaseNotifierLib {
+class TaskNotifierLib extends BaseNotifierLib {
   _formatLogPacket (message, data) {
     return {
       message,
@@ -29,4 +29,4 @@ class TaskNotifier extends BaseNotifierLib {
   }
 }
 
-module.exports = TaskNotifier
+module.exports = TaskNotifierLib

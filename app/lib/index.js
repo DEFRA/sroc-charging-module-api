@@ -5,7 +5,7 @@ const BoomNotifierLib = require('./boom_notifier.lib')
 const JwtStrategyAuthLib = require('./jwt_strategy.lib')
 const RequestNotifierLib = require('./request_notifier.lib')
 const StaticLookupLib = require('./static_lookup.lib')
-const TaskNotifier = require('./task_notifier')
+const TaskNotifierLib = require('./task_notifier.lib')
 
 module.exports = {
   BaseNotifierLib,
@@ -13,5 +13,5 @@ module.exports = {
   JwtStrategyAuthLib,
   RequestNotifierLib,
   StaticLookupLib,
-  TaskNotifier
+  TaskNotifierLib
 }
