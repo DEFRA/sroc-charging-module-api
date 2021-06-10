@@ -2,7 +2,7 @@
 
 const Hapi = require('@hapi/hapi')
 const { ServerConfig, TestConfig } = require('./config')
-const { JwtStrategyAuth } = require('./app/lib')
+const { JwtStrategyAuthLib } = require('./app/lib')
 const {
   AirbrakePlugin,
   AuthorisationPlugin,
@@ -30,7 +30,7 @@ exports.deployment = async start => {
   // Register our auth plugin and then the strategies (needs to be done in this
   // order)
   await server.register(HapiNowAuthPlugin)
-  server.auth.strategy('jwt-strategy', 'hapi-now-auth', JwtStrategyAuth)
+  server.auth.strategy('jwt-strategy', 'hapi-now-auth', JwtStrategyAuthLib)
   server.auth.default('jwt-strategy')
 
   // Register the remaining plugins
