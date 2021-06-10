@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module RequestNotifier
+ * @module RequestNotifierLib
  */
 
 const BaseNotifierLib = require('./base_notifier.lib')
@@ -18,7 +18,7 @@ const BaseNotifierLib = require('./base_notifier.lib')
  * This extends the `BaseNotifierLib` to also ensure the request ID is included in all output. We can then identify all
  * related log entries and Errbit notifications by using the ID.
  */
-class RequestNotifier extends BaseNotifierLib {
+class RequestNotifierLib extends BaseNotifierLib {
   /**
    * Instantiate a new instance
    *
@@ -89,4 +89,4 @@ class RequestNotifier extends BaseNotifierLib {
   }
 }
 
-module.exports = RequestNotifier
+module.exports = RequestNotifierLib

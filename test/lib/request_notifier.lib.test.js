@@ -9,9 +9,9 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { RequestNotifier } = require('../../app/lib')
+const { RequestNotifierLib } = require('../../app/lib')
 
-describe('RequestNotifier class', () => {
+describe('RequestNotifierLib class', () => {
   const id = '1234567890'
   let airbrakeFake
   let pinoFake
@@ -35,7 +35,7 @@ describe('RequestNotifier class', () => {
           id: id
         }
       }
-      const testNotifier = new RequestNotifier(id, pinoFake, airbrakeFake)
+      const testNotifier = new RequestNotifierLib(id, pinoFake, airbrakeFake)
       testNotifier.omg(message)
 
       expect(pinoFake.info.calledOnceWith(expectedArgs)).to.be.true()
@@ -56,7 +56,7 @@ describe('RequestNotifier class', () => {
           }
         }
       }
-      const testNotifier = new RequestNotifier(id, pinoFake, airbrakeFake)
+      const testNotifier = new RequestNotifierLib(id, pinoFake, airbrakeFake)
       testNotifier.omfg(message, data)
 
       expect(airbrakeFake.notify.calledOnceWith(expectedArgs)).to.be.true()

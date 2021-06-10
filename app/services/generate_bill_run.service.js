@@ -17,8 +17,8 @@ class GenerateBillRunService {
   * Note! Nothing is returned from the service -- the intention is that it will be called and left to run.
   *
   * @param {@module:BillRunModel} billRun Instance of the bill run to be generated
-  * @param {@module:RequestNotifier} [notifier] Instance of `RequestNotifier` class. If passed in it will be used to log
-  * the time taken.
+  * @param {@module:RequestNotifierLib} [notifier] Instance of `RequestNotifierLib` class. If passed in it will be used
+  * to log the time taken.
   */
   static async go (billRun, notifier = '') {
     try {

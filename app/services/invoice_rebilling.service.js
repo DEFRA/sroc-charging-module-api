@@ -23,8 +23,8 @@ class InvoiceRebillingService {
    * @param {module:InvoiceModel} cancelInvoice Instance of `InvoiceModel` for the cancelling invoice.
    * @param {module:InvoiceModel} rebillInvoice Instance of `InvoiceModel` for the rebilling invoice.
    * @param {module:AuthorisedSystemModel} authorisedSystem The authorised system making the rebilling request.
-   * @param {@module:RequestNotifier} notifier Instance of `RequestNotifier` class. We use it to log errors rather than
-   * throwing them as this service is intended to run in the background.
+   * @param {@module:RequestNotifierLib} notifier Instance of `RequestNotifierLib` class. We use it to log errors rather
+   * than throwing them as this service is intended to run in the background.
    */
   static async go (invoice, cancelInvoice, rebillInvoice, authorisedSystem, notifier) {
     try {

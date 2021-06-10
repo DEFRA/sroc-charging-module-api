@@ -16,7 +16,7 @@ const { AirbrakeConfig } = require('../../config')
  * Errbit via {@link https://github.com/airbrake/airbrake-js|airbrake-js} available in the service.
  *
  * Most functionality is maintained in this `BaseNotifierLib` with the expectation that classes will extend it for their
- * particular scenario, for example, the `RequestNotifier` handles including the request ID in its output.
+ * particular scenario, for example, the `RequestNotifierLib` handles including the request ID in its output.
  *
  * > ***So, `omg()` and `omfg()`. What's that all about!?***
  * >
