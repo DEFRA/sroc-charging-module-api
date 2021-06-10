@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module BaseNotifier
+ * @module BaseNotifierLib
  */
 
 const { Notifier } = require('@airbrake/node')
@@ -15,7 +15,7 @@ const { AirbrakeConfig } = require('../../config')
  * This is used to make both logging via {@link https://github.com/pinojs/pino|pino} and sending notifications to
  * Errbit via {@link https://github.com/airbrake/airbrake-js|airbrake-js} available in the service.
  *
- * Most functionality is maintained in this `BaseNotifier` with the expectation that classes will extend it for their
+ * Most functionality is maintained in this `BaseNotifierLib` with the expectation that classes will extend it for their
  * particular scenario, for example, the `RequestNotifier` handles including the request ID in its output.
  *
  * > ***So, `omg()` and `omfg()`. What's that all about!?***
@@ -28,7 +28,7 @@ const { AirbrakeConfig } = require('../../config')
  * @param {Object} [notifier] An instance of {@link https://github.com/airbrake/airbrake-js|airbrake-js} `Notifier`
  * which our 'AirbrakePlugin` adds to Hapi. If 'null' the class will create a new instance instead.
  */
-class BaseNotifier {
+class BaseNotifierLib {
   constructor (logger = null, notifier = null) {
     this._logger = this._setLogger(logger)
     this._notifier = this._setNotifier(notifier)
@@ -164,4 +164,4 @@ class BaseNotifier {
   }
 }
 
-module.exports = BaseNotifier
+module.exports = BaseNotifierLib

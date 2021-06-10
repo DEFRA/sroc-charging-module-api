@@ -4,7 +4,7 @@
  * @module RequestNotifier
  */
 
-const BaseNotifier = require('./base_notifier')
+const BaseNotifierLib = require('./base_notifier.lib')
 
 /**
  * A combined logging and Airbrake (Errbit) notification manager for actions that take place within a
@@ -15,10 +15,10 @@ const BaseNotifier = require('./base_notifier')
  * {@link https://github.com/airbrake/airbrake-js|airbrake-js} available to our controllers and their underlying
  * services.
  *
- * This extends the `BaseNotifier` to also ensure the request ID is included in all output. We can then identify all
+ * This extends the `BaseNotifierLib` to also ensure the request ID is included in all output. We can then identify all
  * related log entries and Errbit notifications by using the ID.
  */
-class RequestNotifier extends BaseNotifier {
+class RequestNotifier extends BaseNotifierLib {
   /**
    * Instantiate a new instance
    *
