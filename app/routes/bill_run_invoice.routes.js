@@ -16,12 +16,7 @@ const routes = [
   {
     method: 'PATCH',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill',
-    handler: PresrocBillRunsInvoicesController.rebill,
-    options: {
-      app: {
-        excludeFromProd: true
-      }
-    }
+    handler: PresrocBillRunsInvoicesController.rebill
   }
 ]
 
