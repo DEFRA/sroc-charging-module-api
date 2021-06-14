@@ -5,6 +5,7 @@
  */
 
 const { LicenceModel } = require('../models')
+const { raw } = require('../models/base.model')
 
 class DeleteLicenceService {
   /**
@@ -24,9 +25,51 @@ class DeleteLicenceService {
         await LicenceModel
           .query(trx)
           .deleteById(licence.id)
+
+        await this._handleInvoice(licence, trx)
       })
     } catch (error) {
       notifier.omfg('Error deleting licence', { id: licence.id, error })
+    }
+  }
+
+  /**
+   * Patches the specified invoice if there are licences remaining on it, otherwise it deletes the invoice
+   */
+  static async _handleInvoice (licence, trx) {
+    const invoice = await licence.$relatedQuery('invoice', trx)
+    const licences = await invoice.$relatedQuery('licences', trx)
+
+    if (licences.length) {
+      const invoicePatch = this._invoicePatch(licence)
+      await invoice.$query(trx).patch(invoicePatch)
+    } else {
+      // TODO: Replace this with DeleteInvoiceService to ensure bill run level stats are updated
+      await invoice.$query(trx).delete()
+    }
+  }
+
+  /**
+   * Base patch which we will apply at the invoice and bill run level. The fields to change at the two levels are the
+   * same and will be adjusted in the same way; the intent is that the functions to apply the patch will take this base
+   * patch and add in the fields specific to the invoice or bill run level.
+   */
+  static _basePatch (licence) {
+    return {
+      creditLineCount: raw('credit_line_count - ?', licence.creditLineCount),
+      creditLineValue: raw('credit_line_value - ?', licence.creditLineValue),
+      debitLineCount: raw('debit_line_count - ?', licence.debitLineCount),
+      debitLineValue: raw('debit_line_value - ?', licence.debitLineValue),
+      zeroLineCount: raw('zero_line_count - ?', licence.zeroLineCount),
+      subjectToMinimumChargeCount: raw('subject_to_minimum_charge_count - ?', licence.subjectToMinimumChargeCount),
+      subjectToMinimumChargeCreditValue: raw('subject_to_minimum_charge_credit_value - ?', licence.subjectToMinimumChargeCreditValue),
+      subjectToMinimumChargeDebitValue: raw('subject_to_minimum_charge_debit_value - ?', licence.subjectToMinimumChargeDebitValue)
+    }
+  }
+
+  static _invoicePatch (licence) {
+    return {
+      ...this._basePatch(licence)
     }
   }
 }
