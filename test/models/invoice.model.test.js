@@ -270,7 +270,7 @@ describe('Invoice Model', () => {
     })
   })
 
-  describe.only('$deminimisInvoice method', () => {
+  describe('$deminimisInvoice method', () => {
     it('returns `true` if this is a deminimis invoice', async () => {
       const invoice = await InvoiceHelper.addInvoice(billRun.id, 'DEM0000001', 2021, 1, 750, 1, 1000)
 
