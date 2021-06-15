@@ -251,4 +251,52 @@ describe('Invoice Model', () => {
       expect(result).to.be.false()
     })
   })
+
+  describe('$zeroValueInvoice method', () => {
+    it('returns `true` if this is an zero value invoice', async () => {
+      const invoice = await InvoiceHelper.addInvoice(billRun.id, 'ZER0000001', 2021, 1, 5000, 1, 5000)
+
+      const result = invoice.$zeroValueInvoice()
+
+      expect(result).to.be.true()
+    })
+
+    it('returns `false` if this is not a zero value invoice', async () => {
+      const invoice = await InvoiceHelper.addInvoice(billRun.id, 'NZR0000001', 2021, 1, 2500, 1, 5000)
+
+      const result = invoice.$zeroValueInvoice()
+
+      expect(result).to.be.false()
+    })
+  })
+
+  describe.only('$deminimisInvoice method', () => {
+    it('returns `true` if this is a deminimis invoice', async () => {
+      const invoice = await InvoiceHelper.addInvoice(billRun.id, 'DEM0000001', 2021, 1, 750, 1, 1000)
+
+      const result = invoice.$deminimisInvoice()
+
+      expect(result).to.be.true()
+    })
+
+    describe('returns `false` if this is not a deminimis invoice', () => {
+      it('because the value is above the deminimis limit', async () => {
+        const invoice = await InvoiceHelper.addInvoice(billRun.id, 'NDM0000001', 2021, 1, 750, 1, 10000)
+
+        const result = invoice.$deminimisInvoice()
+
+        expect(result).to.be.false()
+      })
+
+      it('because rebilledType is not `O`', async () => {
+        const invoice = await InvoiceHelper.addInvoice(
+          billRun.id, 'DEM0000001', 2021, 1, 750, 1, 1000, 0, 0, 0, 0, GeneralHelper.uuid4(), 'R'
+        )
+
+        const result = invoice.$deminimisInvoice()
+
+        expect(result).to.be.false()
+      })
+    })
+  })
 })

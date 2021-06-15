@@ -182,6 +182,18 @@ class InvoiceModel extends BaseUpsertModel {
   $originalInvoice () {
     return this.rebilledType === 'O'
   }
+
+  $zeroValueInvoice () {
+    return this.debitLineValue - this.creditLineValue === 0
+  }
+
+  $deminimisInvoice () {
+    return (
+      this.debitLineValue - this.creditLineValue > 0 &&
+      this.debitLineValue - this.creditLineValue < DEMINIMIS_LIMIT &&
+      this.$originalInvoice()
+    )
+  }
 }
 
 module.exports = InvoiceModel
