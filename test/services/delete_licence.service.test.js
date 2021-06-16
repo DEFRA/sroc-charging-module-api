@@ -184,6 +184,38 @@ describe('Delete Licence service', () => {
       })
     })
 
+    describe('sets minimumChargeInvoice', () => {
+      let minimumChargeLicence
+
+      beforeEach(async () => {
+        // Add a minimum charge transaction to a second invoice
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5)
+        const { transaction: secondTransactionResult } = await CreateTransactionService.go(
+          { ...payload, customerReference: 'CUST2', subjectToMinimumCharge: true }, billRun, authorisedSystem, regime
+        )
+        const minimumChargeTransaction = await TransactionModel.query().findById(secondTransactionResult.id)
+        minimumChargeLicence = await LicenceModel.query().findById(minimumChargeTransaction.licenceId)
+
+        // Generate the bill run to ensure its values are updated before we delete the licence
+        await GenerateBillRunService.go(billRun)
+      })
+
+      it('to `true` when still applicable', async () => {
+        await DeleteLicenceService.go(licence, notifierFake)
+
+        const result = await InvoiceModel.query().findById(minimumChargeLicence.invoiceId)
+        expect(result.minimumChargeInvoice).to.be.true()
+      })
+
+      it('to `false` when not applicable', async () => {
+        await DeleteLicenceService.go(minimumChargeLicence, notifierFake)
+
+        const result = await InvoiceModel.query().findById(licence.invoiceId)
+        expect(result.minimumChargeInvoice).to.be.false()
+      })
+    })
+
     it('deletes the invoice if there are no licences left', async () => {
       await DeleteLicenceService.go(licence, notifierFake)
 

@@ -45,6 +45,7 @@ class DeleteLicenceService {
     const licences = await invoice.$relatedQuery('licences', trx)
 
     if (licences.length) {
+      this._updateInstance(invoice, licence)
       const invoicePatch = this._invoicePatch(licence, invoice)
       await invoice.$query(trx).patch(invoicePatch)
     } else {
@@ -55,28 +56,41 @@ class DeleteLicenceService {
 
   static _invoicePatch (licence, invoice) {
     return {
-      ...this._basePatch(licence),
+      creditLineCount: invoice.creditLineCount,
+      creditLineValue: invoice.creditLineValue,
+      debitLineCount: invoice.debitLineCount,
+      debitLineValue: invoice.debitLineValue,
+      zeroLineCount: invoice.zeroLineCount,
+      subjectToMinimumChargeCount: invoice.subjectToMinimumChargeCount,
+      subjectToMinimumChargeCreditValue: invoice.subjectToMinimumChargeCreditValue,
+      subjectToMinimumChargeDebitValue: invoice.subjectToMinimumChargeDebitValue,
       zeroValueInvoice: invoice.$zeroValueInvoice(),
-      deminimisInvoice: invoice.$deminimisInvoice()
+      deminimisInvoice: invoice.$deminimisInvoice(),
+      minimumChargeInvoice: invoice.$minimumChargeInvoice()
     }
   }
 
   /**
-   * Base patch which we will apply at the invoice and bill run level. The fields to change at the two levels are the
-   * same and will be adjusted in the same way; the intent is that the functions to apply the patch will take this base
-   * patch and add in the fields specific to the invoice or bill run level.
+   * Receives an entity (ie. an invoice or a bill run) and subtracts the licence's stats from the entity's stats. We
+   * update the figures on the instance in this way so we can then use the entity's instance methods to determine
+   * whether deminimis etc. applies and then persist the values and flags in one go.
    */
-  static _basePatch (licence) {
-    return {
-      creditLineCount: raw('credit_line_count - ?', licence.creditLineCount),
-      creditLineValue: raw('credit_line_value - ?', licence.creditLineValue),
-      debitLineCount: raw('debit_line_count - ?', licence.debitLineCount),
-      debitLineValue: raw('debit_line_value - ?', licence.debitLineValue),
-      zeroLineCount: raw('zero_line_count - ?', licence.zeroLineCount),
-      subjectToMinimumChargeCount: raw('subject_to_minimum_charge_count - ?', licence.subjectToMinimumChargeCount),
-      subjectToMinimumChargeCreditValue: raw('subject_to_minimum_charge_credit_value - ?', licence.subjectToMinimumChargeCreditValue),
-      subjectToMinimumChargeDebitValue: raw('subject_to_minimum_charge_debit_value - ?', licence.subjectToMinimumChargeDebitValue)
-    }
+  static _updateInstance (entity, licence) {
+    // Define the fields to be updated and for each one, subtract the licence value from the entity value
+    const fieldsToUpdate = [
+      'creditLineCount',
+      'creditLineValue',
+      'debitLineCount',
+      'debitLineValue',
+      'zeroLineCount',
+      'subjectToMinimumChargeCount',
+      'subjectToMinimumChargeCreditValue',
+      'subjectToMinimumChargeDebitValue'
+    ]
+
+    fieldsToUpdate.forEach(field => {
+      entity[field] -= licence[field]
+    })
   }
 }
 
