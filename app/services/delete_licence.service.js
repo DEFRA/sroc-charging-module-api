@@ -9,10 +9,14 @@ const { raw } = require('../models/base.model')
 
 class DeleteLicenceService {
   /**
-   * Deletes a licence along with its transactions. Intended to be run as a background task by a controller, ie. called
-   * without an await. Note that the licence will _not_ be validated to ensure it is linked to the bill run; it is
-   * expected that this will be done from the calling controller so that it can present the appropriate error to the
-   * user immediately.
+   * Deletes a licence along with its transactions and updates the invoice accordingly. Intended to be run as a
+   * background task by a controller, ie. called without an await. Note that the licence will _not_ be validated to
+   * ensure it is linked to the bill run; it is expected that this will be done from the calling controller so that it
+   * can present the appropriate error to the user immediately.
+   *
+   * The invoice will be updated by subtracting the licence's credit/debit line count/value etc. and updating the zero
+   * value and deminimis invoice flags. Note that this will be done regardless of whether or not the bill run has been
+   * generated.
    *
    * @param {module:LicenceModel} licence The licence to be deleted.
    * @param {@module:RequestNotifier} notifier Instance of `RequestNotifier` class. We use it to log errors rather than
@@ -41,11 +45,19 @@ class DeleteLicenceService {
     const licences = await invoice.$relatedQuery('licences', trx)
 
     if (licences.length) {
-      const invoicePatch = this._invoicePatch(licence)
+      const invoicePatch = this._invoicePatch(licence, invoice)
       await invoice.$query(trx).patch(invoicePatch)
     } else {
       // TODO: Replace this with DeleteInvoiceService to ensure bill run level stats are updated
       await invoice.$query(trx).delete()
+    }
+  }
+
+  static _invoicePatch (licence, invoice) {
+    return {
+      ...this._basePatch(licence),
+      zeroValueInvoice: invoice.$zeroValueInvoice(),
+      deminimisInvoice: invoice.$deminimisInvoice()
     }
   }
 
@@ -64,12 +76,6 @@ class DeleteLicenceService {
       subjectToMinimumChargeCount: raw('subject_to_minimum_charge_count - ?', licence.subjectToMinimumChargeCount),
       subjectToMinimumChargeCreditValue: raw('subject_to_minimum_charge_credit_value - ?', licence.subjectToMinimumChargeCreditValue),
       subjectToMinimumChargeDebitValue: raw('subject_to_minimum_charge_debit_value - ?', licence.subjectToMinimumChargeDebitValue)
-    }
-  }
-
-  static _invoicePatch (licence) {
-    return {
-      ...this._basePatch(licence)
     }
   }
 }

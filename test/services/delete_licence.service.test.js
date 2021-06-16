@@ -108,6 +108,82 @@ describe('Delete Licence service', () => {
       expect(result.debitLineValue).to.equal(0)
     })
 
+    describe('sets zeroValueInvoice', () => {
+      let secondTransaction
+      let secondLicence
+
+      beforeEach(async () => {
+        // Add a transaction to a second invoice
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
+        const { transaction: secondTransactionResult } = await CreateTransactionService.go(
+          { ...payload, customerReference: 'CUST2' }, billRun, authorisedSystem, regime
+        )
+        secondTransaction = await TransactionModel.query().findById(secondTransactionResult.id)
+        secondLicence = await LicenceModel.query().findById(secondTransaction.licenceId)
+
+        // Add a credit to the original invoice to cancel out its original debit
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
+        await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
+
+        // Generate the bill run to ensure its values are updated before we delete the licence
+        await GenerateBillRunService.go(billRun)
+      })
+
+      it('to `true` when still applicable', async () => {
+        await DeleteLicenceService.go(secondLicence, notifierFake)
+
+        const result = await InvoiceModel.query().findById(transaction.invoiceId)
+        expect(result.zeroValueInvoice).to.be.true()
+      })
+
+      it('to `false` when not applicable', async () => {
+        await DeleteLicenceService.go(licence, notifierFake)
+
+        const result = await InvoiceModel.query().findById(secondTransaction.invoiceId)
+        expect(result.zeroValueInvoice).to.be.false()
+      })
+    })
+
+    describe('sets deminimisInvoice', () => {
+      let secondTransaction
+      let secondLicence
+
+      beforeEach(async () => {
+        // Add a transaction to a second invoice
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
+        const { transaction: secondTransactionResult } = await CreateTransactionService.go(
+          { ...payload, customerReference: 'CUST2' }, billRun, authorisedSystem, regime
+        )
+        secondTransaction = await TransactionModel.query().findById(secondTransactionResult.id)
+        secondLicence = await LicenceModel.query().findById(secondTransaction.licenceId)
+
+        // Add a credit to the original invoice to take its value below the deminimis limit
+        rulesServiceStub.restore()
+        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 4750)
+        await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
+
+        // Generate the bill run to ensure its values are updated before we delete the licence
+        await GenerateBillRunService.go(billRun)
+      })
+
+      it('to `true` when still applicable', async () => {
+        await DeleteLicenceService.go(secondLicence, notifierFake)
+
+        const result = await InvoiceModel.query().findById(transaction.invoiceId)
+        expect(result.deminimisInvoice).to.be.true()
+      })
+
+      it('to `false` when not applicable', async () => {
+        await DeleteLicenceService.go(licence, notifierFake)
+
+        const result = await InvoiceModel.query().findById(secondTransaction.invoiceId)
+        expect(result.deminimisInvoice).to.be.false()
+      })
+    })
+
     it('deletes the invoice if there are no licences left', async () => {
       await DeleteLicenceService.go(licence, notifierFake)
 
