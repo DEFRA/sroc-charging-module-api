@@ -1,10 +1,10 @@
 'use strict'
 
 /**
- * @module TaskNotifier
+ * @module TaskNotifierLib
  */
 
-const BaseNotifier = require('./base_notifier')
+const BaseNotifierLib = require('./base_notifier.lib')
 
 /**
  * A combined logging and Airbrake (Errbit) notification manager for tasks that take place outside of a
@@ -13,7 +13,7 @@ const BaseNotifier = require('./base_notifier')
  * This was initially created to be used with the `npm run customer-files` task but can be used for anywhere that
  * notifications are needed and you don't have a request ID.
  */
-class TaskNotifier extends BaseNotifier {
+class TaskNotifierLib extends BaseNotifierLib {
   _formatLogPacket (message, data) {
     return {
       message,
@@ -29,4 +29,4 @@ class TaskNotifier extends BaseNotifier {
   }
 }
 
-module.exports = TaskNotifier
+module.exports = TaskNotifierLib

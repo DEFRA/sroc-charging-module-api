@@ -84,7 +84,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
       it('with the correct values duplicated', async () => {
       // Create a list of all keys in the transaction object and filter out the ones we don't want to check
         const transactionKeys = Object.keys(transaction)
-        const keysToSkip = ['id', 'billRunId', 'createdAt', 'updatedAt', 'createdBy', 'invoiceId', 'licenceId', 'clientId']
+        const keysToSkip = ['id', 'billRunId', 'createdAt', 'updatedAt', 'createdBy', 'invoiceId', 'licenceId', 'clientId', 'rebilledTransactionId']
         const keysToCheck = transactionKeys.filter(key => !keysToSkip.includes(key))
 
         // Iterate over the remaining keys and check that the result's value matches the original transaction's value
@@ -103,6 +103,10 @@ describe('Invoice Rebilling Create Transaction service', () => {
         for (const key of keysToCheck) {
           expect(result[key]).to.not.equal(transaction[key])
         }
+      })
+
+      it('records a link back to the original transaction', async () => {
+        expect(result.rebilledTransactionId).to.equal(transaction.id)
       })
     })
 

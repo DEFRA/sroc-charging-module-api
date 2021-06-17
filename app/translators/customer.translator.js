@@ -6,8 +6,8 @@ const BaseTranslator = require('./base.translator')
 
 // TODO: Use commented out version once 'module exports inside circular dependency' issue resolved
 // See https://github.com/DEFRA/sroc-service-team/issues/66
-// const { StaticLookup } = require('../lib')
-const StaticLookup = require('../lib/static_lookup')
+// const { StaticLookupLib } = require('../lib')
+const StaticLookupLib = require('../lib/static_lookup.lib')
 
 class CustomerTranslator extends BaseTranslator {
   _schema () {
@@ -43,7 +43,7 @@ class CustomerTranslator extends BaseTranslator {
   }
 
   _validRegions () {
-    return StaticLookup.regions
+    return StaticLookupLib.regions
   }
 }
 

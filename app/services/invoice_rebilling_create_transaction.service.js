@@ -47,6 +47,7 @@ class InvoiceRebillingCreateTransactionService {
       billRunId: licence.billRunId,
       invoiceId: licence.invoiceId,
       licenceId: licence.id,
+      rebilledTransactionId: transaction.id,
       chargeCredit: invert ? !transaction.chargeCredit : transaction.chargeCredit
     })
   }

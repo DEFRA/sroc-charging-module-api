@@ -18,8 +18,8 @@ class DeleteLicenceService {
    * generated.
    *
    * @param {module:LicenceModel} licence The licence to be deleted.
-   * @param {@module:RequestNotifier} notifier Instance of `RequestNotifier` class. We use it to log errors rather than
-   * throwing them as this service is intended to run in the background.
+   * @param {@module:RequestNotifierLib} notifier Instance of `RequestNotifierLib` class. We use it to log errors rather
+   * than throwing them as this service is intended to run in the background.
    */
   static async go (licence, notifier) {
     try {

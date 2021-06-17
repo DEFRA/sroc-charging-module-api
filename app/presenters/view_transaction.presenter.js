@@ -22,6 +22,7 @@ class ViewTransactionPresenter extends BasePresenter {
       periodStart: data.chargePeriodStart,
       periodEnd: data.chargePeriodEnd,
       compensationCharge: this._asBoolean(data.regimeValue17),
+      rebilledTransactionId: data.rebilledTransactionId,
       calculation: data.chargeCalculation
     }
   }
