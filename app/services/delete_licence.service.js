@@ -14,8 +14,8 @@ class DeleteLicenceService {
    * can present the appropriate error to the user immediately.
    *
    * The invoice will be updated by subtracting the licence's credit/debit line count/value etc. and updating the zero
-   * value and deminimis invoice flags. Note that this will be done regardless of whether or not the bill run has been
-   * generated.
+   * value, deminimis and minimum charge invoice flags. Note that this will be done regardless of whether or not the
+   * bill run has been generated.
    *
    * @param {module:LicenceModel} licence The licence to be deleted.
    * @param {@module:RequestNotifierLib} notifier Instance of `RequestNotifierLib` class. We use it to log errors rather
@@ -45,7 +45,7 @@ class DeleteLicenceService {
 
     if (licences.length) {
       this._updateInstance(invoice, licence)
-      const invoicePatch = this._invoicePatch(licence, invoice)
+      const invoicePatch = this._invoicePatch(invoice)
       await invoice.$query(trx).patch(invoicePatch)
     } else {
       // TODO: Replace this with DeleteInvoiceService to ensure bill run level stats are updated
@@ -53,7 +53,7 @@ class DeleteLicenceService {
     }
   }
 
-  static _invoicePatch (licence, invoice) {
+  static _invoicePatch (invoice) {
     return {
       creditLineCount: invoice.creditLineCount,
       creditLineValue: invoice.creditLineValue,
