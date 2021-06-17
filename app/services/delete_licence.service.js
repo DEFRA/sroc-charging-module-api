@@ -5,7 +5,6 @@
  */
 
 const { LicenceModel } = require('../models')
-const { raw } = require('../models/base.model')
 
 class DeleteLicenceService {
   /**
