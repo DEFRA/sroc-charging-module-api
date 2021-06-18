@@ -20,6 +20,7 @@ const {
 } = require('../support/helpers')
 
 const {
+  BillRunModel,
   InvoiceModel,
   LicenceModel,
   TransactionModel
@@ -78,7 +79,7 @@ describe('Delete Licence service', () => {
     Sinon.restore()
   })
 
-  describe('When a valid licence is supplied', () => {
+  describe.only('When a valid licence is supplied', () => {
     it('deletes the licence', async () => {
       await DeleteLicenceService.go(licence, notifierFake)
 
@@ -213,6 +214,22 @@ describe('Delete Licence service', () => {
 
         const result = await InvoiceModel.query().findById(licence.invoiceId)
         expect(result.minimumChargeInvoice).to.be.false()
+      })
+    })
+
+    describe('at the bill run level', () => {
+      it('updates the figures', async () => {
+        // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
+        await LicenceHelper.addLicence(billRun.id, 'SECOND_LICENCE', transaction.invoiceId, 'TH230000222', 2019)
+
+        await GenerateBillRunService.go(billRun)
+
+        await DeleteLicenceService.go(licence, notifierFake)
+
+        const result = await BillRunModel.query().findById(transaction.billRunId)
+        expect(result.invoiceValue).to.equal(0)
+        expect(result.debitLineCount).to.equal(0)
+        expect(result.debitLineValue).to.equal(0)
       })
     })
 
