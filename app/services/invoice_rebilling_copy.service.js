@@ -26,23 +26,17 @@ class InvoiceRebillingCopyService {
    * @param {module:InvoiceModel} cancelInvoice Instance of `InvoiceModel` for the cancelling invoice.
    * @param {module:InvoiceModel} rebillInvoice Instance of `InvoiceModel` for the rebilling invoice.
    * @param {module:AuthorisedSystemModel} authorisedSystem The authorised system making the rebilling request.
-   * @param {@module:RequestNotifierLib} notifier Instance of `RequestNotifierLib` class. We use it to log errors rather
-   * than throwing them as this service is intended to run in the background.
    */
-  static async go (invoice, cancelInvoice, rebillInvoice, authorisedSystem, notifier) {
-    try {
-      const licences = await this._licences(invoice)
+  static async go (invoice, cancelInvoice, rebillInvoice, authorisedSystem) {
+    const licences = await this._licences(invoice)
 
-      await LicenceModel.transaction(async trx => {
-        for (const licence of licences) {
-          const cancelLicence = await InvoiceRebillingCreateLicenceService.go(cancelInvoice, licence.licenceNumber, trx)
-          const rebillLicence = await InvoiceRebillingCreateLicenceService.go(rebillInvoice, licence.licenceNumber, trx)
-          await this._populateRebillingLicences(licence, cancelLicence, rebillLicence, authorisedSystem, trx)
-        }
-      })
-    } catch (error) {
-      notifier.omfg('Error rebilling invoice', { id: invoice.id, error })
-    }
+    await LicenceModel.transaction(async trx => {
+      for (const licence of licences) {
+        const cancelLicence = await InvoiceRebillingCreateLicenceService.go(cancelInvoice, licence.licenceNumber, trx)
+        const rebillLicence = await InvoiceRebillingCreateLicenceService.go(rebillInvoice, licence.licenceNumber, trx)
+        await this._populateRebillingLicences(licence, cancelLicence, rebillLicence, authorisedSystem, trx)
+      }
+    })
   }
 
   static async _populateRebillingLicences (licence, cancelLicence, rebillLicence, authorisedSystem, trx) {

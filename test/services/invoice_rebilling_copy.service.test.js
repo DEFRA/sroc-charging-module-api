@@ -3,7 +3,6 @@
 // Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
-const Sinon = require('sinon')
 
 const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
@@ -15,8 +14,7 @@ const {
   DatabaseHelper,
   InvoiceHelper,
   RegimeHelper,
-  TransactionHelper,
-  GeneralHelper
+  TransactionHelper
 } = require('../support/helpers')
 
 const { LicenceModel, TransactionModel } = require('../../app/models')
@@ -31,16 +29,12 @@ describe('Invoice Rebilling Copy service', () => {
   let regime
   let cancelInvoice
   let rebillInvoice
-  let notifierFake
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
-
-    // Create a fake function to stand in place of Notifier.omfg()
-    notifierFake = { omfg: Sinon.fake() }
   })
 
   describe('When the service is called', () => {
@@ -56,7 +50,7 @@ describe('Invoice Rebilling Copy service', () => {
       cancelInvoice = await addRebillInvoice(newBillRun.id, 'CUSTOMER_REFERENCE', 2020, invoice.id, 'C')
       rebillInvoice = await addRebillInvoice(newBillRun.id, 'CUSTOMER_REFERENCE', 2020, invoice.id, 'R')
 
-      await InvoiceRebillingCopyService.go(invoice, cancelInvoice, rebillInvoice, authorisedSystem, notifierFake)
+      await InvoiceRebillingCopyService.go(invoice, cancelInvoice, rebillInvoice, authorisedSystem)
     })
 
     describe('cancel licences', () => {
@@ -111,18 +105,6 @@ describe('Invoice Rebilling Copy service', () => {
           expect(lineDescriptions).to.only.contain(['TRANSACTION001', 'TRANSACTION002', 'TRANSACTION003'])
         }
       })
-    })
-  })
-
-  describe('When an error occurs', () => {
-    it('calls the notifier', async () => {
-      Sinon.stub(InvoiceRebillingCopyService, '_licences').throws()
-      await InvoiceRebillingCopyService.go(
-        { id: GeneralHelper.uuid4() }, cancelInvoice, rebillInvoice, authorisedSystem, notifierFake
-      )
-
-      expect(notifierFake.omfg.callCount).to.equal(1)
-      expect(notifierFake.omfg.firstArg).to.equal('Error rebilling invoice')
     })
   })
 
