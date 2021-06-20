@@ -10,6 +10,11 @@ const InvoiceRebillingCopyService = require('./invoice_rebilling_copy.service')
 
 class InvoiceRebillingService {
   /**
+   * Manages the rebilling of an invoice, including creating the 'cancel' and 'rebill' invoices, generating the response
+   * to the client system, and handling the background task to copy the details from the original invoice to the new
+   * ones.
+   *
+   * Nearly all the work is done in sub-services. We use the `InvoiceRebillingService` to marshall the whole process.
    *
    * @param {module:BillRunModel} billRun An instance of `BillRunModel` of the bill run to add the invoices to.
    * @param {module:InvoiceModel} invoice An instance of `InvoiceModel` of the invoice to be rebilled.
