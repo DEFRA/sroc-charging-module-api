@@ -3,8 +3,7 @@
 const {
   DeleteInvoiceService,
   FetchAndValidateBillRunInvoiceService,
-  InvoiceRebillingInitialiseService,
-  InvoiceRebillingCopyService,
+  InvoiceRebillingService,
   InvoiceRebillingValidationService,
   ViewBillRunInvoiceService
 } = require('../../services')
@@ -27,16 +26,14 @@ class BillRunsInvoicesController {
   }
 
   static async rebill (req, h) {
-    const { billRun, invoice } = req.app
+    const { billRun, invoice, notifier } = req.app
 
     // We perform validation within the controller so any errors are returned immediately
     await InvoiceRebillingValidationService.go(billRun, invoice)
-    const { cancelInvoice, rebillInvoice, response } = await InvoiceRebillingInitialiseService.go(billRun, invoice)
 
-    // We start InvoiceRebillingCopyService without await so that it runs in the background
-    InvoiceRebillingCopyService.go(invoice, cancelInvoice, rebillInvoice, req.auth.credentials.user, req.app.notifier)
+    const result = await InvoiceRebillingService.go(billRun, invoice, req.auth.credentials.user, notifier)
 
-    return h.response(response).code(201)
+    return h.response(result).code(201)
   }
 }
 
