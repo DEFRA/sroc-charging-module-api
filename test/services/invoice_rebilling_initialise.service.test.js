@@ -41,14 +41,4 @@ describe('Invoice Rebilling Initialise service', () => {
     expect(result.cancelInvoice.minimumChargeInvoice).to.equal(invoice.minimumChargeInvoice)
     expect(result.rebillInvoice.minimumChargeInvoice).to.equal(invoice.minimumChargeInvoice)
   })
-
-  it("returns a 'response' object containing the id and type of the invoices", async () => {
-    const result = await InvoiceRebillingInitialiseService.go(billRun, invoice)
-
-    const returnedCancelObject = result.response.invoices.find(element => element.rebilledType === 'C')
-    const returnedRebillObject = result.response.invoices.find(element => element.rebilledType === 'R')
-
-    expect(result.cancelInvoice.id).to.equal(returnedCancelObject.id)
-    expect(result.rebillInvoice.id).to.equal(returnedRebillObject.id)
-  })
 })
