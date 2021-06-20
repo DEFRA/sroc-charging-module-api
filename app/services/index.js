@@ -31,6 +31,7 @@ const InvoiceRebillingCopyService = require('./invoice_rebilling_copy.service')
 const InvoiceRebillingCreateLicenceService = require('./invoice_rebilling_create_licence.service')
 const InvoiceRebillingCreateTransactionService = require('./invoice_rebilling_create_transaction.service')
 const InvoiceRebillingInitialiseService = require('./invoice_rebilling_initialise.service')
+const InvoiceRebillingService = require('./invoice_rebilling.service')
 const InvoiceRebillingValidationService = require('./invoice_rebilling_validation.service')
 const ListAuthorisedSystemsService = require('./list_authorised_systems.service')
 const ListCustomerFilesService = require('./list_customer_files.service')
@@ -97,6 +98,7 @@ module.exports = {
   InvoiceRebillingCreateLicenceService,
   InvoiceRebillingCreateTransactionService,
   InvoiceRebillingInitialiseService,
+  InvoiceRebillingService,
   InvoiceRebillingValidationService,
   ListAuthorisedSystemsService,
   ListCustomerFilesService,
