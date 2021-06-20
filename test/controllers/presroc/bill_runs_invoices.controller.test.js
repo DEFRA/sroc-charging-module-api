@@ -29,7 +29,7 @@ const {
   DeleteInvoiceService,
   FetchAndValidateBillRunInvoiceService,
   InvoiceRebillingInitialiseService,
-  InvoiceRebillingService,
+  InvoiceRebillingCopyService,
   InvoiceRebillingValidationService
 } = require('../../../app/services')
 
@@ -241,7 +241,7 @@ describe('Presroc Invoices controller', () => {
           rebillInvoice,
           response: { msg: 'REBILL_OK' }
         })
-      rebillStub = Sinon.stub(InvoiceRebillingService, 'go')
+      rebillStub = Sinon.stub(InvoiceRebillingCopyService, 'go')
 
       response = await server.inject(options(authToken, billRun.id, invoice.id))
     })

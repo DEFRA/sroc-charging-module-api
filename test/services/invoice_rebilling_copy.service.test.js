@@ -22,9 +22,9 @@ const {
 const { LicenceModel, TransactionModel } = require('../../app/models')
 
 // Thing under test
-const { InvoiceRebillingService } = require('../../app/services')
+const { InvoiceRebillingCopyService } = require('../../app/services')
 
-describe('Invoice Rebilling service', () => {
+describe('Invoice Rebilling Copy service', () => {
   let currentBillRun
   let newBillRun
   let authorisedSystem
@@ -56,7 +56,7 @@ describe('Invoice Rebilling service', () => {
       cancelInvoice = await addRebillInvoice(newBillRun.id, 'CUSTOMER_REFERENCE', 2020, invoice.id, 'C')
       rebillInvoice = await addRebillInvoice(newBillRun.id, 'CUSTOMER_REFERENCE', 2020, invoice.id, 'R')
 
-      await InvoiceRebillingService.go(invoice, cancelInvoice, rebillInvoice, authorisedSystem, notifierFake)
+      await InvoiceRebillingCopyService.go(invoice, cancelInvoice, rebillInvoice, authorisedSystem, notifierFake)
     })
 
     describe('cancel licences', () => {
@@ -116,8 +116,8 @@ describe('Invoice Rebilling service', () => {
 
   describe('When an error occurs', () => {
     it('calls the notifier', async () => {
-      Sinon.stub(InvoiceRebillingService, '_licences').throws()
-      await InvoiceRebillingService.go(
+      Sinon.stub(InvoiceRebillingCopyService, '_licences').throws()
+      await InvoiceRebillingCopyService.go(
         { id: GeneralHelper.uuid4() }, cancelInvoice, rebillInvoice, authorisedSystem, notifierFake
       )
 

@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module InvoiceRebillingService
+ * @module InvoiceRebillingCopyService
  */
 
 const InvoiceRebillingCreateLicenceService = require('./invoice_rebilling_create_licence.service')
@@ -9,15 +9,18 @@ const InvoiceRebillingCreateTransactionService = require('./invoice_rebilling_cr
 
 const { LicenceModel, TransactionModel } = require('../models')
 
-class InvoiceRebillingService {
+class InvoiceRebillingCopyService {
   /**
-   * Service to rebill a given invoice onto the supplied cancel invoice and rebill invoice.
+   * Service to copy an 'original' invoice to the 'cancel' and 'rebill' invoices
    *
-   * For each licence in the invoice, it will create a corresponding licence on cancelInvoice and rebillInvoice and
-   * populate them with the transactions on the licence (flipping them from credit to debit and vice-versa as
-   * appropriate).
+   * For each licence in the `invoice`, it will create a corresponding licence on `cancelInvoice` and `rebillInvoice`
+   * and populate it with copies of the transactions from the original licence (flipping them from credit to debit and
+   * vice-versa as appropriate).
    *
-   * Note that bill run, invoice and licence tallies will be updated as part of the process.
+   * The `cancelInvoice` and `rebillInvoice` are expected to be created by the `InvoiceRebillingInitialiseService` prior
+   * to then being passed to this service.
+   *
+   * Note - The bill run, invoice and licence tallies will also be updated as part of the process.
    *
    * @param {module:InvoiceModel} invoice Instance of `InvoiceModel` for the invoice to be rebilled.
    * @param {module:InvoiceModel} cancelInvoice Instance of `InvoiceModel` for the cancelling invoice.
@@ -63,4 +66,4 @@ class InvoiceRebillingService {
   }
 }
 
-module.exports = InvoiceRebillingService
+module.exports = InvoiceRebillingCopyService
