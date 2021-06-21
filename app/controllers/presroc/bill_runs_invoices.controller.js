@@ -31,6 +31,9 @@ class BillRunsInvoicesController {
     // We perform validation within the controller so any errors are returned immediately
     await InvoiceRebillingValidationService.go(billRun, invoice)
 
+    // We await the InvoiceRebillingService in order to generate the cancel and rebill invoice and the response back to
+    // the client system. But is also kicks off a background task to perform the actual copying of the transactions
+    // and licences from the original invoice.
     const result = await InvoiceRebillingService.go(billRun, invoice, req.auth.credentials.user, notifier)
 
     return h.response(result).code(201)
