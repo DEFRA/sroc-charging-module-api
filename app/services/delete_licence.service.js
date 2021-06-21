@@ -48,7 +48,8 @@ class DeleteLicenceService {
   }
 
   /**
-   * Patches the invoice that the specified licence belongs to
+   * Updates the invoice instance that the licence belongs to, then uses the updated fields to generate a patch which is
+   * applied to the invoice in the db.
    */
   static async _handleInvoice (invoice, licence, trx) {
     this._updateInstance(invoice, licence)
@@ -57,7 +58,8 @@ class DeleteLicenceService {
   }
 
   /**
-   * Patches the bill run that the specified licence belongs to
+   * Updates the bill run instance that the licence belongs to, then uses the updated fields to generate a patch which
+   * is applied to the bill run in the db.
    */
   static async _handleBillRun (billRun, licence, trx) {
     this._updateBillRunInstance(billRun, licence)
@@ -65,6 +67,10 @@ class DeleteLicenceService {
     await billRun.$query(trx).patch(billRunPatch)
   }
 
+  /**
+   * Creates a patch for the invoice using the fields in _entityPatch (which are common to both invoice and bill run),
+   * and then adds in additional fields based on the invoice's static methods.
+   */
   static _invoicePatch (invoice) {
     return {
       ...this._entityPatch(invoice),
@@ -74,6 +80,10 @@ class DeleteLicenceService {
     }
   }
 
+  /**
+   * Creates a patch for the bill run using the fields in _entityPatch (which are common to both invoice and bill run),
+   * and then adds in additional fields based on the invoice's static methods.
+   */
   static _billRunPatch (billRun) {
     return {
       ...this._entityPatch(billRun),
@@ -103,21 +113,14 @@ class DeleteLicenceService {
    * whether deminimis etc. applies and then persist the values and flags in one go.
    */
   static _updateInstance (entity, licence) {
-    // Define the fields to be updated and for each one, subtract the licence value from the entity value
-    const fieldsToUpdate = [
-      'creditLineCount',
-      'creditLineValue',
-      'debitLineCount',
-      'debitLineValue',
-      'zeroLineCount',
-      'subjectToMinimumChargeCount',
-      'subjectToMinimumChargeCreditValue',
-      'subjectToMinimumChargeDebitValue'
-    ]
-
-    fieldsToUpdate.forEach(field => {
-      entity[field] -= licence[field]
-    })
+    entity.creditLineCount -= licence.creditLineCount
+    entity.creditLineValue -= licence.creditLineValue
+    entity.debitLineCount -= licence.debitLineCount
+    entity.debitLineValue -= licence.debitLineValue
+    entity.zeroLineCount -= licence.zeroLineCount
+    entity.subjectToMinimumChargeCount -= licence.subjectToMinimumChargeCount
+    entity.subjectToMinimumChargeCreditValue -= licence.subjectToMinimumChargeCreditValue
+    entity.subjectToMinimumChargeDebitValue -= licence.subjectToMinimumChargeDebitValue
   }
 
   /**
