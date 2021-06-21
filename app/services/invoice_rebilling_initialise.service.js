@@ -26,6 +26,7 @@ class InvoiceRebillingInitialiseService {
     let rebillInvoice
 
     await InvoiceModel.transaction(async trx => {
+      await this._setBillRunStatusToPending(billRun, trx)
       cancelInvoice = await this._createInvoice(billRun, invoice, 'C', trx)
       rebillInvoice = await this._createInvoice(billRun, invoice, 'R', trx)
     })
@@ -34,6 +35,10 @@ class InvoiceRebillingInitialiseService {
       cancelInvoice,
       rebillInvoice
     }
+  }
+
+  static async _setBillRunStatusToPending (billRun, trx) {
+    await billRun.$query(trx).patch({ status: 'pending' })
   }
 
   static _createInvoice (billRun, invoice, rebilledType, trx) {

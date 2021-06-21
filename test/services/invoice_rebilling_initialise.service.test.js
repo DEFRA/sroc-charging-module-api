@@ -41,4 +41,11 @@ describe('Invoice Rebilling Initialise service', () => {
     expect(result.cancelInvoice.minimumChargeInvoice).to.equal(invoice.minimumChargeInvoice)
     expect(result.rebillInvoice.minimumChargeInvoice).to.equal(invoice.minimumChargeInvoice)
   })
+
+  it("sets the bill run status to 'pending'", async () => {
+    await InvoiceRebillingInitialiseService.go(billRun, invoice)
+    const refreshedBillRun = await billRun.$query()
+
+    expect(refreshedBillRun.status).to.equal('pending')
+  })
 })
