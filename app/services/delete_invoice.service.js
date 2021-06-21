@@ -18,28 +18,38 @@ class DeleteInvoiceService {
    * @param {string} billRunId The id of the bill run that the invoice belongs to.
    * @param {@module:RequestNotifierLib} notifier Instance of `RequestNotifierLib` class. We use it to log errors rather
    * than throwing them as this service is intended to run in the background.
+   * @param {object} [trx] Optional transaction instance; only needed if calling this service from within an existing
+   * transaction.
    */
-  static async go (invoice, billRunId, notifier) {
+  static async go (invoice, billRunId, notifier, trx = null) {
     try {
       const billRunPatch = this._billRunPatch(invoice)
 
-      await InvoiceModel.transaction(async trx => {
-        // We only need to delete the invoice as the deletion will cascade down to the licence level, and from there down
-        // to the transaction level.
-        await InvoiceModel
-          .query(trx)
-          .deleteById(invoice.id)
-
-        await BillRunModel
-          .query(trx)
-          .findById(billRunId)
-          .patch(billRunPatch)
-
-        await this._setBillRunStatusIfEmpty(billRunId, trx)
-      })
+      if (trx) {
+        await this._deleteInvoice(invoice, billRunId, billRunPatch, trx)
+      } else {
+        await InvoiceModel.transaction(async trx => {
+          await this._deleteInvoice(invoice, billRunId, billRunPatch, trx)
+        })
+      }
     } catch (error) {
       notifier.omfg('Error deleting invoice', { id: invoice.id, error })
     }
+  }
+
+  static async _deleteInvoice (invoice, billRunId, billRunPatch, trx) {
+    // We only need to delete the invoice as the deletion will cascade down to the licence level, and from there down
+    // to the transaction level.
+    await InvoiceModel
+      .query(trx)
+      .deleteById(invoice.id)
+
+    await BillRunModel
+      .query(trx)
+      .findById(billRunId)
+      .patch(billRunPatch)
+
+    await this._setBillRunStatusIfEmpty(billRunId, trx)
   }
 
   /**
