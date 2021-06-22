@@ -18,28 +18,40 @@ class DeleteInvoiceService {
    * @param {string} billRunId The id of the bill run that the invoice belongs to.
    * @param {@module:RequestNotifierLib} notifier Instance of `RequestNotifierLib` class. We use it to log errors rather
    * than throwing them as this service is intended to run in the background.
+   * @param {object} [existingTrx] Optional transaction instance; only needed if calling this service from within an
+   * existing transaction.
    */
-  static async go (invoice, billRunId, notifier) {
+  static async go (invoice, billRunId, notifier, existingTrx = null) {
     try {
-      const billRunPatch = this._billRunPatch(invoice)
-
-      await InvoiceModel.transaction(async trx => {
-        // We only need to delete the invoice as the deletion will cascade down to the licence level, and from there down
-        // to the transaction level.
-        await InvoiceModel
-          .query(trx)
-          .deleteById(invoice.id)
-
-        await BillRunModel
-          .query(trx)
-          .findById(billRunId)
-          .patch(billRunPatch)
-
-        await this._setBillRunStatusIfEmpty(billRunId, trx)
-      })
+      // If this service is being called from within an existing transaction then pass it through to the _deleteInvoice
+      // function; otherwise, call it from within a "create transaction" block.
+      if (existingTrx) {
+        await this._deleteInvoice(invoice, billRunId, existingTrx)
+      } else {
+        await InvoiceModel.transaction(async trx => {
+          await this._deleteInvoice(invoice, billRunId, trx)
+        })
+      }
     } catch (error) {
       notifier.omfg('Error deleting invoice', { id: invoice.id, error })
     }
+  }
+
+  static async _deleteInvoice (invoice, billRunId, trx) {
+    const billRunPatch = this._billRunPatch(invoice)
+
+    // We only need to delete the invoice as the deletion will cascade down to the licence level, and from there down
+    // to the transaction level.
+    await InvoiceModel
+      .query(trx)
+      .deleteById(invoice.id)
+
+    await BillRunModel
+      .query(trx)
+      .findById(billRunId)
+      .patch(billRunPatch)
+
+    await this._setBillRunStatusIfEmpty(billRunId, trx)
   }
 
   /**

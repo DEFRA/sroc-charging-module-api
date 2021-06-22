@@ -6,6 +6,8 @@
 
 const { LicenceModel } = require('../models')
 
+const DeleteInvoiceService = require('./delete_invoice.service')
+
 class DeleteLicenceService {
   /**
    * Deletes a licence along with its transactions and updates the invoice accordingly. Intended to be run as a
@@ -29,7 +31,16 @@ class DeleteLicenceService {
           .query(trx)
           .deleteById(licence.id)
 
-        await this._handleInvoice(licence, trx)
+        const invoice = await licence.$relatedQuery('invoice', trx)
+        const licences = await invoice.$relatedQuery('licences', trx)
+        const billRun = await licence.$relatedQuery('billRun', trx)
+
+        if (licences.length) {
+          await this._handleInvoice(invoice, licence, trx)
+          await this._handleBillRun(billRun, licence, trx)
+        } else {
+          await DeleteInvoiceService.go(invoice, billRun.id, notifier, trx)
+        }
       })
     } catch (error) {
       notifier.omfg('Error deleting licence', { id: licence.id, error })
@@ -37,35 +48,62 @@ class DeleteLicenceService {
   }
 
   /**
-   * Patches the specified invoice if there are licences remaining on it, otherwise it deletes the invoice
+   * Updates the invoice instance that the licence belongs to, then uses the updated fields to generate a patch which is
+   * applied to the invoice in the db.
    */
-  static async _handleInvoice (licence, trx) {
-    const invoice = await licence.$relatedQuery('invoice', trx)
-    const licences = await invoice.$relatedQuery('licences', trx)
-
-    if (licences.length) {
-      this._updateInstance(invoice, licence)
-      const invoicePatch = this._invoicePatch(invoice)
-      await invoice.$query(trx).patch(invoicePatch)
-    } else {
-      // TODO: Replace this with DeleteInvoiceService to ensure bill run level stats are updated
-      await invoice.$query(trx).delete()
-    }
+  static async _handleInvoice (invoice, licence, trx) {
+    this._updateInstance(invoice, licence)
+    const invoicePatch = this._invoicePatch(invoice)
+    await invoice.$query(trx).patch(invoicePatch)
   }
 
+  /**
+   * Updates the bill run instance that the licence belongs to, then uses the updated fields to generate a patch which
+   * is applied to the bill run in the db.
+   */
+  static async _handleBillRun (billRun, licence, trx) {
+    this._updateBillRunInstance(billRun, licence)
+    const billRunPatch = this._billRunPatch(billRun)
+    await billRun.$query(trx).patch(billRunPatch)
+  }
+
+  /**
+   * Creates a patch for the invoice using the fields in _entityPatch (which are common to both invoice and bill run),
+   * and then adds in additional fields based on the invoice's static methods.
+   */
   static _invoicePatch (invoice) {
     return {
-      creditLineCount: invoice.creditLineCount,
-      creditLineValue: invoice.creditLineValue,
-      debitLineCount: invoice.debitLineCount,
-      debitLineValue: invoice.debitLineValue,
-      zeroLineCount: invoice.zeroLineCount,
-      subjectToMinimumChargeCount: invoice.subjectToMinimumChargeCount,
-      subjectToMinimumChargeCreditValue: invoice.subjectToMinimumChargeCreditValue,
-      subjectToMinimumChargeDebitValue: invoice.subjectToMinimumChargeDebitValue,
+      ...this._entityPatch(invoice),
       zeroValueInvoice: invoice.$zeroValueInvoice(),
       deminimisInvoice: invoice.$deminimisInvoice(),
       minimumChargeInvoice: invoice.$minimumChargeInvoice()
+    }
+  }
+
+  /**
+   * Creates a patch for the bill run using the fields in _entityPatch (which are common to both invoice and bill run),
+   * and then adds in additional fields based on the invoice's static methods.
+   */
+  static _billRunPatch (billRun) {
+    return {
+      ...this._entityPatch(billRun),
+      creditNoteCount: billRun.creditNoteCount,
+      creditNoteValue: billRun.crediteNoteValue,
+      invoiceCount: billRun.invoiceCount,
+      invoiceValue: billRun.invoiceValue
+    }
+  }
+
+  static _entityPatch (entity) {
+    return {
+      creditLineCount: entity.creditLineCount,
+      creditLineValue: entity.creditLineValue,
+      debitLineCount: entity.debitLineCount,
+      debitLineValue: entity.debitLineValue,
+      zeroLineCount: entity.zeroLineCount,
+      subjectToMinimumChargeCount: entity.subjectToMinimumChargeCount,
+      subjectToMinimumChargeCreditValue: entity.subjectToMinimumChargeCreditValue,
+      subjectToMinimumChargeDebitValue: entity.subjectToMinimumChargeDebitValue
     }
   }
 
@@ -75,21 +113,24 @@ class DeleteLicenceService {
    * whether deminimis etc. applies and then persist the values and flags in one go.
    */
   static _updateInstance (entity, licence) {
-    // Define the fields to be updated and for each one, subtract the licence value from the entity value
-    const fieldsToUpdate = [
-      'creditLineCount',
-      'creditLineValue',
-      'debitLineCount',
-      'debitLineValue',
-      'zeroLineCount',
-      'subjectToMinimumChargeCount',
-      'subjectToMinimumChargeCreditValue',
-      'subjectToMinimumChargeDebitValue'
-    ]
+    entity.creditLineCount -= licence.creditLineCount
+    entity.creditLineValue -= licence.creditLineValue
+    entity.debitLineCount -= licence.debitLineCount
+    entity.debitLineValue -= licence.debitLineValue
+    entity.zeroLineCount -= licence.zeroLineCount
+    entity.subjectToMinimumChargeCount -= licence.subjectToMinimumChargeCount
+    entity.subjectToMinimumChargeCreditValue -= licence.subjectToMinimumChargeCreditValue
+    entity.subjectToMinimumChargeDebitValue -= licence.subjectToMinimumChargeDebitValue
+  }
 
-    fieldsToUpdate.forEach(field => {
-      entity[field] -= licence[field]
-    })
+  /**
+   * Updates the bill run instance by first calling _updateInstance to update the standard fields, then updates two
+   * additional fields unique to the bill run.
+   */
+  static _updateBillRunInstance (billRun, licence) {
+    this._updateInstance(billRun, licence)
+    billRun.creditNoteValue -= licence.creditLineValue
+    billRun.invoiceValue -= licence.debitLineValue
   }
 }
 
