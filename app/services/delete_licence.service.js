@@ -108,6 +108,7 @@ class DeleteLicenceService {
   }
 
   /**
+
    * Receives an entity (ie. an invoice or a bill run) and subtracts the licence's stats from the entity's stats. We
    * update the figures on the instance in this way so we can then use the entity's instance methods to determine
    * whether deminimis etc. applies and then persist the values and flags in one go.

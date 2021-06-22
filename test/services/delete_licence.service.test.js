@@ -249,6 +249,7 @@ describe('Delete Licence service', () => {
         expect(result.debitLineValue).to.equal(0)
       })
     })
+
   })
 
   describe('When an error occurs', () => {
