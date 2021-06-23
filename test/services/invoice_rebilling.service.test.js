@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
@@ -13,152 +13,124 @@ const {
   AuthorisedSystemHelper,
   BillRunHelper,
   DatabaseHelper,
-  InvoiceHelper,
+  GeneralHelper,
   RegimeHelper,
-  TransactionHelper,
-  GeneralHelper
+  InvoiceHelper
 } = require('../support/helpers')
 
-const { LicenceModel, TransactionModel } = require('../../app/models')
+// Things we need to stub
+const { InvoiceRebillingCopyService, InvoiceRebillingInitialiseService } = require('../../app/services')
 
 // Thing under test
 const { InvoiceRebillingService } = require('../../app/services')
 
 describe('Invoice Rebilling service', () => {
-  let currentBillRun
-  let newBillRun
   let authorisedSystem
-  let regime
+  let invoice
+  let billRun
+  let notifierFake
   let cancelInvoice
   let rebillInvoice
-  let notifierFake
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
-    regime = await RegimeHelper.addRegime('wrls', 'WRLS')
+    const regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
+
+    const billedBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'billed')
+    invoice = await InvoiceHelper.addInvoice(billedBillRun.id, 'CUSTOMER', '2021')
+
+    billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
 
     // Create a fake function to stand in place of Notifier.omfg()
     notifierFake = { omfg: Sinon.fake() }
+
+    cancelInvoice = { id: GeneralHelper.uuid4(), rebilledType: 'C' }
+    rebillInvoice = { id: GeneralHelper.uuid4(), rebilledType: 'R' }
   })
 
-  describe('When the service is called', () => {
+  afterEach(async () => {
+    Sinon.restore()
+  })
+
+  describe('When rebilling is successful', () => {
+    let initialiseStub
+
     beforeEach(async () => {
-      currentBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'billed')
-      newBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      initialiseStub = Sinon.stub(InvoiceRebillingInitialiseService, 'go')
+        .returns({ cancelInvoice, rebillInvoice })
 
-      const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER_REFERENCE', 2020)
-      await createPopulatedLicence(invoice, 'LICENCE001')
-      await createPopulatedLicence(invoice, 'LICENCE002')
-      await createPopulatedLicence(invoice, 'LICENCE003')
-
-      cancelInvoice = await addRebillInvoice(newBillRun.id, 'CUSTOMER_REFERENCE', 2020, invoice.id, 'C')
-      rebillInvoice = await addRebillInvoice(newBillRun.id, 'CUSTOMER_REFERENCE', 2020, invoice.id, 'R')
-
-      await InvoiceRebillingService.go(invoice, cancelInvoice, rebillInvoice, authorisedSystem, notifierFake)
+      Sinon.stub(InvoiceRebillingCopyService, 'go')
     })
 
-    describe('cancel licences', () => {
-      let licences
+    it("creates the new 'cancel' and 'rebill' invoices by calling 'InvoiceRebillingInitialiseService'", async () => {
+      const result = await InvoiceRebillingService.go(billRun, invoice, authorisedSystem, notifierFake)
 
-      beforeEach(async () => {
-        licences = await LicenceModel.query().where('invoiceId', cancelInvoice.id)
-      })
+      const returnedCancelObject = result.invoices.find(element => element.rebilledType === 'C')
+      const returnedRebillObject = result.invoices.find(element => element.rebilledType === 'R')
 
-      it('are created for each licence of the original invoice', async () => {
-        const licenceNumbers = licences.map(licence => licence.licenceNumber)
-
-        expect(licenceNumbers.length).to.equal(3)
-        expect(licenceNumbers).to.only.contain(['LICENCE001', 'LICENCE002', 'LICENCE003'])
-      })
-
-      it('are populated with the original transactions reversed', async () => {
-        for (const licence of licences) {
-          const transactions = await TransactionModel.query().where('licenceId', licence.id)
-          const lineDescriptions = transactions.map(transaction => transaction.lineDescription)
-          const chargeCredits = transactions.map(transaction => transaction.chargeCredit)
-
-          expect(transactions.length).to.equal(3)
-          expect(chargeCredits).to.only.contain(true)
-          expect(lineDescriptions).to.only.contain(['TRANSACTION001', 'TRANSACTION002', 'TRANSACTION003'])
-        }
-      })
+      expect(initialiseStub.calledOnce).to.be.true()
+      expect(returnedCancelObject.id).to.equal(cancelInvoice.id)
+      expect(returnedRebillObject.id).to.equal(rebillInvoice.id)
     })
 
-    describe('rebill licences', () => {
-      let licences
+    it('returns a response containing the id and type of the rebilled invoices', async () => {
+      const result = await InvoiceRebillingService.go(billRun, invoice, authorisedSystem, notifierFake)
 
-      beforeEach(async () => {
-        licences = await LicenceModel.query().where('invoiceId', rebillInvoice.id)
-      })
+      const returnedCancelObject = result.invoices.find(element => element.rebilledType === 'C')
+      const returnedRebillObject = result.invoices.find(element => element.rebilledType === 'R')
 
-      it('are created for each licence of the original invoice', async () => {
-        const licenceNumbers = licences.map(licence => licence.licenceNumber)
+      expect(returnedCancelObject.id).to.equal(cancelInvoice.id)
+      expect(returnedCancelObject.rebilledType).to.equal(cancelInvoice.rebilledType)
 
-        expect(licenceNumbers.length).to.equal(3)
-        expect(licenceNumbers).to.only.contain(['LICENCE001', 'LICENCE002', 'LICENCE003'])
-      })
-
-      it('are populated with the original transactions', async () => {
-        for (const licence of licences) {
-          const transactions = await TransactionModel.query().where('licenceId', licence.id)
-          const lineDescriptions = transactions.map(transaction => transaction.lineDescription)
-          const chargeCredits = transactions.map(transaction => transaction.chargeCredit)
-
-          expect(transactions.length).to.equal(3)
-          expect(chargeCredits).to.only.contain(false)
-          expect(lineDescriptions).to.only.contain(['TRANSACTION001', 'TRANSACTION002', 'TRANSACTION003'])
-        }
-      })
+      expect(returnedRebillObject.id).to.equal(rebillInvoice.id)
+      expect(returnedRebillObject.rebilledType).to.equal(rebillInvoice.rebilledType)
     })
   })
 
-  describe('When an error occurs', () => {
-    it('calls the notifier', async () => {
-      Sinon.stub(InvoiceRebillingService, '_licences').throws()
-      await InvoiceRebillingService.go(
-        { id: GeneralHelper.uuid4() }, cancelInvoice, rebillInvoice, authorisedSystem, notifierFake
-      )
-
-      expect(notifierFake.omfg.callCount).to.equal(1)
-      expect(notifierFake.omfg.firstArg).to.equal('Error rebilling invoice')
-    })
-  })
-
-  async function createPopulatedLicence (invoice, licenceNumber) {
-    const licence = await LicenceModel.query()
-      .insert({
-        invoiceId: invoice.id,
-        billRunId: invoice.billRunId,
-        licenceNumber
+  describe('If an error occurs', () => {
+    describe('when initialising the rebilling invoices', () => {
+      beforeEach(async () => {
+        Sinon.stub(InvoiceRebillingInitialiseService, 'go').throws()
       })
 
-    await addTransactionToLicence(invoice, licence, licenceNumber, 'TRANSACTION001')
-    await addTransactionToLicence(invoice, licence, licenceNumber, 'TRANSACTION002')
-    await addTransactionToLicence(invoice, licence, licenceNumber, 'TRANSACTION003')
+      it('does not call the notifier', async () => {
+        await expect(
+          InvoiceRebillingService.go(billRun, invoice, authorisedSystem, notifierFake)
+        ).to.reject()
 
-    return licence
-  }
+        expect(notifierFake.omfg.callCount).to.equal(0)
+      })
 
-  async function addTransactionToLicence (invoice, licence, licenceNumber, lineDescription) {
-    await TransactionHelper.addTransaction(currentBillRun.id, {
-      invoiceId: invoice.id,
-      licenceId: licence.id,
-      chargeFinancialYear: 2020,
-      customerReference: 'CUSTOMER_REFERENCE',
-      lineAttr1: licenceNumber,
-      lineDescription
+      it('does not return a result', async () => {
+        const err = await expect(
+          InvoiceRebillingService.go(billRun, invoice, authorisedSystem, notifierFake)
+        ).to.reject()
+
+        expect(err).to.be.an.error()
+      })
     })
-  }
 
-  async function addRebillInvoice (billRunId, customerReference, financialYear, rebilledInvoiceId, rebilledType) {
-    return InvoiceHelper.addInvoice(
-      billRunId,
-      customerReference,
-      financialYear,
-      0, 0, 0, 0, 0, 0, 0, 0,
-      rebilledInvoiceId,
-      rebilledType)
-  }
+    describe('when copying the invoice', () => {
+      beforeEach(async () => {
+        Sinon.stub(InvoiceRebillingInitialiseService, 'go')
+          .returns({ cancelInvoice, rebillInvoice })
+        Sinon.stub(InvoiceRebillingCopyService, 'go').throws()
+      })
+
+      it('calls the notifier', async () => {
+        await InvoiceRebillingService.go(billRun, invoice, authorisedSystem, notifierFake)
+
+        expect(notifierFake.omfg.callCount).to.equal(1)
+        expect(notifierFake.omfg.firstArg).to.equal('Error rebilling invoice')
+      })
+
+      it('still returns a response for the client system', async () => {
+        const result = await InvoiceRebillingService.go(billRun, invoice, authorisedSystem, notifierFake)
+
+        expect(result.invoices).length(2)
+      })
+    })
+  })
 })

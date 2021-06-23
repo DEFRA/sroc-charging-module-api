@@ -4,62 +4,43 @@
  * @module InvoiceRebillingService
  */
 
-const InvoiceRebillingCreateLicenceService = require('./invoice_rebilling_create_licence.service')
-const InvoiceRebillingCreateTransactionService = require('./invoice_rebilling_create_transaction.service')
-
-const { LicenceModel, TransactionModel } = require('../models')
+const { InvoiceRebillingPresenter } = require('../presenters')
+const InvoiceRebillingInitialiseService = require('./invoice_rebilling_initialise.service')
+const InvoiceRebillingCopyService = require('./invoice_rebilling_copy.service')
 
 class InvoiceRebillingService {
   /**
-   * Service to rebill a given invoice onto the supplied cancel invoice and rebill invoice.
+   * Manages the rebilling of an invoice, including creating the 'cancel' and 'rebill' invoices, generating the response
+   * to the client system, and handling the background task to copy the details from the original invoice to the new
+   * ones.
    *
-   * For each licence in the invoice, it will create a corresponding licence on cancelInvoice and rebillInvoice and
-   * populate them with the transactions on the licence (flipping them from credit to debit and vice-versa as
-   * appropriate).
+   * Nearly all the work is done in sub-services. We use the `InvoiceRebillingService` to marshall the whole process.
    *
-   * Note that bill run, invoice and licence tallies will be updated as part of the process.
-   *
-   * @param {module:InvoiceModel} invoice Instance of `InvoiceModel` for the invoice to be rebilled.
-   * @param {module:InvoiceModel} cancelInvoice Instance of `InvoiceModel` for the cancelling invoice.
-   * @param {module:InvoiceModel} rebillInvoice Instance of `InvoiceModel` for the rebilling invoice.
+   * @param {module:BillRunModel} billRun An instance of `BillRunModel` of the bill run to add the invoices to.
+   * @param {module:InvoiceModel} invoice An instance of `InvoiceModel` of the invoice to be rebilled.
    * @param {module:AuthorisedSystemModel} authorisedSystem The authorised system making the rebilling request.
    * @param {@module:RequestNotifierLib} notifier Instance of `RequestNotifierLib` class. We use it to log errors rather
    * than throwing them as this service is intended to run in the background.
+   *
+   * @returns {Object} Details of the newly created 'cancel' and 'rebill' invoices
    */
-  static async go (invoice, cancelInvoice, rebillInvoice, authorisedSystem, notifier) {
+  static async go (billRun, originalInvoice, authorisedSystem, notifier) {
+    const { cancelInvoice, rebillInvoice } = await InvoiceRebillingInitialiseService.go(billRun, originalInvoice)
+
     try {
-      const licences = await this._licences(invoice)
-
-      await LicenceModel.transaction(async trx => {
-        for (const licence of licences) {
-          const cancelLicence = await InvoiceRebillingCreateLicenceService.go(cancelInvoice, licence.licenceNumber, trx)
-          const rebillLicence = await InvoiceRebillingCreateLicenceService.go(rebillInvoice, licence.licenceNumber, trx)
-          await this._populateRebillingLicences(licence, cancelLicence, rebillLicence, authorisedSystem, trx)
-        }
-      })
+      // We start InvoiceRebillingCopyService without await so that it runs in the background
+      InvoiceRebillingCopyService.go(originalInvoice, cancelInvoice, rebillInvoice, authorisedSystem)
     } catch (error) {
-      notifier.omfg('Error rebilling invoice', { id: invoice.id, error })
+      notifier.omfg('Error rebilling invoice', { id: originalInvoice.id, error })
     }
+
+    return this._response(cancelInvoice, rebillInvoice)
   }
 
-  static async _populateRebillingLicences (licence, cancelLicence, rebillLicence, authorisedSystem, trx) {
-    const transactions = await this._transactions(licence, trx)
+  static _response (cancelInvoice, rebillInvoice) {
+    const presenter = new InvoiceRebillingPresenter([cancelInvoice, rebillInvoice])
 
-    for (const transaction of transactions) {
-      await InvoiceRebillingCreateTransactionService.go(transaction, rebillLicence, authorisedSystem, trx)
-      await InvoiceRebillingCreateTransactionService.go(transaction, cancelLicence, authorisedSystem, trx, true)
-    }
-  }
-
-  static _licences (invoice) {
-    return LicenceModel.query()
-      .where('invoiceId', invoice.id)
-      .select(['id', 'licenceNumber'])
-  }
-
-  static _transactions (licence, trx) {
-    return TransactionModel.query(trx)
-      .where('licenceId', licence.id)
+    return presenter.go()
   }
 }
 
