@@ -25,9 +25,8 @@ const {
 // Create the hapi server
 const server = Hapi.server(ServerConfig.hapi)
 
-const init = async () => {
-  // Register our auth plugin and then the strategies (needs to be done in this
-  // order)
+const registerPlugins = async () => {
+  // Register our auth plugin and then the strategies (needs to be done in this order)
   await server.register(HapiNowAuthPlugin)
   server.auth.strategy('jwt-strategy', 'hapi-now-auth', JwtStrategyAuthLib)
   server.auth.default('jwt-strategy')
@@ -54,7 +53,10 @@ const init = async () => {
   if (ServerConfig.environment === 'development') {
     await server.register(BlippPlugin)
   }
+}
 
+const init = async () => {
+  await registerPlugins()
   await server.initialize()
 
   return server
@@ -63,6 +65,7 @@ const init = async () => {
 const start = async () => {
   await init()
   await server.start()
+
   return server
 }
 
