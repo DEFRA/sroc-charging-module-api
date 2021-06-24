@@ -55,8 +55,6 @@
   "devDependencies": {
     "@hapi/code": "^8.0.3",
     "@hapi/lab": "^24.1.1",
-    "hpal": "^2.6.0",
-    "hpal-debug": "^1.5.0",
     "mock-fs": "^4.13.0",
     "nodemon": "^2.0.7",
     "standard": "^16.0.3"
