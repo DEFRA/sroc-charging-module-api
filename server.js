@@ -22,10 +22,10 @@ const {
   VersionInfoPlugin
 } = require('./app/plugins')
 
-exports.deployment = async start => {
-  // Create the hapi server
-  const server = Hapi.server(ServerConfig.hapi)
+// Create the hapi server
+const server = Hapi.server(ServerConfig.hapi)
 
+const init = async () => {
   // Register our auth plugin and then the strategies (needs to be done in this
   // order)
   await server.register(HapiNowAuthPlugin)
@@ -57,24 +57,18 @@ exports.deployment = async start => {
 
   await server.initialize()
 
-  if (start) {
-    await server.start()
-  }
-
   return server
 }
 
-// The docs for hpal and hpal-debug tell you to use
-//
-//   if (!module.parent) { .. }
-//
-// However, `module.parent` is deprecated as of v14.6.0. This is an alternative
-// solution to working out if the module was directly run (node server.js) or
-// required (npx hpal run)
-if (require.main === module) {
-  exports.deployment(true)
-
-  process.on('unhandledRejection', err => {
-    throw err
-  })
+const start = async () => {
+  await init()
+  await server.start()
+  return server
 }
+
+process.on('unhandledRejection', err => {
+  console.log(err)
+  process.exit(1)
+})
+
+module.exports = { init, start }
