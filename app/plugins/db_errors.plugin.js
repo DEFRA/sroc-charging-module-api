@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Check if the response we're sending to the client system is a database error.
  * If it is, parse it to provide a better error. Else send the response 'as is'.

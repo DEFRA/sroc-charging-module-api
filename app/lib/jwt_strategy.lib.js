@@ -1,5 +1,3 @@
-'use strict'
-
 const { AuthenticationConfig } = require('../../config')
 const { CognitoJwtToPemService } = require('../services')
 const { AuthorisedSystemModel } = require('../models')

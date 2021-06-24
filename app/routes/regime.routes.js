@@ -1,5 +1,3 @@
-'use strict'
-
 const { RegimesController } = require('../controllers')
 
 const routes = [

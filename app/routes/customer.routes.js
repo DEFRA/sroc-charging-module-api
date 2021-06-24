@@ -1,5 +1,3 @@
-'use strict'
-
 const { CustomersController } = require('../controllers')
 
 const routes = [

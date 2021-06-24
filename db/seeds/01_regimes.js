@@ -1,5 +1,3 @@
-'use strict'
-
 exports.seed = async function (knex) {
   await knex('regimes').del()
 

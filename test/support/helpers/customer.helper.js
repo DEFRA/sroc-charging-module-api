@@ -1,5 +1,3 @@
-'use strict'
-
 const { CustomerFileModel, ExportedCustomerModel } = require('../../../app/models')
 const GeneralHelper = require('./general.helper')
 

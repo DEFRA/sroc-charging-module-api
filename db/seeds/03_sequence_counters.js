@@ -1,5 +1,3 @@
-'use strict'
-
 const tableName = 'sequence_counters'
 const regions = ['A', 'B', 'E', 'N', 'S', 'T', 'W', 'Y']
 

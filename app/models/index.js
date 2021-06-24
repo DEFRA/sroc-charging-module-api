@@ -1,5 +1,3 @@
-'use strict'
-
 const AuthorisedSystemModel = require('./authorised_system.model')
 const BaseModel = require('./base.model')
 const BillRunModel = require('./bill_run.model')

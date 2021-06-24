@@ -1,5 +1,3 @@
-'use strict'
-
 const { InvoiceModel } = require('../../../app/models')
 
 class InvoiceHelper {

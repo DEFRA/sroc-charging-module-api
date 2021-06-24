@@ -1,5 +1,3 @@
-'use strict'
-
 const { RegimeModel } = require('../../../app/models')
 
 /**

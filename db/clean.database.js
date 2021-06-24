@@ -1,5 +1,3 @@
-'use strict'
-
 const { db, dbConfig } = require('./index')
 const { DatabaseHelper } = require('../test/support/helpers')
 

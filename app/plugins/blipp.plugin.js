@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Plugin to output the routes table to console at startup.
  *

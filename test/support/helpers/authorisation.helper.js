@@ -1,5 +1,3 @@
-'use strict'
-
 const JsonWebToken = require('jsonwebtoken')
 const { AuthenticationConfig } = require('../../../config')
 

@@ -1,5 +1,3 @@
-'use strict'
-
 const config = require('../../config/authentication.config')
 
 exports.seed = async function (knex) {

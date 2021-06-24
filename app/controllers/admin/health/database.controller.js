@@ -1,5 +1,3 @@
-'use strict'
-
 const { DatabaseHealthCheckService } = require('../../../services')
 
 class DatabaseController {

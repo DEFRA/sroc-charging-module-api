@@ -1,5 +1,3 @@
-'use strict'
-
 const { LicenceModel } = require('../../../app/models')
 
 const InvoiceHelper = require('./invoice.helper')

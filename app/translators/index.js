@@ -1,5 +1,3 @@
-'use strict'
-
 const AuthorisedSystemTranslator = require('./authorised_system.translator')
 const BaseTranslator = require('./base.translator')
 const BillRunTranslator = require('./bill_run.translator')

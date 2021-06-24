@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Add an instance of `RequestNotifierLib` to the `request.app` as part of every request.
  *

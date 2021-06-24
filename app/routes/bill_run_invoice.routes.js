@@ -1,5 +1,3 @@
-'use strict'
-
 const { PresrocBillRunsInvoicesController } = require('../controllers')
 
 const routes = [

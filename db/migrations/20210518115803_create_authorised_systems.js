@@ -1,5 +1,3 @@
-'use strict'
-
 const tableName = 'authorised_systems'
 
 exports.up = async function (knex) {

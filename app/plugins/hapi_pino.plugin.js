@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Plugin that handles logging for the application
  *

@@ -1,5 +1,3 @@
-'use strict'
-
 const { AirbrakeController } = require('../controllers')
 
 const routes = [

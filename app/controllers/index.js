@@ -1,5 +1,3 @@
-'use strict'
-
 const RootController = require('./root.controller')
 
 const AdminBillRunsController = require('./admin/bill_runs.controller')

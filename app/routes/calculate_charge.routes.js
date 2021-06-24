@@ -1,5 +1,3 @@
-'use strict'
-
 const { NotSupportedController, PresrocCalculateChargeController } = require('../controllers')
 
 const routes = [

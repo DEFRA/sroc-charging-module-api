@@ -1,5 +1,3 @@
-'use strict'
-
 const AirbrakeConfig = require('./airbrake.config')
 const AuthenticationConfig = require('./authentication.config')
 const DatabaseConfig = require('./database.config')

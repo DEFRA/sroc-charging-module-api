@@ -1,5 +1,3 @@
-'use strict'
-
 const { pipeline, Readable, Writable } = require('stream')
 const util = require('util')
 

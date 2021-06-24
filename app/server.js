@@ -1,5 +1,3 @@
-'use strict'
-
 const Hapi = require('@hapi/hapi')
 const { ServerConfig, TestConfig } = require('../config')
 const { JwtStrategyAuthLib } = require('./lib')

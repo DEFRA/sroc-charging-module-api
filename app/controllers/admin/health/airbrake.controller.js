@@ -1,5 +1,3 @@
-'use strict'
-
 class AirbrakeController {
   static async index (req, _h) {
     // First section tests connecting to Airbrake through a manual notification

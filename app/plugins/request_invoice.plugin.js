@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Determines if the request is related to an invoice and does the work of first finding it, then validating if the
  * request is valid, ie. that the invoice exists.

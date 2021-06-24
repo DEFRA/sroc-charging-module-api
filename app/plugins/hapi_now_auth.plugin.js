@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Plugin to implement authentication. This plugin handles bearer tokens and decoding the JWT
  *

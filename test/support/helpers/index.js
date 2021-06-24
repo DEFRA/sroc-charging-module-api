@@ -1,5 +1,3 @@
-'use strict'
-
 const AuthorisationHelper = require('./authorisation.helper')
 const AuthorisedSystemHelper = require('./authorised_system.helper')
 const BillRunHelper = require('./bill_run.helper')

@@ -1,5 +1,3 @@
-'use strict'
-
 const DatabaseConfig = require('./config/database.config')
 
 const defaultConfig = {

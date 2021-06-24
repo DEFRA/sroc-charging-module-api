@@ -1,5 +1,3 @@
-'use strict'
-
 // We don't know why but when we added `TestBillRunController` and specifically added it to `app/controllers/index` this
 // require started failing. After some investigation we tracked it down to the controller's `require BillRunGenerator`
 // call. Take that out and all is well. Leave it in and

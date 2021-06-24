@@ -1,5 +1,3 @@
-'use strict'
-
 const { CreateCustomerDetailsService } = require('../../services')
 
 class PresrocCustomerDetailsController {

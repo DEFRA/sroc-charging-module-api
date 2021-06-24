@@ -1,5 +1,3 @@
-'use strict'
-
 const { AdminSendTransactionFileService } = require('../../services')
 
 class AdminBillRunsController {

@@ -1,5 +1,3 @@
-'use strict'
-
 const { SequenceCounterModel } = require('../../../app/models')
 
 /**

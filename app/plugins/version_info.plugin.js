@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Add git commit and docker tag details as headers to all responses
  *

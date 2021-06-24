@@ -1,5 +1,3 @@
-'use strict'
-
 const { ObjectCleaningService } = require('../services')
 
 /**

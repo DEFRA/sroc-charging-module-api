@@ -1,5 +1,3 @@
-'use strict'
-
 const AdminSendTransactionFileService = require('./admin_send_transaction_file.service')
 const ApproveBillRunService = require('./approve_bill_run.service')
 const AuthorisationService = require('./plugins/authorisation.service')

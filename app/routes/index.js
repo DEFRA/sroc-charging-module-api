@@ -1,5 +1,3 @@
-'use strict'
-
 const AirbrakeRoutes = require('./airbrake.routes')
 const AuthorisedSystemRoutes = require('./authorised_system.routes')
 const BillRunRoutes = require('./bill_run.routes')

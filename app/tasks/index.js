@@ -1,5 +1,3 @@
-'use strict'
-
 const CustomerFilesTask = require('./customer_files.task')
 const TaskRunner = require('./task_runner')
 

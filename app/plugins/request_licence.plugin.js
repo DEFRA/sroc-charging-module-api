@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Determines if the request is related to a licence and does the work of first finding it, then validating if the
  * request is valid, ie. that the licence exists.

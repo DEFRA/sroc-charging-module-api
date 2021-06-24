@@ -1,5 +1,3 @@
-'use strict'
-
 const { DatabaseController } = require('../controllers')
 
 const routes = [

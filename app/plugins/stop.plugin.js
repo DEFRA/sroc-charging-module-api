@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Handle `SIGTERM` and `SIGINT` calls to the app
  *

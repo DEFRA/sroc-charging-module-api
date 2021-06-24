@@ -1,5 +1,3 @@
-'use strict'
-
 const BaseNotifierLib = require('./base_notifier.lib')
 const BoomNotifierLib = require('./boom_notifier.lib')
 const JwtStrategyAuthLib = require('./jwt_strategy.lib')

@@ -1,5 +1,3 @@
-'use strict'
-
 const {
   CreateTransactionBillRunValidationService,
   CreateTransactionService

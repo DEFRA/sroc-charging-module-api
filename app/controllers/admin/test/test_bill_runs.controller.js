@@ -1,5 +1,3 @@
-'use strict'
-
 const { BillRunModel } = require('../../../models')
 const { CreateBillRunService } = require('../../../services')
 const { BillRunGenerator } = require('../../../../test/support/generators')

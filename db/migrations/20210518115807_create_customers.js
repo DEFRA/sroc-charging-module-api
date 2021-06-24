@@ -1,5 +1,3 @@
-'use strict'
-
 const tableName = 'customers'
 
 exports.up = async function (knex) {

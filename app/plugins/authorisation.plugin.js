@@ -1,5 +1,3 @@
-'use strict'
-
 const Boom = require('@hapi/boom')
 const { AuthorisationService } = require('../services')
 

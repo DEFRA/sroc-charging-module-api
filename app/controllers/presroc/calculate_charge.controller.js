@@ -1,5 +1,3 @@
-'use strict'
-
 const { CalculateChargeService } = require('../../services')
 
 class CalculateChargeController {

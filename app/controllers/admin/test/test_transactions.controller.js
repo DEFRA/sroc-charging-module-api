@@ -1,5 +1,3 @@
-'use strict'
-
 const { ShowTransactionService } = require('../../../services')
 
 class TestTransactionsController {

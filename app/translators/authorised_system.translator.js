@@ -1,5 +1,3 @@
-'use strict'
-
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
 

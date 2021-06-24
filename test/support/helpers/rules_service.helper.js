@@ -1,5 +1,3 @@
-'use strict'
-
 const { RulesServiceConfig } = require('../../../config')
 
 class RulesServiceHelper {

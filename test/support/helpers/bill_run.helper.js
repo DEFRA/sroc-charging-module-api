@@ -1,5 +1,3 @@
-'use strict'
-
 const { BillRunModel } = require('../../../app/models')
 
 class BillRunHelper {

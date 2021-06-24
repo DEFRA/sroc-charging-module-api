@@ -1,5 +1,3 @@
-'use strict'
-
 const { ListRegimesService, ShowRegimeService } = require('../../services')
 
 class RegimesController {

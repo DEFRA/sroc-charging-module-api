@@ -1,5 +1,3 @@
-'use strict'
-
 const { ListCustomerFilesService, ShowCustomerFileService } = require('../../../services')
 
 class TestCustomerFilesController {

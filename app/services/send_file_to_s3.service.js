@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * @module SendFileToS3Service
  */

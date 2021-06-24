@@ -1,5 +1,3 @@
-'use strict'
-
 const tableName = 'sequence_counters'
 
 exports.up = async function (knex) {

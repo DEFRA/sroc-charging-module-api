@@ -1,5 +1,3 @@
-'use strict'
-
 const { SendCustomerFileService } = require('../../services')
 const { StaticLookupLib } = require('../../lib')
 

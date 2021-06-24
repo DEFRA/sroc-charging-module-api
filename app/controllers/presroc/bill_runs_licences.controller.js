@@ -1,5 +1,3 @@
-'use strict'
-
 const { DeleteLicenceService, ValidateBillRunLicenceService } = require('../../services')
 
 class BillRunsLicencesController {

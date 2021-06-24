@@ -1,5 +1,3 @@
-'use strict'
-
 const BasePresenter = require('./base.presenter')
 const BillRunStatusPresenter = require('./bill_run_status.presenter')
 const CalculateChargePresenter = require('./calculate_charge.presenter')

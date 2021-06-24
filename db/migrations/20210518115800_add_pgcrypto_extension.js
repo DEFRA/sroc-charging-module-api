@@ -1,5 +1,3 @@
-'use strict'
-
 // Adds the extension pgcrypto to the database
 //
 // We need this extension because in PostgreSQL 10 its the only way to access
