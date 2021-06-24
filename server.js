@@ -8,7 +8,6 @@ const {
   AuthorisationPlugin,
   BlippPlugin,
   DbErrorsPlugin,
-  HpalDebugPlugin,
   HapiNowAuthPlugin,
   HapiPinoPlugin,
   InvalidCharactersPlugin,
@@ -54,7 +53,6 @@ exports.deployment = async start => {
   // Register non-production plugins
   if (ServerConfig.environment === 'development') {
     await server.register(BlippPlugin)
-    await server.register(HpalDebugPlugin)
   }
 
   await server.initialize()

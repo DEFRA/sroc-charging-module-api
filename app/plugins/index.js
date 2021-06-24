@@ -25,11 +25,9 @@ const VersionInfoPlugin = require('./version_info.plugin')
 //
 // So along with the check in server.js to not register dev plugins we also need a check here to avoid require() them.
 let BlippPlugin
-let HpalDebugPlugin
 
 if (ServerConfig.environment === 'development') {
   BlippPlugin = require('./blipp.plugin')
-  HpalDebugPlugin = require('./hpal_debug.plugin')
 }
 
 module.exports = {
@@ -37,7 +35,6 @@ module.exports = {
   AuthorisationPlugin,
   BlippPlugin,
   DbErrorsPlugin,
-  HpalDebugPlugin,
   HapiNowAuthPlugin,
   HapiPinoPlugin,
   InvalidCharactersPlugin,
