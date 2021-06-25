@@ -27,7 +27,7 @@ describe('Authenticating with the API', () => {
   })
 
   describe('When accessing a public route', () => {
-    before(async () => {
+    beforeEach(async () => {
       RouteHelper.addPublicRoute(server)
     })
 
@@ -44,7 +44,7 @@ describe('Authenticating with the API', () => {
   })
 
   describe('When accessing an /admin only route', () => {
-    before(async () => {
+    beforeEach(async () => {
       await AuthorisedSystemHelper.addAdminSystem()
 
       RouteHelper.addAdminRoute(server)
