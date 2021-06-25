@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "watch": "./node_modules/nodemon/bin/nodemon.js --watch ./app --watch index.js --watch server.js -x node index.js",
+    "watch": "./node_modules/nodemon/bin/nodemon.js --watch ./app --watch index.js -x node index.js",
     "lint": "standard",
     "test": "lab --silent-skips --shuffle",
     "create-db": "node db/create.database.js",
