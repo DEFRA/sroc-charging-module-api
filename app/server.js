@@ -22,10 +22,7 @@ const {
   VersionInfoPlugin
 } = require('./plugins')
 
-// Create the hapi server
-const server = Hapi.server(ServerConfig.hapi)
-
-const registerPlugins = async () => {
+const registerPlugins = async (server) => {
   // Register our auth plugin and then the strategies (needs to be done in this order)
   await server.register(HapiNowAuthPlugin)
   server.auth.strategy('jwt-strategy', 'hapi-now-auth', JwtStrategyAuthLib)
@@ -56,14 +53,17 @@ const registerPlugins = async () => {
 }
 
 const init = async () => {
-  await registerPlugins()
+  // Create the hapi server
+  const server = Hapi.server(ServerConfig.hapi)
+
+  await registerPlugins(server)
   await server.initialize()
 
   return server
 }
 
 const start = async () => {
-  await init()
+  const server = await init()
   await server.start()
 
   return server
