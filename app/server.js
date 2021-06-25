@@ -1,14 +1,13 @@
 'use strict'
 
 const Hapi = require('@hapi/hapi')
-const { ServerConfig, TestConfig } = require('./config')
-const { JwtStrategyAuthLib } = require('./app/lib')
+const { ServerConfig, TestConfig } = require('../config')
+const { JwtStrategyAuthLib } = require('./lib')
 const {
   AirbrakePlugin,
   AuthorisationPlugin,
   BlippPlugin,
   DbErrorsPlugin,
-  HpalDebugPlugin,
   HapiNowAuthPlugin,
   HapiPinoPlugin,
   InvalidCharactersPlugin,
@@ -21,14 +20,10 @@ const {
   RouterPlugin,
   StopPlugin,
   VersionInfoPlugin
-} = require('./app/plugins')
+} = require('./plugins')
 
-exports.deployment = async start => {
-  // Create the hapi server
-  const server = Hapi.server(ServerConfig.hapi)
-
-  // Register our auth plugin and then the strategies (needs to be done in this
-  // order)
+const registerPlugins = async (server) => {
+  // Register our auth plugin and then the strategies (needs to be done in this order)
   await server.register(HapiNowAuthPlugin)
   server.auth.strategy('jwt-strategy', 'hapi-now-auth', JwtStrategyAuthLib)
   server.auth.default('jwt-strategy')
@@ -54,29 +49,29 @@ exports.deployment = async start => {
   // Register non-production plugins
   if (ServerConfig.environment === 'development') {
     await server.register(BlippPlugin)
-    await server.register(HpalDebugPlugin)
   }
+}
 
+const init = async () => {
+  // Create the hapi server
+  const server = Hapi.server(ServerConfig.hapi)
+
+  await registerPlugins(server)
   await server.initialize()
-
-  if (start) {
-    await server.start()
-  }
 
   return server
 }
 
-// The docs for hpal and hpal-debug tell you to use
-//
-//   if (!module.parent) { .. }
-//
-// However, `module.parent` is deprecated as of v14.6.0. This is an alternative
-// solution to working out if the module was directly run (node server.js) or
-// required (npx hpal run)
-if (require.main === module) {
-  exports.deployment(true)
+const start = async () => {
+  const server = await init()
+  await server.start()
 
-  process.on('unhandledRejection', err => {
-    throw err
-  })
+  return server
 }
+
+process.on('unhandledRejection', err => {
+  console.log(err)
+  process.exit(1)
+})
+
+module.exports = { init, start }

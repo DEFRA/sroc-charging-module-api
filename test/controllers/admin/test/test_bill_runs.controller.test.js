@@ -9,7 +9,7 @@ const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../../../server')
+const { init } = require('../../../../app/server')
 
 // Test helpers
 const {
@@ -29,7 +29,6 @@ describe('Test Bill Run Controller', () => {
   let authToken
 
   before(async () => {
-    server = await deployment()
     authToken = AuthorisationHelper.adminToken()
 
     Sinon
@@ -39,6 +38,8 @@ describe('Test Bill Run Controller', () => {
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
+    server = await init()
+
     // This endpoint relies on creating a bill run, which relies on generating a bill run number. So, to support it we
     // need to ensure there is a sequence counter entry for the matching regime and region.
     const authSystem = await AuthorisedSystemHelper.addAdminSystem()

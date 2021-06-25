@@ -5,11 +5,11 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, afterEach } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../server')
+const { init } = require('../../app/server')
 
 // The main inspiration for these tests was taken from https://stackoverflow.com/a/40909092/6117745
 // However, the server module it is written against exposes its methods in such a way they are easy to stub/spy on.
@@ -18,8 +18,8 @@ const { deployment } = require('../../server')
 describe('Gracefully shuts down when asked to terminate', () => {
   let server
 
-  before(async () => {
-    server = await deployment()
+  beforeEach(async () => {
+    server = await init()
 
     Sinon.stub(process, 'exit')
 

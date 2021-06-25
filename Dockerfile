@@ -68,7 +68,7 @@ COPY . .
 #
 # We've not properly checked whether we support a graceful shutdown yet. But this at least ensures we are starting with
 # the right command!
-CMD [ "../node_modules/.bin/nodemon", "--inspect=0.0.0.0:9229", "./server.js" ]
+CMD [ "../node_modules/.bin/nodemon", "--inspect=0.0.0.0:9229", "./index.js" ]
 
 ################################################################################
 # Create production (final stage)
@@ -125,4 +125,4 @@ COPY . .
 #
 # We've not properly checked whether we support a graceful shutdown yet. But this at least ensures we are starting with
 # the right command!
-CMD [ "node", "server.js" ]
+CMD [ "node", "index.js" ]

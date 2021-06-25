@@ -3,10 +3,10 @@
   "version": "0.10.1",
   "description": "Provides an interface for calculating charges, queuing transactions and generating transaction files used to produce invoices",
   "homepage": "https://github.com/DEFRA/sroc-service-team",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "watch": "./node_modules/nodemon/bin/nodemon.js --watch ./app --watch server.js -x node server.js",
+    "start": "node index.js",
+    "watch": "./node_modules/nodemon/bin/nodemon.js --watch ./app --watch ./config --watch index.js -x node index.js",
     "lint": "standard",
     "test": "lab --silent-skips --shuffle",
     "create-db": "node db/create.database.js",
@@ -55,8 +55,6 @@
   "devDependencies": {
     "@hapi/code": "^8.0.3",
     "@hapi/lab": "^24.1.1",
-    "hpal": "^2.6.0",
-    "hpal-debug": "^1.5.0",
     "mock-fs": "^4.13.0",
     "nodemon": "^2.0.7",
     "standard": "^16.0.3"

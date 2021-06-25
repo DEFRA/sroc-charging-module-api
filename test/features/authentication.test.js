@@ -5,11 +5,11 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, afterEach } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../server')
+const { init } = require('../../app/server')
 
 // Test helpers
 const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper, RouteHelper } = require('../support/helpers')
@@ -21,9 +21,13 @@ describe('Authenticating with the API', () => {
   let server
   let authToken
 
+  beforeEach(async () => {
+    await DatabaseHelper.clean()
+    server = await init()
+  })
+
   describe('When accessing a public route', () => {
-    before(async () => {
-      server = await deployment()
+    beforeEach(async () => {
       RouteHelper.addPublicRoute(server)
     })
 
@@ -40,11 +44,9 @@ describe('Authenticating with the API', () => {
   })
 
   describe('When accessing an /admin only route', () => {
-    before(async () => {
-      await DatabaseHelper.clean()
+    beforeEach(async () => {
       await AuthorisedSystemHelper.addAdminSystem()
 
-      server = await deployment()
       RouteHelper.addAdminRoute(server)
     })
 
