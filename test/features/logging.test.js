@@ -5,17 +5,21 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, afterEach } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../server')
+const { init } = require('../../app/server')
 
 // Things we need to stub
 const { TestConfig } = require('../../config')
 
 describe('Only output the log when running unit tests if configured to', () => {
   let server
+
+  beforeEach(async () => {
+    server = await init()
+  })
 
   afterEach(async () => {
     Sinon.restore()
@@ -27,7 +31,6 @@ describe('Only output the log when running unit tests if configured to', () => {
     before(async () => {
       // Ensure config returns false when the value is requested rather than what is currently in our .env file
       Sinon.replace(TestConfig, 'logInTest', true)
-      server = await deployment()
     })
 
     it('calls the Pino logger when log calls are made', async () => {
@@ -48,7 +51,6 @@ describe('Only output the log when running unit tests if configured to', () => {
     before(async () => {
       // Ensure config returns false when the value is requested rather than what is currently in our .env file
       Sinon.replace(TestConfig, 'logInTest', false)
-      server = await deployment()
     })
 
     it('does not call the Pino logger when log calls are made', async () => {

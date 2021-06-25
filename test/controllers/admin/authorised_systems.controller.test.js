@@ -9,7 +9,7 @@ const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../../server')
+const { init } = require('../../../app/server')
 
 // Test helpers
 const {
@@ -27,7 +27,6 @@ describe('Authorised systems controller', () => {
   let authToken
 
   before(async () => {
-    server = await deployment()
     authToken = AuthorisationHelper.adminToken()
 
     Sinon
@@ -37,6 +36,8 @@ describe('Authorised systems controller', () => {
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
+    server = await init()
+
     await AuthorisedSystemHelper.addAdminSystem()
   })
 

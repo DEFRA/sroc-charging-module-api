@@ -5,11 +5,11 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../server')
+const { init } = require('../../app/server')
 
 // Test helpers
 const {
@@ -32,8 +32,9 @@ describe('Finding and validating bill runs in requests', () => {
   let authToken
   const nonAdminClientId = '1234546789'
 
-  before(async () => {
+  beforeEach(async () => {
     await DatabaseHelper.clean()
+    server = await init()
 
     const regime = await RegimeHelper.addRegime('wrls', 'Water')
 
@@ -41,8 +42,6 @@ describe('Finding and validating bill runs in requests', () => {
 
     await SequenceCounterHelper.addSequenceCounter(regime.id, 'A')
     billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), regime.id)
-
-    server = await deployment()
 
     RouteHelper.addBillRunGetRoute(server)
   })

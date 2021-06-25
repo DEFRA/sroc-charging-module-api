@@ -9,7 +9,7 @@ const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../../server')
+const { init } = require('../../../app/server')
 
 // Test helpers
 const {
@@ -33,7 +33,6 @@ describe('Admin Bill Runs controller', () => {
   let sendStub
 
   before(async () => {
-    server = await deployment()
     authToken = AuthorisationHelper.adminToken()
 
     Sinon
@@ -42,6 +41,7 @@ describe('Admin Bill Runs controller', () => {
   })
 
   beforeEach(async () => {
+    server = await init()
     await DatabaseHelper.clean()
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')

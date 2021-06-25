@@ -9,7 +9,7 @@ const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../../server')
+const { init } = require('../../../app/server')
 
 // Test helpers
 const {
@@ -46,12 +46,9 @@ describe('Presroc Invoices controller', () => {
   let billRun
   let invoice
 
-  before(async () => {
-    server = await deployment()
-  })
-
   beforeEach(async () => {
     await DatabaseHelper.clean()
+    server = await init()
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])

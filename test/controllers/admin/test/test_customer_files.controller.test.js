@@ -9,7 +9,7 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../../../server')
+const { init } = require('../../../../app/server')
 
 // Test helpers
 const {
@@ -30,8 +30,8 @@ describe('Test customer files controller', () => {
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
+    server = await init()
 
-    server = await deployment()
     authToken = AuthorisationHelper.adminToken()
 
     Sinon

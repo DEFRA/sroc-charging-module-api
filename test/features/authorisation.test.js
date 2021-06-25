@@ -5,11 +5,11 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, afterEach } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../server')
+const { init } = require('../../app/server')
 
 // Test helpers
 const {
@@ -30,8 +30,10 @@ describe('Authorisation with the API', () => {
   const inactiveAdminClientId = 'admin12345'
   const inactiveSystemClientId = 'system12345'
 
-  before(async () => {
+  beforeEach(async () => {
     await DatabaseHelper.clean()
+    server = await init()
+
     await AuthorisedSystemHelper.addAdminSystem()
     await AuthorisedSystemHelper.addAdminSystem(inactiveAdminClientId, 'inactiveadmin', 'inactive')
 
@@ -39,7 +41,6 @@ describe('Authorisation with the API', () => {
     await AuthorisedSystemHelper.addSystem(nonAdminClientId, 'system', [regime])
     await AuthorisedSystemHelper.addSystem(inactiveSystemClientId, 'inactivesystem', [regime], 'inactive')
 
-    server = await deployment()
     RouteHelper.addAdminRoute(server)
     RouteHelper.addSystemGetRoute(server)
     RouteHelper.addPublicRoute(server)

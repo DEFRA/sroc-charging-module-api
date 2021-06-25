@@ -9,7 +9,7 @@ const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../../../server')
+const { init } = require('../../../../app/server')
 
 // Test helpers
 const { AuthorisationHelper, AuthorisedSystemHelper, DatabaseHelper } = require('../../../support/helpers')
@@ -23,7 +23,6 @@ describe('Airbrake controller: GET /status/airbrake', () => {
   const authToken = AuthorisationHelper.adminToken()
 
   before(async () => {
-    server = await deployment()
     Sinon
       .stub(JsonWebToken, 'verify')
       .returns(AuthorisationHelper.decodeToken(authToken))
@@ -31,6 +30,8 @@ describe('Airbrake controller: GET /status/airbrake', () => {
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
+    server = await init()
+
     await AuthorisedSystemHelper.addAdminSystem()
   })
 

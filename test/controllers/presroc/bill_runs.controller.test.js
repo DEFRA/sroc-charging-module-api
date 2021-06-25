@@ -10,7 +10,7 @@ const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../../server')
+const { init } = require('../../../app/server')
 
 // Test helpers
 const {
@@ -48,7 +48,6 @@ describe('Presroc Bill Runs controller', () => {
   let billRun
 
   before(async () => {
-    server = await deployment()
     authToken = AuthorisationHelper.nonAdminToken(clientID)
 
     Sinon
@@ -65,6 +64,7 @@ describe('Presroc Bill Runs controller', () => {
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
+    server = await init()
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])

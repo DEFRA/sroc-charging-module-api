@@ -4,11 +4,11 @@
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 
-const { describe, it, before } = exports.lab = Lab.script()
+const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../server')
+const { init } = require('../../app/server')
 
 // Test helpers
 const { RouteHelper } = require('../support/helpers')
@@ -25,8 +25,8 @@ describe('Reject requests with invalid characters', () => {
   let server
 
   // Create server before each test
-  before(async () => {
-    server = await deployment()
+  beforeEach(async () => {
+    server = await init()
     RouteHelper.addPublicPostRoute(server)
   })
 

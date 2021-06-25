@@ -5,11 +5,11 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { deployment } = require('../../../server')
+const { init } = require('../../../app/server')
 
 // Test helpers
 const {
@@ -37,12 +37,9 @@ describe('Presroc Licences controller', () => {
   let invoice
   let licence
 
-  before(async () => {
-    server = await deployment()
-  })
-
   beforeEach(async () => {
     await DatabaseHelper.clean()
+    server = await init()
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
