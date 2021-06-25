@@ -1,8 +1,8 @@
 'use strict'
 
 const Hapi = require('@hapi/hapi')
-const { ServerConfig, TestConfig } = require('./config')
-const { JwtStrategyAuthLib } = require('./app/lib')
+const { ServerConfig, TestConfig } = require('../config')
+const { JwtStrategyAuthLib } = require('./lib')
 const {
   AirbrakePlugin,
   AuthorisationPlugin,
@@ -20,7 +20,7 @@ const {
   RouterPlugin,
   StopPlugin,
   VersionInfoPlugin
-} = require('./app/plugins')
+} = require('./plugins')
 
 // Create the hapi server
 const server = Hapi.server(ServerConfig.hapi)
