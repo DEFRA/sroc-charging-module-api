@@ -1,5 +1,32 @@
 # Changelog
 
+## [v0.11.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.11.0) (2021-06-29)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.10.1...v0.11.0)
+
+**Implemented enhancements:**
+
+- Recalculate bill run on delete licence [\#465](https://github.com/DEFRA/sroc-charging-module-api/pull/465) ([StuAA78](https://github.com/StuAA78))
+- Enable rebilling [\#460](https://github.com/DEFRA/sroc-charging-module-api/pull/460) ([Cruikshanks](https://github.com/Cruikshanks))
+- Link rebilled transaction to original transaction [\#456](https://github.com/DEFRA/sroc-charging-module-api/pull/456) ([Cruikshanks](https://github.com/Cruikshanks))
+- Recalculate invoice on delete licence [\#453](https://github.com/DEFRA/sroc-charging-module-api/pull/453) ([StuAA78](https://github.com/StuAA78))
+
+**Fixed bugs:**
+
+- Fix missing flags on rebill invoices [\#455](https://github.com/DEFRA/sroc-charging-module-api/pull/455) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Merged pull requests:**
+
+- Bump @hapi/hapi from 20.1.4 to 20.1.5 [\#469](https://github.com/DEFRA/sroc-charging-module-api/pull/469) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.18.0 to 3.19.0 [\#468](https://github.com/DEFRA/sroc-charging-module-api/pull/468) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Remove hpal support and update server.js [\#467](https://github.com/DEFRA/sroc-charging-module-api/pull/467) ([Cruikshanks](https://github.com/Cruikshanks))
+- Refactor InvoiceRebillingService to do more [\#463](https://github.com/DEFRA/sroc-charging-module-api/pull/463) ([Cruikshanks](https://github.com/Cruikshanks))
+- Bump @hapi/hapi from 20.1.3 to 20.1.4 [\#459](https://github.com/DEFRA/sroc-charging-module-api/pull/459) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pg-hstore from 2.3.3 to 2.3.4 [\#458](https://github.com/DEFRA/sroc-charging-module-api/pull/458) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Housekeeping - Update lib file names [\#457](https://github.com/DEFRA/sroc-charging-module-api/pull/457) ([Cruikshanks](https://github.com/Cruikshanks))
+- Bump @aws-sdk/client-s3 from 3.17.0 to 3.18.0 [\#454](https://github.com/DEFRA/sroc-charging-module-api/pull/454) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @airbrake/node from 2.1.4 to 2.1.5 [\#452](https://github.com/DEFRA/sroc-charging-module-api/pull/452) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.10.1](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.10.1) (2021-06-02)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.10.0...v0.10.1)
