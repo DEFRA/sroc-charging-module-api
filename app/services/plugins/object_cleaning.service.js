@@ -2,7 +2,7 @@
  * @module ObjectCleaningService
  */
 
-import * as Sanitizer from 'sanitizer'
+import Sanitizer from 'sanitizer'
 
 /**
  * Loop through an object's properties and 'clean' it.
