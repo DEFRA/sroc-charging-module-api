@@ -1,4 +1,4 @@
-const { knexSnakeCaseMappers } = require('objection')
+import Objection from 'objection'
 
 /**
  * Passing in `knexSnakeCaseMappers` allows us to use camelCase everywhere and knex will convert it to snake_case on
@@ -20,10 +20,10 @@ const { knexSnakeCaseMappers } = require('objection')
  *
  */
 
-const knexfile = require('./knexfile')
+import * as knexfile from './knexfile.js'
 
 for (const environment in knexfile) {
-  Object.assign(knexfile[environment], knexSnakeCaseMappers({ underscoreBeforeDigits: true }))
+  Object.assign(knexfile[environment], Objection.knexSnakeCaseMappers({ underscoreBeforeDigits: true }))
 }
 
-module.exports = { ...knexfile }
+export const environments = { ...knexfile }
