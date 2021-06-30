@@ -4,6 +4,7 @@
 
 import AuthorisedSystemModel from './authorised_system.model.js'
 import BaseModel from './base.model.js'
+import CreateTransactionTallyService from '../services/create_transaction_tally.service.js'
 import InvoiceModel from './invoice.model.js'
 import LicenceModel from './licence.model.js'
 import RegimeModel from './regime.model.js'
@@ -103,8 +104,6 @@ export default class BillRunModel extends BaseModel {
    * @returns {string} ID of the bill run that was updated
    */
   static async patchTally (transaction, trx) {
-    const { CreateTransactionTallyService } = require('../services')
-
     const { patch } = CreateTransactionTallyService.go(transaction, this.tableName)
 
     const { id } = await BillRunModel.query(trx)
