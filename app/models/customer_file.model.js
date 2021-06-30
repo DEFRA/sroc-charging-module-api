@@ -5,6 +5,9 @@
 import { Model } from 'objection'
 
 import BaseModel from './base.model.js'
+import CustomerModel from './customer.model.js'
+import ExportedCustomerModel from './exported_customer.model.js'
+import RegimeModel from './regime.model.js'
 
 export default class CustomerFileModel extends BaseModel {
   static get tableName () {
@@ -15,7 +18,7 @@ export default class CustomerFileModel extends BaseModel {
     return {
       customers: {
         relation: Model.HasManyRelation,
-        modelClass: 'customer.model',
+        modelClass: CustomerModel,
         join: {
           from: 'customerFiles.id',
           to: 'customers.customerFileId'
@@ -23,7 +26,7 @@ export default class CustomerFileModel extends BaseModel {
       },
       exportedCustomers: {
         relation: Model.HasManyRelation,
-        modelClass: 'exported_customer.model',
+        modelClass: ExportedCustomerModel,
         join: {
           from: 'customerFiles.id',
           to: 'exportedCustomers.customerFileId'
@@ -31,7 +34,7 @@ export default class CustomerFileModel extends BaseModel {
       },
       regime: {
         relation: Model.BelongsToOneRelation,
-        modelClass: 'regime.model',
+        modelClass: RegimeModel,
         join: {
           from: 'customerFiles.regimeId',
           to: 'regimes.id'

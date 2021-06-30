@@ -4,7 +4,12 @@
 
 import { Model } from 'objection'
 
+import AuthorisedSystemModel from './authorised_system.model.js'
 import BaseModel from './base.model.js'
+import InvoiceModel from './invoice.model.js'
+import LicenceModel from './licence.model.js'
+import RegimeModel from './regime.model.js'
+import TransactionModel from './transaction.model.js'
 
 export default class BillRunModel extends BaseModel {
   static get tableName () {
@@ -15,7 +20,7 @@ export default class BillRunModel extends BaseModel {
     return {
       authorisedSystem: {
         relation: Model.BelongsToOneRelation,
-        modelClass: 'authorised_system.model',
+        modelClass: AuthorisedSystemModel,
         join: {
           from: 'billRuns.createdBy',
           to: 'authorisedSystems.id'
@@ -23,7 +28,7 @@ export default class BillRunModel extends BaseModel {
       },
       invoices: {
         relation: Model.HasManyRelation,
-        modelClass: 'invoice.model',
+        modelClass: InvoiceModel,
         join: {
           from: 'billRuns.id',
           to: 'invoices.billRunId'
@@ -31,7 +36,7 @@ export default class BillRunModel extends BaseModel {
       },
       licences: {
         relation: Model.HasManyRelation,
-        modelClass: 'licence.model',
+        modelClass: LicenceModel,
         join: {
           from: 'billRuns.id',
           to: 'licences.billRunId'
@@ -39,7 +44,7 @@ export default class BillRunModel extends BaseModel {
       },
       regime: {
         relation: Model.BelongsToOneRelation,
-        modelClass: 'regime.model',
+        modelClass: RegimeModel,
         join: {
           from: 'billRuns.regimeId',
           to: 'regimes.id'
@@ -47,7 +52,7 @@ export default class BillRunModel extends BaseModel {
       },
       transactions: {
         relation: Model.HasManyRelation,
-        modelClass: 'transaction.model',
+        modelClass: TransactionModel,
         join: {
           from: 'billRuns.id',
           to: 'transactions.billRunId'

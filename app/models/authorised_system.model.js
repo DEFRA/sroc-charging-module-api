@@ -5,6 +5,9 @@
 import { Model } from 'objection'
 
 import BaseModel from './base.model.js'
+import BillRunModel from './bill_run.model.js'
+import RegimeModel from './regime.model.js'
+import TransactionModel from './transaction.model.js'
 
 export default class AuthorisedSystemModel extends BaseModel {
   static get tableName () {
@@ -15,7 +18,7 @@ export default class AuthorisedSystemModel extends BaseModel {
     return {
       billRuns: {
         relation: Model.HasManyRelation,
-        modelClass: 'bill_run.model',
+        modelClass: BillRunModel,
         join: {
           from: 'authorisedSystems.id',
           to: 'billRuns.createdBy'
@@ -23,7 +26,7 @@ export default class AuthorisedSystemModel extends BaseModel {
       },
       regimes: {
         relation: Model.ManyToManyRelation,
-        modelClass: 'regime.model',
+        modelClass: RegimeModel,
         join: {
           from: 'authorisedSystems.id',
           through: {
@@ -36,7 +39,7 @@ export default class AuthorisedSystemModel extends BaseModel {
       },
       transactions: {
         relation: Model.HasManyRelation,
-        modelClass: 'transaction.model',
+        modelClass: TransactionModel,
         join: {
           from: 'authorisedSystems.id',
           to: 'transactions.createdBy'

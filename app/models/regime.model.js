@@ -4,7 +4,12 @@
 
 import { Model } from 'objection'
 
+import AuthorisedSystemModel from './authorised_system.model.js'
 import BaseModel from './base.model.js'
+import BillRunModel from './bill_run.model.js'
+import CustomerFileModel from './customer_file.model.js'
+import SequenceCounterModel from './sequence_counter.model.js'
+import TransactionModel from './transaction.model.js'
 
 export default class RegimeModel extends BaseModel {
   static get tableName () {
@@ -15,7 +20,7 @@ export default class RegimeModel extends BaseModel {
     return {
       authorisedSystems: {
         relation: Model.ManyToManyRelation,
-        modelClass: 'authorised_system.model',
+        modelClass: AuthorisedSystemModel,
         join: {
           from: 'regimes.id',
           through: {
@@ -28,7 +33,7 @@ export default class RegimeModel extends BaseModel {
       },
       billRuns: {
         relation: Model.HasManyRelation,
-        modelClass: 'bill_run.model',
+        modelClass: BillRunModel,
         join: {
           from: 'regimes.id',
           to: 'billRuns.regimeId'
@@ -36,7 +41,7 @@ export default class RegimeModel extends BaseModel {
       },
       customerFiles: {
         relation: Model.HasManyRelation,
-        modelClass: 'customer_file.model',
+        modelClass: CustomerFileModel,
         join: {
           from: 'regimes.id',
           to: 'customerFiles.regimeId'
@@ -44,7 +49,7 @@ export default class RegimeModel extends BaseModel {
       },
       sequenceCounters: {
         relation: Model.ManyToManyRelation,
-        modelClass: 'sequence_counters.model',
+        modelClass: SequenceCounterModel,
         join: {
           from: 'regimes.id',
           to: 'sequenceCounters.regimeId'
@@ -52,7 +57,7 @@ export default class RegimeModel extends BaseModel {
       },
       transactions: {
         relation: Model.HasManyRelation,
-        modelClass: 'transaction.model',
+        modelClass: TransactionModel,
         join: {
           from: 'regimes.id',
           to: 'transactions.regimeId'

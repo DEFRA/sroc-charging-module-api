@@ -5,6 +5,9 @@
 import { Model } from 'objection'
 
 import BaseUpsertModel from './base_upsert.model.js'
+import BillRunModel from './bill_run.model.js'
+import InvoiceModel from './invoice.model.js'
+import TransactionModel from './transaction.model.js'
 
 export default class LicenceModel extends BaseUpsertModel {
   static get tableName () {
@@ -13,9 +16,17 @@ export default class LicenceModel extends BaseUpsertModel {
 
   static get relationMappings () {
     return {
+      billRun: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: BillRunModel,
+        join: {
+          from: 'licences.billRunId',
+          to: 'billRuns.id'
+        }
+      },
       invoice: {
         relation: Model.BelongsToOneRelation,
-        modelClass: 'invoice.model',
+        modelClass: InvoiceModel,
         join: {
           from: 'licences.invoiceId',
           to: 'invoices.id'
@@ -23,18 +34,10 @@ export default class LicenceModel extends BaseUpsertModel {
       },
       transactions: {
         relation: Model.HasManyRelation,
-        modelClass: 'transaction.model',
+        modelClass: TransactionModel,
         join: {
           from: 'licences.id',
           to: 'transactions.licenceId'
-        }
-      },
-      billRun: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'bill_run.model',
-        join: {
-          from: 'licences.billRunId',
-          to: 'billRuns.id'
         }
       }
     }

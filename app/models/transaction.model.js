@@ -4,7 +4,12 @@
 
 import { Model } from 'objection'
 
+import AuthorisedSystemModel from './authorised_system.model.js'
 import BaseModel from './base.model.js'
+import BillRunModel from './bill_run.model.js'
+import InvoiceModel from './invoice.model.js'
+import LicenceModel from './licence.model.js'
+import RegimeModel from './regime.model.js'
 
 export default class TransactionModel extends BaseModel {
   static get tableName () {
@@ -15,7 +20,7 @@ export default class TransactionModel extends BaseModel {
     return {
       authorisedSystem: {
         relation: Model.BelongsToOneRelation,
-        modelClass: 'authorised_system.model',
+        modelClass: AuthorisedSystemModel,
         join: {
           from: 'transactions.createdBy',
           to: 'authorisedSystems.id'
@@ -23,23 +28,15 @@ export default class TransactionModel extends BaseModel {
       },
       billRun: {
         relation: Model.BelongsToOneRelation,
-        modelClass: 'bill_run.model',
+        modelClass: BillRunModel,
         join: {
           from: 'transactions.billRunId',
           to: 'billRuns.id'
         }
       },
-      regime: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'regime.model',
-        join: {
-          from: 'transactions.regimeId',
-          to: 'regimes.id'
-        }
-      },
       invoice: {
         relation: Model.BelongsToOneRelation,
-        modelClass: 'invoice.model',
+        modelClass: InvoiceModel,
         join: {
           from: 'transactions.invoiceId',
           to: 'invoices.id'
@@ -47,10 +44,18 @@ export default class TransactionModel extends BaseModel {
       },
       licence: {
         relation: Model.BelongsToOneRelation,
-        modelClass: 'licence.model',
+        modelClass: LicenceModel,
         join: {
           from: 'transactions.licenceId',
           to: 'licences.id'
+        }
+      },
+      regime: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: RegimeModel,
+        join: {
+          from: 'transactions.regimeId',
+          to: 'regimes.id'
         }
       }
     }

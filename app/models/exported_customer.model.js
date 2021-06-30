@@ -5,6 +5,7 @@
 import { Model } from 'objection'
 
 import BaseModel from './base.model.js'
+import CustomerFileModel from './customer_file.model.js'
 
 export default class ExportedCustomerModel extends BaseModel {
   static get tableName () {
@@ -15,7 +16,7 @@ export default class ExportedCustomerModel extends BaseModel {
     return {
       customerFile: {
         relation: Model.BelongsToOneRelation,
-        modelClass: 'customer_file.model',
+        modelClass: CustomerFileModel,
         join: {
           from: 'exported_customers.customerFileId',
           to: 'customerFiles.id'

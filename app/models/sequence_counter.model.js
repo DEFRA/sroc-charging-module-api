@@ -5,6 +5,7 @@
 import { Model } from 'objection'
 
 import BaseModel from './base.model.js'
+import RegimeModel from './regime.model.js'
 
 export default class SequenceCounterModel extends BaseModel {
   static get tableName () {
@@ -15,7 +16,7 @@ export default class SequenceCounterModel extends BaseModel {
     return {
       regime: {
         relation: Model.ManyToManyRelation,
-        modelClass: 'regime.model',
+        modelClass: RegimeModel,
         join: {
           from: 'sequenceCounters.regimeId',
           to: 'regime.id'

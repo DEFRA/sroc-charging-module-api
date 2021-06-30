@@ -5,6 +5,9 @@
 import { Model } from 'objection'
 
 import BaseUpsertModel from './base_upsert.model.js'
+import BillRunModel from './bill_run.model.js'
+import LicenceModel from './licence.model.js'
+import TransactionModel from './transaction.model.js'
 
 const DEMINIMIS_LIMIT = 500
 
@@ -17,26 +20,26 @@ export default class InvoiceModel extends BaseUpsertModel {
     return {
       billRun: {
         relation: Model.BelongsToOneRelation,
-        modelClass: 'bill_run.model',
+        modelClass: BillRunModel,
         join: {
           from: 'invoices.billRunId',
           to: 'billRuns.id'
         }
       },
-      transactions: {
-        relation: Model.HasManyRelation,
-        modelClass: 'transaction.model',
-        join: {
-          from: 'invoices.id',
-          to: 'transactions.invoiceId'
-        }
-      },
       licences: {
         relation: Model.HasManyRelation,
-        modelClass: 'licence.model',
+        modelClass: LicenceModel,
         join: {
           from: 'invoices.id',
           to: 'licences.invoiceId'
+        }
+      },
+      transactions: {
+        relation: Model.HasManyRelation,
+        modelClass: TransactionModel,
+        join: {
+          from: 'invoices.id',
+          to: 'transactions.invoiceId'
         }
       }
     }

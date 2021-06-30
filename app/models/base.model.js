@@ -12,25 +12,4 @@ import { db } from '../../db/index.js'
 Model.knex(db)
 
 export default class BaseModel extends Model {
-  /**
-   * An objective property we override to tell it where to search for models for relationships
-   *
-   * When setting a relationship in a model we have to provide a reference to the related model. As we need to set the
-   * relationship on both sides this leads to
-   * {@link https://vincit.github.io/objection.js/guide/relations.html#require-loops|require-loops}. We can avoid this
-   * by having the model tell Objection where to search for models for relationships. In the relationship declaration we
-   * can then just use a string value
-   *
-   * ```
-   *  // ...
-   *  relation: Model.ManyToManyRelation,
-        modelClass: 'authorised_system.model',
-      // ...
-      ```
-
-      We don't want to do this in every model so set it in the `BaseModel` as Objection recommends.
-   */
-  static get modelPaths () {
-    return [__dirname]
-  }
 }
