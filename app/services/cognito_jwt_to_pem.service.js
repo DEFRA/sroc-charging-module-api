@@ -2,11 +2,20 @@
  * @module CognitoJwtToPemService
  */
 
-const JwkToPem = require('jwk-to-pem')
+import fs from 'fs'
+import JwkToPem from 'jwk-to-pem'
+import path from 'path'
 
-class CognitoJwtToPemService {
+// __dirname would ordinarily give the current directory if used in a CommonJS Node module. But it's not availabe in an
+// ES6 one. So, we can use this to instead to obtain the current directory. We use the standard variable name for
+// consistency
+const __dirname = path.dirname(new URL(import.meta.url).pathname)
+
+export default class CognitoJwtToPemService {
   static go (environment) {
-    return this._convertJwksToPems(environment)
+    const pems = this._convertJwksToPems(environment)
+
+    return pems
   }
 
   static _convertJwksToPems (environment) {
@@ -16,12 +25,13 @@ class CognitoJwtToPemService {
   }
 
   static _getKeys (environment) {
-    return require(`../../keys/${environment}.jwk.json`)
+    const keyFilePath = path.join(__dirname, '..', '..', 'keys', `${environment}.jwk.json`)
+    const data = fs.readFileSync(keyFilePath)
+
+    return JSON.parse(data)
   }
 
   static _pemFromJwk (key) {
     return JwkToPem(key)
   }
 }
-
-module.exports = CognitoJwtToPemService
