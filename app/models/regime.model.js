@@ -2,8 +2,6 @@
  * @module RegimeModel
  */
 
-import { Model } from 'objection'
-
 import AuthorisedSystemModel from './authorised_system.model.js'
 import BaseModel from './base.model.js'
 import BillRunModel from './bill_run.model.js'
@@ -19,7 +17,7 @@ export default class RegimeModel extends BaseModel {
   static get relationMappings () {
     return {
       authorisedSystems: {
-        relation: Model.ManyToManyRelation,
+        relation: this.ManyToManyRelation,
         modelClass: AuthorisedSystemModel,
         join: {
           from: 'regimes.id',
@@ -32,7 +30,7 @@ export default class RegimeModel extends BaseModel {
         }
       },
       billRuns: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: BillRunModel,
         join: {
           from: 'regimes.id',
@@ -40,7 +38,7 @@ export default class RegimeModel extends BaseModel {
         }
       },
       customerFiles: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: CustomerFileModel,
         join: {
           from: 'regimes.id',
@@ -48,7 +46,7 @@ export default class RegimeModel extends BaseModel {
         }
       },
       sequenceCounters: {
-        relation: Model.ManyToManyRelation,
+        relation: this.ManyToManyRelation,
         modelClass: SequenceCounterModel,
         join: {
           from: 'regimes.id',
@@ -56,7 +54,7 @@ export default class RegimeModel extends BaseModel {
         }
       },
       transactions: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: TransactionModel,
         join: {
           from: 'regimes.id',

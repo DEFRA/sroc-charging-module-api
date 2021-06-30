@@ -2,8 +2,6 @@
  * @module SequenceCounterModel
  */
 
-import { Model } from 'objection'
-
 import BaseModel from './base.model.js'
 import RegimeModel from './regime.model.js'
 
@@ -15,7 +13,7 @@ export default class SequenceCounterModel extends BaseModel {
   static get relationMappings () {
     return {
       regime: {
-        relation: Model.ManyToManyRelation,
+        relation: this.ManyToManyRelation,
         modelClass: RegimeModel,
         join: {
           from: 'sequenceCounters.regimeId',

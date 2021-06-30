@@ -2,8 +2,6 @@
  * @module BillRunModel
  */
 
-import { Model } from 'objection'
-
 import AuthorisedSystemModel from './authorised_system.model.js'
 import BaseModel from './base.model.js'
 import InvoiceModel from './invoice.model.js'
@@ -19,7 +17,7 @@ export default class BillRunModel extends BaseModel {
   static get relationMappings () {
     return {
       authorisedSystem: {
-        relation: Model.BelongsToOneRelation,
+        relation: this.BelongsToOneRelation,
         modelClass: AuthorisedSystemModel,
         join: {
           from: 'billRuns.createdBy',
@@ -27,7 +25,7 @@ export default class BillRunModel extends BaseModel {
         }
       },
       invoices: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: InvoiceModel,
         join: {
           from: 'billRuns.id',
@@ -35,7 +33,7 @@ export default class BillRunModel extends BaseModel {
         }
       },
       licences: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: LicenceModel,
         join: {
           from: 'billRuns.id',
@@ -43,7 +41,7 @@ export default class BillRunModel extends BaseModel {
         }
       },
       regime: {
-        relation: Model.BelongsToOneRelation,
+        relation: this.BelongsToOneRelation,
         modelClass: RegimeModel,
         join: {
           from: 'billRuns.regimeId',
@@ -51,7 +49,7 @@ export default class BillRunModel extends BaseModel {
         }
       },
       transactions: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: TransactionModel,
         join: {
           from: 'billRuns.id',

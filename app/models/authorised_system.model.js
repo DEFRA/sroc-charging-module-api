@@ -2,8 +2,6 @@
  * @module AuthorisedSystemModel
  */
 
-import { Model } from 'objection'
-
 import BaseModel from './base.model.js'
 import BillRunModel from './bill_run.model.js'
 import RegimeModel from './regime.model.js'
@@ -17,7 +15,7 @@ export default class AuthorisedSystemModel extends BaseModel {
   static get relationMappings () {
     return {
       billRuns: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: BillRunModel,
         join: {
           from: 'authorisedSystems.id',
@@ -25,7 +23,7 @@ export default class AuthorisedSystemModel extends BaseModel {
         }
       },
       regimes: {
-        relation: Model.ManyToManyRelation,
+        relation: this.ManyToManyRelation,
         modelClass: RegimeModel,
         join: {
           from: 'authorisedSystems.id',
@@ -38,7 +36,7 @@ export default class AuthorisedSystemModel extends BaseModel {
         }
       },
       transactions: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: TransactionModel,
         join: {
           from: 'authorisedSystems.id',

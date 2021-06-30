@@ -2,8 +2,6 @@
  * @module InvoiceModel
  */
 
-import { Model } from 'objection'
-
 import BaseUpsertModel from './base_upsert.model.js'
 import BillRunModel from './bill_run.model.js'
 import LicenceModel from './licence.model.js'
@@ -19,7 +17,7 @@ export default class InvoiceModel extends BaseUpsertModel {
   static get relationMappings () {
     return {
       billRun: {
-        relation: Model.BelongsToOneRelation,
+        relation: this.BelongsToOneRelation,
         modelClass: BillRunModel,
         join: {
           from: 'invoices.billRunId',
@@ -27,7 +25,7 @@ export default class InvoiceModel extends BaseUpsertModel {
         }
       },
       licences: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: LicenceModel,
         join: {
           from: 'invoices.id',
@@ -35,7 +33,7 @@ export default class InvoiceModel extends BaseUpsertModel {
         }
       },
       transactions: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: TransactionModel,
         join: {
           from: 'invoices.id',

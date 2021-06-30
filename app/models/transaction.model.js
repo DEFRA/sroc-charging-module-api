@@ -2,8 +2,6 @@
  * @module TransactionModel
  */
 
-import { Model } from 'objection'
-
 import AuthorisedSystemModel from './authorised_system.model.js'
 import BaseModel from './base.model.js'
 import BillRunModel from './bill_run.model.js'
@@ -19,7 +17,7 @@ export default class TransactionModel extends BaseModel {
   static get relationMappings () {
     return {
       authorisedSystem: {
-        relation: Model.BelongsToOneRelation,
+        relation: this.BelongsToOneRelation,
         modelClass: AuthorisedSystemModel,
         join: {
           from: 'transactions.createdBy',
@@ -27,7 +25,7 @@ export default class TransactionModel extends BaseModel {
         }
       },
       billRun: {
-        relation: Model.BelongsToOneRelation,
+        relation: this.BelongsToOneRelation,
         modelClass: BillRunModel,
         join: {
           from: 'transactions.billRunId',
@@ -35,7 +33,7 @@ export default class TransactionModel extends BaseModel {
         }
       },
       invoice: {
-        relation: Model.BelongsToOneRelation,
+        relation: this.BelongsToOneRelation,
         modelClass: InvoiceModel,
         join: {
           from: 'transactions.invoiceId',
@@ -43,7 +41,7 @@ export default class TransactionModel extends BaseModel {
         }
       },
       licence: {
-        relation: Model.BelongsToOneRelation,
+        relation: this.BelongsToOneRelation,
         modelClass: LicenceModel,
         join: {
           from: 'transactions.licenceId',
@@ -51,7 +49,7 @@ export default class TransactionModel extends BaseModel {
         }
       },
       regime: {
-        relation: Model.BelongsToOneRelation,
+        relation: this.BelongsToOneRelation,
         modelClass: RegimeModel,
         join: {
           from: 'transactions.regimeId',

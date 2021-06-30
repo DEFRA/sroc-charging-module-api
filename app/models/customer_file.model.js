@@ -2,8 +2,6 @@
  * @module CustomerFileModel
  */
 
-import { Model } from 'objection'
-
 import BaseModel from './base.model.js'
 import CustomerModel from './customer.model.js'
 import ExportedCustomerModel from './exported_customer.model.js'
@@ -17,7 +15,7 @@ export default class CustomerFileModel extends BaseModel {
   static get relationMappings () {
     return {
       customers: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: CustomerModel,
         join: {
           from: 'customerFiles.id',
@@ -25,7 +23,7 @@ export default class CustomerFileModel extends BaseModel {
         }
       },
       exportedCustomers: {
-        relation: Model.HasManyRelation,
+        relation: this.HasManyRelation,
         modelClass: ExportedCustomerModel,
         join: {
           from: 'customerFiles.id',
@@ -33,7 +31,7 @@ export default class CustomerFileModel extends BaseModel {
         }
       },
       regime: {
-        relation: Model.BelongsToOneRelation,
+        relation: this.BelongsToOneRelation,
         modelClass: RegimeModel,
         join: {
           from: 'customerFiles.regimeId',
