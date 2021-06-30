@@ -1,9 +1,11 @@
-const { AuthenticationConfig } = require('../../config')
-const { CognitoJwtToPemService } = require('../services')
-const { AuthorisedSystemModel } = require('../models')
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const authOptions = {
+import CognitoJwtToPemService from '../services/cognito_jwt_to_pem.service.js'
+import AuthorisedSystemModel from '../models/authorised_system.model.js'
+
+import AuthenticationConfig from '../../config/authentication.config.js'
+
+const JwtAuthOptionsLib = {
   verifyJWT: true,
   keychain: CognitoJwtToPemService.go(AuthenticationConfig.environment),
   verifyOptions: {
@@ -50,4 +52,4 @@ const authOptions = {
   }
 }
 
-module.exports = authOptions
+export default JwtAuthOptionsLib

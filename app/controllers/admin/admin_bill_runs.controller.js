@@ -1,11 +1,9 @@
-const { AdminSendTransactionFileService } = require('../../services')
+import AdminSendTransactionFileService from '../../services/admin_send_transaction_file.service.js'
 
-class AdminBillRunsController {
+export default class AdminBillRunsController {
   static async send (req, h) {
     await AdminSendTransactionFileService.go(req.app.regime, req.app.billRun)
 
     return h.response().code(204)
   }
 }
-
-module.exports = AdminBillRunsController
