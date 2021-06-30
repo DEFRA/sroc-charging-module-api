@@ -2,10 +2,11 @@
  * @module AuthorisedSystemModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import { Model } from 'objection'
 
-class AuthorisedSystemModel extends BaseModel {
+import BaseModel from './base.model.js'
+
+export default class AuthorisedSystemModel extends BaseModel {
   static get tableName () {
     return 'authorisedSystems'
   }
@@ -56,5 +57,3 @@ class AuthorisedSystemModel extends BaseModel {
     return (this.status.toLowerCase() === 'active')
   }
 }
-
-module.exports = AuthorisedSystemModel

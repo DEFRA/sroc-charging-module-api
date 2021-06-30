@@ -1,6 +1,8 @@
-require('dotenv').config()
+import dotenv from 'dotenv'
 
-const config = {
+dotenv.config()
+
+const ServerConfig = {
   environment: process.env.NODE_ENV || 'development',
   hapi: {
     port: process.env.PORT,
@@ -22,4 +24,4 @@ const config = {
   removeTemporaryFiles: process.env.REMOVE_TMP_FILES || true
 }
 
-module.exports = config
+export default ServerConfig

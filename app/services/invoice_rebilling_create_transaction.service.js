@@ -2,9 +2,12 @@
  * @module InvoiceRebillingCreateTransactionService
  */
 
-const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
+import BillRunModel from '../models/bill_run.model.js'
+import InvoiceModel from '../models/invoice.model.js'
+import LicenceModel from '../models/licence.model.js'
+import TransactionModel from '../models/transaction.model.js'
 
-class InvoiceRebillingCreateTransactionService {
+export default class InvoiceRebillingCreateTransactionService {
   /**
    * Creates a copy of a transaction for rebilling purposes. Accepts a transaction to duplicate along with the licence
    * to create it on. We can optionally invert the transaction type, so a debit transaction would become a credit and
@@ -72,5 +75,3 @@ class InvoiceRebillingCreateTransactionService {
     return newTransaction
   }
 }
-
-module.exports = InvoiceRebillingCreateTransactionService

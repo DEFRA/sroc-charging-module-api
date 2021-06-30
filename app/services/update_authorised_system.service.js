@@ -2,13 +2,14 @@
  * @module UpdateAuthorisedSystemService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { AuthorisedSystemModel, RegimeModel } = require('../models')
+import AuthorisedSystemModel from '../models/authorised_system.model.js'
+import RegimeModel from '../models/regime.model.js'
 
-const { AuthenticationConfig } = require('../../config')
+import AuthenticationConfig from '../../config/authentication.config.js'
 
-class UpdateAuthorisedSystemService {
+export default class UpdateAuthorisedSystemService {
   /**
    * Update the details of an authorised system record
    *
@@ -132,5 +133,3 @@ class UpdateAuthorisedSystemService {
     }
   }
 }
-
-module.exports = UpdateAuthorisedSystemService

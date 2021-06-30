@@ -1,6 +1,7 @@
-const { ListRegimesService, ShowRegimeService } = require('../../services')
+import ListRegimesService from '../../services/list_regimes.service.js'
+import ShowRegimeService from '../../services/show_regime.service.js'
 
-class RegimesController {
+export default class RegimesController {
   static async index (_req, h) {
     const result = await ListRegimesService.go()
 
@@ -13,5 +14,3 @@ class RegimesController {
     return h.response(result).code(200)
   }
 }
-
-module.exports = RegimesController

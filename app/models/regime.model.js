@@ -2,10 +2,11 @@
  * @module RegimeModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import { Model } from 'objection'
 
-class RegimeModel extends BaseModel {
+import BaseModel from './base.model.js'
+
+export default class RegimeModel extends BaseModel {
   static get tableName () {
     return 'regimes'
   }
@@ -60,5 +61,3 @@ class RegimeModel extends BaseModel {
     }
   }
 }
-
-module.exports = RegimeModel

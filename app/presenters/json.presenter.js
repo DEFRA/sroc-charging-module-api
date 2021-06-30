@@ -2,7 +2,7 @@
  * @module JsonPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Takes the data object and returns a version ready to be used for a JSON response.
@@ -13,10 +13,8 @@ const BasePresenter = require('./base.presenter')
  *
  * At this time it does nothing to the data passed in and just returns it again.
  */
-class JsonPresenter extends BasePresenter {
+export default class JsonPresenter extends BasePresenter {
   _presentation (data) {
     return data
   }
 }
-
-module.exports = JsonPresenter

@@ -2,12 +2,12 @@
  * @module InvoiceRebillingCopyService
  */
 
-const InvoiceRebillingCreateLicenceService = require('./invoice_rebilling_create_licence.service')
-const InvoiceRebillingCreateTransactionService = require('./invoice_rebilling_create_transaction.service')
+import InvoiceRebillingCreateLicenceService from './invoice_rebilling_create_licence.service.js'
+import InvoiceRebillingCreateTransactionService from './invoice_rebilling_create_transaction.service.js'
+import LicenceModel from '../models/licence.model.js'
+import TransactionModel from '../models/transaction.model.js'
 
-const { LicenceModel, TransactionModel } = require('../models')
-
-class InvoiceRebillingCopyService {
+export default class InvoiceRebillingCopyService {
   /**
    * Service to copy an 'original' invoice to the 'cancel' and 'rebill' invoices
    *
@@ -57,5 +57,3 @@ class InvoiceRebillingCopyService {
       .where('licenceId', licence.id)
   }
 }
-
-module.exports = InvoiceRebillingCopyService

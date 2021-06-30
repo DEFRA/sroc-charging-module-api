@@ -2,10 +2,10 @@
  * @module BaseNotifierLib
  */
 
-const { Notifier } = require('@airbrake/node')
-const Pino = require('pino')
+import { Notifier } from '@airbrake/node'
+import Pino from 'pino'
 
-const { AirbrakeConfig } = require('../../config')
+import AirbrakeConfig from '../../config/airbrake.config.js'
 
 /**
  * Based class for combined logging and Airbrake (Errbit) notification managers
@@ -26,7 +26,7 @@ const { AirbrakeConfig } = require('../../config')
  * @param {Object} [notifier] An instance of {@link https://github.com/airbrake/airbrake-js|airbrake-js} `Notifier`
  * which our 'AirbrakePlugin` adds to Hapi. If 'null' the class will create a new instance instead.
  */
-class BaseNotifierLib {
+export default class BaseNotifierLib {
   constructor (logger = null, notifier = null) {
     this._logger = this._setLogger(logger)
     this._notifier = this._setNotifier(notifier)
@@ -161,5 +161,3 @@ class BaseNotifierLib {
     })
   }
 }
-
-module.exports = BaseNotifierLib

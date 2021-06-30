@@ -1,9 +1,7 @@
-const {
-  NotSupportedController,
-  PresrocBillRunsTransactionsController
-} = require('../controllers')
+import NotSupportedController from '../controllers/not_supported.controller.js'
+import BillRunsTransactionsController from '../controllers/presroc/bill_runs_transactions.controller.js'
 
-const routes = [
+const BillRunTransactionRoutes = [
   {
     method: 'POST',
     path: '/v1/{regimeId}/billruns/{billRunId}/transactions',
@@ -12,13 +10,13 @@ const routes = [
   {
     method: 'POST',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/transactions',
-    handler: PresrocBillRunsTransactionsController.create
+    handler: BillRunsTransactionsController.create
   },
   {
     method: 'GET',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/transactions/{transactionId}',
-    handler: PresrocBillRunsTransactionsController.view
+    handler: BillRunsTransactionsController.view
   }
 ]
 
-module.exports = routes
+export default BillRunTransactionRoutes

@@ -1,4 +1,4 @@
-const config = require('../../config/authentication.config')
+import AuthenticationConfig from '../../config/authentication.config'
 
 exports.seed = async function (knex) {
   await knex('authorised_systems').del()
@@ -10,7 +10,7 @@ exports.seed = async function (knex) {
   let result = await knex('authorised_systems')
     .returning('id')
     .insert({
-      client_id: config.adminClientId,
+      client_id: AuthenticationConfig.adminClientId,
       name: 'admin',
       admin: true,
       status: 'active'
@@ -29,11 +29,11 @@ exports.seed = async function (knex) {
     })
   }
   const otherClients = []
-  if (config.systemClientId) {
-    otherClients.push({ clientId: config.systemClientId, name: 'system' })
+  if (AuthenticationConfig.systemClientId) {
+    otherClients.push({ clientId: AuthenticationConfig.systemClientId, name: 'system' })
   }
-  if (config.testClientId) {
-    otherClients.push({ clientId: config.testClientId, name: 'test' })
+  if (AuthenticationConfig.testClientId) {
+    otherClients.push({ clientId: AuthenticationConfig.testClientId, name: 'test' })
   }
 
   for (const client of otherClients) {

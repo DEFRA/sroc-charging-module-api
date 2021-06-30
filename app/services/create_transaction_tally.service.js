@@ -2,9 +2,11 @@
  * @module CreateTransactionTallyService
  */
 
-const { raw } = require('../models/base.model')
+import BaseModel from '../models/base.model.js'
 
-class CreateTransactionTallyService {
+const { raw } = BaseModel
+
+export default class CreateTransactionTallyService {
   /**
    * Generate a 'tally' object based on a transaction. The tally object includes the data and statements needed for
    * either an Objection `query().patch()` call or a PostgreSQL `INSERT .. ON CONFLICT` query, otherwise known as an
@@ -153,5 +155,3 @@ class CreateTransactionTallyService {
     tallyObject.updateStatements.push(`${columnName} = ${tableName}.${columnName} + EXCLUDED.${columnName}`)
   }
 }
-
-module.exports = CreateTransactionTallyService

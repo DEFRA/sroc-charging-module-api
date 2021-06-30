@@ -1,6 +1,6 @@
-const { AuthorisedSystemsController } = require('../controllers')
+import AuthorisedSystemsController from '../controllers/admin/authorised_systems.controller.js'
 
-const routes = [
+const AuthorisedSystemRoutes = [
   {
     method: 'GET',
     path: '/admin/authorised-systems',
@@ -43,4 +43,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default AuthorisedSystemRoutes

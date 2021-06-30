@@ -22,7 +22,7 @@
  * @module BlippPlugin
  */
 
-const Blipp = require('blipp')
+import Blipp from 'blipp'
 
 const BlippPlugin = {
   plugin: Blipp,
@@ -32,4 +32,4 @@ const BlippPlugin = {
   }
 }
 
-module.exports = BlippPlugin
+export default BlippPlugin

@@ -2,13 +2,13 @@
  * @module ViewInvoicePresenter
  */
 
-const BasePresenter = require('./base.presenter')
-const ViewLicencePresenter = require('./view_licence.presenter')
+import BasePresenter from './base.presenter.js'
+import ViewLicencePresenter from './view_licence.presenter.js'
 
 /**
  * Handles formatting the data into the response we send to clients after a request to view an invoice
  */
-class ViewInvoicePresenter extends BasePresenter {
+export default class ViewInvoicePresenter extends BasePresenter {
   _presentation (data) {
     return {
       invoice: {
@@ -33,5 +33,3 @@ class ViewInvoicePresenter extends BasePresenter {
     }
   }
 }
-
-module.exports = ViewInvoicePresenter

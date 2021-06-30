@@ -2,12 +2,12 @@
  * @module CreateBillRunPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Handles formatting the data into the response we send to clients after a create bill run request.
  */
-class CreateBillRunPresenter extends BasePresenter {
+export default class CreateBillRunPresenter extends BasePresenter {
   _presentation (data) {
     return {
       billRun: {
@@ -17,5 +17,3 @@ class CreateBillRunPresenter extends BasePresenter {
     }
   }
 }
-
-module.exports = CreateBillRunPresenter

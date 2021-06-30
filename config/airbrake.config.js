@@ -1,10 +1,12 @@
-require('dotenv').config()
+import dotenv from 'dotenv'
 
-const config = {
+dotenv.config()
+
+const AirbrakeConfig = {
   host: process.env.AIRBRAKE_HOST,
   projectKey: process.env.AIRBRAKE_KEY,
   projectId: 1,
   environment: process.env.ENVIRONMENT
 }
 
-module.exports = config
+export default AirbrakeConfig

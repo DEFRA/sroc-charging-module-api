@@ -2,8 +2,8 @@
  * @module TaskRunner
  */
 
-const { TaskNotifierLib } = require('../lib')
-const CustomerFilesTask = require('./customer_files.task')
+import TaskNotifierLib from '../lib/task_notifier.lib.js'
+import CustomerFilesTask from './customer_files.task.js'
 
 /**
  * Use to run any one of our 'tasks'
@@ -26,7 +26,7 @@ const CustomerFilesTask = require('./customer_files.task')
  * - add an entry to package.json, for example, `"my-new-task": "node app/tasks/index.js MyNewTask"` ensuring you
  * include the arg which is your tasks's class name
  */
-class TaskRunner {
+export default class TaskRunner {
   /**
    * Execute the task runner for the task identified by the `className`
    *
@@ -59,5 +59,3 @@ class TaskRunner {
     return new TaskNotifierLib()
   }
 }
-
-module.exports = TaskRunner

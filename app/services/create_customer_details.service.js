@@ -2,10 +2,10 @@
  * @module CreateCustomerDetailsService
  */
 
-const { CustomerModel } = require('../models')
-const { CustomerTranslator } = require('../translators')
+import CustomerModel from '../models/customer.model.js'
+import CustomerTranslator from '../translators/customer.translator.js'
 
-class CreateCustomerDetailsService {
+export default class CreateCustomerDetailsService {
   /**
    * Takes the provided payload and creates an entry in the customers table,  which will be periodically sent to SSCL to
    * update customer details.
@@ -38,5 +38,3 @@ class CreateCustomerDetailsService {
       .merge()
   }
 }
-
-module.exports = CreateCustomerDetailsService

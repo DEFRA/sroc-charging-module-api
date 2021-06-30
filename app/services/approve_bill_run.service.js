@@ -2,9 +2,9 @@
  * @module ApproveBillRunService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-class ApproveBillRunService {
+export default class ApproveBillRunService {
   static async go (billRun) {
     this._validate(billRun)
 
@@ -24,5 +24,3 @@ class ApproveBillRunService {
       .patch({ status: 'approved' })
   }
 }
-
-module.exports = ApproveBillRunService

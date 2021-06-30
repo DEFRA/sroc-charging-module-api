@@ -1,6 +1,6 @@
-const { RootController } = require('../controllers')
+import RootController from '../controllers/root.controller.js'
 
-const routes = [
+const RootRoutes = [
   {
     method: 'GET',
     path: '/',
@@ -19,4 +19,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default RootRoutes

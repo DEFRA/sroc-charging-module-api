@@ -2,15 +2,15 @@
  * @module ListRegimesService
  */
 
-const { RegimeModel } = require('../models')
-const { JsonPresenter } = require('../presenters')
+import RegimeModel from '../models/regime.model.js'
+import JsonPresenter from '../presenters/json.presenter.js'
 
 /**
  * Returns an array of regimes
  *
  * @returns {module:RegimeModel[]} an array of `RegimeModel` based on regimes currently in the database
  */
-class ListRegimesService {
+export default class ListRegimesService {
   static async go () {
     const regimes = await this._regimes()
 
@@ -28,5 +28,3 @@ class ListRegimesService {
     return presenter.go()
   }
 }
-
-module.exports = ListRegimesService

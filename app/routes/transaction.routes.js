@@ -1,6 +1,6 @@
-const { NotSupportedController } = require('../controllers')
+import NotSupportedController from '../controllers/not_supported.controller.js'
 
-const routes = [
+const TransactionRoutes = [
   {
     method: 'GET',
     path: '/v1/{regimeId}/transactions',
@@ -13,4 +13,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default TransactionRoutes

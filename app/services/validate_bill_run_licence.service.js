@@ -2,11 +2,11 @@
  * @module ValidateBillRunLicenceService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { InvoiceModel } = require('../models')
+import InvoiceModel from '../models/invoice.model.js'
 
-class ValidateBillRunLicenceService {
+export default class ValidateBillRunLicenceService {
   /**
   * Validates that a licence is linked to the specified bill run and is not part of a rebilling invoice. Intended for
   * use in the `delete` licence endpoint.
@@ -38,5 +38,3 @@ class ValidateBillRunLicenceService {
     }
   }
 }
-
-module.exports = ValidateBillRunLicenceService

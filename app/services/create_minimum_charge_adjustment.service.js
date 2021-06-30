@@ -2,7 +2,7 @@
  * @module CreateMinimumChargeAdjustmentService
  */
 
-class CreateMinimumChargeAdjustmentService {
+export default class CreateMinimumChargeAdjustmentService {
   /**
    * Returns a minimum charge adjustment transaction. Note that the created transaction is not persisted in the db.
    *
@@ -79,5 +79,3 @@ class CreateMinimumChargeAdjustmentService {
     )
   }
 }
-
-module.exports = CreateMinimumChargeAdjustmentService

@@ -2,12 +2,13 @@
  * @module InvoiceModel
  */
 
-const { Model } = require('objection')
-const BaseUpsertModel = require('./base_upsert.model')
+import { Model } from 'objection'
+
+import BaseUpsertModel from './base_upsert.model.js'
 
 const DEMINIMIS_LIMIT = 500
 
-class InvoiceModel extends BaseUpsertModel {
+export default class InvoiceModel extends BaseUpsertModel {
   static get tableName () {
     return 'invoices'
   }
@@ -206,5 +207,3 @@ class InvoiceModel extends BaseUpsertModel {
     return this.subjectToMinimumChargeCount > 0
   }
 }
-
-module.exports = InvoiceModel

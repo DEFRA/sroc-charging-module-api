@@ -2,10 +2,11 @@
  * @module LicenceModel
  */
 
-const { Model } = require('objection')
-const BaseUpsertModel = require('./base_upsert.model')
+import { Model } from 'objection'
 
-class LicenceModel extends BaseUpsertModel {
+import BaseUpsertModel from './base_upsert.model.js'
+
+export default class LicenceModel extends BaseUpsertModel {
   static get tableName () {
     return 'licences'
   }
@@ -73,5 +74,3 @@ class LicenceModel extends BaseUpsertModel {
     return this.debitLineValue - this.creditLineValue
   }
 }
-
-module.exports = LicenceModel

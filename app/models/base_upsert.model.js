@@ -2,9 +2,9 @@
  * @module BaseUpsertModel
  */
 
-const BaseModel = require('./base.model')
+import BaseModel from './base.model.js'
 
-class BaseUpsertModel extends BaseModel {
+export default class BaseUpsertModel extends BaseModel {
   /**
    * Run an UPSERT query against the DB for the model that extends this class
    *
@@ -127,5 +127,3 @@ class BaseUpsertModel extends BaseModel {
     return result
   }
 }
-
-module.exports = BaseUpsertModel

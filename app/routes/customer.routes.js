@@ -1,6 +1,6 @@
-const { CustomersController } = require('../controllers')
+import CustomersController from '../controllers/admin/customers.controller.js'
 
-const routes = [
+const CustomerRoutes = [
   {
     method: 'PATCH',
     path: '/admin/{regimeId}/customers',
@@ -23,4 +23,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default CustomerRoutes

@@ -2,7 +2,7 @@
  * @module TransactionFileTailPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Formats data for the tail of a transaction file.
@@ -14,7 +14,7 @@ const BasePresenter = require('./base.presenter')
  * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/transaction_file_presenter.js
  */
 
-class TransactionFileTailPresenter extends BasePresenter {
+export default class TransactionFileTailPresenter extends BasePresenter {
   _presentation (data) {
     return {
       col01: 'T',
@@ -32,5 +32,3 @@ class TransactionFileTailPresenter extends BasePresenter {
     return index + 1
   }
 }
-
-module.exports = TransactionFileTailPresenter

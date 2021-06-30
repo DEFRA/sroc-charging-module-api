@@ -2,11 +2,11 @@
  * @module InvoiceRebillingService
  */
 
-const { InvoiceRebillingPresenter } = require('../presenters')
-const InvoiceRebillingInitialiseService = require('./invoice_rebilling_initialise.service')
-const InvoiceRebillingCopyService = require('./invoice_rebilling_copy.service')
+import InvoiceRebillingPresenter from '../presenters/invoice_rebilling.presenter.js'
+import InvoiceRebillingInitialiseService from './invoice_rebilling_initialise.service.js'
+import InvoiceRebillingCopyService from './invoice_rebilling_copy.service.js'
 
-class InvoiceRebillingService {
+export default class InvoiceRebillingService {
   /**
    * Manages the rebilling of an invoice, including creating the 'cancel' and 'rebill' invoices, generating the response
    * to the client system, and handling the background task to copy the details from the original invoice to the new
@@ -41,5 +41,3 @@ class InvoiceRebillingService {
     return presenter.go()
   }
 }
-
-module.exports = InvoiceRebillingService

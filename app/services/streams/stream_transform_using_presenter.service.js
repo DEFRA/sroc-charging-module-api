@@ -2,7 +2,7 @@
  * @module StreamTransformUsingPresenterService
  */
 
-const { Transform } = require('stream')
+import { Transform } from 'stream'
 
 /**
  * Returns a Transform stream which processes an object supplied to it using the supplied Presenter. It adds a field
@@ -33,7 +33,7 @@ const { Transform } = require('stream')
  * numbering for each row of the data file. Defaults to 0.
  * @returns {TransformStream} A stream of data.
  */
-class StreamTransformUsingPresenterService {
+export default class StreamTransformUsingPresenterService {
   static go (Presenter, additionalData = {}, indexStart = 0) {
     let index = indexStart
 
@@ -57,5 +57,3 @@ class StreamTransformUsingPresenterService {
     })
   }
 }
-
-module.exports = StreamTransformUsingPresenterService

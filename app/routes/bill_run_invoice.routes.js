@@ -1,21 +1,21 @@
-const { PresrocBillRunsInvoicesController } = require('../controllers')
+import BillRunsInvoicesController from '../controllers/presroc/bill_runs_invoices.controller.js'
 
-const routes = [
+const BillRunInvoiceRoutes = [
   {
     method: 'DELETE',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}',
-    handler: PresrocBillRunsInvoicesController.delete
+    handler: BillRunsInvoicesController.delete
   },
   {
     method: 'GET',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}',
-    handler: PresrocBillRunsInvoicesController.view
+    handler: BillRunsInvoicesController.view
   },
   {
     method: 'PATCH',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill',
-    handler: PresrocBillRunsInvoicesController.rebill
+    handler: BillRunsInvoicesController.rebill
   }
 ]
 
-module.exports = routes
+export default BillRunInvoiceRoutes

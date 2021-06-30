@@ -2,10 +2,11 @@
  * @module TransactionModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import { Model } from 'objection'
 
-class TransactionModel extends BaseModel {
+import BaseModel from './base.model.js'
+
+export default class TransactionModel extends BaseModel {
   static get tableName () {
     return 'transactions'
   }
@@ -55,5 +56,3 @@ class TransactionModel extends BaseModel {
     }
   }
 }
-
-module.exports = TransactionModel

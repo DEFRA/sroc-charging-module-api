@@ -2,13 +2,13 @@
  * @module ViewLicencePresenter
  */
 
-const BasePresenter = require('./base.presenter')
-const ViewTransactionPresenter = require('./view_transaction.presenter')
+import BasePresenter from './base.presenter.js'
+import ViewTransactionPresenter from './view_transaction.presenter.js'
 
 /**
  * Handles formatting the licence data into the response we send to clients when a GET request is received
  */
-class ViewLicencePresenter extends BasePresenter {
+export default class ViewLicencePresenter extends BasePresenter {
   _presentation (data) {
     return {
       id: data.id,
@@ -21,5 +21,3 @@ class ViewLicencePresenter extends BasePresenter {
     }
   }
 }
-
-module.exports = ViewLicencePresenter

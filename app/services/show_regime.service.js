@@ -2,10 +2,10 @@
  * @module ShowRegimeService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { RegimeModel } = require('../models')
-const { JsonPresenter } = require('../presenters')
+import RegimeModel from '../models/regime.model.js'
+import JsonPresenter from '../presenters/json.presenter.js'
 
 /**
  * Returns the regime with matching Id
@@ -15,7 +15,7 @@ const { JsonPresenter } = require('../presenters')
  * @param {string} id Id of the regime to find
  * @returns {module:RegimeModel} a `RegimeModel` if found else it will throw a B
  */
-class ShowRegimeService {
+export default class ShowRegimeService {
   static async go (id) {
     const regime = await this._regime(id)
 
@@ -38,5 +38,3 @@ class ShowRegimeService {
     return presenter.go()
   }
 }
-
-module.exports = ShowRegimeService

@@ -2,14 +2,12 @@
  * @module AdminSendTransactionFileService
  */
 
-const SendTransactionFileService = require('./send_transaction_file.service')
+import Boom from '@hapi/boom'
 
-// We require BoomNotifierLib this way as the usual way of destructuring it results in a circular dependency error
-const BoomNotifierLib = require('../lib/boom_notifier.lib')
+import BoomNotifierLib from '../lib/boom_notifier.lib.js'
+import SendTransactionFileService from './send_transaction_file.service.js'
 
-const Boom = require('@hapi/boom')
-
-class AdminSendTransactionFileService {
+export default class AdminSendTransactionFileService {
   /**
    * Service which allows SendTransactionFileService to be run asyncronously, throwing an error if validation fails or
    * if an error occurs during the sending of the transaction file.
@@ -33,5 +31,3 @@ class AdminSendTransactionFileService {
     }
   }
 }
-
-module.exports = AdminSendTransactionFileService

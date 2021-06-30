@@ -2,11 +2,11 @@
  * @module BaseNextFileReferenceService
  */
 
-const { SequenceCounterModel } = require('../models')
+import SequenceCounterModel from '../models/sequence_counter.model.js'
 
-const { RulesServiceConfig } = require('../../config')
+import RulesServiceConfig from '../../config/rules_service.config.js'
 
-class BaseNextFileReferenceService {
+export default class BaseNextFileReferenceService {
   /**
    * Base service for retrieving file references.
    *
@@ -71,5 +71,3 @@ class BaseNextFileReferenceService {
     throw new Error("Extending service must implement '_fileFixedChar()'")
   }
 }
-
-module.exports = BaseNextFileReferenceService

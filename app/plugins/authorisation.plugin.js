@@ -1,5 +1,6 @@
-const Boom = require('@hapi/boom')
-const { AuthorisationService } = require('../services')
+import Boom from '@hapi/boom'
+
+import AuthorisationService from '../services/plugins/authorisation.service.js'
 
 /**
  * Checks the client is authorised to access the requested endpoint
@@ -37,4 +38,4 @@ const AuthorisationPlugin = {
   }
 }
 
-module.exports = AuthorisationPlugin
+export default AuthorisationPlugin

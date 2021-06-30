@@ -2,9 +2,10 @@
  * @module CreateAuthorisedSystemService
  */
 
-const { AuthorisedSystemModel, RegimeModel } = require('../models')
-const { AuthorisedSystemTranslator } = require('../translators')
-const { JsonPresenter } = require('../presenters')
+import AuthorisedSystemModel from '../models/authorised_system.model.js'
+import AuthorisedSystemTranslator from '../translators/authorised_system.translator.js'
+import JsonPresenter from '../presenters/json.presenter.js'
+import RegimeModel from '../models/regime.model.js'
 
 /**
  * Creates a new authorised system record
@@ -16,7 +17,7 @@ const { JsonPresenter } = require('../presenters')
  *
  * @returns {Object} Details of the newly created authorised system
  */
-class CreateAuthorisedSystemService {
+export default class CreateAuthorisedSystemService {
   static async go (payload) {
     const translator = new AuthorisedSystemTranslator(payload)
     const regimes = await this._regimes(translator.validatedData.authorisations)
@@ -54,5 +55,3 @@ class CreateAuthorisedSystemService {
     return presenter.go()
   }
 }
-
-module.exports = CreateAuthorisedSystemService

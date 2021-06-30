@@ -2,15 +2,13 @@
  * @module GenerateTransactionFileService
  */
 
-const { TransactionModel } = require('../models')
-const TransformRecordsToFileService = require('./transform_records_to_file.service')
-const {
-  TransactionFileBodyPresenter,
-  TransactionFileHeadPresenter,
-  TransactionFileTailPresenter
-} = require('../presenters')
+import TransactionFileBodyPresenter from '../presenters/transaction_file_body.presenter.js'
+import TransactionFileHeadPresenter from '../presenters/transaction_file_head.presenter.js'
+import TransactionFileTailPresenter from '../presenters/transaction_file_tail.presenter.js'
+import TransactionModel from '../models/transaction.model.js'
+import TransformRecordsToFileService from './transform_records_to_file.service.js'
 
-class GenerateTransactionFileService {
+export default class GenerateTransactionFileService {
   /**
    * Generates and writes a transaction file for a bill run to a given filename in the temp folder.
    *
@@ -83,5 +81,3 @@ class GenerateTransactionFileService {
     }
   }
 }
-
-module.exports = GenerateTransactionFileService

@@ -2,13 +2,13 @@
  * @module ViewBillRunPresenter
  */
 
-const BasePresenter = require('./base.presenter')
-const ViewBillRunInvoicePresenter = require('./view_bill_run_invoice.presenter')
+import BasePresenter from './base.presenter.js'
+import ViewBillRunInvoicePresenter from './view_bill_run_invoice.presenter.js'
 
 /**
  * Formats the data into the response we send after a view bill run request
  */
-class ViewBillRunPresenter extends BasePresenter {
+export default class ViewBillRunPresenter extends BasePresenter {
   _presentation (data) {
     return {
       billRun: {
@@ -30,5 +30,3 @@ class ViewBillRunPresenter extends BasePresenter {
     }
   }
 }
-
-module.exports = ViewBillRunPresenter

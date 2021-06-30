@@ -2,7 +2,7 @@
  * @module RequestNotifierLib
  */
 
-const BaseNotifierLib = require('./base_notifier.lib')
+import BaseNotifierLib from './base_notifier.lib.js'
 
 /**
  * A combined logging and Airbrake (Errbit) notification manager for actions that take place within a
@@ -16,7 +16,7 @@ const BaseNotifierLib = require('./base_notifier.lib')
  * This extends the `BaseNotifierLib` to also ensure the request ID is included in all output. We can then identify all
  * related log entries and Errbit notifications by using the ID.
  */
-class RequestNotifierLib extends BaseNotifierLib {
+export default class RequestNotifierLib extends BaseNotifierLib {
   /**
    * Instantiate a new instance
    *
@@ -86,5 +86,3 @@ class RequestNotifierLib extends BaseNotifierLib {
     }
   }
 }
-
-module.exports = RequestNotifierLib

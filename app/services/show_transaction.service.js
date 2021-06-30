@@ -2,10 +2,10 @@
  * @module ShowTransactionService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { TransactionModel } = require('../models')
-const { JsonPresenter } = require('../presenters')
+import JsonPresenter from '../presenters/json.presenter.js'
+import TransactionModel from '../models/transaction.model.js'
 
 /**
  * Returns the transaction with matching Id
@@ -17,7 +17,7 @@ const { JsonPresenter } = require('../presenters')
  * @returns {module:TransactionModel} an instance `TransactionModel` if found else it will throw a `Boom.notFound()`
  * error (404)
  */
-class ShowTransactionService {
+export default class ShowTransactionService {
   static async go (id) {
     const transaction = await this._transaction(id)
 
@@ -57,5 +57,3 @@ class ShowTransactionService {
     return invoice.$transactionType()
   }
 }
-
-module.exports = ShowTransactionService

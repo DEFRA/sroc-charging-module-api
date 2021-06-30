@@ -2,10 +2,10 @@
  * @module ShowAuthorisedSystemService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { AuthorisedSystemModel } = require('../models')
-const { JsonPresenter } = require('../presenters')
+import AuthorisedSystemModel from '../models/authorised_system.model.js'
+import JsonPresenter from '../presenters/json.presenter.js'
 
 /**
  * Returns the authorised system with the matching Id
@@ -15,7 +15,7 @@ const { JsonPresenter } = require('../presenters')
  * @param {string} id Id of the regime to find
  * @returns {module:AuthorisedSystemModel} an `AuthorisedSystemModel` if found else it will throw a Boom 404 error
  */
-class ShowAuthorisedSystemService {
+export default class ShowAuthorisedSystemService {
   static async go (id) {
     const authorisedSystem = await this._authorisedSystem(id)
 
@@ -38,5 +38,3 @@ class ShowAuthorisedSystemService {
     return presenter.go()
   }
 }
-
-module.exports = ShowAuthorisedSystemService

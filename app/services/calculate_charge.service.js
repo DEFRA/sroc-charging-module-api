@@ -2,10 +2,11 @@
  * @module CalculateChargeService
  */
 
-const { CalculateChargeTranslator, RulesServiceTranslator } = require('../translators')
-const { CalculateChargePresenter, RulesServicePresenter } = require('../presenters')
-
-const RulesService = require('./rules.service')
+import CalculateChargePresenter from '../presenters/calculate_charge.presenter.js'
+import CalculateChargeTranslator from '../translators/calculate_charge.translator.js'
+import RulesService from './rules.service.js'
+import RulesServicePresenter from '../presenters/rules_service.presenter.js'
+import RulesServiceTranslator from '../translators/rules_service.translator.js'
 
 /**
  * Handles calling the rules service and returning a response when calculating a charge
@@ -13,7 +14,7 @@ const RulesService = require('./rules.service')
  * When a request comes in it needs to be translated, validated and then formatted for sending to the rules service. We
  * then take that response and format it into the response we send to the client.
  */
-class CalculateChargeService {
+export default class CalculateChargeService {
   /**
    * Initiator method of the service. When called the service will take the inputs and return a calculated charge.
    *
@@ -99,5 +100,3 @@ class CalculateChargeService {
     return charge
   }
 }
-
-module.exports = CalculateChargeService

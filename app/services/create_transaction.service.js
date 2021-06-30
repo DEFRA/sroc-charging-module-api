@@ -2,12 +2,15 @@
  * @module CreateTransactionService
  */
 
-const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
-const { TransactionTranslator } = require('../translators')
-const CalculateChargeService = require('./calculate_charge.service')
-const { CreateTransactionPresenter } = require('../presenters')
+import BillRunModel from '../models/bill_run.model.js'
+import CalculateChargeService from './calculate_charge.service.js'
+import CreateTransactionPresenter from '../presenters/create_transaction.presenter.js'
+import InvoiceModel from '../models/invoice.model.js'
+import LicenceModel from '../models/licence.model.js'
+import TransactionModel from '../models/transaction.model.js'
+import TransactionTranslator from '../translators/transaction.translator.js'
 
-class CreateTransactionService {
+export default class CreateTransactionService {
   static async go (payload, billRun, authorisedSystem, regime) {
     const translator = this._translateRequest(payload, billRun.id, authorisedSystem, regime)
 
@@ -75,5 +78,3 @@ class CreateTransactionService {
     return presenter.go()
   }
 }
-
-module.exports = CreateTransactionService

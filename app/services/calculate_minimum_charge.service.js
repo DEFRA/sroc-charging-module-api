@@ -2,12 +2,11 @@
  * @module CalculateMinimumChargeService
  */
 
-// Files in the same folder cannot be destructured from index.js so have to be required directly
-const CreateMinimumChargeAdjustmentService = require('./create_minimum_charge_adjustment.service')
+import CreateMinimumChargeAdjustmentService from './create_minimum_charge_adjustment.service.js'
 
 const MINIMUM_CHARGE_LIMIT = 2500
 
-class CalculateMinimumChargeService {
+export default class CalculateMinimumChargeService {
   /**
    * Calculates and returns minimum charge adjustment transactions for all licences under a bill run.
    *
@@ -82,5 +81,3 @@ class CalculateMinimumChargeService {
     return CreateMinimumChargeAdjustmentService.go(licence, adjustmentValue, credit)
   }
 }
-
-module.exports = CalculateMinimumChargeService

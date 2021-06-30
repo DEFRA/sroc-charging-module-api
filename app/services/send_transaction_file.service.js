@@ -2,16 +2,17 @@
  * @module SendTransactionFileService
  */
 
-const path = require('path')
+import path from 'path'
 
-const { ServerConfig } = require('../../config')
+import DeleteFileService from './delete_file.service.js'
+import GenerateTransactionFileService from './generate_transaction_file.service.js'
+import SendFileToS3Service from './send_file_to_s3.service.js'
+
+import ServerConfig from '../../config/server.config.js'
+
 const { removeTemporaryFiles } = ServerConfig
 
-const GenerateTransactionFileService = require('./generate_transaction_file.service')
-const SendFileToS3Service = require('./send_file_to_s3.service')
-const DeleteFileService = require('./delete_file.service')
-
-class SendTransactionFileService {
+export default class SendTransactionFileService {
   /**
    * Organises the generation and sending of a transaction file:
    * - Validates that the bill run is in the requisite state;
@@ -95,5 +96,3 @@ class SendTransactionFileService {
       .patch({ status: 'billed' })
   }
 }
-
-module.exports = SendTransactionFileService

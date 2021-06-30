@@ -2,7 +2,7 @@
  * @module StreamReadableDataService
  */
 
-const { Readable } = require('stream')
+import { Readable } from 'stream'
 
 /**
  * Returns a Readable stream of the data passed to it in a single 'chunk'.
@@ -12,11 +12,9 @@ const { Readable } = require('stream')
  * @param {object} data Data object to be streamed back.
  * @returns {ReadableStream} A stream of data.
  */
-class StreamReadableDataService {
+export default class StreamReadableDataService {
   static go (data) {
     return Readable
       .from([data])
   }
 }
-
-module.exports = StreamReadableDataService

@@ -2,11 +2,15 @@
  * @module CalculateChargeTranslator
  */
 
-const BaseTranslator = require('./base.translator')
-const Joi = require('joi').extend(require('@joi/date'))
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
+import Joi from 'joi'
+import JoiDate from '@joi/date'
 
-class CalculateChargeTranslator extends BaseTranslator {
+import BaseTranslator from './base.translator.js'
+
+Joi.extend(JoiDate)
+
+export default class CalculateChargeTranslator extends BaseTranslator {
   constructor (data) {
     super(data)
 
@@ -196,5 +200,3 @@ class CalculateChargeTranslator extends BaseTranslator {
     return number.toString().padStart(3, '0')
   }
 }
-
-module.exports = CalculateChargeTranslator

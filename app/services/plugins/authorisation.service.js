@@ -34,7 +34,7 @@
  * @returns {Object} Returns an object which states whether the request is authorised and an instance of `RegimeModel`
  * if one was specified and matched
  */
-class AuthorisationService {
+export default class AuthorisationService {
   static async go (user = null, regimeSlug = null) {
     const result = { authorised: false, regime: null }
     if (this._endpointHasNoRegime(regimeSlug)) {
@@ -64,5 +64,3 @@ class AuthorisationService {
       .findOne({ slug: regimeSlug })
   }
 }
-
-module.exports = AuthorisationService

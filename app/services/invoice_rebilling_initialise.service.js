@@ -2,9 +2,9 @@
  * @module InvoiceRebillingInitialiseService
  */
 
-const { InvoiceModel } = require('../models')
+import InvoiceModel from '../models/invoice.model.js'
 
-class InvoiceRebillingInitialiseService {
+export default class InvoiceRebillingInitialiseService {
   /**
    * Creates two empty invoices on a given bill run for rebilling purposes: a 'cancel' invoice and a 'rebill' invoice
    *
@@ -51,5 +51,3 @@ class InvoiceRebillingInitialiseService {
     })
   }
 }
-
-module.exports = InvoiceRebillingInitialiseService

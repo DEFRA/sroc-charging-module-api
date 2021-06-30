@@ -2,15 +2,15 @@
  * @module ViewBillRunService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { BillRunModel } = require('../models')
-const { ViewBillRunPresenter } = require('../presenters')
+import BillRunModel from '../models/bill_run.model.js'
+import ViewBillRunPresenter from '../presenters/view_bill_run.presenter.js'
 
 /**
  * Locates a bill run and returns the available details
  */
-class ViewBillRunService {
+export default class ViewBillRunService {
   /**
    * Fetches a bill run based on its id and returns the data needed by the View Bill Run endpoint
    *
@@ -116,5 +116,3 @@ class ViewBillRunService {
     }, 0)
   }
 }
-
-module.exports = ViewBillRunService

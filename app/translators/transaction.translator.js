@@ -1,7 +1,8 @@
-const BaseTranslator = require('./base.translator')
-const Joi = require('joi')
+import Joi from 'joi'
 
-class TransactionTranslator extends BaseTranslator {
+import BaseTranslator from './base.translator.js'
+
+export default class TransactionTranslator extends BaseTranslator {
   _schema () {
     return Joi.object({
       billRunId: Joi.string().required(),
@@ -105,5 +106,3 @@ class TransactionTranslator extends BaseTranslator {
     ]
   }
 }
-
-module.exports = TransactionTranslator

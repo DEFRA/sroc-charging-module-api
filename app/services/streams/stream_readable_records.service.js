@@ -2,7 +2,7 @@
  * @module StreamReadableRecordsService
  */
 
-const { QueryBuilder } = require('objection')
+import { QueryBuilder } from 'objection'
 
 /**
  * Returns a Readable stream of database records when given a database query object. It accepts both Objection and Knex
@@ -17,7 +17,7 @@ const { QueryBuilder } = require('objection')
  * @param {module:QueryBuilder} query Objection or Knex QueryBuilder object of the query you wish to stream.
  * @returns {ReadableStream} A stream of database records.
  */
-class StreamReadableRecordsService {
+export default class StreamReadableRecordsService {
   static go (query) {
     // Objection doesn't natively support the .stream() method so we convert Objection queries to Knex queries
     const knexQuery = query instanceof QueryBuilder ? query.toKnexQuery() : query
@@ -25,5 +25,3 @@ class StreamReadableRecordsService {
     return knexQuery.stream()
   }
 }
-
-module.exports = StreamReadableRecordsService

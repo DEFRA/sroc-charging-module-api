@@ -1,6 +1,8 @@
-require('dotenv').config()
+import dotenv from 'dotenv'
 
-const config = {
+dotenv.config()
+
+const AuthenticationConfig = {
   environment: process.env.ENVIRONMENT,
   adminClientId: process.env.ADMIN_CLIENT_ID,
   systemClientId: process.env.SYSTEM_CLIENT_ID,
@@ -10,4 +12,4 @@ const config = {
   ignoreJwtExpiration: (String(process.env.IGNORE_JWT_EXPIRATION) === 'true') || false
 }
 
-module.exports = config
+export default AuthenticationConfig

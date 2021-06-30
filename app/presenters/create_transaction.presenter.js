@@ -2,12 +2,12 @@
  * @module CreateTransactionPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Handles formatting the data into the response we send to clients after a create transaction request.
  */
-class CreateTransactionPresenter extends BasePresenter {
+export default class CreateTransactionPresenter extends BasePresenter {
   _presentation (data) {
     return {
       transaction: {
@@ -17,5 +17,3 @@ class CreateTransactionPresenter extends BasePresenter {
     }
   }
 }
-
-module.exports = CreateTransactionPresenter

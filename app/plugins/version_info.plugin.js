@@ -60,4 +60,4 @@ const VersionInfoPlugin = {
   }
 }
 
-module.exports = VersionInfoPlugin
+export default VersionInfoPlugin

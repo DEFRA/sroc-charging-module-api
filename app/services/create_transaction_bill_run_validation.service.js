@@ -2,9 +2,9 @@
  * @module CreateTransactionBillRunValidationService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-class CreateTransactionBillRunValidationService {
+export default class CreateTransactionBillRunValidationService {
   /**
    * Checks if the supplied region matches that of the bill run. Throws a 'Boom.badData()' error if it does not
    *
@@ -26,5 +26,3 @@ class CreateTransactionBillRunValidationService {
     }
   }
 }
-
-module.exports = CreateTransactionBillRunValidationService

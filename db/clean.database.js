@@ -1,5 +1,6 @@
-const { db, dbConfig } = require('./index')
-const { DatabaseHelper } = require('../test/support/helpers')
+import { db, dbConfig } from './index.js'
+
+import { DatabaseHelper } from '../test/support/helpers/index.js'
 
 const clean = async () => {
   try {

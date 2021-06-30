@@ -2,18 +2,21 @@
  * @module TransformRecordsToFileService
  */
 
-const path = require('path')
-const { pipeline } = require('stream')
-const util = require('util')
-const { temporaryFilePath } = require('../../config/server.config')
+import path from 'path'
+import { pipeline } from 'stream'
+import util from 'util'
 
-const StreamReadableDataService = require('./streams/stream_readable_data.service')
-const StreamReadableRecordsService = require('./streams/stream_readable_records.service')
-const StreamTransformCSVService = require('./streams/stream_transform_csv.service')
-const StreamTransformUsingPresenterService = require('./streams/stream_transform_using_presenter.service')
-const StreamWritableFileService = require('./streams/stream_writable_file.service')
+import StreamReadableDataService from './streams/stream_readable_data.service.js'
+import StreamReadableRecordsService from './streams/stream_readable_records.service.js'
+import StreamTransformCSVService from './streams/stream_transform_csv.service.js'
+import StreamTransformUsingPresenterService from './streams/stream_transform_using_presenter.service.js'
+import StreamWritableFileService from './streams/stream_writable_file.service.js'
 
-class TransformRecordsToFileService {
+import ServerConfig from '../../config/server.config.js'
+
+const { temporaryFilePath } = ServerConfig
+
+export default class TransformRecordsToFileService {
   /**
    * Takes an Objection QueryBuilder object and passes its results through the provided presenters in order to generate
    * a file.
@@ -157,5 +160,3 @@ class TransformRecordsToFileService {
     return StreamWritableFileService.go(filenameWithPath, append)
   }
 }
-
-module.exports = TransformRecordsToFileService

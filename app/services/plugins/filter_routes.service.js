@@ -2,7 +2,7 @@
  * @module FilterRoutesService
  */
 
-class FilterRoutesService {
+export default class FilterRoutesService {
   /**
    * When running in a production environment ('pre' or 'prd') filter the routes we register with Hapi.
    *
@@ -43,5 +43,3 @@ class FilterRoutesService {
     return routes.filter(route => !route?.options?.app?.excludeFromProd)
   }
 }
-
-module.exports = FilterRoutesService

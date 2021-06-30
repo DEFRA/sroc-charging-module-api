@@ -2,8 +2,8 @@
  * @module ListAuthorisedSystemsService
  */
 
-const { AuthorisedSystemModel } = require('../models')
-const { JsonPresenter } = require('../presenters')
+import AuthorisedSystemModel from '../models/authorised_system.model.js'
+import JsonPresenter from '../presenters/json.presenter.js'
 
 /**
  * Returns an array of authorised systems
@@ -11,7 +11,7 @@ const { JsonPresenter } = require('../presenters')
  * @returns {module:AuthorisedSystemModel[]} an array of `AuthorisedSystemModel` based on authorised systems currently
  * in the database
  */
-class ListAuthorisedSystemsService {
+export default class ListAuthorisedSystemsService {
   static async go () {
     const authorisedSystems = await this._authorisedSystems()
 
@@ -29,5 +29,3 @@ class ListAuthorisedSystemsService {
     return presenter.go()
   }
 }
-
-module.exports = ListAuthorisedSystemsService

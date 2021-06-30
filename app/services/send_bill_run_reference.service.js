@@ -2,13 +2,13 @@
  * @module SendBillRunReferenceService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { BillRunModel } = require('../models')
-const NextTransactionFileReferenceService = require('./next_transaction_file_reference.service')
-const NextTransactionReferenceService = require('./next_transaction_reference.service')
+import BillRunModel from '../models/bill_run.model.js'
+import NextTransactionFileReferenceService from './next_transaction_file_reference.service.js'
+import NextTransactionReferenceService from './next_transaction_reference.service.js'
 
-class SendBillRunReferenceService {
+export default class SendBillRunReferenceService {
   /**
    * Prepare a 'bill run' to be ready for billing by generating transaction references for its billable invoices and
    * generating an export file reference for it
@@ -81,5 +81,3 @@ class SendBillRunReferenceService {
     return billRun.$relatedQuery('invoices').modify('billable')
   }
 }
-
-module.exports = SendBillRunReferenceService

@@ -1,10 +1,8 @@
-const {
-  TestBillRunsController,
-  TestCustomerFilesController,
-  TestTransactionsController
-} = require('../controllers')
+import TestBillRunsController from '../controllers/admin/test/test_bill_runs.controller.js'
+import TestCustomerFilesController from '../controllers/admin/test/test_customer_files.controller.js'
+import TestTransactionsController from '../controllers/admin/test/test_transactions.controller.js'
 
-const routes = [
+const TestRoutes = [
   {
     method: 'POST',
     path: '/admin/test/{regimeId}/bill-runs',
@@ -51,4 +49,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default TestRoutes

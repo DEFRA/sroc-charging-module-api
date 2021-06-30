@@ -2,10 +2,10 @@
  * @module ShowCustomerFileService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { CustomerFileModel } = require('../models')
-const { JsonPresenter } = require('../presenters')
+import CustomerFileModel from '../models/customer_file.model.js'
+import JsonPresenter from '../presenters/json.presenter.js'
 
 /**
  * Returns the customer file with matching Id
@@ -15,7 +15,7 @@ const { JsonPresenter } = require('../presenters')
  * @param {string} id Id of the customer file to find
  * @returns {module:CustomerFileModel} a `CustomerFileModel` if found else it will throw a Boom 404 error
  */
-class ShowCustomerFileService {
+export default class ShowCustomerFileService {
   static async go (id) {
     const customerFile = await this._customerFile(id)
 
@@ -38,5 +38,3 @@ class ShowCustomerFileService {
     return presenter.go()
   }
 }
-
-module.exports = ShowCustomerFileService

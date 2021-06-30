@@ -1,11 +1,9 @@
-const { CreateCustomerDetailsService } = require('../../services')
+import CreateCustomerDetailsService from '../../services/create_customer_details.service.js'
 
-class PresrocCustomerDetailsController {
+export default class PresrocCustomerDetailsController {
   static async create (req, h) {
     await CreateCustomerDetailsService.go(req.payload, req.app.regime)
 
     return h.response().code(201)
   }
 }
-
-module.exports = PresrocCustomerDetailsController

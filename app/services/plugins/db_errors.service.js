@@ -2,10 +2,10 @@
  * @module DbErrorsService
  */
 
-const Boom = require('@hapi/boom')
-const { DBError, UniqueViolationError } = require('db-errors')
+import Boom from '@hapi/boom'
+import { DBError, UniqueViolationError } from 'db-errors'
 
-class DbErrorsService {
+export default class DbErrorsService {
   /**
    * Determine if the passed in error is an instance of `DBError` and if so generate the appropriate response
    *
@@ -75,5 +75,3 @@ class DbErrorsService {
     )
   }
 }
-
-module.exports = DbErrorsService

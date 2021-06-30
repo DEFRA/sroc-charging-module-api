@@ -2,11 +2,11 @@
  * @module RequestInvoiceService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { InvoiceModel } = require('../../models')
+import InvoiceModel from '../../models/invoice.model.js'
 
-class RequestInvoiceService {
+export default class RequestInvoiceService {
   /**
    * Find a invoice and determine if it's valid for the request.
    *
@@ -52,5 +52,3 @@ class RequestInvoiceService {
     }
   }
 }
-
-module.exports = RequestInvoiceService

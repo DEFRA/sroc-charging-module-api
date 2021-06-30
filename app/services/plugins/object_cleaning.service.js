@@ -2,7 +2,7 @@
  * @module ObjectCleaningService
  */
 
-const Sanitizer = require('sanitizer')
+import * as Sanitizer from 'sanitizer'
 
 /**
  * Loop through an object's properties and 'clean' it.
@@ -72,7 +72,7 @@ const Sanitizer = require('sanitizer')
  *
  * * @module ObjectCleaningService
  */
-class ObjectCleaningService {
+export default class ObjectCleaningService {
   static go (obj) {
     return this._cleanObject(obj)
   }
@@ -204,5 +204,3 @@ class ObjectCleaningService {
     return value
   }
 }
-
-module.exports = ObjectCleaningService

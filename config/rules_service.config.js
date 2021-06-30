@@ -1,6 +1,8 @@
-require('dotenv').config()
+import dotenv from 'dotenv'
 
-const config = {
+dotenv.config()
+
+const RulesServiceConfig = {
   url: process.env.RULES_SERVICE_URL,
   username: process.env.RULES_SERVICE_USER,
   password: process.env.RULES_SERVICE_PASSWORD,
@@ -63,4 +65,4 @@ const config = {
   timeout: parseInt(process.env.RULES_SERVICE_TIMEOUT)
 }
 
-module.exports = config
+export default RulesServiceConfig

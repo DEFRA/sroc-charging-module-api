@@ -2,13 +2,16 @@
  * @module GenerateBillRunService
  */
 
-// Files in the same folder cannot be destructured from index.js so have to be required directly
-const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')
+import BaseModel from '../models/base.model.js'
+import BillRunModel from '../models/bill_run.model.js'
+import CalculateMinimumChargeService from './calculate_minimum_charge.service.js'
+import InvoiceModel from '../models/invoice.model.js'
+import LicenceModel from '../models/licence.model.js'
+import TransactionModel from '../models/transaction.model.js'
 
-const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
-const { raw } = require('../models/base.model')
+const { raw } = BaseModel
 
-class GenerateBillRunService {
+export default class GenerateBillRunService {
   /**
   * Initiates bill run generation
   *
@@ -194,5 +197,3 @@ class GenerateBillRunService {
     notifier.omfg('Generate bill run failed', { billRunId, error })
   }
 }
-
-module.exports = GenerateBillRunService

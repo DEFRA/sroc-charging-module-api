@@ -2,20 +2,20 @@
  * @module SendCustomerFileService
  */
 
-const path = require('path')
+import path from 'path'
 
-const { ServerConfig } = require('../../config')
+import CustomerFileModel from '../../app/models/customer_file.model.js'
+import DeleteFileService from './delete_file.service.js'
+import GenerateCustomerFileService from './generate_customer_file.service.js'
+import MoveCustomersToExportedTableService from './move_customers_to_exported_table.service.js'
+import PrepareCustomerFileService from './prepare_customer_file.service.js'
+import SendFileToS3Service from './send_file_to_s3.service.js'
+
+import ServerConfig from '../../config/server.config.js'
+
 const { removeTemporaryFiles } = ServerConfig
 
-const { CustomerFileModel } = require('../../app/models')
-
-const DeleteFileService = require('./delete_file.service')
-const GenerateCustomerFileService = require('./generate_customer_file.service')
-const MoveCustomersToExportedTableService = require('./move_customers_to_exported_table.service')
-const PrepareCustomerFileService = require('./prepare_customer_file.service')
-const SendFileToS3Service = require('./send_file_to_s3.service')
-
-class SendCustomerFileService {
+export default class SendCustomerFileService {
   /**
    * Orchestrates the generation and sending of customer files to SSCL.
    *
@@ -140,5 +140,3 @@ class SendCustomerFileService {
     return removeTemporaryFiles
   }
 }
-
-module.exports = SendCustomerFileService

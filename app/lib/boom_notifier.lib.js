@@ -2,9 +2,9 @@
  * @module BoomNotifierLib
  */
 
-const RequestNotifierLib = require('./request_notifier.lib')
+import Boom from '@hapi/boom'
 
-const Boom = require('@hapi/boom')
+import RequestNotifierLib from './request_notifier.lib.js'
 
 /**
  * A combined logging and Airbrake (Errbit) notification manager which extends RequestNotifierLib to also throw a Boom
@@ -22,11 +22,9 @@ const Boom = require('@hapi/boom')
  * We therefore create a notifier which inherits everything from RequestNotifierLib and uses super to extend the omfg
  * method so it throws an error after logging.
  */
-class BoomNotifierLib extends RequestNotifierLib {
+export default class BoomNotifierLib extends RequestNotifierLib {
   omfg (message, data = {}) {
     super.omfg(message, data)
     throw Boom.badData(message, data)
   }
 }
-
-module.exports = BoomNotifierLib

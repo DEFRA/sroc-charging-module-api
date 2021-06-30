@@ -2,10 +2,11 @@
  * @module PrepareCustomerFileService
  */
 
-const { CustomerFileModel, CustomerModel } = require('../../app/models')
-const NextCustomerFileReferenceService = require('./next_customer_file_reference.service')
+import CustomerFileModel from '../models/customer_file.model.js'
+import CustomerModel from '../../app/models/customer.model.js'
+import NextCustomerFileReferenceService from './next_customer_file_reference.service.js'
 
-class PrepareCustomerFileService {
+export default class PrepareCustomerFileService {
   /**
    * Check for matching unprocessed customer changes in the `customers` table and prepare the `customer_file` record
    *
@@ -79,5 +80,3 @@ class PrepareCustomerFileService {
       .where('customerFileId', null)
   }
 }
-
-module.exports = PrepareCustomerFileService

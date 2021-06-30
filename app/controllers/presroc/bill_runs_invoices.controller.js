@@ -1,12 +1,10 @@
-const {
-  DeleteInvoiceService,
-  FetchAndValidateBillRunInvoiceService,
-  InvoiceRebillingService,
-  InvoiceRebillingValidationService,
-  ViewBillRunInvoiceService
-} = require('../../services')
+import DeleteInvoiceService from '../../services/delete_invoice.service.js'
+import FetchAndValidateBillRunInvoiceService from '../../services/fetch_and_validate_bill_run_invoice.service.js'
+import InvoiceRebillingService from '../../services/invoice_rebilling.service.js'
+import InvoiceRebillingValidationService from '../../services/invoice_rebilling_validation.service.js'
+import ViewBillRunInvoiceService from '../../services/view_bill_run_invoice.service.js'
 
-class BillRunsInvoicesController {
+export default class BillRunsInvoicesController {
   static async delete (req, h) {
     // We fetch and validate the invoice within the controller so a not found/conflict error is returned immediately
     const invoice = await FetchAndValidateBillRunInvoiceService.go(req.params.billRunId, req.params.invoiceId)
@@ -37,5 +35,3 @@ class BillRunsInvoicesController {
     return h.response(result).code(201)
   }
 }
-
-module.exports = BillRunsInvoicesController

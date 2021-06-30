@@ -1,4 +1,4 @@
-class BasePresenter {
+export default class BasePresenter {
   constructor (data) {
     this._data = data
   }
@@ -64,5 +64,3 @@ class BasePresenter {
     return false
   }
 }
-
-module.exports = BasePresenter

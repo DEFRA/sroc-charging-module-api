@@ -12,7 +12,7 @@
  * @module DbErrorsPlugin
  */
 
-const { DbErrorsService } = require('../services')
+import DbErrorsService from '../services/plugins/db_errors.service.js'
 
 const DbErrorsPlugin = {
   name: 'db_errors',
@@ -34,4 +34,4 @@ const DbErrorsPlugin = {
   }
 }
 
-module.exports = DbErrorsPlugin
+export default DbErrorsPlugin

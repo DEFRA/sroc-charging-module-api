@@ -1,11 +1,9 @@
-const {
-  CreateAuthorisedSystemService,
-  ListAuthorisedSystemsService,
-  ShowAuthorisedSystemService,
-  UpdateAuthorisedSystemService
-} = require('../../services')
+import CreateAuthorisedSystemService from '../../services/create_authorised_system.service.js'
+import ListAuthorisedSystemsService from '../../services/list_authorised_systems.service.js'
+import ShowAuthorisedSystemService from '../../services/show_authorised_system.service.js'
+import UpdateAuthorisedSystemService from '../../services/update_authorised_system.service.js'
 
-class AuthorisedSystemsController {
+export default class AuthorisedSystemsController {
   static async index (_req, h) {
     const result = await ListAuthorisedSystemsService.go()
 
@@ -30,5 +28,3 @@ class AuthorisedSystemsController {
     return h.response().code(204)
   }
 }
-
-module.exports = AuthorisedSystemsController

@@ -2,15 +2,13 @@
  * @module GenerateCustomerFileService
  */
 
-const { CustomerModel } = require('../models')
-const TransformRecordsToFileService = require('./transform_records_to_file.service')
-const {
-  CustomerFileBodyPresenter,
-  CustomerFileHeadPresenter,
-  CustomerFileTailPresenter
-} = require('../presenters')
+import CustomerFileBodyPresenter from '../presenters/customer_file_body.presenter.js'
+import CustomerFileHeadPresenter from '../presenters/customer_file_head.presenter.js'
+import CustomerFileTailPresenter from '../presenters/customer_file_tail.presenter.js'
+import CustomerModel from '../models/customer.model.js'
+import TransformRecordsToFileService from './transform_records_to_file.service.js'
 
-class GenerateCustomerFileService {
+export default class GenerateCustomerFileService {
   /**
    * Generates and writes a customer file to a given filename in the temp folder.
    *
@@ -55,5 +53,3 @@ class GenerateCustomerFileService {
     return `${fileReference}.dat`
   }
 }
-
-module.exports = GenerateCustomerFileService

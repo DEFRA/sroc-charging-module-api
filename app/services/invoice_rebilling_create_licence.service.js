@@ -2,9 +2,9 @@
  * @module InvoiceRebillingCreateLicenceService
  */
 
-const { LicenceModel } = require('../models')
+import LicenceModel from '../models/licence.model.js'
 
-class InvoiceRebillingCreateLicenceService {
+export default class InvoiceRebillingCreateLicenceService {
   /**
    * Creates a licence on the specified invoice with the specified licence number.
    *
@@ -22,5 +22,3 @@ class InvoiceRebillingCreateLicenceService {
       })
   }
 }
-
-module.exports = InvoiceRebillingCreateLicenceService

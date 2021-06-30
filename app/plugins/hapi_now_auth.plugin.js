@@ -7,10 +7,10 @@
  * @module HapiNowAuthPlugin
  */
 
-const HapiNowAuth = require('@now-ims/hapi-now-auth')
+import HapiNowAuth from '@now-ims/hapi-now-auth'
 
 const HapiNowAuthPlugin = {
   plugin: HapiNowAuth
 }
 
-module.exports = HapiNowAuthPlugin
+export default HapiNowAuthPlugin

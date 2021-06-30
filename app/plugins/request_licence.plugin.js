@@ -12,7 +12,7 @@
  * @module RequestLicencePlugin
  */
 
-const { RequestLicenceService } = require('../services')
+import RequestLicenceService from '../services/plugins/request_licence.service.js'
 
 const RequestLicencePlugin = {
   name: 'request_licence',
@@ -26,4 +26,4 @@ const RequestLicencePlugin = {
   }
 }
 
-module.exports = RequestLicencePlugin
+export default RequestLicencePlugin

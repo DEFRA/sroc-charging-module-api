@@ -12,7 +12,7 @@
  * @module RequestInvoicePlugin
  */
 
-const { RequestInvoiceService } = require('../services')
+import RequestInvoiceService from '../services/plugins/request_invoice.service.js'
 
 const RequestInvoicePlugin = {
   name: 'request_invoice',
@@ -26,4 +26,4 @@ const RequestInvoicePlugin = {
   }
 }
 
-module.exports = RequestInvoicePlugin
+export default RequestInvoicePlugin

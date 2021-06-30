@@ -2,9 +2,9 @@
  * @module NextBillRunNumberService
  */
 
-const { SequenceCounterModel } = require('../models')
+import SequenceCounterModel from '../models/sequence_counter.model.js'
 
-class NextBillRunNumberService {
+export default class NextBillRunNumberService {
   /**
    * Returns the next bill_run_number for the given region and regime
    *
@@ -40,5 +40,3 @@ class NextBillRunNumberService {
     return result.billRunNumber
   }
 }
-
-module.exports = NextBillRunNumberService

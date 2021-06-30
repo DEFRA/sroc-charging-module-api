@@ -1,4 +1,4 @@
-class AirbrakeController {
+export default class AirbrakeController {
   static async index (req, _h) {
     // First section tests connecting to Airbrake through a manual notification
     req.server.app.airbrake.notify({
@@ -15,5 +15,3 @@ class AirbrakeController {
     throw new Error('Airbrake automatic health check error')
   }
 }
-
-module.exports = AirbrakeController

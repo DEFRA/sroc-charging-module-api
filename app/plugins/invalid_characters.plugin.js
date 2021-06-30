@@ -1,4 +1,4 @@
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
 /**
  * Converts an object to a JSON string and then tests if it contains any of the following characters: ? £ ≤ ≥
@@ -33,4 +33,4 @@ const InvalidCharactersPlugin = {
   }
 }
 
-module.exports = InvalidCharactersPlugin
+export default InvalidCharactersPlugin

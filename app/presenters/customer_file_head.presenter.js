@@ -2,7 +2,7 @@
  * @module CustomerFileHeadPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Formats data for the head of a customer file.
@@ -14,7 +14,7 @@ const BasePresenter = require('./base.presenter')
  * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/customer_file_presenter.js
  */
 
-class CustomerFileHeadPresenter extends BasePresenter {
+export default class CustomerFileHeadPresenter extends BasePresenter {
   _presentation (data) {
     return {
       col01: 'H',
@@ -35,5 +35,3 @@ class CustomerFileHeadPresenter extends BasePresenter {
     return fileReference.slice(-5)
   }
 }
-
-module.exports = CustomerFileHeadPresenter

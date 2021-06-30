@@ -7,7 +7,7 @@
  * @module RequestNotifierPlugin
  */
 
-const { RequestNotifierLib } = require('../lib')
+import RequestNotifierLib from '../lib/request_notifier.lib.js'
 
 const RequestNotifierPlugin = {
   name: 'Notifier',
@@ -20,4 +20,4 @@ const RequestNotifierPlugin = {
   }
 }
 
-module.exports = RequestNotifierPlugin
+export default RequestNotifierPlugin

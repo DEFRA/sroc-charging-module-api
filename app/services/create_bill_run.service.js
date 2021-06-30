@@ -2,12 +2,10 @@
  * @module CreateBillRunService
  */
 
-const { BillRunModel } = require('../models')
-const { BillRunTranslator } = require('../translators')
-const { CreateBillRunPresenter } = require('../presenters')
-
-// Files in the same folder cannot be destructured from index.js so have to be required directly
-const NextBillRunNumberService = require('./next_bill_run_number.service')
+import BillRunModel from '../models/bill_run.model.js'
+import BillRunTranslator from '../translators/bill_run.translator.js'
+import CreateBillRunPresenter from '../presenters/create_bill_run.presenter.js'
+import NextBillRunNumberService from './next_bill_run_number.service.js'
 
 /**
  * Creates a new bill run record
@@ -22,7 +20,7 @@ const NextBillRunNumberService = require('./next_bill_run_number.service')
  *
  * @returns {Object} Details of the newly created bill run record
  */
-class CreateBillRunService {
+export default class CreateBillRunService {
   static async go (payload, authorisedSystem, regime) {
     const translator = this._translateRequest(payload, authorisedSystem, regime)
     const billRun = await this._create(translator)
@@ -56,5 +54,3 @@ class CreateBillRunService {
     return presenter.go()
   }
 }
-
-module.exports = CreateBillRunService

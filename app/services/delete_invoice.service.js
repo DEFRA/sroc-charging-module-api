@@ -2,10 +2,13 @@
  * @module DeleteInvoiceService
  */
 
-const { BillRunModel, InvoiceModel } = require('../models')
-const { raw } = require('../models/base.model')
+import BaseModel from '../models/base.model.js'
+import BillRunModel from '../models/bill_run.model.js'
+import InvoiceModel from '../models/invoice.model.js'
 
-class DeleteInvoiceService {
+const { raw } = BaseModel
+
+export default class DeleteInvoiceService {
   /**
    * Deletes an invoice along with its licences and transactions, and updates the figures of the bill run that the
    * invoice belongs to. Intended to be run as a background task by a controller, ie. called without an await. Note that
@@ -97,5 +100,3 @@ class DeleteInvoiceService {
     return update
   }
 }
-
-module.exports = DeleteInvoiceService

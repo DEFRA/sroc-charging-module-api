@@ -53,4 +53,4 @@ const StopPlugin = {
   }
 }
 
-module.exports = StopPlugin
+export default StopPlugin

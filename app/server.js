@@ -1,29 +1,30 @@
-const Hapi = require('@hapi/hapi')
-const { ServerConfig, TestConfig } = require('../config')
-const { JwtStrategyAuthLib } = require('./lib')
-const {
-  AirbrakePlugin,
-  AuthorisationPlugin,
-  BlippPlugin,
-  DbErrorsPlugin,
-  HapiNowAuthPlugin,
-  HapiPinoPlugin,
-  InvalidCharactersPlugin,
-  MissingPayloadPlugin,
-  PayloadCleanerPlugin,
-  RequestBillRunPlugin,
-  RequestInvoicePlugin,
-  RequestLicencePlugin,
-  RequestNotifierPlugin,
-  RouterPlugin,
-  StopPlugin,
-  VersionInfoPlugin
-} = require('./plugins')
+import Hapi from '@hapi/hapi'
+
+import AirbrakePlugin from './plugins/airbrake.plugin.js'
+import AuthorisationPlugin from './plugins/authorisation.plugin.js'
+import BlippPlugin from './plugins/blipp.plugin.js'
+import DbErrorsPlugin from './plugins/db_errors.plugin.js'
+import HapiNowAuthPlugin from './plugins/hapi_now_auth.plugin.js'
+import HapiPinoPlugin from './plugins/hapi_pino.plugin.js'
+import InvalidCharactersPlugin from './plugins/invalid_characters.plugin.js'
+import JwtAuthOptionsLib from './lib/jwt_auth_options.lib.js'
+import MissingPayloadPlugin from './plugins/missing_payload.plugin.js'
+import PayloadCleanerPlugin from './plugins/payload_cleaner.plugin.js'
+import RequestBillRunPlugin from './plugins/request_bill_run.plugin.js'
+import RequestInvoicePlugin from './plugins/request_invoice.plugin.js'
+import RequestLicencePlugin from './plugins/request_licence.plugin.js'
+import RequestNotifierPlugin from './plugins/request_notifier.plugin.js'
+import RouterPlugin from './plugins/router.plugin.js'
+import StopPlugin from './plugins/stop.plugin.js'
+import VersionInfoPlugin from './plugins/version_info.plugin.js'
+
+import ServerConfig from '../config/server.config.js'
+import TestConfig from '../config/test.config.js'
 
 const registerPlugins = async (server) => {
   // Register our auth plugin and then the strategies (needs to be done in this order)
   await server.register(HapiNowAuthPlugin)
-  server.auth.strategy('jwt-strategy', 'hapi-now-auth', JwtStrategyAuthLib)
+  server.auth.strategy('jwt-strategy', 'hapi-now-auth', JwtAuthOptionsLib)
   server.auth.default('jwt-strategy')
 
   // Register the remaining plugins
@@ -72,4 +73,4 @@ process.on('unhandledRejection', err => {
   process.exit(1)
 })
 
-module.exports = { init, start }
+export { init, start }

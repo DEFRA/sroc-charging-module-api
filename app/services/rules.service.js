@@ -2,11 +2,11 @@
  * @module RulesService
  */
 
-const Got = require('got')
-const Tunnel = require('tunnel')
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
+import Got from 'got'
+import Tunnel from 'tunnel'
 
-const { RulesServiceConfig } = require('../../config')
+import RulesServiceConfig from '../../config/rules_service.config.js'
 
 /**
  * Handles requests to the Rules Service
@@ -17,7 +17,7 @@ const { RulesServiceConfig } = require('../../config')
  * Because each regime and ruleset has different rules for how a charge is calculated the rules service has an endpoint
  * for each one. Part of what this service does is determining the appropriate endpoint to call.
  */
-class RulesService {
+export default class RulesService {
   /**
    * Initiator method of the service. When called the service will take the inputs, call the appropriate endpoint on the
    * rules service and return the response.
@@ -172,5 +172,3 @@ class RulesService {
     }
   }
 }
-
-module.exports = RulesService

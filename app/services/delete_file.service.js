@@ -2,9 +2,9 @@
  * @module DeleteFileService
  */
 
-const fs = require('fs')
+import fs from 'fs'
 
-class DeleteFileService {
+export default class DeleteFileService {
   /**
    * Delete a file.
    *
@@ -15,5 +15,3 @@ class DeleteFileService {
     fs.unlinkSync(localFilenameWithPath)
   }
 }
-
-module.exports = DeleteFileService

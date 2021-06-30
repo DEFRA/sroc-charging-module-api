@@ -2,11 +2,10 @@
  * @module DeleteLicenceService
  */
 
-const { LicenceModel } = require('../models')
+import LicenceModel from '../models/licence.model.js'
+import DeleteInvoiceService from './delete_invoice.service.js'
 
-const DeleteInvoiceService = require('./delete_invoice.service')
-
-class DeleteLicenceService {
+export default class DeleteLicenceService {
   /**
    * Deletes a licence along with its transactions and updates the invoice accordingly. Intended to be run as a
    * background task by a controller, ie. called without an await. Note that the licence will _not_ be validated to
@@ -131,5 +130,3 @@ class DeleteLicenceService {
     billRun.invoiceValue -= licence.debitLineValue
   }
 }
-
-module.exports = DeleteLicenceService

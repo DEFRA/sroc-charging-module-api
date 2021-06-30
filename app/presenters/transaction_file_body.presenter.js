@@ -2,7 +2,7 @@
  * @module TransactionFileBodyPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Formats data for the body of a transaction file.
@@ -14,7 +14,7 @@ const BasePresenter = require('./base.presenter')
  * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/transaction_file_presenter.js
  */
 
-class TransactionFileBodyPresenter extends BasePresenter {
+export default class TransactionFileBodyPresenter extends BasePresenter {
   _presentation (data) {
     return {
       col01: 'D',
@@ -102,5 +102,3 @@ class TransactionFileBodyPresenter extends BasePresenter {
     return `${value} Ml`
   }
 }
-
-module.exports = TransactionFileBodyPresenter

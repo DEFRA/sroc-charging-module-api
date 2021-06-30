@@ -2,7 +2,7 @@
  * @module CustomerFileBodyPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Formats data for the body of a customer file.
@@ -14,7 +14,7 @@ const BasePresenter = require('./base.presenter')
  * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/customer_file_presenter.js
  */
 
-class CustomerFileBodyPresenter extends BasePresenter {
+export default class CustomerFileBodyPresenter extends BasePresenter {
   _presentation (data) {
     return {
       col01: 'D',
@@ -38,5 +38,3 @@ class CustomerFileBodyPresenter extends BasePresenter {
     return postcode?.trim() ? postcode.trim() : '.'
   }
 }
-
-module.exports = CustomerFileBodyPresenter

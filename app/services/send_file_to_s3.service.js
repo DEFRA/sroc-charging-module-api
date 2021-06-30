@@ -2,14 +2,16 @@
  * @module SendFileToS3Service
  */
 
-const { S3Config, ServerConfig } = require('../../config')
+import fs from 'fs'
+import path from 'path'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+
+import S3Config from '../../config/s3.config.js'
+import ServerConfig from '../../config/server.config.js'
+
 const { temporaryFilePath } = ServerConfig
 
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
-const fs = require('fs')
-const path = require('path')
-
-class SendFileToS3Service {
+export default class SendFileToS3Service {
   /**
    * Send a file to an AWS S3 bucket. We optionally send it to the archive bucket.
    *
@@ -69,5 +71,3 @@ class SendFileToS3Service {
     return S3Config.archiveBucket
   }
 }
-
-module.exports = SendFileToS3Service

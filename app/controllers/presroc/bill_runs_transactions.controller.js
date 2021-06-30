@@ -1,9 +1,7 @@
-const {
-  CreateTransactionBillRunValidationService,
-  CreateTransactionService
-} = require('../../services')
+import CreateTransactionBillRunValidationService from '../../services/create_transaction_bill_run_validation.service.js'
+import CreateTransactionService from '../../services/create_transaction.service.js'
 
-class BillRunsTransactionsController {
+export default class BillRunsTransactionsController {
   static async create (req, h) {
     await CreateTransactionBillRunValidationService.go(req.app.billRun, req.payload.region)
 
@@ -22,5 +20,3 @@ class BillRunsTransactionsController {
     return h.response(result).code(200)
   }
 }
-
-module.exports = BillRunsTransactionsController

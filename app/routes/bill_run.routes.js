@@ -1,10 +1,8 @@
-const {
-  AdminBillRunsController,
-  NotSupportedController,
-  PresrocBillRunsController
-} = require('../controllers')
+import AdminBillRunsController from '../controllers/admin/admin_bill_runs.controller.js'
+import BillRunsController from '../controllers/presroc/bill_runs.controller.js'
+import NotSupportedController from '../controllers/not_supported.controller.js'
 
-const routes = [
+const BillRunRoutes = [
   {
     method: 'POST',
     path: '/v1/{regimeId}/billruns',
@@ -13,37 +11,37 @@ const routes = [
   {
     method: 'POST',
     path: '/v2/{regimeId}/bill-runs',
-    handler: PresrocBillRunsController.create
+    handler: BillRunsController.create
   },
   {
     method: 'PATCH',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/generate',
-    handler: PresrocBillRunsController.generate
+    handler: BillRunsController.generate
   },
   {
     method: 'PATCH',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/approve',
-    handler: PresrocBillRunsController.approve
+    handler: BillRunsController.approve
   },
   {
     method: 'PATCH',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/send',
-    handler: PresrocBillRunsController.send
+    handler: BillRunsController.send
   },
   {
     method: 'GET',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/status',
-    handler: PresrocBillRunsController.status
+    handler: BillRunsController.status
   },
   {
     method: 'GET',
     path: '/v2/{regimeId}/bill-runs/{billRunId}',
-    handler: PresrocBillRunsController.view
+    handler: BillRunsController.view
   },
   {
     method: 'DELETE',
     path: '/v2/{regimeId}/bill-runs/{billRunId}',
-    handler: PresrocBillRunsController.delete
+    handler: BillRunsController.delete
   },
   {
     method: 'PATCH',
@@ -57,4 +55,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default BillRunRoutes

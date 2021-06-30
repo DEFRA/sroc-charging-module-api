@@ -2,10 +2,11 @@
  * @module CustomerFileModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import { Model } from 'objection'
 
-class CustomerFileModel extends BaseModel {
+import BaseModel from './base.model.js'
+
+export default class CustomerFileModel extends BaseModel {
   static get tableName () {
     return 'customerFiles'
   }
@@ -39,5 +40,3 @@ class CustomerFileModel extends BaseModel {
     }
   }
 }
-
-module.exports = CustomerFileModel

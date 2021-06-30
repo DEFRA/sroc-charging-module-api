@@ -2,10 +2,11 @@
  * @module SequenceCounterModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import { Model } from 'objection'
 
-class SequenceCounterModel extends BaseModel {
+import BaseModel from './base.model.js'
+
+export default class SequenceCounterModel extends BaseModel {
   static get tableName () {
     return 'sequenceCounters'
   }
@@ -23,5 +24,3 @@ class SequenceCounterModel extends BaseModel {
     }
   }
 }
-
-module.exports = SequenceCounterModel

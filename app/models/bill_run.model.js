@@ -2,10 +2,11 @@
  * @module BillRunModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import { Model } from 'objection'
 
-class BillRunModel extends BaseModel {
+import BaseModel from './base.model.js'
+
+export default class BillRunModel extends BaseModel {
   static get tableName () {
     return 'billRuns'
   }
@@ -223,5 +224,3 @@ class BillRunModel extends BaseModel {
     return Boolean(this.fileReference)
   }
 }
-
-module.exports = BillRunModel

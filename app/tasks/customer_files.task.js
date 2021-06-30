@@ -2,11 +2,11 @@
  * @module CustomerFilesTask
  */
 
-const { StaticLookupLib } = require('../lib')
-const { RegimeModel } = require('../models')
-const { SendCustomerFileService } = require('../services')
+import RegimeModel from '../models/regime.model.js'
+import SendCustomerFileService from '../services/send_customer_file.service.js'
+import StaticLookupLib from '../lib/static_lookup.lib.js'
 
-class CustomerFilesTask {
+export default class CustomerFilesTask {
   /**
    * Check and if required generate a 'customer file' for each regime in the system
    *
@@ -34,5 +34,3 @@ class CustomerFilesTask {
       .query()
   }
 }
-
-module.exports = CustomerFilesTask

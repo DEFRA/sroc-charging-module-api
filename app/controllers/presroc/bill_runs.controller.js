@@ -1,17 +1,15 @@
-const {
-  ApproveBillRunService,
-  BillRunStatusService,
-  CreateBillRunService,
-  DeleteBillRunService,
-  GenerateBillRunService,
-  GenerateBillRunValidationService,
-  SendBillRunReferenceService,
-  SendCustomerFileService,
-  SendTransactionFileService,
-  ViewBillRunService
-} = require('../../services')
+import ApproveBillRunService from '../../services/approve_bill_run.service.js'
+import BillRunStatusService from '../../services/bill_run_status.service.js'
+import CreateBillRunService from '../../services/create_bill_run.service.js'
+import DeleteBillRunService from '../../services/delete_bill_run.service.js'
+import GenerateBillRunService from '../../services/generate_bill_run.service.js'
+import GenerateBillRunValidationService from '../../services/generate_bill_run_validation.service.js'
+import SendBillRunReferenceService from '../../services/send_bill_run_reference.service.js'
+import SendCustomerFileService from '../../services/send_customer_file.service.js'
+import SendTransactionFileService from '../../services/send_transaction_file.service.js'
+import ViewBillRunService from '../../services/view_bill_run.service.js'
 
-class BillRunsController {
+export default class BillRunsController {
   static async create (req, h) {
     const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
 
@@ -58,5 +56,3 @@ class BillRunsController {
     return h.response().code(204)
   }
 }
-
-module.exports = BillRunsController
