@@ -1,6 +1,10 @@
-const environment = process.env.NODE_ENV || 'development'
+import Knex from 'knex'
+import pg from 'pg'
 
-const dbConfig = require('../knexfile.application')[environment]
+import * as KnexfileApplication from '../knexfile.application.js'
+
+const environment = process.env.NODE_ENV || 'development'
+const dbConfig = KnexfileApplication.environments[environment]
 
 // Some of our db fields are of type BigInt. The 'pg' driver by default will return these as strings because of concerns
 // about precision loss (a pg BigInt has a bigger range than a JavaScript integer). However, a JavaScript integer has
@@ -10,10 +14,9 @@ const dbConfig = require('../knexfile.application')[environment]
 // as integers instead. See the following for more details about both the issue and this config change
 // https://github.com/brianc/node-postgres/pull/353
 // https://github.com/knex/knex/issues/387#issuecomment-51554522
-const pg = require('pg')
 // The magic number 20 comes from `SELECT oid FROM pg_type WHERE typname = 'int8';` and is unlikely to change.
 pg.types.setTypeParser(20, 'text', parseInt)
 
-const db = require('knex')(dbConfig)
+const db = Knex(dbConfig)
 
-module.exports = { db, dbConfig }
+export { db, dbConfig }
