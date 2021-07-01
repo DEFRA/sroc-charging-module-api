@@ -4,11 +4,10 @@
 !config
 !db
 !entrypoint.sh
+!index.js
 !keys
 !knexfile.application.js
 !knexfile.js
 !package-lock.json
 !package.json
-!server.js
 !test/support/**
-!tmp/.keep
