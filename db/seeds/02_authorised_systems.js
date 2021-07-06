@@ -1,6 +1,6 @@
-import AuthenticationConfig from '../../config/authentication.config'
+import AuthenticationConfig from '../../config/authentication.config.js'
 
-exports.seed = async function (knex) {
+export async function seed (knex) {
   await knex('authorised_systems').del()
   await knex('authorised_systems_regimes').del()
 

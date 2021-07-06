@@ -1,7 +1,7 @@
 const tableName = 'sequence_counters'
 const regions = ['A', 'B', 'E', 'N', 'S', 'T', 'W', 'Y']
 
-exports.seed = async function (knex) {
+export async function seed (knex) {
   // Clear existing table
   await knex(tableName).del()
 

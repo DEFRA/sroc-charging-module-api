@@ -1,4 +1,4 @@
-exports.seed = async function (knex) {
+export async function seed (knex) {
   await knex('regimes').del()
 
   await knex('regimes').insert([
