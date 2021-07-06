@@ -1,10 +1,8 @@
-'use strict'
+import BillRunModel from '../../../models/bill_run.model.js'
+import CreateBillRunService from '../../../services/create_bill_run.service.js'
+import BillRunGenerator from '../../../../test/support/generators/bill_run.generator.js'
 
-const { BillRunModel } = require('../../../models')
-const { CreateBillRunService } = require('../../../services')
-const { BillRunGenerator } = require('../../../../test/support/generators')
-
-class TestBillRunController {
+export default class TestBillRunController {
   static async create (req, h) {
     const result = await CreateBillRunService.go(
       { region: req.payload.region },
@@ -25,5 +23,3 @@ class TestBillRunController {
     return h.response(result).code(201)
   }
 }
-
-module.exports = TestBillRunController

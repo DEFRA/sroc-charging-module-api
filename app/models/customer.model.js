@@ -1,13 +1,12 @@
-'use strict'
-
 /**
  * @module CustomerModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import BaseModel from './base.model.js'
+import CustomerFileModel from './customer_file.model.js'
+import RegimeModel from './regime.model.js'
 
-class CustomerModel extends BaseModel {
+export default class CustomerModel extends BaseModel {
   static get tableName () {
     return 'customers'
   }
@@ -15,16 +14,16 @@ class CustomerModel extends BaseModel {
   static get relationMappings () {
     return {
       customerFile: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'customer_file.model',
+        relation: this.BelongsToOneRelation,
+        modelClass: CustomerFileModel,
         join: {
           from: 'customers.customerFileId',
           to: 'customerFiles.id'
         }
       },
       regime: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'regime.model',
+        relation: this.BelongsToOneRelation,
+        modelClass: RegimeModel,
         join: {
           from: 'customers.regimeId',
           to: 'regimes.id'
@@ -33,5 +32,3 @@ class CustomerModel extends BaseModel {
     }
   }
 }
-
-module.exports = CustomerModel

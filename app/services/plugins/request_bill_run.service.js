@@ -1,14 +1,12 @@
-'use strict'
-
 /**
  * @module RequestBillRunService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { BillRunModel } = require('../../models')
+import BillRunModel from '../../models/bill_run.model.js'
 
-class RequestBillRunService {
+export default class RequestBillRunService {
   /**
    * Find a bill run and determine if it's valid for the request.
    *
@@ -112,5 +110,3 @@ class RequestBillRunService {
     return /\/admin\//i.test(path)
   }
 }
-
-module.exports = RequestBillRunService

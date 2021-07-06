@@ -1,10 +1,8 @@
-'use strict'
-
 /**
  * @module StreamTransformCSVService
  */
 
-const { Transform } = require('stream')
+import { Transform } from 'stream'
 
 /**
  * Returns a Transform stream which turns an incoming array into a CSV row, ie. comma-separated, with each element
@@ -12,7 +10,7 @@ const { Transform } = require('stream')
  *
  * @returns {TransformStream} A stream of data.
  */
-class StreamTransformCSVService {
+export default class StreamTransformCSVService {
   static go () {
     return new Transform({
       objectMode: true,
@@ -25,5 +23,3 @@ class StreamTransformCSVService {
     })
   }
 }
-
-module.exports = StreamTransformCSVService

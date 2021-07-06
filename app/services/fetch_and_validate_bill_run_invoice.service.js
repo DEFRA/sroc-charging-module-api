@@ -1,14 +1,12 @@
-'use strict'
-
 /**
  * @module FetchAndValidateBillRunInvoiceService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { InvoiceModel } = require('../models')
+import InvoiceModel from '../models/invoice.model.js'
 
-class FetchAndValidateBillRunInvoiceService {
+export default class FetchAndValidateBillRunInvoiceService {
   /**
   * Fetches then validates that an invoice exists and is linked to the specified bill run
   *
@@ -42,5 +40,3 @@ class FetchAndValidateBillRunInvoiceService {
     }
   }
 }
-
-module.exports = FetchAndValidateBillRunInvoiceService

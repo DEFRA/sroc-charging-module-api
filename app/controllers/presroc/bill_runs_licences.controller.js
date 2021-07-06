@@ -1,8 +1,7 @@
-'use strict'
+import DeleteLicenceService from '../../services/delete_licence.service.js'
+import ValidateBillRunLicenceService from '../../services/validate_bill_run_licence.service.js'
 
-const { DeleteLicenceService, ValidateBillRunLicenceService } = require('../../services')
-
-class BillRunsLicencesController {
+export default class BillRunsLicencesController {
   static async delete (req, h) {
     // We validate the licence within the controller so a validation error is returned immediately
     await ValidateBillRunLicenceService.go(req.app.billRun.id, req.app.licence)
@@ -13,5 +12,3 @@ class BillRunsLicencesController {
     return h.response().code(204)
   }
 }
-
-module.exports = BillRunsLicencesController

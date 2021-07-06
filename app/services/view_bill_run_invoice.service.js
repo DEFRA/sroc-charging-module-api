@@ -1,13 +1,11 @@
-'use strict'
-
 /**
  * @module ViewBillRunInvoiceService
  */
 
-const { ViewInvoicePresenter } = require('../presenters')
-const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_bill_run_invoice.service')
+import FetchAndValidateBillRunInvoiceService from './fetch_and_validate_bill_run_invoice.service.js'
+import ViewInvoicePresenter from '../presenters/view_invoice.presenter.js'
 
-class ViewBillRunInvoiceService {
+export default class ViewBillRunInvoiceService {
   /**
    * Locates and validates an invoice for the specificed bill run and returns the data needed by the View Invoice
    * endpoint
@@ -92,5 +90,3 @@ class ViewBillRunInvoiceService {
     })
   }
 }
-
-module.exports = ViewBillRunInvoiceService

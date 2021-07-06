@@ -1,8 +1,6 @@
-'use strict'
+import RegimesController from '../controllers/admin/regimes.controller.js'
 
-const { RegimesController } = require('../controllers')
-
-const routes = [
+const RegimeRoutes = [
   {
     method: 'GET',
     path: '/admin/regimes',
@@ -25,4 +23,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default RegimeRoutes

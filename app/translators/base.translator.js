@@ -1,8 +1,6 @@
-'use strict'
+import Boom from '@hapi/boom'
 
-const Boom = require('@hapi/boom')
-
-class BaseTranslator {
+export default class BaseTranslator {
   constructor (data) {
     // Validate data against this._schema and throw bad data error if validation fails
     const { error, value: validatedData } = this._validate(data)
@@ -59,5 +57,3 @@ class BaseTranslator {
     throw new Error('You need to specify _translations in the child translator')
   }
 }
-
-module.exports = BaseTranslator

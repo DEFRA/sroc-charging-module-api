@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Handle `SIGTERM` and `SIGINT` calls to the app
  *
@@ -55,4 +53,4 @@ const StopPlugin = {
   }
 }
 
-module.exports = StopPlugin
+export default StopPlugin

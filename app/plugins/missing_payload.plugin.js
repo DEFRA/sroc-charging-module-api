@@ -1,6 +1,4 @@
-'use strict'
-
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
 /**
  * Check payloads of POST requests and return 400 response if missing
@@ -23,4 +21,4 @@ const MissingPayloadPlugin = {
   }
 }
 
-module.exports = MissingPayloadPlugin
+export default MissingPayloadPlugin

@@ -1,9 +1,8 @@
-'use strict'
+import Joi from 'joi'
 
-const BaseTranslator = require('./base.translator')
-const Joi = require('joi')
+import BaseTranslator from './base.translator.js'
 
-class AuthorisedSystemTranslator extends BaseTranslator {
+export default class AuthorisedSystemTranslator extends BaseTranslator {
   _translations () {
     return {
       clientId: 'clientId',
@@ -23,5 +22,3 @@ class AuthorisedSystemTranslator extends BaseTranslator {
     })
   }
 }
-
-module.exports = AuthorisedSystemTranslator

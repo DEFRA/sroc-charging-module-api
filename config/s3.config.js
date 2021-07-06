@@ -1,10 +1,10 @@
-'use strict'
+import dotenv from 'dotenv'
 
-require('dotenv').config()
+dotenv.config()
 
-const config = {
+const S3Config = {
   uploadBucket: process.env.UPLOAD_BUCKET,
   archiveBucket: process.env.ARCHIVE_BUCKET
 }
 
-module.exports = config
+export default S3Config

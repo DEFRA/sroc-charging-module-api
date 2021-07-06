@@ -1,19 +1,18 @@
-'use strict'
-
 /**
  * @module BillRunGenerator
  */
 
-const Boom = require('@hapi/boom')
-const Nock = require('nock')
+import Boom from '@hapi/boom'
+import Nock from 'nock'
 
-const { CreateTransactionService } = require('../../../app/services')
+import * as fixtures from '../fixtures/fixtures.js'
+import CreateTransactionService from '../../../app/services/create_transaction.service.js'
+import RulesServiceHelper from '../helpers/rules_service.helper.js'
 
-const { RulesServiceHelper } = require('../helpers')
-const { presroc: requestFixtures } = require('../fixtures/create_transaction')
-const { presroc: chargeFixtures } = require('../fixtures/calculate_charge')
+const chargeFixtures = fixtures.calculateCharge
+const requestFixtures = fixtures.createTransaction
 
-class BillRunGenerator {
+export default class BillRunGenerator {
   static async go (payload, billRun, authorisedSystem, regime, notifier = null) {
     try {
       // Mark the start time for later logging
@@ -253,5 +252,3 @@ class BillRunGenerator {
     notifier.omfg('Auto-generate bill run failed', { billRunId, error })
   }
 }
-
-module.exports = BillRunGenerator

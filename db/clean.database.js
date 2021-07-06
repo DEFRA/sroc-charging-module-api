@@ -1,7 +1,6 @@
-'use strict'
+import { db, dbConfig } from './index.js'
 
-const { db, dbConfig } = require('./index')
-const { DatabaseHelper } = require('../test/support/helpers')
+import DatabaseHelper from '../test/support/helpers/database.helper.js'
 
 const clean = async () => {
   try {

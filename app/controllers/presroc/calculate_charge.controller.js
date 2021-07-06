@@ -1,13 +1,9 @@
-'use strict'
+import CalculateChargeService from '../../services/calculate_charge.service.js'
 
-const { CalculateChargeService } = require('../../services')
-
-class CalculateChargeController {
+export default class CalculateChargeController {
   static async calculate (req, h) {
     const result = await CalculateChargeService.go(req.payload, req.app.regime)
 
     return h.response(result).code(200)
   }
 }
-
-module.exports = CalculateChargeController

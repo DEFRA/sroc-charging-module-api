@@ -1,16 +1,14 @@
-'use strict'
-
 /**
  * @module ViewInvoicePresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Handles formatting the data into the response we send to clients after a request to view an a bill run. This handles
  * how the invoices in the bill run are presented.
  */
-class ViewBillRunInvoicePresenter extends BasePresenter {
+export default class ViewBillRunInvoicePresenter extends BasePresenter {
   _presentation (data) {
     return {
       id: data.id,
@@ -29,5 +27,3 @@ class ViewBillRunInvoicePresenter extends BasePresenter {
     }
   }
 }
-
-module.exports = ViewBillRunInvoicePresenter

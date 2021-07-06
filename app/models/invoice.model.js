@@ -1,15 +1,15 @@
-'use strict'
-
 /**
  * @module InvoiceModel
  */
 
-const { Model } = require('objection')
-const BaseUpsertModel = require('./base_upsert.model')
+import BaseUpsertModel from './base_upsert.model.js'
+import BillRunModel from './bill_run.model.js'
+import LicenceModel from './licence.model.js'
+import TransactionModel from './transaction.model.js'
 
 const DEMINIMIS_LIMIT = 500
 
-class InvoiceModel extends BaseUpsertModel {
+export default class InvoiceModel extends BaseUpsertModel {
   static get tableName () {
     return 'invoices'
   }
@@ -17,27 +17,27 @@ class InvoiceModel extends BaseUpsertModel {
   static get relationMappings () {
     return {
       billRun: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'bill_run.model',
+        relation: this.BelongsToOneRelation,
+        modelClass: BillRunModel,
         join: {
           from: 'invoices.billRunId',
           to: 'billRuns.id'
         }
       },
-      transactions: {
-        relation: Model.HasManyRelation,
-        modelClass: 'transaction.model',
-        join: {
-          from: 'invoices.id',
-          to: 'transactions.invoiceId'
-        }
-      },
       licences: {
-        relation: Model.HasManyRelation,
-        modelClass: 'licence.model',
+        relation: this.HasManyRelation,
+        modelClass: LicenceModel,
         join: {
           from: 'invoices.id',
           to: 'licences.invoiceId'
+        }
+      },
+      transactions: {
+        relation: this.HasManyRelation,
+        modelClass: TransactionModel,
+        join: {
+          from: 'invoices.id',
+          to: 'transactions.invoiceId'
         }
       }
     }
@@ -208,5 +208,3 @@ class InvoiceModel extends BaseUpsertModel {
     return this.subjectToMinimumChargeCount > 0
   }
 }
-
-module.exports = InvoiceModel

@@ -1,6 +1,4 @@
-'use strict'
-
-class PresenterHelper {
+export default class PresenterHelper {
   /**
    * Generates an array of column fields for use when testing that a file presenter returns the correct columns.
    *
@@ -22,5 +20,3 @@ class PresenterHelper {
     return numberedCols
   }
 }
-
-module.exports = PresenterHelper

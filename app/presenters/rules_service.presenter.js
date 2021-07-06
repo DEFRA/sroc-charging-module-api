@@ -1,15 +1,13 @@
-'use strict'
-
 /**
  * @module RulesServicePresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Handles formatting the data into the payload sent to the Rules Service when requesting a charge calculation.
  */
-class RulesServicePresenter extends BasePresenter {
+export default class RulesServicePresenter extends BasePresenter {
   _presentation (data) {
     return {
       ruleset: data.ruleset,
@@ -36,5 +34,3 @@ class RulesServicePresenter extends BasePresenter {
     }
   }
 }
-
-module.exports = RulesServicePresenter

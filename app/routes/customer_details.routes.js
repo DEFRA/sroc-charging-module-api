@@ -1,11 +1,7 @@
-'use strict'
+import CustomerDetailsController from '../controllers/presroc/customer_details.controller.js'
+import NotSupportedController from '../controllers/not_supported.controller.js'
 
-const {
-  NotSupportedController,
-  PresrocCustomerDetailsController
-} = require('../controllers')
-
-const routes = [
+const CustomerDetailsRoutes = [
   {
     method: 'POST',
     path: '/v1/{regimeId}/customer-changes',
@@ -14,8 +10,8 @@ const routes = [
   {
     method: 'POST',
     path: '/v2/{regimeId}/customer-changes',
-    handler: PresrocCustomerDetailsController.create
+    handler: CustomerDetailsController.create
   }
 ]
 
-module.exports = routes
+export default CustomerDetailsRoutes

@@ -1,12 +1,10 @@
-'use strict'
-
 /**
  * @module DeleteInvoiceService
  */
 
-const { BillRunModel } = require('../models')
+import BillRunModel from '../models/bill_run.model.js'
 
-class DeleteBillRunService {
+export default class DeleteBillRunService {
   /**
    * Deletes a bill run along with its invoices, licences and transactions
    *
@@ -44,5 +42,3 @@ class DeleteBillRunService {
       .deleteById(billRun.id)
   }
 }
-
-module.exports = DeleteBillRunService

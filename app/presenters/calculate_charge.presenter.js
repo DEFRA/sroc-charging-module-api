@@ -1,15 +1,13 @@
-'use strict'
-
 /**
  * @module RulesServicePresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Handles formatting the data into the response we send to clients after a calculate charge request.
  */
-class CalculateChargePresenter extends BasePresenter {
+export default class CalculateChargePresenter extends BasePresenter {
   _presentation (data) {
     return {
       calculation: {
@@ -31,5 +29,3 @@ class CalculateChargePresenter extends BasePresenter {
     return data.chargeCredit ? -data.chargeValue : data.chargeValue
   }
 }
-
-module.exports = CalculateChargePresenter

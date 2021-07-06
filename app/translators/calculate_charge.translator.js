@@ -1,14 +1,16 @@
-'use strict'
-
 /**
  * @module CalculateChargeTranslator
  */
 
-const BaseTranslator = require('./base.translator')
-const Joi = require('joi').extend(require('@joi/date'))
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
+import Joi from 'joi'
+import JoiDate from '@joi/date'
 
-class CalculateChargeTranslator extends BaseTranslator {
+import BaseTranslator from './base.translator.js'
+
+const JoiExtended = Joi.extend(JoiDate)
+
+export default class CalculateChargeTranslator extends BaseTranslator {
   constructor (data) {
     super(data)
 
@@ -109,8 +111,8 @@ class CalculateChargeTranslator extends BaseTranslator {
       // validated in the rules service
       eiucSource: Joi.when('compensationCharge', { is: true, then: Joi.string().required() }),
       loss: Joi.string().required(), // validated in rules service
-      periodStart: Joi.date().format(validDateFormats).max(Joi.ref('periodEnd')).min('01-APR-2014').required(),
-      periodEnd: Joi.date().format(validDateFormats).required(),
+      periodStart: JoiExtended.date().format(validDateFormats).max(Joi.ref('periodEnd')).min('01-APR-2014').required(),
+      periodEnd: JoiExtended.date().format(validDateFormats).required(),
       regionalChargingArea: Joi.string().required(), // validated in the rules service
       // Set a new field called ruleset. This will be used to determine which ruleset to query in the rules service. If
       // the data comes from a calculate charge request we deafult it. If the data comes from a create transaction
@@ -198,5 +200,3 @@ class CalculateChargeTranslator extends BaseTranslator {
     return number.toString().padStart(3, '0')
   }
 }
-
-module.exports = CalculateChargeTranslator

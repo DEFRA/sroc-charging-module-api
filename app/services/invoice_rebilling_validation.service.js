@@ -1,14 +1,13 @@
-'use strict'
-
 /**
  * @module InvoiceRebillingValidationService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { BillRunModel, InvoiceModel } = require('../models')
+import BillRunModel from '../models/bill_run.model.js'
+import InvoiceModel from '../models/invoice.model.js'
 
-class InvoiceRebillingValidationService {
+export default class InvoiceRebillingValidationService {
 /**
   * Validates that an invoice exists and that it is suitable for rebilling:
   * - The invoice does not already belong to the bill run it is being rebilled to;
@@ -79,5 +78,3 @@ class InvoiceRebillingValidationService {
     }
   }
 }
-
-module.exports = InvoiceRebillingValidationService

@@ -1,13 +1,16 @@
-'use strict'
-
 /**
  * @module BillRunModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import AuthorisedSystemModel from './authorised_system.model.js'
+import BaseModel from './base.model.js'
+import CreateTransactionTallyService from '../services/create_transaction_tally.service.js'
+import InvoiceModel from './invoice.model.js'
+import LicenceModel from './licence.model.js'
+import RegimeModel from './regime.model.js'
+import TransactionModel from './transaction.model.js'
 
-class BillRunModel extends BaseModel {
+export default class BillRunModel extends BaseModel {
   static get tableName () {
     return 'billRuns'
   }
@@ -15,40 +18,40 @@ class BillRunModel extends BaseModel {
   static get relationMappings () {
     return {
       authorisedSystem: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'authorised_system.model',
+        relation: this.BelongsToOneRelation,
+        modelClass: AuthorisedSystemModel,
         join: {
           from: 'billRuns.createdBy',
           to: 'authorisedSystems.id'
         }
       },
       invoices: {
-        relation: Model.HasManyRelation,
-        modelClass: 'invoice.model',
+        relation: this.HasManyRelation,
+        modelClass: InvoiceModel,
         join: {
           from: 'billRuns.id',
           to: 'invoices.billRunId'
         }
       },
       licences: {
-        relation: Model.HasManyRelation,
-        modelClass: 'licence.model',
+        relation: this.HasManyRelation,
+        modelClass: LicenceModel,
         join: {
           from: 'billRuns.id',
           to: 'licences.billRunId'
         }
       },
       regime: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'regime.model',
+        relation: this.BelongsToOneRelation,
+        modelClass: RegimeModel,
         join: {
           from: 'billRuns.regimeId',
           to: 'regimes.id'
         }
       },
       transactions: {
-        relation: Model.HasManyRelation,
-        modelClass: 'transaction.model',
+        relation: this.HasManyRelation,
+        modelClass: TransactionModel,
         join: {
           from: 'billRuns.id',
           to: 'transactions.billRunId'
@@ -101,8 +104,6 @@ class BillRunModel extends BaseModel {
    * @returns {string} ID of the bill run that was updated
    */
   static async patchTally (transaction, trx) {
-    const { CreateTransactionTallyService } = require('../services')
-
     const { patch } = CreateTransactionTallyService.go(transaction, this.tableName)
 
     const { id } = await BillRunModel.query(trx)
@@ -225,5 +226,3 @@ class BillRunModel extends BaseModel {
     return Boolean(this.fileReference)
   }
 }
-
-module.exports = BillRunModel

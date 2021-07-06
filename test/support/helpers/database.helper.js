@@ -1,6 +1,4 @@
-'use strict'
-
-const { db, dbConfig } = require('../../../db')
+import { db, dbConfig } from '../../../db/index.js'
 
 /**
  * Use to help with cleaning the database between tests
@@ -8,7 +6,7 @@ const { db, dbConfig } = require('../../../db')
  * It's good practise to ensure the database is in a 'clean' state between tests to avoid any side effects caused by
  * data from one test being present in another.
  */
-class DatabaseHelper {
+export default class DatabaseHelper {
   /**
    * Call to clean the database of all data
    *
@@ -36,5 +34,3 @@ class DatabaseHelper {
     return result.map((table) => table.tablename)
   }
 }
-
-module.exports = DatabaseHelper

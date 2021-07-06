@@ -1,8 +1,6 @@
-'use strict'
+import DatabaseController from '../controllers/admin/health/database.controller.js'
 
-const { DatabaseController } = require('../controllers')
-
-const routes = [
+const DatabaseRoutes = [
   {
     method: 'GET',
     path: '/admin/health/database',
@@ -17,4 +15,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default DatabaseRoutes

@@ -1,8 +1,8 @@
-'use strict'
+import dotenv from 'dotenv'
 
-require('dotenv').config()
+dotenv.config()
 
-const config = {
+const DatabaseConfig = {
   host: process.env.POSTGRES_HOST,
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
@@ -11,4 +11,4 @@ const config = {
   testDatabase: process.env.POSTGRES_DB_TEST
 }
 
-module.exports = config
+export default DatabaseConfig

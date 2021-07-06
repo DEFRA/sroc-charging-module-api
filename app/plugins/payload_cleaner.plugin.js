@@ -1,7 +1,3 @@
-'use strict'
-
-const { ObjectCleaningService } = require('../services')
-
 /**
  * Loop through a request's payload and 'clean' it.
  *
@@ -71,6 +67,8 @@ const { ObjectCleaningService } = require('../services')
  * * @module CleanPayloadPlugin
  */
 
+import ObjectCleaningService from '../services/plugins/object_cleaning.service.js'
+
 const PayloadCleanerPlugin = {
   name: 'payload_cleaner',
   register: (server, _options) => {
@@ -86,4 +84,4 @@ const PayloadCleanerPlugin = {
   }
 }
 
-module.exports = PayloadCleanerPlugin
+export default PayloadCleanerPlugin

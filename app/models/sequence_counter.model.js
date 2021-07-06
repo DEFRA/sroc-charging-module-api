@@ -1,13 +1,11 @@
-'use strict'
-
 /**
  * @module SequenceCounterModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import BaseModel from './base.model.js'
+import RegimeModel from './regime.model.js'
 
-class SequenceCounterModel extends BaseModel {
+export default class SequenceCounterModel extends BaseModel {
   static get tableName () {
     return 'sequenceCounters'
   }
@@ -15,8 +13,8 @@ class SequenceCounterModel extends BaseModel {
   static get relationMappings () {
     return {
       regime: {
-        relation: Model.ManyToManyRelation,
-        modelClass: 'regime.model',
+        relation: this.ManyToManyRelation,
+        modelClass: RegimeModel,
         join: {
           from: 'sequenceCounters.regimeId',
           to: 'regime.id'
@@ -25,5 +23,3 @@ class SequenceCounterModel extends BaseModel {
     }
   }
 }
-
-module.exports = SequenceCounterModel

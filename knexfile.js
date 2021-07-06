@@ -1,6 +1,4 @@
-'use strict'
-
-const DatabaseConfig = require('./config/database.config')
+import DatabaseConfig from './config/database.config.js'
 
 const defaultConfig = {
   client: 'postgres',
@@ -41,4 +39,4 @@ const production = {
   connection: defaultConnection
 }
 
-module.exports = { development, test, production }
+export { development, test, production }

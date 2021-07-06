@@ -1,8 +1,6 @@
-'use strict'
+import InvoiceModel from '../../../app/models/invoice.model.js'
 
-const { InvoiceModel } = require('../../../app/models')
-
-class InvoiceHelper {
+export default class InvoiceHelper {
   /**
    * Create an invoice
    *
@@ -99,5 +97,3 @@ class InvoiceHelper {
     return flags
   }
 }
-
-module.exports = InvoiceHelper

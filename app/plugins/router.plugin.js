@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Our router plugin which pulls in the various routes we have defined ready to be registered with the Hapi server
  * (server.js).
@@ -11,25 +9,24 @@
  * @module RouterPlugin
  */
 
-const { FilterRoutesService } = require('../services')
-const { AuthenticationConfig } = require('../../config')
+import AirbrakeRoutes from '../routes/airbrake.routes.js'
+import AuthorisedSystemRoutes from '../routes/authorised_system.routes.js'
+import BillRunInvoiceRoutes from '../routes/bill_run_invoice.routes.js'
+import BillRunLicenceRoutes from '../routes/bill_run_licence.routes.js'
+import BillRunRoutes from '../routes/bill_run.routes.js'
+import BillRunTransactionRoutes from '../routes/bill_run_transaction.routes.js'
+import CalculateChargeRoutes from '../routes/calculate_charge.routes.js'
+import CustomerDetailsRoutes from '../routes/customer_details.routes.js'
+import CustomerRoutes from '../routes/customer.routes.js'
+import DatabaseRoutes from '../routes/database.routes.js'
+import RegimeRoutes from '../routes/regime.routes.js'
+import RootRoutes from '../routes/root.routes.js'
+import TestRoutes from '../routes/test.routes.js'
+import TransactionRoutes from '../routes/transaction.routes.js'
 
-const {
-  AirbrakeRoutes,
-  AuthorisedSystemRoutes,
-  BillRunRoutes,
-  BillRunInvoiceRoutes,
-  BillRunLicenceRoutes,
-  BillRunTransactionRoutes,
-  CustomerDetailsRoutes,
-  CustomerRoutes,
-  DatabaseRoutes,
-  RegimeRoutes,
-  RootRoutes,
-  TestRoutes,
-  TransactionRoutes,
-  CalculateChargeRoutes
-} = require('../routes')
+import FilterRoutesService from '../services/plugins/filter_routes.service.js'
+
+import AuthenticationConfig from '../../config/authentication.config.js'
 
 const routes = [
   ...RootRoutes,
@@ -59,4 +56,4 @@ const RouterPlugin = {
   }
 }
 
-module.exports = RouterPlugin
+export default RouterPlugin

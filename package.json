@@ -22,7 +22,7 @@
     "reset-test-db": "npm run clean-test-db && npm run rollback-test-db && npm run migrate-test-db",
     "nuke-db": "node db/drop.database.js && npm run create-db",
     "nuke-test-db": "NODE_ENV=test node db/drop.database.js && npm run create-test-db",
-    "customer-files-task": "node app/tasks/index.js CustomerFilesTask"
+    "customer-files-task": "node app/tasks/task_runner.js CustomerFilesTask"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
   },
   "author": "SROC service team",
   "license": "OGL-UK-3.0",
+  "type": "module",
   "dependencies": {
     "@airbrake/node": "^2.1.3",
     "@aws-sdk/client-s3": "^3.8.1",
@@ -55,6 +56,7 @@
   "devDependencies": {
     "@hapi/code": "^8.0.3",
     "@hapi/lab": "^24.1.1",
+    "lab-babel": "^1.1.1",
     "mock-fs": "^4.13.0",
     "nodemon": "^2.0.7",
     "standard": "^16.0.3"

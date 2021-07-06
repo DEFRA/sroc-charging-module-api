@@ -1,8 +1,6 @@
-'use strict'
+import RootController from '../controllers/root.controller.js'
 
-const { RootController } = require('../controllers')
-
-const routes = [
+const RootRoutes = [
   {
     method: 'GET',
     path: '/',
@@ -21,4 +19,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default RootRoutes

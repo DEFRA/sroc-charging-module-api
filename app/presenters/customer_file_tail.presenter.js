@@ -1,10 +1,8 @@
-'use strict'
-
 /**
  * @module CustomerFileTailPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Formats data for the tail of a customer file.
@@ -16,7 +14,7 @@ const BasePresenter = require('./base.presenter')
  * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/customer_file_presenter.js
  */
 
-class CustomerFileTailPresenter extends BasePresenter {
+export default class CustomerFileTailPresenter extends BasePresenter {
   _presentation (data) {
     return {
       col01: 'T',
@@ -32,5 +30,3 @@ class CustomerFileTailPresenter extends BasePresenter {
     return index + 1
   }
 }
-
-module.exports = CustomerFileTailPresenter

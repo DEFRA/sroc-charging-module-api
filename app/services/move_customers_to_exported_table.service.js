@@ -1,12 +1,11 @@
-'use strict'
-
 /**
  * @module MoveCustomersToExportedTableService
  */
 
-const { CustomerModel, ExportedCustomerModel } = require('../models')
+import CustomerModel from '../models/customer.model.js'
+import ExportedCustomerModel from '../models/exported_customer.model.js'
 
-class MoveCustomersToExportedTableService {
+export default class MoveCustomersToExportedTableService {
   /**
    * Adds customers to the `exported_customers` table and deletes them from the `customers` table.
    *
@@ -49,5 +48,3 @@ class MoveCustomersToExportedTableService {
     await customerQuery.delete()
   }
 }
-
-module.exports = MoveCustomersToExportedTableService

@@ -1,13 +1,9 @@
-'use strict'
+import DatabaseHealthCheckService from '../../../services/database_health_check.service.js'
 
-const { DatabaseHealthCheckService } = require('../../../services')
-
-class DatabaseController {
+export default class DatabaseController {
   static async index (_req, h) {
     const result = await DatabaseHealthCheckService.go()
 
     return h.response(result).code(200)
   }
 }
-
-module.exports = DatabaseController

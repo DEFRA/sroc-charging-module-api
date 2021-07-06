@@ -1,10 +1,7 @@
-'use strict'
+import InvoiceHelper from './invoice.helper.js'
+import LicenceModel from '../../../app/models/licence.model.js'
 
-const { LicenceModel } = require('../../../app/models')
-
-const InvoiceHelper = require('./invoice.helper')
-
-class LicenceHelper {
+export default class LicenceHelper {
   /**
    * Create a licence. If invoiceId is null the values of customerReference and financialYear will be used to create a
    * new invoice for this licence to belong to, avoiding foreign key violations.
@@ -68,5 +65,3 @@ class LicenceHelper {
     return invoice.id
   }
 }
-
-module.exports = LicenceHelper

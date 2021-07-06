@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Determines if the request is related to a licence and does the work of first finding it, then validating if the
  * request is valid, ie. that the licence exists.
@@ -14,7 +12,7 @@
  * @module RequestLicencePlugin
  */
 
-const { RequestLicenceService } = require('../services')
+import RequestLicenceService from '../services/plugins/request_licence.service.js'
 
 const RequestLicencePlugin = {
   name: 'request_licence',
@@ -28,4 +26,4 @@ const RequestLicencePlugin = {
   }
 }
 
-module.exports = RequestLicencePlugin
+export default RequestLicencePlugin

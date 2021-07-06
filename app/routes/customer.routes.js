@@ -1,8 +1,6 @@
-'use strict'
+import CustomersController from '../controllers/admin/customers.controller.js'
 
-const { CustomersController } = require('../controllers')
-
-const routes = [
+const CustomerRoutes = [
   {
     method: 'PATCH',
     path: '/admin/{regimeId}/customers',
@@ -25,4 +23,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default CustomerRoutes

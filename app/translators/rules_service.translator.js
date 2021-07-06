@@ -1,13 +1,12 @@
-'use strict'
-
 /**
  * @module RulesServiceTranslator
  */
 
-const BaseTranslator = require('./base.translator')
-const Joi = require('joi')
+import Joi from 'joi'
 
-class RulesServiceTranslator extends BaseTranslator {
+import BaseTranslator from './base.translator.js'
+
+export default class RulesServiceTranslator extends BaseTranslator {
   constructor (data) {
     // The rules service returns the data we need in a WRLSChargingResponse object within the response object
     super(data.WRLSChargingResponse)
@@ -71,5 +70,3 @@ class RulesServiceTranslator extends BaseTranslator {
     return Math.round(floatValue * 100)
   }
 }
-
-module.exports = RulesServiceTranslator

@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Plugin to output the routes table to console at startup.
  *
@@ -24,7 +22,7 @@
  * @module BlippPlugin
  */
 
-const Blipp = require('blipp')
+import Blipp from 'blipp'
 
 const BlippPlugin = {
   plugin: Blipp,
@@ -34,4 +32,4 @@ const BlippPlugin = {
   }
 }
 
-module.exports = BlippPlugin
+export default BlippPlugin

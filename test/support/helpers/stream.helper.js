@@ -1,9 +1,7 @@
-'use strict'
+import { pipeline, Readable, Writable } from 'stream'
+import util from 'util'
 
-const { pipeline, Readable, Writable } = require('stream')
-const util = require('util')
-
-class StreamHelper {
+export default class StreamHelper {
   /**
    * Runs a Readable stream and returns an array of its output.
    *
@@ -107,5 +105,3 @@ class StreamHelper {
     return util.promisify(pipeline)
   }
 }
-
-module.exports = StreamHelper

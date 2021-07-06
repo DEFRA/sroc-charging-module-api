@@ -1,13 +1,15 @@
-'use strict'
-
 /**
  * @module TransactionModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import AuthorisedSystemModel from './authorised_system.model.js'
+import BaseModel from './base.model.js'
+import BillRunModel from './bill_run.model.js'
+import InvoiceModel from './invoice.model.js'
+import LicenceModel from './licence.model.js'
+import RegimeModel from './regime.model.js'
 
-class TransactionModel extends BaseModel {
+export default class TransactionModel extends BaseModel {
   static get tableName () {
     return 'transactions'
   }
@@ -15,47 +17,45 @@ class TransactionModel extends BaseModel {
   static get relationMappings () {
     return {
       authorisedSystem: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'authorised_system.model',
+        relation: this.BelongsToOneRelation,
+        modelClass: AuthorisedSystemModel,
         join: {
           from: 'transactions.createdBy',
           to: 'authorisedSystems.id'
         }
       },
       billRun: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'bill_run.model',
+        relation: this.BelongsToOneRelation,
+        modelClass: BillRunModel,
         join: {
           from: 'transactions.billRunId',
           to: 'billRuns.id'
         }
       },
-      regime: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'regime.model',
-        join: {
-          from: 'transactions.regimeId',
-          to: 'regimes.id'
-        }
-      },
       invoice: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'invoice.model',
+        relation: this.BelongsToOneRelation,
+        modelClass: InvoiceModel,
         join: {
           from: 'transactions.invoiceId',
           to: 'invoices.id'
         }
       },
       licence: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'licence.model',
+        relation: this.BelongsToOneRelation,
+        modelClass: LicenceModel,
         join: {
           from: 'transactions.licenceId',
           to: 'licences.id'
+        }
+      },
+      regime: {
+        relation: this.BelongsToOneRelation,
+        modelClass: RegimeModel,
+        join: {
+          from: 'transactions.regimeId',
+          to: 'regimes.id'
         }
       }
     }
   }
 }
-
-module.exports = TransactionModel

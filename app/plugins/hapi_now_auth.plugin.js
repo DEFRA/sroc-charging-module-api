@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Plugin to implement authentication. This plugin handles bearer tokens and decoding the JWT
  *
@@ -9,10 +7,10 @@
  * @module HapiNowAuthPlugin
  */
 
-const HapiNowAuth = require('@now-ims/hapi-now-auth')
+import HapiNowAuth from '@now-ims/hapi-now-auth'
 
 const HapiNowAuthPlugin = {
   plugin: HapiNowAuth
 }
 
-module.exports = HapiNowAuthPlugin
+export default HapiNowAuthPlugin

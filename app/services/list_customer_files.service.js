@@ -1,13 +1,11 @@
-'use strict'
-
 /**
  * @module ListCustomerFilesService
  */
 
-const { CustomerFileModel } = require('../models')
-const { JsonPresenter } = require('../presenters')
+import CustomerFileModel from '../models/customer_file.model.js'
+import JsonPresenter from '../presenters/json.presenter.js'
 
-class ListCustomerFilesService {
+export default class ListCustomerFilesService {
   /**
    * Returns a JSON array of customer files
    *
@@ -34,5 +32,3 @@ class ListCustomerFilesService {
     return presenter.go()
   }
 }
-
-module.exports = ListCustomerFilesService

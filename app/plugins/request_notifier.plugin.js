@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Add an instance of `RequestNotifierLib` to the `request.app` as part of every request.
  *
@@ -9,7 +7,7 @@
  * @module RequestNotifierPlugin
  */
 
-const { RequestNotifierLib } = require('../lib')
+import RequestNotifierLib from '../lib/request_notifier.lib.js'
 
 const RequestNotifierPlugin = {
   name: 'Notifier',
@@ -22,4 +20,4 @@ const RequestNotifierPlugin = {
   }
 }
 
-module.exports = RequestNotifierPlugin
+export default RequestNotifierPlugin

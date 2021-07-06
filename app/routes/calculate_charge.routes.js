@@ -1,8 +1,7 @@
-'use strict'
+import CalculateChargeController from '../controllers/presroc/calculate_charge.controller.js'
+import NotSupportedController from '../controllers/not_supported.controller.js'
 
-const { NotSupportedController, PresrocCalculateChargeController } = require('../controllers')
-
-const routes = [
+const CalculateChargeRoutes = [
   {
     method: 'POST',
     path: '/v1/{regimeId}/calculate-charge',
@@ -11,8 +10,8 @@ const routes = [
   {
     method: 'POST',
     path: '/v2/{regimeId}/calculate-charge',
-    handler: PresrocCalculateChargeController.calculate
+    handler: CalculateChargeController.calculate
   }
 ]
 
-module.exports = routes
+export default CalculateChargeRoutes

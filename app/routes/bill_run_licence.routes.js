@@ -1,12 +1,10 @@
-'use strict'
+import BillRunsLicencesController from '../controllers/presroc/bill_runs_licences.controller.js'
 
-const { PresrocBillRunsLicencesController } = require('../controllers')
-
-const routes = [
+const BillRunLicenceRoutes = [
   {
     method: 'DELETE',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/licences/{licenceId}',
-    handler: PresrocBillRunsLicencesController.delete,
+    handler: BillRunsLicencesController.delete,
     options: {
       app: {
         excludeFromProd: true
@@ -15,4 +13,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default BillRunLicenceRoutes

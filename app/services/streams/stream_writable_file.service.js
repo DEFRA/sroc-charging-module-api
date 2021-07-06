@@ -1,12 +1,10 @@
-'use strict'
-
 /**
  * @module StreamWritableFileService
  */
 
-const fs = require('fs')
+import fs from 'fs'
 
-class StreamWritableFileService {
+export default class StreamWritableFileService {
 /**
  * Returns a Writable stream which writes data supplied to it to a file.
  *
@@ -18,5 +16,3 @@ class StreamWritableFileService {
     return fs.createWriteStream(filenameWithPath, append ? { flags: 'a' } : {})
   }
 }
-
-module.exports = StreamWritableFileService

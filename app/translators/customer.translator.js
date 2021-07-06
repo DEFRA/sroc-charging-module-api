@@ -1,15 +1,9 @@
-'use strict'
+import Joi from 'joi'
 
-const Joi = require('joi')
+import BaseTranslator from './base.translator.js'
+import StaticLookupLib from '../lib/static_lookup.lib.js'
 
-const BaseTranslator = require('./base.translator')
-
-// TODO: Use commented out version once 'module exports inside circular dependency' issue resolved
-// See https://github.com/DEFRA/sroc-service-team/issues/66
-// const { StaticLookupLib } = require('../lib')
-const StaticLookupLib = require('../lib/static_lookup.lib')
-
-class CustomerTranslator extends BaseTranslator {
+export default class CustomerTranslator extends BaseTranslator {
   _schema () {
     return Joi.object({
       regimeId: Joi.string().required(),
@@ -46,5 +40,3 @@ class CustomerTranslator extends BaseTranslator {
     return StaticLookupLib.regions
   }
 }
-
-module.exports = CustomerTranslator

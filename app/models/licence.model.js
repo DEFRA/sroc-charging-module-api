@@ -1,41 +1,41 @@
-'use strict'
-
 /**
  * @module LicenceModel
  */
 
-const { Model } = require('objection')
-const BaseUpsertModel = require('./base_upsert.model')
+import BaseUpsertModel from './base_upsert.model.js'
+import BillRunModel from './bill_run.model.js'
+import InvoiceModel from './invoice.model.js'
+import TransactionModel from './transaction.model.js'
 
-class LicenceModel extends BaseUpsertModel {
+export default class LicenceModel extends BaseUpsertModel {
   static get tableName () {
     return 'licences'
   }
 
   static get relationMappings () {
     return {
+      billRun: {
+        relation: this.BelongsToOneRelation,
+        modelClass: BillRunModel,
+        join: {
+          from: 'licences.billRunId',
+          to: 'billRuns.id'
+        }
+      },
       invoice: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'invoice.model',
+        relation: this.BelongsToOneRelation,
+        modelClass: InvoiceModel,
         join: {
           from: 'licences.invoiceId',
           to: 'invoices.id'
         }
       },
       transactions: {
-        relation: Model.HasManyRelation,
-        modelClass: 'transaction.model',
+        relation: this.HasManyRelation,
+        modelClass: TransactionModel,
         join: {
           from: 'licences.id',
           to: 'transactions.licenceId'
-        }
-      },
-      billRun: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: 'bill_run.model',
-        join: {
-          from: 'licences.billRunId',
-          to: 'billRuns.id'
         }
       }
     }
@@ -75,5 +75,3 @@ class LicenceModel extends BaseUpsertModel {
     return this.debitLineValue - this.creditLineValue
   }
 }
-
-module.exports = LicenceModel

@@ -1,8 +1,6 @@
-'use strict'
+import BillRunModel from '../../../app/models/bill_run.model'
 
-const { BillRunModel } = require('../../../app/models')
-
-class BillRunHelper {
+export default class BillRunHelper {
   /**
    * Create a bill run
    *
@@ -55,5 +53,3 @@ class BillRunHelper {
     }
   }
 }
-
-module.exports = BillRunHelper

@@ -1,8 +1,6 @@
-'use strict'
-
 const tableName = 'licences'
 
-exports.up = async function (knex) {
+export async function up (knex) {
   await knex
     .schema
     .createTable(tableName, table => {
@@ -38,7 +36,7 @@ exports.up = async function (knex) {
   `)
 }
 
-exports.down = async function (knex) {
+export async function down (knex) {
   return knex
     .schema
     .dropTableIfExists(tableName)

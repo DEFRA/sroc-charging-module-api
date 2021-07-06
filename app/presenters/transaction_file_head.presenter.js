@@ -1,10 +1,8 @@
-'use strict'
-
 /**
  * @module TransactionFileHeadPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+import BasePresenter from './base.presenter.js'
 
 /**
  * Formats data for the head of a transaction file.
@@ -16,7 +14,7 @@ const BasePresenter = require('./base.presenter')
  * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/transaction_file_presenter.js
  */
 
-class TransactionFileHeadPresenter extends BasePresenter {
+export default class TransactionFileHeadPresenter extends BasePresenter {
   _presentation (data) {
     return {
       col01: 'H',
@@ -38,5 +36,3 @@ class TransactionFileHeadPresenter extends BasePresenter {
     return fileReference.slice(-5)
   }
 }
-
-module.exports = TransactionFileHeadPresenter

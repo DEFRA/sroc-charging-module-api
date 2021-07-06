@@ -1,12 +1,10 @@
-'use strict'
-
 /**
  * @module BillRunStatusService
  */
 
-const { BillRunStatusPresenter } = require('../presenters')
+import BillRunStatusPresenter from '../presenters/bill_run_status.presenter.js'
 
-class BillRunStatusService {
+export default class BillRunStatusService {
   /**
    * Initiator method of the service. When called the service will take the bill run instance and return a very simple
    * JSON object that contains just it's status.
@@ -25,5 +23,3 @@ class BillRunStatusService {
     return presenter.go()
   }
 }
-
-module.exports = BillRunStatusService

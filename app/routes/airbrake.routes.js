@@ -1,8 +1,6 @@
-'use strict'
+import AirbrakeController from '../controllers/admin/health/airbrake.controller.js'
 
-const { AirbrakeController } = require('../controllers')
-
-const routes = [
+const AirbrakeRoutes = [
   {
     method: 'GET',
     path: '/admin/health/airbrake',
@@ -17,4 +15,4 @@ const routes = [
   }
 ]
 
-module.exports = routes
+export default AirbrakeRoutes

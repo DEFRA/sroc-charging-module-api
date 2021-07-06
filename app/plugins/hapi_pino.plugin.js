@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Plugin that handles logging for the application
  *
@@ -9,7 +7,7 @@
  *
  * @module HapiPinoPlugin
  */
-const HapiPino = require('hapi-pino')
+import HapiPino from 'hapi-pino'
 
 /**
  * Return test configuration options for the logger
@@ -54,4 +52,4 @@ const HapiPinoPlugin = logInTest => {
   }
 }
 
-module.exports = HapiPinoPlugin
+export default HapiPinoPlugin

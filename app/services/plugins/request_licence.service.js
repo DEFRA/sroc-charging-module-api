@@ -1,14 +1,12 @@
-'use strict'
-
 /**
  * @module RequestLicenceService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-const { LicenceModel } = require('../../models')
+import LicenceModel from '../../models/licence.model.js'
 
-class RequestLicenceService {
+export default class RequestLicenceService {
   /**
    * Find a licence and determine if it's valid for the request.
    *
@@ -45,5 +43,3 @@ class RequestLicenceService {
     }
   }
 }
-
-module.exports = RequestLicenceService

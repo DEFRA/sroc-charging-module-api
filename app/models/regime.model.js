@@ -1,13 +1,15 @@
-'use strict'
-
 /**
  * @module RegimeModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import AuthorisedSystemModel from './authorised_system.model.js'
+import BaseModel from './base.model.js'
+import BillRunModel from './bill_run.model.js'
+import CustomerFileModel from './customer_file.model.js'
+import SequenceCounterModel from './sequence_counter.model.js'
+import TransactionModel from './transaction.model.js'
 
-class RegimeModel extends BaseModel {
+export default class RegimeModel extends BaseModel {
   static get tableName () {
     return 'regimes'
   }
@@ -15,8 +17,8 @@ class RegimeModel extends BaseModel {
   static get relationMappings () {
     return {
       authorisedSystems: {
-        relation: Model.ManyToManyRelation,
-        modelClass: 'authorised_system.model',
+        relation: this.ManyToManyRelation,
+        modelClass: AuthorisedSystemModel,
         join: {
           from: 'regimes.id',
           through: {
@@ -28,32 +30,32 @@ class RegimeModel extends BaseModel {
         }
       },
       billRuns: {
-        relation: Model.HasManyRelation,
-        modelClass: 'bill_run.model',
+        relation: this.HasManyRelation,
+        modelClass: BillRunModel,
         join: {
           from: 'regimes.id',
           to: 'billRuns.regimeId'
         }
       },
       customerFiles: {
-        relation: Model.HasManyRelation,
-        modelClass: 'customer_file.model',
+        relation: this.HasManyRelation,
+        modelClass: CustomerFileModel,
         join: {
           from: 'regimes.id',
           to: 'customerFiles.regimeId'
         }
       },
       sequenceCounters: {
-        relation: Model.ManyToManyRelation,
-        modelClass: 'sequence_counters.model',
+        relation: this.ManyToManyRelation,
+        modelClass: SequenceCounterModel,
         join: {
           from: 'regimes.id',
           to: 'sequenceCounters.regimeId'
         }
       },
       transactions: {
-        relation: Model.HasManyRelation,
-        modelClass: 'transaction.model',
+        relation: this.HasManyRelation,
+        modelClass: TransactionModel,
         join: {
           from: 'regimes.id',
           to: 'transactions.regimeId'
@@ -62,5 +64,3 @@ class RegimeModel extends BaseModel {
     }
   }
 }
-
-module.exports = RegimeModel

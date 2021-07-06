@@ -1,13 +1,13 @@
-'use strict'
-
 /**
  * @module AuthorisedSystemModel
  */
 
-const { Model } = require('objection')
-const BaseModel = require('./base.model')
+import BaseModel from './base.model.js'
+import BillRunModel from './bill_run.model.js'
+import RegimeModel from './regime.model.js'
+import TransactionModel from './transaction.model.js'
 
-class AuthorisedSystemModel extends BaseModel {
+export default class AuthorisedSystemModel extends BaseModel {
   static get tableName () {
     return 'authorisedSystems'
   }
@@ -15,16 +15,16 @@ class AuthorisedSystemModel extends BaseModel {
   static get relationMappings () {
     return {
       billRuns: {
-        relation: Model.HasManyRelation,
-        modelClass: 'bill_run.model',
+        relation: this.HasManyRelation,
+        modelClass: BillRunModel,
         join: {
           from: 'authorisedSystems.id',
           to: 'billRuns.createdBy'
         }
       },
       regimes: {
-        relation: Model.ManyToManyRelation,
-        modelClass: 'regime.model',
+        relation: this.ManyToManyRelation,
+        modelClass: RegimeModel,
         join: {
           from: 'authorisedSystems.id',
           through: {
@@ -36,8 +36,8 @@ class AuthorisedSystemModel extends BaseModel {
         }
       },
       transactions: {
-        relation: Model.HasManyRelation,
-        modelClass: 'transaction.model',
+        relation: this.HasManyRelation,
+        modelClass: TransactionModel,
         join: {
           from: 'authorisedSystems.id',
           to: 'transactions.createdBy'
@@ -58,5 +58,3 @@ class AuthorisedSystemModel extends BaseModel {
     return (this.status.toLowerCase() === 'active')
   }
 }
-
-module.exports = AuthorisedSystemModel

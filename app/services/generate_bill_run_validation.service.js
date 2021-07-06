@@ -1,12 +1,10 @@
-'use strict'
-
 /**
  * @module GenerateBillRunValidationService
  */
 
-const Boom = require('@hapi/boom')
+import Boom from '@hapi/boom'
 
-class GenerateBillRunValidationService {
+export default class GenerateBillRunValidationService {
   /**
   * Validates that a bill run is in a state where it can be generated.
   *
@@ -32,5 +30,3 @@ class GenerateBillRunValidationService {
     }
   }
 }
-
-module.exports = GenerateBillRunValidationService

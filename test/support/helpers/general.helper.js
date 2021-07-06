@@ -1,13 +1,11 @@
-'use strict'
-
-const Hoek = require('@hapi/hoek')
+import Hoek from '@hapi/hoek'
 
 /**
  * Class of general test helper methods
  *
  * The methods here have a more general purpose and can be used across test types, features and domains.
  */
-class GeneralHelper {
+export default class GeneralHelper {
   /**
    * Deep clone an object
    *
@@ -70,5 +68,3 @@ class GeneralHelper {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 }
-
-module.exports = GeneralHelper
