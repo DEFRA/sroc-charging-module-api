@@ -1,6 +1,6 @@
 import { db, dbConfig } from './index.js'
 
-import { DatabaseHelper } from '../test/support/helpers/index.js'
+import DatabaseHelper from '../test/support/helpers/database.helper.js'
 
 const clean = async () => {
   try {
