@@ -1,6 +1,6 @@
 import Knex from 'knex'
 
-import * as knexfile from './knexfile.js'
+import * as knexfile from '../knexfile.js'
 
 const environment = process.env.NODE_ENV || 'development'
 const dbConfig = knexfile[environment]
@@ -11,8 +11,7 @@ const databaseName = dbConfig.connection.database
 // drop a DB with active connections!
 // So we have to grab our config and instantiate it ourselves here so we can connect against the default 'postgres' DB.
 // https://stackoverflow.com/a/31428260/6117745
-const knexPostgresDb = {
-  ...Knex,
+const postgresDbConfig = {
   client: 'pg',
   connection: {
     host: dbConfig.connection.host,
@@ -24,17 +23,19 @@ const knexPostgresDb = {
   }
 }
 
-const up = async function (knexPostgresDb) {
+const up = async function (dbConfig) {
+  const db = Knex(dbConfig)
+
   try {
-    await knexPostgresDb.raw(`CREATE DATABASE ${databaseName}`)
+    await db.raw(`CREATE DATABASE ${databaseName}`)
     console.log(`Successfully created ${databaseName}`)
   } catch (error) {
     console.error(`Could not create ${databaseName}: ${error.message}`)
   } finally {
     // Kill the connection after running the command else the terminal will
     // appear to hang
-    await knexPostgresDb.destroy()
+    await db.destroy()
   }
 }
 
-up(knexPostgresDb)
+up(postgresDbConfig)

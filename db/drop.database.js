@@ -1,6 +1,6 @@
 import Knex from 'knex'
 
-import * as knexfile from './knexfile.js'
+import * as knexfile from '../knexfile.js'
 
 const environment = process.env.NODE_ENV || 'development'
 const dbConfig = knexfile[environment]
@@ -11,8 +11,7 @@ const databaseName = dbConfig.connection.database
 // drop a DB with active connections!
 // So we have to grab our config and instantiate it ourselves here so we can connect against the default 'postgres' DB.
 // https://stackoverflow.com/a/31428260/6117745
-const knexPostgresDb = {
-  ...Knex,
+const postgresDbConfig = {
   client: 'pg',
   connection: {
     host: dbConfig.connection.host,
@@ -24,23 +23,25 @@ const knexPostgresDb = {
   }
 }
 
-const up = async function (knexPostgresDb) {
+const up = async function (dbConfig) {
+  const db = Knex(dbConfig)
+
   try {
     // We'll get errors if we try to drop the db when there are active connections. So, we use this command first to
     // drop any active connections it finds.
     // https://www.postgresqltutorial.com/postgresql-drop-database/
     console.log(`Dropping active connections to ${databaseName}`)
-    await knexPostgresDb.raw(`SELECT pg_terminate_backend (pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '${databaseName}'`)
+    await db.raw(`SELECT pg_terminate_backend (pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '${databaseName}'`)
 
-    await knexPostgresDb.raw(`DROP DATABASE IF EXISTS ${databaseName}`)
+    await db.raw(`DROP DATABASE IF EXISTS ${databaseName}`)
     console.log(`Successfully dropped ${databaseName}`)
   } catch (error) {
     console.error(`Could not drop ${databaseName}: ${error.message}`)
   } finally {
     // Kill the connection after running the command else the terminal will
     // appear to hang
-    await knexPostgresDb.destroy()
+    await db.destroy()
   }
 }
 
-up(knexPostgresDb)
+up(postgresDbConfig)
