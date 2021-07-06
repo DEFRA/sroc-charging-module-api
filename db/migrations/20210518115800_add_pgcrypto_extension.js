@@ -5,13 +5,13 @@
 //
 // https://www.postgresql.org/docs/10/pgcrypto.html
 
-exports.up = function (knex) {
+export function up (knex) {
   return knex.raw(`
     CREATE EXTENSION IF NOT EXISTS pgcrypto;
   `)
 }
 
-exports.down = function (knex) {
+export function down (knex) {
   return knex.raw(`
     DROP EXTENSION IF EXISTS pgcrypto;
   `)

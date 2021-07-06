@@ -1,6 +1,6 @@
 const tableName = 'authorised_systems'
 
-exports.up = async function (knex) {
+export async function up (knex) {
   await knex
     .schema
     .createTable(tableName, table => {
@@ -30,7 +30,7 @@ exports.up = async function (knex) {
   `)
 }
 
-exports.down = function (knex) {
+export function down (knex) {
   return knex
     .schema
     .dropTableIfExists(tableName)

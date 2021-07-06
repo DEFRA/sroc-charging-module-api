@@ -1,6 +1,6 @@
 const tableName = 'transactions'
 
-exports.up = async function (knex) {
+export async function up (knex) {
   await knex
     .schema
     .alterTable(tableName, table => {
@@ -8,7 +8,7 @@ exports.up = async function (knex) {
     })
 }
 
-exports.down = async function (knex) {
+export async function down (knex) {
   await knex
     .schema
     .alterTable(tableName, table => {
