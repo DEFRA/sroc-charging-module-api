@@ -1,5 +1,6 @@
-const { CustomerFileModel, ExportedCustomerModel } = require('../../../app/models')
-const GeneralHelper = require('./general.helper')
+import CustomerFileModel from '../../../app/models/customer_file.model.js'
+import ExportedCustomerModel from '../../../app/models/exported_customer.model.js'
+import GeneralHelper from './general.helper.js'
 
 /**
  * Use to help with creating customer records, for example, 'CustomerFiles'

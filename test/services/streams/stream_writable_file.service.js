@@ -1,20 +1,22 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-const stream = require('stream')
-const fs = require('fs')
-const path = require('path')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import mock from 'mock-fs'
 
 // Test helpers
-const { StreamHelper } = require('../../support/helpers')
-const mockFs = require('mock-fs')
+import StreamHelper from '../../support/helpers/stream.helper.js'
+
+// Additional dependencies needed
+import fs from 'fs'
+import path from 'path'
+import stream from 'stream'
 
 // Thing under test
-const { StreamWritableFileService } = require('../../../app/services')
+import StreamWritableFileService from '../../../app/services/streams/stream_writable_file.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Stream Writable File service', () => {
   let filenameWithPath
@@ -23,7 +25,7 @@ describe('Stream Writable File service', () => {
     // Create mock in-memory file system to avoid temp files being dropped in our filesystem
     filenameWithPath = path.join('testFolder', 'testFile')
 
-    mockFs({
+    mock({
       testFolder: {
         testFile: 'test content'
       }
@@ -31,7 +33,7 @@ describe('Stream Writable File service', () => {
   })
 
   afterEach(async () => {
-    mockFs.restore()
+    mock.restore()
   })
 
   describe('When a filename is specified', () => {

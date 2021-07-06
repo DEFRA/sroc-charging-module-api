@@ -1,12 +1,13 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Thing under test
-const BaseUpsertModel = require('../../app/models/base_upsert.model')
+import BaseUpsertModel from '../../app/models/base_upsert.model.js'
+
+// Test framework setup
+const { describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 class TestModel extends BaseUpsertModel { }
 

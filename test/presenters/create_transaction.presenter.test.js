@@ -1,15 +1,16 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const { GeneralHelper } = require('../support/helpers')
+import GeneralHelper from '../support/helpers/general.helper'
 
 // Thing under test
-const { CreateTransactionPresenter } = require('../../app/presenters')
+import CreateTransactionPresenter from '../../app/presenters/create_transaction.presenter.js'
+
+// Test framework setup
+const { describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Create Transaction presenter', () => {
   describe('using the data passed in', () => {

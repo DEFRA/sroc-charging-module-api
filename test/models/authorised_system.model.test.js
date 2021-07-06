@@ -1,12 +1,13 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Thing under test
-const { AuthorisedSystemModel } = require('../../app/models')
+import AuthorisedSystemModel from '../../app/models/authorised_system.model.js'
+
+// Test framework setup
+const { describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Authorised System Model', () => {
   describe('the $active() method', () => {

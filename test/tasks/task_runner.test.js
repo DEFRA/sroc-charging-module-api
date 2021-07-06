@@ -1,16 +1,17 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-// Thing under test
-const { TaskRunner } = require('../../app/tasks')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Things we need to stub
-const { CustomerFilesTask } = require('../../app/tasks')
+import CustomerFilesTask from '../../app/tasks/customer_files.task.js'
+
+// Thing under test
+import TaskRunner from '../../app/tasks/task_runner.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Task Runner', () => {
   let taskStub

@@ -1,27 +1,25 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  DatabaseHelper,
-  RegimeHelper
-} = require('../support/helpers')
-
-const { CustomerFileModel } = require('../../app/models')
-const { CreateCustomerDetailsService } = require('../../app/services')
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
 
 // Things we need to stub
-const {
-  NextCustomerFileReferenceService
-} = require('../../app/services')
+import NextCustomerFileReferenceService from '../../app/services/next_customer_file_reference.service.js'
+
+// Additional dependencies needed
+import CreateCustomerDetailsService from '../../app/services/create_customer_details.service.js'
+import CustomerFileModel from '../../app/models/customer_file.model.js'
 
 // Thing under test
-const { PrepareCustomerFileService } = require('../../app/services')
+import PrepareCustomerFileService from '../../app/services/prepare_customer_file.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Prepare Customer File service', () => {
   let regime

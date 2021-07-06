@@ -1,26 +1,26 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper,
-  InvoiceHelper
-} = require('../support/helpers')
+import AuthorisedSystemHelper from '../support/helpers/authorised_system.helper.js'
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import InvoiceHelper from '../support/helpers/invoice.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
 
 // Things we need to stub
-const { InvoiceRebillingCopyService, InvoiceRebillingInitialiseService } = require('../../app/services')
+import InvoiceRebillingCopyService from '../../app/services/invoice_rebilling_copy.service.js'
+import InvoiceRebillingInitialiseService from '../../app/services/invoice_rebilling_initialise.service.js'
 
 // Thing under test
-const { InvoiceRebillingService } = require('../../app/services')
+import InvoiceRebillingService from '../../app/services/invoice_rebilling.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Invoice Rebilling service', () => {
   let authorisedSystem

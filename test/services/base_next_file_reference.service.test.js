@@ -1,12 +1,13 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Thing under test
-const { BaseNextFileReferenceService } = require('../../app/services')
+import BaseNextFileReferenceService from '../../app/services/base_next_file_reference.service.js'
+
+// Test framework setup
+const { describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 class TestService extends BaseNextFileReferenceService { }
 

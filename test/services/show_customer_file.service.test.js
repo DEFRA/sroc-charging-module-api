@@ -1,21 +1,22 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const {
-  DatabaseHelper,
-  CustomerHelper,
-  GeneralHelper
-} = require('../support/helpers')
-const { CustomerFileModel } = require('../../app/models')
-const { DataError } = require('objection')
+import CustomerHelper from '../support/helpers/customer.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+
+// Additional dependencies needed
+import CustomerFileModel from '../../app/models/customer_file.model.js'
+import { DataError } from 'objection'
 
 // Thing under test
-const { ShowCustomerFileService } = require('../../app/services')
+import ShowCustomerFileService from '../../app/services/show_customer_file.service'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Show Customer File service', () => {
   beforeEach(async () => {

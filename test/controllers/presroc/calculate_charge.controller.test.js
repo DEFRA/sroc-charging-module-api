@@ -1,29 +1,30 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-const Nock = require('nock')
-
-const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
-const { expect } = Code
-
-// For running our service
-const { init } = require('../../../app/server')
+import Code from '@hapi/code'
+import Lab from '@hapi/lab'
+import Nock from 'nock'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper,
-  RulesServiceHelper
-} = require('../../support/helpers')
-
-const { presroc: fixtures } = require('../../support/fixtures/calculate_charge')
+import AuthorisationHelper from '../../support/helpers/authorisation.helper.js'
+import AuthorisedSystemHelper from '../../support/helpers/authorised_system.helper.js'
+import DatabaseHelper from '../../support/helpers/database.helper.js'
+import GeneralHelper from '../../support/helpers/general.helper.js'
+import RegimeHelper from '../../support/helpers/regime.helper.js'
+import RulesServiceHelper from '../../support/helpers/rules_service.helper.js'
 
 // Things we need to stub
-const JsonWebToken = require('jsonwebtoken')
+import JsonWebToken from 'jsonwebtoken'
+
+// For running our service
+import { init } from '../../../app/server.js'
+
+// Fixtures
+import * as fixtures from '../../support/fixtures/fixtures.js'
+const chargeFixtures = fixtures.calculateCharge
+
+// Test framework setup
+const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Calculate charge controller', () => {
   const clientID = '1234546789'
@@ -41,7 +42,7 @@ describe('Calculate charge controller', () => {
     // the interception rather than remove it after the first request
     Nock(RulesServiceHelper.url)
       .post(() => true)
-      .reply(200, fixtures.simple.rulesService)
+      .reply(200, chargeFixtures.simple.rulesService)
       .persist()
   })
 
@@ -70,19 +71,19 @@ describe('Calculate charge controller', () => {
 
     describe('When the request is valid', () => {
       it('returns the calculated charge', async () => {
-        const requestPayload = fixtures.simple.request
+        const requestPayload = chargeFixtures.simple.request
 
         const response = await server.inject(options(authToken, requestPayload))
         const responsePayload = JSON.parse(response.payload)
 
         expect(response.statusCode).to.equal(200)
-        expect(responsePayload).to.equal(fixtures.simple.response)
+        expect(responsePayload).to.equal(chargeFixtures.simple.response)
       })
     })
 
     describe('When the request is invalid', () => {
       it('returns an error', async () => {
-        const requestPayload = GeneralHelper.cloneObject(fixtures.simple.request)
+        const requestPayload = GeneralHelper.cloneObject(chargeFixtures.simple.request)
         requestPayload.periodStart = '01-APR-2021'
 
         const response = await server.inject(options(authToken, requestPayload))

@@ -1,39 +1,36 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-// For running our service
-const { init } = require('../../../app/server')
+import Code from '@hapi/code'
+import Lab from '@hapi/lab'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper,
-  TransactionHelper,
-  InvoiceHelper
-} = require('../../support/helpers')
-
-const Boom = require('@hapi/boom')
-
-const {
-  DeleteInvoiceService,
-  FetchAndValidateBillRunInvoiceService,
-  InvoiceRebillingService,
-  InvoiceRebillingValidationService
-} = require('../../../app/services')
-
-const { BillRunModel, InvoiceModel } = require('../../../app/models')
+import AuthorisationHelper from '../../support/helpers/authorisation.helper.js'
+import AuthorisedSystemHelper from '../../support/helpers/authorised_system.helper.js'
+import BillRunHelper from '../../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../../support/helpers/database.helper.js'
+import GeneralHelper from '../../support/helpers/general.helper.js'
+import InvoiceHelper from '../../support/helpers/invoice.helper.js'
+import RegimeHelper from '../../support/helpers/regime.helper.js'
+import TransactionHelper from '../../support/helpers/transaction.helper.js'
 
 // Things we need to stub
-const JsonWebToken = require('jsonwebtoken')
+import DeleteInvoiceService from '../../../app/services/delete_invoice.service.js'
+import FetchAndValidateBillRunInvoiceService from '../../../app/services/fetch_and_validate_bill_run_invoice.service.js'
+import InvoiceRebillingService from '../../../app/services/invoice_rebilling.service.js'
+import InvoiceRebillingValidationService from '../../../app/services/invoice_rebilling_validation.service.js'
+import JsonWebToken from 'jsonwebtoken'
+
+// For running our service
+import { init } from '../../../app/server.js'
+
+// Additional dependencies needed
+import BillRunModel from '../../../app/models/bill_run.model.js'
+import Boom from '@hapi/boom'
+import InvoiceModel from '../../../app/models/invoice.model.js'
+
+// Test framework setup
+const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Presroc Invoices controller', () => {
   const clientID = '1234546789'

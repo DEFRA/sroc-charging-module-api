@@ -1,25 +1,24 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-const stream = require('stream')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  StreamHelper,
-  TransactionHelper
-} = require('../../support/helpers')
+import BillRunHelper from '../../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../../support/helpers/database.helper.js'
+import GeneralHelper from '../../support/helpers/general.helper.js'
+import StreamHelper from '../../support/helpers/stream.helper.js'
+import TransactionHelper from '../../support/helpers/transaction.helper.js'
 
-const { TransactionModel } = require('../../../app/models')
+// Additional dependencies needed
+import stream from 'stream'
+import TransactionModel from '../../../app/models/transaction.model.js'
 
 // Thing under test
-const { StreamReadableRecordsService } = require('../../../app/services')
+import StreamReadableRecordsService from '../../../app/services/streams/stream_readable_records.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Stream Readable Records service', () => {
   let billRun

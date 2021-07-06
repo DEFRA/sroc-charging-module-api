@@ -1,4 +1,4 @@
-const { RegimeModel } = require('../../../app/models')
+import RegimeModel from '../../../app/models/regime.model.js'
 
 /**
  * Use to help wwith creating 'Regime' records
@@ -10,7 +10,7 @@ const { RegimeModel } = require('../../../app/models')
  * 'user' (authorised system) is permitted to access endpoints for a specific regime. So as part of being able to test
  * the API we need to be able to create both regimes and authorised systems.
  */
-class RegimeHelper {
+export default class RegimeHelper {
   /**
    * Create a regime
    *
@@ -28,5 +28,3 @@ class RegimeHelper {
       .returning('*')
   }
 }
-
-module.exports = RegimeHelper

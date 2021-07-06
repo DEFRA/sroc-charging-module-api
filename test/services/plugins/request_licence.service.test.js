@@ -1,23 +1,26 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  InvoiceHelper,
-  LicenceHelper,
-  RegimeHelper
-} = require('../../support/helpers')
+import BillRunHelper from '../../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../../support/helpers/database.helper.js'
+import GeneralHelper from '../../support/helpers/general.helper.js'
+import InvoiceHelper from '../../support/helpers/invoice.helper.js'
+import LicenceHelper from '../../support/helpers/licence.helper.js'
+import RegimeHelper from '../../support/helpers/regime.helper.js'
+
+// Things we need to stub
+
+// Additional dependencies needed
+import LicenceModel from '../../../app/models/licence.model.js'
 
 // Thing under test
-const { RequestLicenceService } = require('../../../app/services')
-const { LicenceModel } = require('../../../app/models')
+import RequestLicenceService from '../../../app/services/plugins/request_licence.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Request licence service', () => {
   let regime

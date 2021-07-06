@@ -1,15 +1,17 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
-const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-const Joi = require('joi')
+// Additional dependencies needed
+import Joi from 'joi'
 
 // Thing under test
-const { BaseTranslator } = require('../../app/translators')
+import BaseTranslator from '../../app/translators/base.translator.js'
+
+// Test framework setup
+const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 let translationsStub
 let schemaStub

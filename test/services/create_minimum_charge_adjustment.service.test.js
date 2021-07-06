@@ -1,30 +1,32 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-const Nock = require('nock')
-
-const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Nock from 'nock'
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper,
-  RulesServiceHelper
-} = require('../support/helpers')
-const { LicenceModel, TransactionModel } = require('../../app/models')
+import AuthorisedSystemHelper from '../support/helpers/authorised_system.helper.js'
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
+import RulesServiceHelper from '../support/helpers/rules_service.helper.js'
 
-const { CreateTransactionService } = require('../../app/services')
-
-const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
-const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
+// Additional dependencies needed
+import CreateTransactionService from '../../app/services/create_transaction.service.js'
+import LicenceModel from '../../app/models/licence.model.js'
+import TransactionModel from '../../app/models/transaction.model.js'
 
 // Thing under test
-const { CreateMinimumChargeAdjustmentService } = require('../../app/services')
+import CreateMinimumChargeAdjustmentService from '../../app/services/create_minimum_charge_adjustment.service.js'
+
+// Fixtures
+import * as fixtures from '../support/fixtures/fixtures.js'
+const chargeFixtures = fixtures.calculateCharge
+const requestFixtures = fixtures.createTransaction
+
+// Test framework setup
+const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Create Minimum Charge Adjustment service', () => {
   let authorisedSystem
@@ -51,10 +53,6 @@ describe('Create Minimum Charge Adjustment service', () => {
     // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
     // the valid tests we can use it straight as
     payload = GeneralHelper.cloneObject(requestFixtures.simple)
-  })
-
-  afterEach(async () => {
-    Sinon.restore()
   })
 
   after(async () => {

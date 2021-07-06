@@ -1,21 +1,20 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  InvoiceHelper,
-  RegimeHelper
-} = require('../support/helpers')
+import AuthorisedSystemHelper from '../support/helpers/authorised_system.helper.js'
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import InvoiceHelper from '../support/helpers/invoice.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
 
 // Thing under test
-const { InvoiceRebillingValidationService } = require('../../app/services')
+import InvoiceRebillingValidationService from '../../app/services/invoice_rebilling_validation.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Invoice Rebilling Validation service', () => {
   let currentBillRun

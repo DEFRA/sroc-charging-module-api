@@ -1,11 +1,12 @@
-const { TransactionModel } = require('../../../app/models')
-const { RulesServiceTranslator, TransactionTranslator } = require('../../../app/translators')
+import * as fixtures from '../fixtures/fixtures.js'
+import GeneralHelper from './general.helper.js'
+import LicenceHelper from './licence.helper.js'
+import RulesServiceTranslator from '../../../app/translators/rules_service.translator.js'
+import TransactionModel from '../../../app/models/transaction.model.js'
+import TransactionTranslator from '../../../app/translators/transaction.translator.js'
 
-const GeneralHelper = require('./general.helper')
-const LicenceHelper = require('./licence.helper')
-
-const { presroc: requestFixtures } = require('../fixtures/create_transaction')
-const { presroc: chargeFixtures } = require('../fixtures/calculate_charge')
+const chargeFixtures = fixtures.calculateCharge
+const requestFixtures = fixtures.createTransaction
 
 class TransactionHelper {
   /**

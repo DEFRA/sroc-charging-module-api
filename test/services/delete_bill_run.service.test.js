@@ -1,21 +1,20 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  TransactionHelper
-} = require('../support/helpers')
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import TransactionHelper from '../support/helpers/transaction.helper.js'
 
 // Thing under test
-const { DeleteBillRunService } = require('../../app/services')
+import DeleteBillRunService from '../../app/services/delete_bill_run.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Delete Bill Run service', () => {
   let billRun

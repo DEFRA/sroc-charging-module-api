@@ -1,22 +1,21 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  InvoiceHelper,
-  RegimeHelper,
-  SequenceCounterHelper
-} = require('../support/helpers')
+import BillRunHelper from '../support/helpers/bill_run.helper'
+import DatabaseHelper from '../support/helpers/database.helper'
+import GeneralHelper from '../support/helpers/general.helper'
+import InvoiceHelper from '../support/helpers/invoice.helper'
+import RegimeHelper from '../support/helpers/regime.helper'
+import SequenceCounterHelper from '../support/helpers/sequence_counter.helper'
 
 // Thing under test
-const { SendBillRunReferenceService } = require('../../app/services')
+import SendBillRunReferenceService from '../../app/services/send_bill_run_reference.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Send Bill Run Reference service', () => {
   let regime

@@ -1,13 +1,16 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
-const { describe, it } = exports.lab = Lab.script()
-const { expect } = Code
-const { ValidationError } = require('joi')
+// Additional dependencies needed
+import { ValidationError } from 'joi'
 
 // Thing under test
-const { CalculateChargeTranslator } = require('../../app/translators')
+import CalculateChargeTranslator from '../../app/translators/calculate_charge.translator.js'
+
+// Test framework setup
+const { describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Calculate Charge translator', () => {
   const payload = {

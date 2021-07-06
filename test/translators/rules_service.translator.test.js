@@ -1,22 +1,26 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const { GeneralHelper } = require('../support/helpers')
-const rulesServiceFixture = require('../support/fixtures/calculate_charge/presroc/simple_rules_service.json')
+import GeneralHelper from '../support/helpers/general.helper.js'
 
 // Thing under test
-const { RulesServiceTranslator } = require('../../app/translators')
+import RulesServiceTranslator from '../../app/translators/rules_service.translator.js'
+
+// Fixtures
+import * as fixtures from '../../support/fixtures/fixtures.js'
+const chargeFixtures = fixtures.calculateCharge
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Rules Service translator', () => {
   let data
 
   beforeEach(async () => {
-    data = GeneralHelper.cloneObject(rulesServiceFixture)
+    data = GeneralHelper.cloneObject(chargeFixtures.presroc.simple.rulesService)
   })
 
   describe("the 'chargeValue' property", () => {

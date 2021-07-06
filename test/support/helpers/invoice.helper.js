@@ -1,6 +1,6 @@
-const { InvoiceModel } = require('../../../app/models')
+import InvoiceModel from '../../../app/models/invoice.model.js'
 
-class InvoiceHelper {
+export default class InvoiceHelper {
   /**
    * Create an invoice
    *
@@ -97,5 +97,3 @@ class InvoiceHelper {
     return flags
   }
 }
-
-module.exports = InvoiceHelper

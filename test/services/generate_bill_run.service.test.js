@@ -1,38 +1,40 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
+// Test helpers
+import AuthorisedSystemHelper from '../support/helpers/authorised_system.helper.js'
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import InvoiceHelper from '../support/helpers/invoice.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
+import RulesServiceHelper from '../support/helpers/rules_service.helper.js'
+
+// Things we need to stub
+import RulesService from '../../app/services/rules.service.js'
+
+// Additional dependencies needed
+import BillRunModel from '../../app/models/bill_run.model.js'
+import CreateTransactionService from '../../app/services/create_transaction.service.js'
+import InvoiceModel from '../../app/models/invoice.model.js'
+import TransactionModel from '../../app/models/transaction.model.js'
+
+// Thing under test
+import GenerateBillRunService from '../../app/services/generate_bill_run.service.js'
+
+// Fixtures
+import * as fixtures from '../support/fixtures/fixtures.js'
+const chargeFixtures = fixtures.calculateCharge
+const requestFixtures = fixtures.createTransaction
+
+// Test framework setup
 const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
-// Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  InvoiceHelper,
-  RegimeHelper,
-  RulesServiceHelper
-} = require('../support/helpers')
-
-const { BillRunModel, InvoiceModel, TransactionModel } = require('../../app/models')
-
-const { CreateTransactionService } = require('../../app/services')
-
-const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
-const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
-
-const { rulesService: rulesServiceResponse } = chargeFixtures.simple
-
-// Things we need to stub
-const { RulesService } = require('../../app/services')
-
-// Thing under test
-const { GenerateBillRunService } = require('../../app/services')
-
 describe('Generate Bill Run service', () => {
+  const rulesServiceResponse = chargeFixtures.presroc.simple
   const customerReference = 'A11111111A'
 
   let billRun

@@ -1,24 +1,23 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper
-} = require('../support/helpers')
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
 
-// Things to stub
-const { SendTransactionFileService } = require('../../app/services')
+// Things we need to stub
+import SendTransactionFileService from '../../app/services/send_transaction_file.service.js'
 
 // Thing under test
-const { AdminSendTransactionFileService } = require('../../app/services')
+import AdminSendTransactionFileService from '../../app/services/admin_send_transaction_file.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Admin Send Transaction File service', () => {
   let regime

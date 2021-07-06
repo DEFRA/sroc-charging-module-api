@@ -1,15 +1,16 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-// Test helpers
-const { RawBuilder } = require('objection/lib/queryBuilder/RawBuilder')
+// Additional dependencies needed
+import { RawBuilder } from 'objection/lib/queryBuilder/RawBuilder'
 
 // Thing under test
-const { CreateTransactionTallyService } = require('../../app/services')
+import CreateTransactionTallyService from '../../app/services/create_transaction_tally.service'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Create Transaction Tally service', () => {
   const tableName = 'widgets'

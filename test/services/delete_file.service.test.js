@@ -1,17 +1,18 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import mock from 'mock-fs'
 
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-const mockFs = require('mock-fs')
-
-const fs = require('fs')
-const path = require('path')
+// Additional dependencies needed
+import fs from 'fs'
+import path from 'path'
 
 // Thing under test
-const { DeleteFileService } = require('../../app/services')
+import DeleteFileService from '../../app/services/delete_file.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Delete File service', () => {
   let filenameWithPath
@@ -19,7 +20,7 @@ describe('Delete File service', () => {
   beforeEach(() => {
     filenameWithPath = path.join('testFolder', 'testFile')
 
-    mockFs({
+    mock({
       testFolder: {
         testFile: 'test content'
       }
@@ -27,7 +28,7 @@ describe('Delete File service', () => {
   })
 
   afterEach(() => {
-    mockFs.restore()
+    mock.restore()
   })
 
   describe('When a valid file is specified', () => {

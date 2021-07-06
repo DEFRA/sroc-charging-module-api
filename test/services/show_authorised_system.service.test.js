@@ -1,17 +1,23 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const { AuthorisedSystemHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = require('../support/helpers')
-const AuthorisedSystemModel = require('../../app/models/authorised_system.model')
-const { DataError } = require('objection')
+import AuthorisedSystemHelper from '../support/helpers/authorised_system.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
+
+// Additional dependencies needed
+import AuthorisedSystemModel from '../../app/models/authorised_system.model.js'
+import { DataError } from 'objection'
 
 // Thing under test
-const { ShowAuthorisedSystemService } = require('../../app/services')
+import ShowAuthorisedSystemService from '../../app/services/show_authorised_system.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Show Authorised System service', () => {
   beforeEach(async () => {

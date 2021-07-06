@@ -1,25 +1,29 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  RegimeHelper,
-  TransactionHelper,
-  InvoiceHelper,
-  LicenceHelper
-} = require('../support/helpers')
+import AuthorisedSystemHelper from '../support/helpers/authorised_system.helper.js'
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import InvoiceHelper from '../support/helpers/invoice.helper.js'
+import LicenceHelper from '../support/helpers/licence.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
+import TransactionHelper from '../support/helpers/transaction.helper.js'
 
-const { BillRunModel, InvoiceModel, LicenceModel } = require('../../app/models')
+// Things we need to stub
+
+// Additional dependencies needed
+import BillRunModel from '../../app/models/bill_run.model.js'
+import InvoiceModel from '../../app/models/invoice.model.js'
+import LicenceModel from '../../app/models/licence.model.js'
 
 // Thing under test
-const { InvoiceRebillingCreateTransactionService } = require('../../app/services')
+import InvoiceRebillingCreateTransactionService from '../../app/services/invoice_rebilling_create_transaction.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Invoice Rebilling Create Transaction service', () => {
   let originalBillRun

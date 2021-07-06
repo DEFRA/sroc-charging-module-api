@@ -1,41 +1,41 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-const Nock = require('nock')
-
-const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-// For running our service
-const { init } = require('../../../app/server')
+import Code from '@hapi/code'
+import Lab from '@hapi/lab'
+import Nock from 'nock'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  InvoiceHelper,
-  RegimeHelper,
-  RulesServiceHelper,
-  SequenceCounterHelper,
-  TransactionHelper
-} = require('../../support/helpers')
-
-const {
-  CreateTransactionService,
-  GenerateBillRunService,
-  SendCustomerFileService,
-  SendTransactionFileService
-} = require('../../../app/services')
-
-const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
-const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
+import AuthorisationHelper from '../../support/helpers/authorisation.helper.js'
+import AuthorisedSystemHelper from '../../support/helpers/authorised_system.helper.js'
+import BillRunHelper from '../../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../../support/helpers/database.helper.js'
+import GeneralHelper from '../../support/helpers/general.helper.js'
+import InvoiceHelper from '../../support/helpers/invoice.helper.js'
+import RegimeHelper from '../../support/helpers/regime.helper.js'
+import RulesServiceHelper from '../../support/helpers/rules_service.helper.js'
+import SequenceCounterHelper from '../../support/helpers/sequence_counter.helper.js'
+import TransactionHelper from '../../support/helpers/transaction.helper.js'
 
 // Things we need to stub
-const JsonWebToken = require('jsonwebtoken')
+import JsonWebToken from 'jsonwebtoken'
+import SendCustomerFileService from '../../../app/services/send_customer_file.service.js'
+import SendTransactionFileService from '../../../app/services/send_transaction_file.service.js'
+
+// For running our service
+import { init } from '../../../app/server.js'
+
+// Additional dependencies needed
+import CreateTransactionService from '../../../app/services/create_transaction.service.js'
+import GenerateBillRunService from '../../../app/services/generate_bill_run.service.js'
+
+// Fixtures
+import * as fixtures from '../../support/fixtures/fixtures.js'
+const chargeFixtures = fixtures.calculateCharge
+const requestFixtures = fixtures.createTransaction
+
+// Test framework setup
+const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Presroc Bill Runs controller', () => {
   const clientID = '1234546789'

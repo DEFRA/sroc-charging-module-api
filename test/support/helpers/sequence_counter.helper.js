@@ -1,9 +1,9 @@
-const { SequenceCounterModel } = require('../../../app/models')
+import SequenceCounterModel from '../../../app/models/sequence_counter.model.js'
 
 /**
  * Use to help with creating 'Sequence counter' records
  */
-class SequenceCounterHelper {
+export default class SequenceCounterHelper {
   /**
    * Create a sequence counter for a regime and region
    *
@@ -17,5 +17,3 @@ class SequenceCounterHelper {
       .returning('*')
   }
 }
-
-module.exports = SequenceCounterHelper

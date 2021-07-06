@@ -1,15 +1,16 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
-const { describe, it } = exports.lab = Lab.script()
-const { expect } = Code
-
-// Test helpers
-const { DBError, UniqueViolationError } = require('db-errors')
+// Additional dependencies needed
+import { DBError, UniqueViolationError } from 'db-errors'
 
 // Thing under test
-const { DbErrorsService } = require('../../../app/services')
+import DbErrorsService from '../../../app/services/plugins/db_errors.service.js'
+
+// Test framework setup
+const { describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Db Errors service', () => {
   describe('If the value passed in is a DB error', () => {

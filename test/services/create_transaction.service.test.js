@@ -1,31 +1,34 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper,
-  TransactionHelper
-} = require('../support/helpers')
-const { TransactionModel } = require('../../app/models')
-const { ValidationError } = require('joi')
-
-const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
-const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
+import AuthorisedSystemHelper from '../support/helpers/authorised_system.helper.js'
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
+import TransactionHelper from '../support/helpers/transaction.helper.js'
 
 // Things we need to stub
-const { RulesService } = require('../../app/services')
+import RulesService from '../../app/services/rules.service.js'
+
+// Additional dependencies needed
+import TransactionModel from '../../app/models/transaction.model.js'
+import { ValidationError } from 'joi'
 
 // Thing under test
-const { CreateTransactionService } = require('../../app/services')
+import CreateTransactionService from '../../app/services/create_transaction.service.js'
+
+// Fixtures
+import * as fixtures from '../support/fixtures/fixtures.js'
+const chargeFixtures = fixtures.calculateCharge
+const requestFixtures = fixtures.createTransaction
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Create Transaction service', () => {
   let billRun

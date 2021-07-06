@@ -1,13 +1,14 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Thing under test
-const { BaseNotifierLib } = require('../../app/lib')
+import BaseNotifierLib from '../../app/lib/base_notifier.lib.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('BaseNotifierLib class', () => {
   let airbrakeFake

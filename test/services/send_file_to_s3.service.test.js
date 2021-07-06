@@ -1,20 +1,21 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-const mockFs = require('mock-fs')
-
-const path = require('path')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
+import mock from 'mock-fs'
 
 // Things we need to stub
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+
+// Additional dependencies needed
+import path from 'path'
 
 // Thing under test
-const { SendFileToS3Service } = require('../../app/services')
+import SendFileToS3Service from '../../app/services/send_file_to_s3.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Send File To S3 service', () => {
   let s3Stub
@@ -39,7 +40,7 @@ describe('Send File To S3 service', () => {
     Sinon.stub(SendFileToS3Service, '_uploadBucket').returns('TEST_BUCKET')
     Sinon.stub(SendFileToS3Service, '_archiveBucket').returns('ARCHIVE_BUCKET')
 
-    mockFs({
+    mock({
       [testFolder]: {
         [testFile]: 'test content'
       }
@@ -48,7 +49,7 @@ describe('Send File To S3 service', () => {
 
   afterEach(() => {
     Sinon.restore()
-    mockFs.restore()
+    mock.restore()
   })
 
   describe('When a valid file is specified', () => {

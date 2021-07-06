@@ -1,12 +1,13 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Thing under test
-const { CalculateChargePresenter } = require('../../app/presenters')
+import CalculateChargePresenter from '../../app/presenters/calculate_charge.presenter.js'
+
+// Test framework setup
+const { describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Charge presenter', () => {
   describe("when the request was marked as a 'credit'", () => {

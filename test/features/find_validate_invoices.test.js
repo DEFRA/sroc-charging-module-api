@@ -1,29 +1,28 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-// For running our service
-const { init } = require('../../app/server')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  InvoiceHelper,
-  RegimeHelper,
-  RouteHelper,
-  SequenceCounterHelper
-} = require('../support/helpers')
+import AuthorisationHelper from '../support/helpers/authorisation.helper.js'
+import AuthorisedSystemHelper from '../support/helpers/authorised_system.helper.js'
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import InvoiceHelper from '../support/helpers/invoice.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
+import RouteHelper from '../support/helpers/route.helper.js'
+import SequenceCounterHelper from '../support/helpers/sequence_counter.helper.js'
 
 // Things we need to stub
-const JsonWebToken = require('jsonwebtoken')
+import JsonWebToken from 'jsonwebtoken'
+
+// For running our service
+import { init } from '../../app/server.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Finding and validating invoices in requests', () => {
   let server

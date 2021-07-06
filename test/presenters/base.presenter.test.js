@@ -1,13 +1,14 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Thing under test
-const { BasePresenter } = require('../../app/presenters')
+import BasePresenter from '../../app/presenters/base.presenter.js'
+
+// Test framework setup
+const { describe, it, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Base presenter', () => {
   afterEach(async () => {

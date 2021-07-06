@@ -1,16 +1,17 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Things we need to stub
-const { BaseNotifierLib } = require('../../app/lib')
+import BaseNotifierLib from '../../app/lib/base_notifier.lib.js'
 
 // Thing under test
-const { TaskNotifierLib } = require('../../app/lib')
+import TaskNotifierLib from '../../app/lib/task_notifier.lib.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('TaskNotifierLib class', () => {
   let airbrakeFake

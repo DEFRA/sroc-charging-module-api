@@ -1,5 +1,6 @@
-const JsonWebToken = require('jsonwebtoken')
-const { AuthenticationConfig } = require('../../../config')
+import JsonWebToken from 'jsonwebtoken'
+
+import AuthenticationConfig from '../../../config/authentication.config.js'
 
 /**
  * Use to help with authentication in tests
@@ -9,7 +10,7 @@ const { AuthenticationConfig } = require('../../../config')
  *
  * @see {@link https://jwt.io/|JWT.io}
  */
-class AuthorisationHelper {
+export default class AuthorisationHelper {
   /**
    * Generates a JWT with the admin client ID set in the payload
    *
@@ -74,5 +75,3 @@ class AuthorisationHelper {
     return JsonWebToken.sign({ client_id: clientId }, 'supersecretkey')
   }
 }
-
-module.exports = AuthorisationHelper

@@ -1,17 +1,23 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const { DatabaseHelper, RegimeHelper } = require('../support/helpers')
-const { CustomerModel, CustomerFileModel, ExportedCustomerModel } = require('../../app/models')
-const { CreateCustomerDetailsService } = require('../../app/services')
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
+
+// Additional dependencies needed
+import CreateCustomerDetailsService from '../../app/services/create_customer_details.service.js'
+import CustomerFileModel from '../../app/models/customer_file.model.js'
+import CustomerModel from '../../app/models/customer.model.js'
+import ExportedCustomerModel from '../../app/models/exported_customer.model.js'
 
 // Thing under test
-const { MoveCustomersToExportedTableService } = require('../../app/services')
+import MoveCustomersToExportedTableService from '../../app/services/move_customers_to_exported_table.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Move Customers To Exported Table service', () => {
   let regime

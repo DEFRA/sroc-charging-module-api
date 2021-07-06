@@ -1,12 +1,13 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Thing under test
-const { JsonPresenter } = require('../../app/presenters')
+import JsonPresenter from '../../app/presenters/json.presenter.js'
+
+// Test framework setup
+const { describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Json Presenter', () => {
   it('returns whatever you pass in', () => {

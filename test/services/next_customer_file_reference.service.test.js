@@ -1,16 +1,22 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const { DatabaseHelper, GeneralHelper, RegimeHelper, SequenceCounterHelper } = require('../support/helpers')
-const { NotFoundError } = require('objection')
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
+import SequenceCounterHelper from '../support/helpers/sequence_counter.helper.js'
+
+// Additional dependencies needed
+import { NotFoundError } from 'objection'
 
 // Thing under test
-const { NextCustomerFileReferenceService } = require('../../app/services')
+import NextCustomerFileReferenceService from '../../app/services/next_customer_file_reference.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Next Customer File Reference service', () => {
   let regime

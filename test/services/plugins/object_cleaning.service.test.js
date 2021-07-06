@@ -1,14 +1,13 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it } = exports.lab = Lab.script()
-const { expect } = Code
-
-// Test helpers
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Thing under test
-const { ObjectCleaningService } = require('../../../app/services')
+import ObjectCleaningService from '../../../app/services/plugins/object_cleaning.service.js'
+
+// Test framework setup
+const { describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Object cleaning service', () => {
   describe('When an object contains values with extra whitespace', () => {

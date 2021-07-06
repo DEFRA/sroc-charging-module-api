@@ -1,6 +1,6 @@
-const { RulesServiceConfig } = require('../../../config')
+import RulesServiceConfig from '../../../config/rules_service.config.js'
 
-class RulesServiceHelper {
+export default class RulesServiceHelper {
   static get url () {
     return RulesServiceConfig.url
   }
@@ -39,5 +39,3 @@ class RulesServiceHelper {
     })
   }
 }
-
-module.exports = RulesServiceHelper

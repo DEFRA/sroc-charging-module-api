@@ -1,17 +1,19 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it } = exports.lab = Lab.script()
-const { expect } = Code
-
-const stream = require('stream')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const { StreamHelper } = require('../../support/helpers')
+import StreamHelper from '../../support/helpers/stream.helper.js'
+
+// Additional dependencies needed
+import stream from 'stream'
 
 // Thing under test
-const { StreamTransformCSVService } = require('../../../app/services')
+import StreamTransformCSVService from '../../../app/services/streams/stream_transform_csv.service.js'
+
+// Test framework setup
+const { describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Stream Transform CSV service', () => {
   describe('When data is passed to it', () => {

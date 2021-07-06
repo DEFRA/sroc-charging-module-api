@@ -1,15 +1,16 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-// For running our service
-const { init } = require('../../app/server')
+import Code from '@hapi/code'
+import Lab from '@hapi/lab'
 
 // Test helpers
-const { RouteHelper } = require('../support/helpers')
+import RouteHelper from '../support/helpers/route.helper.js'
+
+// For running our service
+import { init } from '../../app/server.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Not Supported controller', () => {
   let server

@@ -1,35 +1,37 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
+// Test helpers
+import AuthorisedSystemHelper from '../support/helpers/authorised_system.helper.js'
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
+import RulesServiceHelper from '../support/helpers/rules_service.helper.js'
+
+// Things we need to stub
+import RulesService from '../../app/services/rules.service.js'
+
+// Additional dependencies needed
+import CreateTransactionService from '../../app/services/create_transaction.service.js'
+import GenerateBillRunService from '../../app/services/generate_bill_run.service.js'
+
+// Thing under test
+import ViewBillRunService from '../../app/services/view_bill_run.service.js'
+
+// Fixtures
+import * as fixtures from '../support/fixtures/fixtures.js'
+const chargeFixtures = fixtures.calculateCharge
+const requestFixtures = fixtures.createTransaction
+
+// Test framework setup
 const { afterEach, describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
-// Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper,
-  RulesServiceHelper
-} = require('../support/helpers')
-
-const { CreateTransactionService, GenerateBillRunService } = require('../../app/services')
-
-const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
-const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
-
-const { rulesService: rulesServiceResponse } = chargeFixtures.simple
-
-// Things we need to stub
-const { RulesService } = require('../../app/services')
-
-// Thing under test
-const { ViewBillRunService } = require('../../app/services')
-
 describe('View bill run service', () => {
+  const rulesServiceResponse = chargeFixtures.presroc.simple
   let billRun
   let payload
   let regime
@@ -47,7 +49,7 @@ describe('View bill run service', () => {
 
     // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
     // the valid tests we can use it straight as
-    payload = GeneralHelper.cloneObject(requestFixtures.simple)
+    payload = GeneralHelper.cloneObject(requestFixtures.presroc.simple)
   })
 
   afterEach(async () => {

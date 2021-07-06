@@ -1,12 +1,13 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Code from '@hapi/code'
+import Lab from '@hapi/lab'
 
 // For running our service
-const { init } = require('../../app/server')
+import { init } from '../../app/server.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Root controller: GET /', () => {
   let server

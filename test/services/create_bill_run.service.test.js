@@ -1,17 +1,23 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const { AuthorisedSystemHelper, DatabaseHelper, RegimeHelper, SequenceCounterHelper } = require('../support/helpers')
-const BillRunModel = require('../../app/models/bill_run.model')
-const { ValidationError } = require('joi')
+import AuthorisedSystemHelper from '../support/helpers/authorised_system.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
+import SequenceCounterHelper from '../support/helpers/sequence_counter.helper.js'
+
+// Additional dependencies needed
+import BillRunModel from '../../app/models/bill_run.model.js'
+import { ValidationError } from 'joi'
 
 // Thing under test
-const { CreateBillRunService } = require('../../app/services')
+import CreateBillRunService from '../../app/services/create_bill_run.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Create Bill Run service', () => {
   const payload = {

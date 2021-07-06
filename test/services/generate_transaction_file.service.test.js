@@ -1,34 +1,34 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
+// Test helpers
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import TransactionHelper from '../support/helpers/transaction.helper.js'
+
+// Things we need to stub
+
+// Additional dependencies needed
+import BasePresenter from '../../app/presenters/base.presenter.js'
+import fs from 'fs'
+import InvoiceModel from '../../app/models/invoice.model.js'
+import path from 'path'
+import ServerConfig from '../../config/server.config'
+import TransactionModel from '../../app/models/transaction.model.js'
+
+// Thing under test
+import GenerateTransactionFileService from '../../app/services/generate_transaction_file.service.js'
+
+// Test framework setup
 const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
-const fs = require('fs')
-const path = require('path')
-
-// Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  TransactionHelper
-} = require('../support/helpers')
-
-const { InvoiceModel, TransactionModel } = require('../../app/models')
-
-const { BasePresenter } = require('../../app/presenters')
-
-const { temporaryFilePath } = require('../../config/server.config')
-
-// Thing under test
-const { GenerateTransactionFileService } = require('../../app/services')
-
 describe('Generate Transaction File service', () => {
   const filename = 'test.txt'
-  const filenameWithPath = path.join(temporaryFilePath, filename)
+  const filenameWithPath = path.join(ServerConfig.temporaryFilePath, filename)
 
   let billRun
 

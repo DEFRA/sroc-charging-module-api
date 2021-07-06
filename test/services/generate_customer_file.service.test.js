@@ -1,32 +1,34 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script()
-const { expect } = Code
-
-const fs = require('fs')
-const path = require('path')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Test helpers
-const { DatabaseHelper, RegimeHelper } = require('../support/helpers')
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
 
-const { BasePresenter } = require('../../app/presenters')
+// Things we need to stub
 
-const { temporaryFilePath } = require('../../config/server.config')
-
-const { CreateCustomerDetailsService } = require('../../app/services')
-
-const { CustomerFileModel, CustomerModel } = require('../../app/models')
+// Additional dependencies needed
+import BasePresenter from '../../app/presenters/base.presenter.js'
+import CreateCustomerDetailsService from '../../app/services/create_customer_details.service.js'
+import CustomerFileModel from '../../app/models/customer_file.model.js'
+import CustomerModel from '../../app/models/customer.model.js'
+import fs from 'fs'
+import path from 'path'
+import ServerConfig from '../../config/server.config'
 
 // Thing under test
-const { GenerateCustomerFileService } = require('../../app/services')
+import GenerateCustomerFileService from '../../app/services/generate_customer_file.service.js'
+
+// Test framework setup
+const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Generate Customer File service', () => {
   const fileReference = 'nalwc50003'
   const filename = fileReference.concat('.dat')
-  const filenameWithPath = path.join(temporaryFilePath, filename)
+  const filenameWithPath = path.join(ServerConfig.temporaryFilePath, filename)
 
   let regime
   let customerFile

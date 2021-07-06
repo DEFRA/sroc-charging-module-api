@@ -1,16 +1,17 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-// For running our service
-const { init } = require('../../app/server')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Things we need to stub
-const { TestConfig } = require('../../config')
+import TestConfig from '../../config/test.config.js'
+
+// For running our service
+import { init } from '../../app/server.js'
+
+// Test framework setup
+const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Only output the log when running unit tests if configured to', () => {
   let server

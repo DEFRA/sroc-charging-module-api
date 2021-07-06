@@ -1,13 +1,14 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // For running our service
-const { init } = require('../../app/server')
+import { init } from '../../app/server.js'
+
+// Test framework setup
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 // The main inspiration for these tests was taken from https://stackoverflow.com/a/40909092/6117745
 // However, the server module it is written against exposes its methods in such a way they are easy to stub/spy on.

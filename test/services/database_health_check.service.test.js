@@ -1,15 +1,16 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const { DatabaseHelper } = require('../support/helpers')
+import DatabaseHelper from '../support/helpers/database.helper.js'
 
 // Thing under test
-const { DatabaseHealthCheckService } = require('../../app/services')
+import DatabaseHealthCheckService from '../../app/services/database_health_check.service'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Database Health Check service', () => {
   beforeEach(async () => {

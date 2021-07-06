@@ -1,24 +1,28 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-
-const { describe, it, beforeEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper
-} = require('../support/helpers')
-const { BillRunGenerator } = require('../support/generators')
-const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../../app/models')
-const { DataError } = require('objection')
+import AuthorisedSystemHelper from '../support/helpers/authorised_system.helper.js'
+import BillRunGenerator from '../support/generators/bill_run.generator.js'
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
+
+// Additional dependencies needed
+import BillRunModel from '../../app/models/bill_run.model.js'
+import { DataError } from 'objection'
+import InvoiceModel from '../../app/models/invoice.model.js'
+import LicenceModel from '../../app/models/licence.model.js'
+import TransactionModel from '../../app/models/transaction.model.js'
 
 // Thing under test
-const { ShowTransactionService } = require('../../app/services')
+import ShowTransactionService from '../../app/services/show_transaction.service.js'
+
+// Test framework setup
+const { describe, it, beforeEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Show Transaction service', () => {
   beforeEach(async () => {

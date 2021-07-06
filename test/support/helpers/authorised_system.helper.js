@@ -1,7 +1,7 @@
-const { AuthenticationConfig } = require('../../../config')
-const { AuthorisedSystemModel } = require('../../../app/models')
+import AuthorisedSystemModel from '../../../app/models/authorised_system.model.js'
+import RegimeHelper from './regime.helper.js'
 
-const RegimeHelper = require('./regime.helper')
+import AuthenticationConfig from '../../../config/authentication.config.js'
 
 /**
  * Use to help with creating `AuthorisedSystem` records
@@ -12,7 +12,7 @@ const RegimeHelper = require('./regime.helper')
  *
  * Any others are expected to be our actual clients or 'users'
  */
-class AuthorisedSystemHelper {
+export default class AuthorisedSystemHelper {
   /**
    * Create an admin system record
    *
@@ -67,5 +67,3 @@ class AuthorisedSystemHelper {
     return results[0]
   }
 }
-
-module.exports = AuthorisedSystemHelper

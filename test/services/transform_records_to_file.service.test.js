@@ -1,28 +1,26 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  TransactionHelper
-} = require('../support/helpers')
+import BillRunHelper from '../support/helpers/bill_run.helper.js'
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import GeneralHelper from '../support/helpers/general.helper.js'
+import TransactionHelper from '../support/helpers/transaction.helper.js'
 
-const { TransactionModel } = require('../../app/models')
-
-const fs = require('fs')
-const path = require('path')
-
-const { temporaryFilePath } = require('../../config/server.config')
+// Additional dependencies needed
+import fs from 'fs'
+import path from 'path'
+import ServerConfig from '../../config/server.config.js'
+import TransactionModel from '../../app/models/transaction.model.js'
 
 // Thing under test
-const { TransformRecordsToFileService } = require('../../app/services')
+import TransformRecordsToFileService from '../../app/services/transform_records_to_file.service.js'
+
+// Test framework setup
+const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Transform Records To File service', () => {
   let billRun
@@ -32,7 +30,7 @@ describe('Transform Records To File service', () => {
   const filename = 'test.dat'
 
   // We use path.normalize to remove any double forward slashes that occur when assembling the path
-  const filenameWithPath = path.normalize(path.format({ dir: temporaryFilePath, name: filename }))
+  const filenameWithPath = path.normalize(path.format({ dir: ServerConfig.temporaryFilePath, name: filename }))
 
   // Presenters used in the tests
   class headPresenter {

@@ -1,24 +1,23 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
-
-// For running our service
-const { init } = require('../../../app/server')
+import Code from '@hapi/code'
+import Lab from '@hapi/lab'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  DatabaseHelper
-} = require('../../support/helpers')
+import AuthorisationHelper from '../../support/helpers/authorisation.helper.js'
+import AuthorisedSystemHelper from '../../support/helpers/authorised_system.helper.js'
+import DatabaseHelper from '../../support/helpers/database.helper.js'
 
 // Things we need to stub
-const JsonWebToken = require('jsonwebtoken')
-const { SendCustomerFileService } = require('../../../app/services')
+import JsonWebToken from 'jsonwebtoken'
+import SendCustomerFileService from '../../app/services/send_customer_file.service.js'
+
+// For running our service
+import { init } from '../../../app/server.js'
+
+// Test framework setup
+const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Customers controller', () => {
   let server

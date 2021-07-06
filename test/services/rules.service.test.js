@@ -1,41 +1,43 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-const Nock = require('nock')
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
+import Nock from 'nock'
 
+// Test helpers
+import RulesServiceHelper from '../support/helpers/rules_service.helper.js'
+
+// Things we need to stub
+import got from 'got'
+import RulesServiceConfig from '../../config/rules_service.config.js'
+
+// Thing under test
+import RulesService from '../../app/services/rules.service.js'
+
+// Fixtures
+import * as fixtures from '../support/fixtures/fixtures.js'
+const chargeFixtures = fixtures.calculateCharge
+
+// Test framework setup
 const { describe, it, before, after, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
-// Test helpers
-const { RulesServiceHelper } = require('../support/helpers')
-
-const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
-
-const { rulesService: rulesServiceResponse } = chargeFixtures.simple
-
-// Things we need to stub
-const Got = require('got')
-const { RulesServiceConfig } = require('../../config')
-
-// Thing under test
-const { RulesService } = require('../../app/services')
-
-// Wraps regime, financial year and charge params in a dummy presenter object for passing to rules service
-const dummyPresenter = (regime, financialYear, ruleset, chargeParams = {}) => {
-  return {
-    regime,
-    financialYear,
-    ruleset,
-    chargeParams
-  }
-}
-
 describe('Rules service', () => {
+  const rulesServiceResponse = chargeFixtures.presroc.simple
+  // Wraps regime, financial year and charge params in a dummy presenter object for passing to rules service
+  const dummyPresenter = (regime, financialYear, ruleset, chargeParams = {}) => {
+    return {
+      regime,
+      financialYear,
+      ruleset,
+      chargeParams
+    }
+  }
+
   describe('when calling the rule service succeeds', () => {
     before(async () => {
       // Use a spy to confirm what endpoint we try to call on the rules service
-      Sinon.spy(Got, 'post')
+      Sinon.spy(got, 'post')
 
       // Intercept all requests in this test suite as we don't actually want to call the service. We're just looking to
       // confirm we are calling the correct endpoints
@@ -61,8 +63,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('wrls', 2019, 'presroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'presroc')}_2019_20`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'presroc')}_2019_20`)
           })
         })
 
@@ -71,8 +73,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('wrls', 2020, 'presroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'presroc')}_2020_21`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'presroc')}_2020_21`)
           })
         })
       })
@@ -83,8 +85,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('wrls', 2019, 'sroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'sroc')}_2019_20`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'sroc')}_2019_20`)
           })
         })
 
@@ -93,8 +95,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('wrls', 2020, 'sroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'sroc')}_2020_21`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'sroc')}_2020_21`)
           })
         })
       })
@@ -107,8 +109,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('wml', 2019, 'presroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'presroc')}_2019_20`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'presroc')}_2019_20`)
           })
         })
 
@@ -117,8 +119,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('wml', 2020, 'presroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'presroc')}_2020_21`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'presroc')}_2020_21`)
           })
         })
       })
@@ -129,8 +131,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('wml', 2019, 'sroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'sroc')}_2019_20`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'sroc')}_2019_20`)
           })
         })
 
@@ -139,8 +141,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('wml', 2020, 'sroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'sroc')}_2020_21`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'sroc')}_2020_21`)
           })
         })
       })
@@ -153,8 +155,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('pas', 2019, 'presroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'presroc')}_2019_20`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'presroc')}_2019_20`)
           })
         })
 
@@ -163,8 +165,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('pas', 2020, 'presroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'presroc')}_2020_21`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'presroc')}_2020_21`)
           })
         })
       })
@@ -175,8 +177,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('pas', 2019, 'sroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'sroc')}_2019_20`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'sroc')}_2019_20`)
           })
         })
 
@@ -185,8 +187,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('pas', 2020, 'sroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'sroc')}_2020_21`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'sroc')}_2020_21`)
           })
         })
       })
@@ -199,8 +201,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('cfd', 2019, 'presroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'presroc')}_2019_20`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'presroc')}_2019_20`)
           })
         })
 
@@ -209,8 +211,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('cfd', 2020, 'presroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'presroc')}_2020_21`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'presroc')}_2020_21`)
           })
         })
       })
@@ -221,8 +223,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('cfd', 2019, 'sroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'sroc')}_2019_20`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'sroc')}_2019_20`)
           })
         })
 
@@ -231,8 +233,8 @@ describe('Rules service', () => {
             const presenter = dummyPresenter('cfd', 2020, 'sroc')
             await RulesService.go(presenter)
 
-            expect(Got.post.calledOnce).to.be.true()
-            expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'sroc')}_2020_21`)
+            expect(got.post.calledOnce).to.be.true()
+            expect(got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'sroc')}_2020_21`)
           })
         })
       })

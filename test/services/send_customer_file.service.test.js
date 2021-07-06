@@ -1,33 +1,31 @@
 // Test framework dependencies
-const Lab = require('@hapi/lab')
-const Code = require('@hapi/code')
-const Sinon = require('sinon')
-
-const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
-const { expect } = Code
+import Lab from '@hapi/lab'
+import Code from '@hapi/code'
+import Sinon from 'sinon'
 
 // Test helpers
-const {
-  DatabaseHelper,
-  RegimeHelper
-} = require('../support/helpers')
-
-const { CustomerFileModel, CustomerModel } = require('../../app/models')
-
-const { CreateCustomerDetailsService } = require('../../app/services')
-const { MoveCustomersToExportedTableService } = require('../../app/services')
+import DatabaseHelper from '../support/helpers/database.helper.js'
+import RegimeHelper from '../support/helpers/regime.helper.js'
 
 // Things we need to stub
-const {
-  DeleteFileService,
-  GenerateCustomerFileService,
-  NextCustomerFileReferenceService,
-  PrepareCustomerFileService,
-  SendFileToS3Service
-} = require('../../app/services')
+import DeleteFileService from '../../app/services/delete_file.service.js'
+import GenerateCustomerFileService from '../../app/services/generate_customer_file.service.js'
+import NextCustomerFileReferenceService from '../../app/services/next_customer_file_reference.service.js'
+import PrepareCustomerFileService from '../../app/services/prepare_customer_file.service.js'
+import SendFileToS3Service from '../../app/services/send_file_to_s3.service.js'
+
+// Additional dependencies needed
+import CreateCustomerDetailsService from '../../app/services/create_customer_details.service.js'
+import CustomerFileModel from '../../app/models/customer_file.model.js'
+import CustomerModel from '../../app/models/customer.model.js'
+import MoveCustomersToExportedTableService from '../../app/services/move_customers_to_exported_table.service.js'
 
 // Thing under test
-const { SendCustomerFileService } = require('../../app/services')
+import SendCustomerFileService from '../../app/services/send_customer_file.service.js'
+
+// Test framework setup
+const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
 
 describe('Send Customer File service', () => {
   let regime
