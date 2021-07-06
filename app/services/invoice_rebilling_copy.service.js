@@ -34,17 +34,17 @@ class InvoiceRebillingCopyService {
       for (const licence of licences) {
         const cancelLicence = await InvoiceRebillingCreateLicenceService.go(cancelInvoice, licence.licenceNumber, trx)
         const rebillLicence = await InvoiceRebillingCreateLicenceService.go(rebillInvoice, licence.licenceNumber, trx)
-        await this._populateRebillingLicences(licence, cancelLicence, rebillLicence, authorisedSystem, trx)
+        await this._populateRebillingLicences(invoice, licence, cancelLicence, rebillLicence, authorisedSystem, trx)
       }
     })
   }
 
-  static async _populateRebillingLicences (licence, cancelLicence, rebillLicence, authorisedSystem, trx) {
+  static async _populateRebillingLicences (invoice, licence, cancelLicence, rebillLicence, authorisedSystem, trx) {
     const transactions = await this._transactions(licence, trx)
 
     for (const transaction of transactions) {
-      await InvoiceRebillingCreateTransactionService.go(transaction, rebillLicence, authorisedSystem, trx)
-      await InvoiceRebillingCreateTransactionService.go(transaction, cancelLicence, authorisedSystem, trx, true)
+      await InvoiceRebillingCreateTransactionService.go(transaction, rebillLicence, invoice, authorisedSystem, trx)
+      await InvoiceRebillingCreateTransactionService.go(transaction, cancelLicence, invoice, authorisedSystem, trx, true)
     }
   }
 

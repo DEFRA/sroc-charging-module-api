@@ -20,11 +20,11 @@ class InvoiceRebillingCreateTransactionService {
    * @param {Boolean} [invert] Whether the transaction type should be inverted.
    * @returns {module:TransactionModel} The newly-created transaction.
    */
-  static async go (transaction, licence, authorisedSystem, trx = null, invert = false) {
+  static async go (transaction, licence, rebilledInvoice, authorisedSystem, trx = null, invert = false) {
     const preparedTransaction = await this._prepareTransaction(transaction, licence, authorisedSystem, invert)
     const rebilledType = this._rebilledType(invert)
 
-    return this._create(preparedTransaction, rebilledType, trx)
+    return this._create(preparedTransaction, rebilledType, rebilledInvoice.id, trx)
   }
 
   /**
@@ -63,9 +63,9 @@ class InvoiceRebillingCreateTransactionService {
   /**
    * Creates a record in the db for the provided transaction and returns it
    */
-  static async _create (transaction, rebilledType, trx) {
+  static async _create (transaction, rebilledType, rebilledInvoiceId, trx) {
     await BillRunModel.patchTally(transaction, trx)
-    await InvoiceModel.updateTally({ ...transaction, rebilledType }, trx)
+    await InvoiceModel.updateTally({ ...transaction, rebilledType, rebilledInvoiceId }, trx)
     await LicenceModel.updateTally(transaction, trx)
 
     const newTransaction = await transaction.$query(trx)

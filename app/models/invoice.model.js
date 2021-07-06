@@ -134,7 +134,8 @@ class InvoiceModel extends BaseUpsertModel {
       billRunId: transaction.billRunId,
       customerReference: transaction.customerReference,
       financialYear: transaction.chargeFinancialYear,
-      rebilledType: transaction.rebilledType ?? 'O'
+      rebilledType: transaction.rebilledType ?? 'O',
+      rebilledInvoiceId: transaction.rebilledInvoiceId ?? transaction.billRunId
     }
   }
 
@@ -144,7 +145,7 @@ class InvoiceModel extends BaseUpsertModel {
    * @returns {string[]} an array of the constraint field names
    */
   static _onConflictContraints () {
-    return ['bill_run_id', 'customer_reference', 'financial_year', 'rebilled_type']
+    return ['bill_run_id', 'customer_reference', 'financial_year', 'rebilled_type', 'rebilled_invoice_id']
   }
 
   /**
