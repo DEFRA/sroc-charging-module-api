@@ -8,6 +8,10 @@ const { Model } = require('objection')
 const BaseUpsertModel = require('./base_upsert.model')
 
 const DEMINIMIS_LIMIT = 500
+// This is the value used for new invoices. Reason? To allow us to accept multiple rebill invoices with the same
+// customer reference and financial year in the same bill run. It ensures the invoices table constraint works for new
+// invoices, but when we rebill and actually have a rebill ID, the constraint doesn't trigger.
+// Note - it has to be a valid UUID so we wanted a value that was clearly set rather than generated.
 const REBILL_ID_PLACEHOLDER = '99999999-9999-9999-9999-999999999999'
 
 class InvoiceModel extends BaseUpsertModel {
@@ -121,7 +125,9 @@ class InvoiceModel extends BaseUpsertModel {
   /**
    * Returns an object that contains the minimum (base) properties and values needed when inserting a new invoice
    *
-   * If rebilledType is passed through in the transaction then we use it; otherwise, we set it to 'O'
+   * If `rebilledType` is passed through in the transaction then we use it; otherwise, we set it to 'O'. If
+   * `rebilledInvoiceId` is passed through we also use it. Else we set it to `REBILL_ID_PLACEHOLDER` (currently
+   * 99999999-9999-9999-9999-999999999999).
    *
    * See `BaseUpsertModel._baseOnInsertObject()` for more details
    *
