@@ -12,6 +12,7 @@ const {
   AuthorisedSystemHelper,
   BillRunHelper,
   DatabaseHelper,
+  GeneralHelper,
   RegimeHelper,
   TransactionHelper,
   InvoiceHelper,
@@ -26,6 +27,7 @@ const { InvoiceRebillingCreateTransactionService } = require('../../app/services
 describe('Invoice Rebilling Create Transaction service', () => {
   let originalBillRun
   let rebillBillRun
+  let originalInvoice
   let authorisedSystem
   let rebillAuthorisedSystem
   let regime
@@ -39,18 +41,25 @@ describe('Invoice Rebilling Create Transaction service', () => {
     rebillAuthorisedSystem = await AuthorisedSystemHelper.addSystem('987654321', 'REBILLING', [regime])
     originalBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
     rebillBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    // The service expects to be given the original invoice being rebilled, though it only needs it's ID
+    originalInvoice = { id: GeneralHelper.uuid4() }
   })
 
   describe('when the original transaction contains a client ID', () => {
     beforeEach(async () => {
-      const invoice = await addRebillInvoice(rebillBillRun.id, 'TH230000222', 2021, null, 'R')
+      const invoice = await addRebillInvoice(rebillBillRun.id, 'TH230000222', 2021, originalInvoice.id, 'R')
       const licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TONY/TF9222/37', invoice.id)
       transaction = await TransactionHelper.addTransaction(
         originalBillRun.id,
         { chargeFinancialYear: 2021, clientId: 'CANBEONLYONE' }
       )
 
-      result = await InvoiceRebillingCreateTransactionService.go(transaction, licence, rebillAuthorisedSystem)
+      result = await InvoiceRebillingCreateTransactionService.go(
+        transaction,
+        licence,
+        originalInvoice,
+        rebillAuthorisedSystem
+      )
     })
 
     it('still can create the new rebilling transaction (the DB unique constraint does not block it)', () => {
@@ -63,11 +72,16 @@ describe('Invoice Rebilling Create Transaction service', () => {
     let licence
 
     beforeEach(async () => {
-      const invoice = await addRebillInvoice(rebillBillRun.id, 'TH230000222', 2021, null, 'R')
+      const invoice = await addRebillInvoice(rebillBillRun.id, 'TH230000222', 2021, originalInvoice.id, 'R')
       licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TONY/TF9222/37', invoice.id)
       transaction = await TransactionHelper.addTransaction(originalBillRun.id, { chargeFinancialYear: 2021 })
 
-      result = await InvoiceRebillingCreateTransactionService.go(transaction, licence, rebillAuthorisedSystem)
+      result = await InvoiceRebillingCreateTransactionService.go(
+        transaction,
+        licence,
+        originalInvoice,
+        rebillAuthorisedSystem
+      )
     })
 
     describe('a transaction is created', () => {
@@ -138,7 +152,7 @@ describe('Invoice Rebilling Create Transaction service', () => {
     let licence
 
     beforeEach(async () => {
-      const invoice = await addRebillInvoice(rebillBillRun.id, 'TH230000222', 2021, null, 'C')
+      const invoice = await addRebillInvoice(rebillBillRun.id, 'TH230000222', 2021, originalInvoice.id, 'C')
       licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TONY/TF9222/37', invoice.id)
     })
 
@@ -150,7 +164,12 @@ describe('Invoice Rebilling Create Transaction service', () => {
         })
 
         result = await InvoiceRebillingCreateTransactionService.go(
-          transaction, licence, rebillAuthorisedSystem, null, true
+          transaction,
+          licence,
+          originalInvoice,
+          rebillAuthorisedSystem,
+          null,
+          true
         )
       })
 
@@ -167,7 +186,12 @@ describe('Invoice Rebilling Create Transaction service', () => {
         })
 
         result = await InvoiceRebillingCreateTransactionService.go(
-          transaction, licence, rebillAuthorisedSystem, null, true
+          transaction,
+          licence,
+          originalInvoice,
+          rebillAuthorisedSystem,
+          null,
+          true
         )
       })
 
