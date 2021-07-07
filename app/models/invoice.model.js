@@ -8,6 +8,7 @@ const { Model } = require('objection')
 const BaseUpsertModel = require('./base_upsert.model')
 
 const DEMINIMIS_LIMIT = 500
+const REBILL_ID_PLACEHOLDER = '99999999-9999-9999-9999-999999999999'
 
 class InvoiceModel extends BaseUpsertModel {
   static get tableName () {
@@ -135,7 +136,7 @@ class InvoiceModel extends BaseUpsertModel {
       customerReference: transaction.customerReference,
       financialYear: transaction.chargeFinancialYear,
       rebilledType: transaction.rebilledType ?? 'O',
-      rebilledInvoiceId: transaction.rebilledInvoiceId ?? transaction.billRunId
+      rebilledInvoiceId: transaction.rebilledInvoiceId ?? REBILL_ID_PLACEHOLDER
     }
   }
 
