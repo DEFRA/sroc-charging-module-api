@@ -49,4 +49,22 @@ describe('Invoice Rebilling Initialise service', () => {
 
     expect(refreshedBillRun.status).to.equal('pending')
   })
+
+  describe('when a second invoice for the same customer ref, and financial year is being rebilled', () => {
+    let secondOriginalInvoice
+    beforeEach(async () => {
+      // Initialised the first rebilling invoices
+      await InvoiceRebillingInitialiseService.go(rebillBillRun, originalInvoice)
+
+      const secondOriginalBillRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
+      secondOriginalInvoice = await InvoiceHelper.addInvoice(secondOriginalBillRun.id, 'CUSTOMER', '2021')
+    })
+
+    it('still creates two new invoices linked to the bill run for the second invoice', async () => {
+      const result = await InvoiceRebillingInitialiseService.go(rebillBillRun, secondOriginalInvoice)
+
+      expect(result.cancelInvoice.billRunId).to.equal(rebillBillRun.id)
+      expect(result.rebillInvoice.billRunId).to.equal(rebillBillRun.id)
+    })
+  })
 })
