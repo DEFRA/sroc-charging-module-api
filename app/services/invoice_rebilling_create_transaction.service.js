@@ -14,17 +14,18 @@ class InvoiceRebillingCreateTransactionService {
    *
    * @param {module:TransactionModel} transaction The transaction to be duplicated.
    * @param {module:LicenceModel} licence The licence the transaction should be created on.
+   * @param {module:InvoiceModel} rebilledInvoice The rebill invoice the transaction was copied from.
    * @param {module:AuthorisedSystemModel} authorisedSystem The authorised system making the rebilling request (which
    * will therefore be set as the authorised system for the transaction).
    * @param {Object} [trx] Optional DB transaction this is being performed as part of.
    * @param {Boolean} [invert] Whether the transaction type should be inverted.
    * @returns {module:TransactionModel} The newly-created transaction.
    */
-  static async go (transaction, licence, authorisedSystem, trx = null, invert = false) {
+  static async go (transaction, licence, rebilledInvoice, authorisedSystem, trx = null, invert = false) {
     const preparedTransaction = await this._prepareTransaction(transaction, licence, authorisedSystem, invert)
     const rebilledType = this._rebilledType(invert)
 
-    return this._create(preparedTransaction, rebilledType, trx)
+    return this._create(preparedTransaction, rebilledType, rebilledInvoice.id, trx)
   }
 
   /**
@@ -63,9 +64,11 @@ class InvoiceRebillingCreateTransactionService {
   /**
    * Creates a record in the db for the provided transaction and returns it
    */
-  static async _create (transaction, rebilledType, trx) {
+  static async _create (transaction, rebilledType, rebilledInvoiceId, trx) {
     await BillRunModel.patchTally(transaction, trx)
-    await InvoiceModel.updateTally({ ...transaction, rebilledType }, trx)
+    // rebilledType and rebilledInvoiceId are fields on the invoice not the transaction which is why we add them
+    // dynamically when calling `InvoiceModel.updateTally()`
+    await InvoiceModel.updateTally({ ...transaction, rebilledType, rebilledInvoiceId }, trx)
     await LicenceModel.updateTally(transaction, trx)
 
     const newTransaction = await transaction.$query(trx)

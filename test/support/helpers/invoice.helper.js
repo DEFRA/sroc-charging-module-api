@@ -37,7 +37,7 @@ class InvoiceHelper {
     subjectToMinimumChargeCount = 0,
     subjectToMinimumChargeCreditValue = 0,
     subjectToMinimumChargeDebitValue = 0,
-    rebilledInvoiceId = undefined,
+    rebilledInvoiceId = '99999999-9999-9999-9999-999999999999',
     rebilledType = undefined
   ) {
     const flags = this._flags(
