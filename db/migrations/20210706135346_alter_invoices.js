@@ -22,6 +22,12 @@ const tableName = 'invoices'
  * rather than the DB (as a column default).
  */
 exports.up = async function (knex) {
+  // Update any existing invoice records with our placeholder value so they will behave and have the same data as any
+  // new invoices we create
+  await knex('invoices')
+    .where({ rebilled_type: 'O' })
+    .update({ rebilled_invoice_id: '99999999-9999-9999-9999-999999999999' })
+
   await knex
     .schema
     .alterTable(tableName, table => {
@@ -37,4 +43,9 @@ exports.down = async function (knex) {
       table.dropUnique(['bill_run_id', 'customer_reference', 'financial_year', 'rebilled_type', 'rebilled_invoice_id'])
       table.unique(['bill_run_id', 'customer_reference', 'financial_year', 'rebilled_type'])
     })
+
+  // Reset all the rebilled_invoice_id fields to null
+  await knex('invoices')
+    .where({ rebilled_type: 'O' })
+    .update({ rebilled_invoice_id: null })
 }
