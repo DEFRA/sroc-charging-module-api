@@ -68,6 +68,26 @@ describe('Invoice Rebilling Create Transaction service', () => {
     })
   })
 
+  describe('when the transaction has a matching customer ref. and financial year to an existing rebill invoice', () => {
+    beforeEach(async () => {
+      await addRebillInvoice(rebillBillRun.id, 'TH230000222', 2021, GeneralHelper.uuid4(), 'R')
+      const invoice = await addRebillInvoice(rebillBillRun.id, 'TH230000222', 2021, originalInvoice.id, 'R')
+      const licence = await LicenceHelper.addLicence(rebillBillRun.id, 'TONY/TF9222/37', invoice.id)
+      transaction = await TransactionHelper.addTransaction(originalBillRun.id, { chargeFinancialYear: 2021 })
+
+      result = await InvoiceRebillingCreateTransactionService.go(
+        transaction,
+        licence,
+        originalInvoice,
+        rebillAuthorisedSystem
+      )
+    })
+
+    it('still can create the new rebilling transaction (the DB unique constraint does not block it)', () => {
+      expect(result.id).to.exist()
+    })
+  })
+
   describe('when the transaction type is not to be inverted', () => {
     let licence
 
