@@ -12,7 +12,7 @@ const { PresenterHelper } = require('../support/helpers')
 // Thing under test
 const { TableBodyPresenter } = require('../../app/presenters')
 
-describe.only('Table Body Presenter', () => {
+describe('Table Body Presenter', () => {
   const data = {
     firstColumn: 'FIRST_COLUMN',
     secondColumn: 'SECOND_COLUMN',
