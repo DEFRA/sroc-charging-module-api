@@ -64,15 +64,8 @@ describe('Stream Transform CSV service', () => {
       expect(result[3]).to.equal('EXTRA')
     })
 
-    it('passes in the index starting at 0', async () => {
-      const transformStream = StreamTransformUsingPresenterService.go(testPresenter)
-      const [result] = await StreamHelper.testTransformStream(transformStream, testData)
-
-      expect(result[4]).to.equal(0)
-    })
-
     it('increments the index', async () => {
-      const transformStream = StreamTransformUsingPresenterService.go(testPresenter)
+      const transformStream = StreamTransformUsingPresenterService.go(testPresenter, null, 0)
       const resultArray = await StreamHelper.testTransformStream(transformStream, testData, 3)
 
       expect(resultArray[0][4]).to.equal(0)
@@ -87,6 +80,15 @@ describe('Stream Transform CSV service', () => {
       expect(resultArray[0][4]).to.equal(10)
       expect(resultArray[1][4]).to.equal(11)
       expect(resultArray[2][4]).to.equal(12)
+    })
+
+    it('does not include the index if no value is passed', async () => {
+      const transformStream = StreamTransformUsingPresenterService.go(testPresenter)
+      const resultArray = await StreamHelper.testTransformStream(transformStream, testData, 3)
+
+      expect(resultArray[0][4]).to.be.undefined()
+      expect(resultArray[1][4]).to.be.undefined()
+      expect(resultArray[2][4]).to.be.undefined()
     })
   })
 })
