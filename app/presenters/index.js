@@ -11,6 +11,7 @@ const CustomerFileTailPresenter = require('./customer_file_tail.presenter')
 const JsonPresenter = require('./json.presenter')
 const InvoiceRebillingPresenter = require('./invoice_rebilling.presenter')
 const RulesServicePresenter = require('./rules_service.presenter')
+const TableBodyPresenter = require('./table_body.presenter')
 const TransactionFileBodyPresenter = require('./transaction_file_body.presenter')
 const TransactionFileHeadPresenter = require('./transaction_file_head.presenter')
 const TransactionFileTailPresenter = require('./transaction_file_tail.presenter')
@@ -32,6 +33,7 @@ module.exports = {
   InvoiceRebillingPresenter,
   JsonPresenter,
   RulesServicePresenter,
+  TableBodyPresenter,
   TransactionFileBodyPresenter,
   TransactionFileHeadPresenter,
   TransactionFileTailPresenter,
