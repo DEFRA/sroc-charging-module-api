@@ -10,7 +10,7 @@ const { expect } = Code
 const { PresenterHelper } = require('../support/helpers')
 
 // Thing under test
-const { TableBodyPresenter } = require('../../app/presenters')
+const { TableFilePresenter } = require('../../app/presenters')
 
 describe('Table Body Presenter', () => {
   const data = {
@@ -22,7 +22,7 @@ describe('Table Body Presenter', () => {
   }
 
   it('returns the required columns', () => {
-    const presenter = new TableBodyPresenter(data)
+    const presenter = new TableFilePresenter(data)
     const result = presenter.go()
 
     const expectedFields = PresenterHelper.generateNumberedColumns(5)
@@ -31,7 +31,7 @@ describe('Table Body Presenter', () => {
   })
 
   it('returns the correct values for each field', () => {
-    const presenter = new TableBodyPresenter(data)
+    const presenter = new TableFilePresenter(data)
     const result = presenter.go()
 
     expect(result.col01).to.equal(data.firstColumn)

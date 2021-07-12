@@ -9,7 +9,7 @@ const { pipeline } = require('stream')
 const util = require('util')
 const { temporaryFilePath } = require('../../config/server.config')
 
-const { TableBodyPresenter } = require('../presenters')
+const { TableFilePresenter } = require('../presenters')
 
 const StreamReadableDataService = require('./streams/stream_readable_data.service')
 const StreamReadableRecordsService = require('./streams/stream_readable_records.service')
@@ -24,10 +24,9 @@ class TransformTableToFileService {
    *
    * The file comprises 2 parts:
    *
-   * The bulk of the file is comprised of the body. Each line of the body is a database record selected by the passed-in
-   * query.
-   *
    * The head is a single line at the top. It takes its data from the columnNames array.
+   *
+   * The body comprises the rest of the file. Each line is a database record selected by the passed-in query.
    *
    * @param {module:QueryBuilder} query The Objection query which will be run and the results passed to `bodyPresenter`
    * @param {array} columnNames The names of the columns to be saved to in the head row.
@@ -37,8 +36,8 @@ class TransformTableToFileService {
   static async go (query, columnNames, filename) {
     const filenameWithPath = this._filenameWithPath(filename)
 
-    await this._writeHead(columnNames, TableBodyPresenter, filenameWithPath)
-    await this._writeBody(query, TableBodyPresenter, filenameWithPath)
+    await this._writeHead(columnNames, TableFilePresenter, filenameWithPath)
+    await this._writeBody(query, TableFilePresenter, filenameWithPath)
 
     return filenameWithPath
   }

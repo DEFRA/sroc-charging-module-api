@@ -50,7 +50,7 @@ describe('Transform Table To File service', () => {
     Sinon.restore()
   })
 
-  describe.only('When writing a file succeeds', () => {
+  describe('When writing a file succeeds', () => {
     it('creates a file with expected content', async () => {
       const query = TransactionModel.query().select('id', 'region', 'customerReference')
 
