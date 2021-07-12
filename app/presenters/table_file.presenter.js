@@ -1,20 +1,20 @@
 'use strict'
 
 /**
- * @module TableBodyPresenter
+ * @module TableFilePresenter
  */
 
 const BasePresenter = require('./base.presenter')
 
 /**
- * Formats data for the body of an exported table file.
+ * Formats data for an exported table file.
  *
  * Takes a data object in the format:
  *  { first: 'A', second: 'B', third: 'C' }
  * and returns an object in the format:
  *  { col01: 'A', col02: 'B', col03: 'C' }
  */
-class TableBodyPresenter extends BasePresenter {
+class TableFilePresenter extends BasePresenter {
   _presentation (data) {
     return this._columnNamedData(data)
   }
@@ -42,4 +42,4 @@ class TableBodyPresenter extends BasePresenter {
   }
 }
 
-module.exports = TableBodyPresenter
+module.exports = TableFilePresenter
