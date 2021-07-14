@@ -1,5 +1,31 @@
 # Changelog
 
+## [v0.11.1](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.11.1) (2021-07-14)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.11.0...v0.11.1)
+
+**Implemented enhancements:**
+
+- Create table export service [\#480](https://github.com/DEFRA/sroc-charging-module-api/pull/480) ([StuAA78](https://github.com/StuAA78))
+- Create TransformTableToFile service [\#477](https://github.com/DEFRA/sroc-charging-module-api/pull/477) ([StuAA78](https://github.com/StuAA78))
+- Create table body presenter [\#476](https://github.com/DEFRA/sroc-charging-module-api/pull/476) ([StuAA78](https://github.com/StuAA78))
+
+**Fixed bugs:**
+
+- Fix - Rebilling for same customer causes error [\#475](https://github.com/DEFRA/sroc-charging-module-api/pull/475) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix broken Docker build [\#471](https://github.com/DEFRA/sroc-charging-module-api/pull/471) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Merged pull requests:**
+
+- Bump @hapi/lab from 24.2.1 to 24.3.1 [\#484](https://github.com/DEFRA/sroc-charging-module-api/pull/484) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump joi from 17.4.0 to 17.4.1 [\#483](https://github.com/DEFRA/sroc-charging-module-api/pull/483) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.20.0 to 3.21.0 [\#482](https://github.com/DEFRA/sroc-charging-module-api/pull/482) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nodemon from 2.0.9 to 2.0.12 [\#481](https://github.com/DEFRA/sroc-charging-module-api/pull/481) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.19.0 to 3.20.0 [\#474](https://github.com/DEFRA/sroc-charging-module-api/pull/474) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nock from 13.1.0 to 13.1.1 [\#473](https://github.com/DEFRA/sroc-charging-module-api/pull/473) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nodemon from 2.0.8 to 2.0.9 [\#472](https://github.com/DEFRA/sroc-charging-module-api/pull/472) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nodemon from 2.0.7 to 2.0.8 [\#470](https://github.com/DEFRA/sroc-charging-module-api/pull/470) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.11.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.11.0) (2021-06-29)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.10.1...v0.11.0)
