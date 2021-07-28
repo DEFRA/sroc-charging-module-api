@@ -9,21 +9,17 @@ const { expect } = Code
 
 // Test helpers
 const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
   InvoiceHelper,
-  RegimeHelper,
-  LicenceHelper
+  LicenceHelper,
+  NewBillRunHelper
 } = require('../support/helpers')
 
 // Thing under test
 const { ValidateBillRunLicenceService } = require('../../app/services')
 
 describe('Validate Bill Run Licence service', () => {
-  let regime
-  let authorisedSystem
   let billRun
   let invoice
   let licence
@@ -31,9 +27,7 @@ describe('Validate Bill Run Licence service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
-    regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
-    billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    billRun = await NewBillRunHelper.addBillRun()
     invoice = await InvoiceHelper.addInvoice(billRun.id, 'CUSTOMER REFERENCE', 2020)
   })
 
@@ -55,7 +49,7 @@ describe('Validate Bill Run Licence service', () => {
         let otherBillRun
 
         beforeEach(async () => {
-          otherBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+          otherBillRun = await NewBillRunHelper.addBillRun()
         })
 
         it('throws an error', async () => {
