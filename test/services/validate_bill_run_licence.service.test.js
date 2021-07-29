@@ -21,21 +21,19 @@ const { BillRunModel } = require('../../app/models')
 // Thing under test
 const { ValidateBillRunLicenceService } = require('../../app/services')
 
-describe.only('Validate Bill Run Licence service', () => {
+describe('Validate Bill Run Licence service', () => {
   let billRun
   let invoice
   let licence
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
-
-    invoice = await NewInvoiceHelper.addInvoice()
-    billRun = await BillRunModel.query().findById(invoice.billRunId)
   })
 
   describe('When a valid bill run ID is supplied', () => {
     beforeEach(async () => {
-      licence = await NewLicenceHelper.addLicence(invoice.id)
+      licence = await NewLicenceHelper.addLicence()
+      billRun = await BillRunModel.query().findById(licence.billRunId)
     })
 
     describe('and a valid licence ID', () => {
