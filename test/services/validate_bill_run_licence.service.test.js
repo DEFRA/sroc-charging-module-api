@@ -11,15 +11,17 @@ const { expect } = Code
 const {
   DatabaseHelper,
   GeneralHelper,
-  InvoiceHelper,
   LicenceHelper,
-  NewBillRunHelper
+  NewBillRunHelper,
+  NewInvoiceHelper
 } = require('../support/helpers')
+
+const { BillRunModel } = require('../../app/models')
 
 // Thing under test
 const { ValidateBillRunLicenceService } = require('../../app/services')
 
-describe('Validate Bill Run Licence service', () => {
+describe.only('Validate Bill Run Licence service', () => {
   let billRun
   let invoice
   let licence
@@ -27,8 +29,8 @@ describe('Validate Bill Run Licence service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
-    billRun = await NewBillRunHelper.addBillRun()
-    invoice = await InvoiceHelper.addInvoice(billRun.id, 'CUSTOMER REFERENCE', 2020)
+    invoice = await NewInvoiceHelper.addInvoice()
+    billRun = await BillRunModel.query().findById(invoice.billRunId)
   })
 
   describe('When a valid bill run ID is supplied', () => {
@@ -66,9 +68,10 @@ describe('Validate Bill Run Licence service', () => {
         let rebillingLicence
 
         beforeEach(async () => {
-          invoice = await InvoiceHelper.addInvoice(
-            billRun.id, 'CUSTOMER REFERENCE', 2021, 0, 0, 1, 5000, 0, 1, 0, 5000, GeneralHelper.uuid4(), 'R'
-          )
+          invoice = await NewInvoiceHelper.addInvoice(billRun.id, {
+            rebilledInvoiceId: GeneralHelper.uuid4(),
+            rebilledType: 'R'
+          })
           rebillingLicence = await LicenceHelper.addLicence(billRun.id, 'LICENCE', invoice.id)
         })
 
