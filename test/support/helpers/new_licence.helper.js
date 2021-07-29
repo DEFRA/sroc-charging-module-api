@@ -17,7 +17,7 @@ class NewLicenceHelper {
 
   static async addLicence (invoiceId, overrides) {
     if (!invoiceId) {
-      const invoice = await NewInvoiceHelper()
+      const invoice = await NewInvoiceHelper.addInvoice()
       invoiceId = invoice.id
     }
 
