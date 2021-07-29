@@ -18,7 +18,7 @@ class NewBillRunHelper {
    *
    * @returns {module:BillRunModel} The newly created instance of `BillRunModel`.
    */
-  static async addBillRun (authorisedSystemId, regimeId, overrides = {}) {
+  static async add (authorisedSystemId, regimeId, overrides = {}) {
     let regime
 
     if (!regimeId) {

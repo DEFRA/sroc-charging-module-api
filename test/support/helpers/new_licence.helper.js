@@ -15,9 +15,9 @@ class NewLicenceHelper {
    * @returns {module:LicenceModel} The newly created instance of `LicenceModel`.
    */
 
-  static async addLicence (invoice, overrides) {
+  static async add (invoice, overrides) {
     if (!invoice) {
-      invoice = await NewInvoiceHelper.addInvoice()
+      invoice = await NewInvoiceHelper.add()
     }
 
     const licenceValues = {
