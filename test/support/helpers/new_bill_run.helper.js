@@ -20,7 +20,6 @@ class NewBillRunHelper {
    */
   static async addBillRun (authorisedSystemId, regimeId, overrides = {}) {
     let regime
-    let authorisedSystem
 
     if (!regimeId) {
       regime = await RegimeHelper.addRegime('wrls', 'WRLS')
@@ -28,7 +27,7 @@ class NewBillRunHelper {
     }
 
     if (!authorisedSystemId) {
-      authorisedSystem = await AuthorisedSystemHelper.addSystem(this._randomString(9), this._randomString(7), [regime])
+      const authorisedSystem = await AuthorisedSystemHelper.addSystem(this._randomString(9), this._randomString(7), [regime])
       authorisedSystemId = authorisedSystem.id
     }
 

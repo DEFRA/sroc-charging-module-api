@@ -15,10 +15,8 @@ class NewInvoiceHelper {
    * @returns {module:InvoiceModel} The newly created instance of `InvoiceModel`.
    */
   static async addInvoice (billRunId, overrides = {}) {
-    let billRun
-
     if (!billRunId) {
-      billRun = await NewBillRunHelper.addBillRun()
+      const billRun = await NewBillRunHelper.addBillRun()
       billRunId = billRun.id
     }
 
