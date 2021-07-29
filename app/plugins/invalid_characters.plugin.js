@@ -27,7 +27,7 @@ const InvalidCharactersPlugin = {
       }
 
       if (invalidCharacters(request.payload)) {
-        throw Boom.badData('We cannot accept any request that contains the following characters: ? £ ≤ ≥')
+        throw Boom.badData('We cannot accept any request that contains the following characters: ? £ ≤ ≥ “ ”')
       }
 
       return h.continue

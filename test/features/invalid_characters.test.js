@@ -55,7 +55,7 @@ describe('Reject requests with invalid characters', () => {
         const responsePayload = JSON.parse(response.payload)
 
         expect(response.statusCode).to.equal(422)
-        expect(responsePayload.message).to.equal('We cannot accept any request that contains the following characters: ? £ ≤ ≥')
+        expect(responsePayload.message).to.equal('We cannot accept any request that contains the following characters: ? £ ≤ ≥ “ ”')
       })
     })
 
@@ -70,7 +70,7 @@ describe('Reject requests with invalid characters', () => {
         const responsePayload = JSON.parse(response.payload)
 
         expect(response.statusCode).to.equal(422)
-        expect(responsePayload.message).to.equal('We cannot accept any request that contains the following characters: ? £ ≤ ≥')
+        expect(responsePayload.message).to.equal('We cannot accept any request that contains the following characters: ? £ ≤ ≥ “ ”')
       })
     })
   })
