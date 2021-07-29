@@ -44,7 +44,7 @@ class TransactionFileBodyPresenter extends BasePresenter {
       col23: data.lineDescription,
       col24: 'A',
       col25: '',
-      col26: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr1, data),
+      col26: this._blankIfCompensationCharge(data.lineAttr1, data),
       col27: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr2, data),
       col28: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr3, data),
       col29: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr4, data),
@@ -80,6 +80,13 @@ class TransactionFileBodyPresenter extends BasePresenter {
     // We don't expect to store anything other than lower case but we change case just to be safe. We use optional
     // chaining as regimeValue17 is null for minimum charge transactions.
     return data.regimeValue17?.toLowerCase() === 'true'
+  }
+
+  /**
+   * Returns an empty string if this is a compensation charge
+   */
+  _blankIfCompensationCharge (value, data) {
+    return this._compensationCharge(data) ? '' : value
   }
 
   /**
