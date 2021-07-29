@@ -3,9 +3,18 @@
 const Boom = require('@hapi/boom')
 
 /**
- * Converts an object to a JSON string and then tests if it contains any of the following characters: ? £ ≤ ≥
+ * Converts an object to a JSON string and then tests if it contains any of the following characters:
+ *
+ * - {@link https://unicode-table.com/en/00A3| £ Pound Sign}
+ * - {@link https://unicode-table.com/en/003F| ? Question Mark}
+ * - {@link https://unicode-table.com/en/2014| — Em dash}
+ * - {@link https://unicode-table.com/en/2264| ≤ Less-Than or Equal To}
+ * - {@link https://unicode-table.com/en/2265| ≥ Greater-Than or Equal To}
+ * - {@link https://unicode-table.com/en/201C| “ Left Double Quotation Mark}
+ * - {@link https://unicode-table.com/en/201D| ” Right Double Quotation Mark}
  *
  * @param {Object} obj The object you wish to check for invalid characters
+ *
  * @returns {boolean} `true` if the object contains an invalid character, else `false`
  */
 const invalidCharacters = obj => {
@@ -27,7 +36,7 @@ const InvalidCharactersPlugin = {
       }
 
       if (invalidCharacters(request.payload)) {
-        throw Boom.badData('We cannot accept any request that contains the following characters: ? £ ≤ ≥ “ ”')
+        throw Boom.badData('We cannot accept any request that contains the following characters: ? £ — ≤ ≥ “ ”')
       }
 
       return h.continue
