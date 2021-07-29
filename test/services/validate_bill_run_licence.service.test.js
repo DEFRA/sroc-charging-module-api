@@ -11,9 +11,9 @@ const { expect } = Code
 const {
   DatabaseHelper,
   GeneralHelper,
-  LicenceHelper,
   NewBillRunHelper,
-  NewInvoiceHelper
+  NewInvoiceHelper,
+  NewLicenceHelper
 } = require('../support/helpers')
 
 const { BillRunModel } = require('../../app/models')
@@ -21,7 +21,7 @@ const { BillRunModel } = require('../../app/models')
 // Thing under test
 const { ValidateBillRunLicenceService } = require('../../app/services')
 
-describe('Validate Bill Run Licence service', () => {
+describe.only('Validate Bill Run Licence service', () => {
   let billRun
   let invoice
   let licence
@@ -35,7 +35,7 @@ describe('Validate Bill Run Licence service', () => {
 
   describe('When a valid bill run ID is supplied', () => {
     beforeEach(async () => {
-      licence = await LicenceHelper.addLicence(billRun.id, 'LICENCE', invoice.id)
+      licence = await NewLicenceHelper.addLicence(invoice.id)
     })
 
     describe('and a valid licence ID', () => {
@@ -72,7 +72,7 @@ describe('Validate Bill Run Licence service', () => {
             rebilledInvoiceId: GeneralHelper.uuid4(),
             rebilledType: 'R'
           })
-          rebillingLicence = await LicenceHelper.addLicence(billRun.id, 'LICENCE', invoice.id)
+          rebillingLicence = await NewLicenceHelper.addLicence(invoice.id)
         })
 
         it('throws an error', async () => {
