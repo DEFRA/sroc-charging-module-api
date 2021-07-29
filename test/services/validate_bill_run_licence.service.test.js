@@ -21,7 +21,7 @@ const { BillRunModel } = require('../../app/models')
 // Thing under test
 const { ValidateBillRunLicenceService } = require('../../app/services')
 
-describe.only('Validate Bill Run Licence service', () => {
+describe('Validate Bill Run Licence service', () => {
   let billRun
   let invoice
   let licence
