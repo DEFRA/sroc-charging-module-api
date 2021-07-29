@@ -308,5 +308,13 @@ describe('Invoice Model', () => {
 
       expect(result).to.be.true()
     })
+
+    it('returns `false` if this is not a minimum charge invoice', async () => {
+      const invoice = await InvoiceHelper.addInvoice(billRun.id, 'MIN0000001', 2020, 0, 0, 1, 2499, 0, 0, 0, 0)
+
+      const result = invoice.$minimumChargeInvoice()
+
+      expect(result).to.be.false()
+    })
   })
 })
