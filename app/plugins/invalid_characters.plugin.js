@@ -11,7 +11,7 @@ const Boom = require('@hapi/boom')
 const invalidCharacters = obj => {
   const jsonObj = JSON.stringify(obj)
 
-  if (jsonObj.match(/[?£\u2014\u2264\u2265]/)) {
+  if (jsonObj.match(/[?£\u2014\u2264\u2265\u201C\u201D]/)) {
     return true
   }
 
