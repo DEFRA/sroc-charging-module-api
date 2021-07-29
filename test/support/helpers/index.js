@@ -9,6 +9,7 @@ const GeneralHelper = require('./general.helper')
 const InvoiceHelper = require('./invoice.helper')
 const LicenceHelper = require('./licence.helper')
 const NewBillRunHelper = require('./new_bill_run.helper')
+const NewInvoiceHelper = require('./new_invoice.helper')
 const PresenterHelper = require('./presenter.helper')
 const RegimeHelper = require('./regime.helper')
 const RouteHelper = require('./route.helper')
@@ -27,6 +28,7 @@ module.exports = {
   InvoiceHelper,
   LicenceHelper,
   NewBillRunHelper,
+  NewInvoiceHelper,
   PresenterHelper,
   RegimeHelper,
   RouteHelper,
