@@ -8,16 +8,15 @@ class NewInvoiceHelper {
   /**
    * Create an invoice
    *
-   * @param {string} [billRunId] Id to use for the `bill_run_id` field. If not specified then a new bill run will be
-   *  created.
+   * @param {module:BillRunModel} [billRun] Bill run the invoice is to be created on. If not specified then a new bill
+   *  run will be created.
    * @param {object} [overrides] JSON object of values which will override the ones the helper defaults to.
    *
    * @returns {module:InvoiceModel} The newly created instance of `InvoiceModel`.
    */
-  static async addInvoice (billRunId, overrides = {}) {
-    if (!billRunId) {
-      const billRun = await NewBillRunHelper.addBillRun()
-      billRunId = billRun.id
+  static async addInvoice (billRun, overrides = {}) {
+    if (!billRun) {
+      billRun = await NewBillRunHelper.addBillRun()
     }
 
     const invoiceValues = {
@@ -28,7 +27,7 @@ class NewInvoiceHelper {
 
     return InvoiceModel.query()
       .insert({
-        billRunId,
+        billRunId: billRun.id,
         ...invoiceValues,
         ...flags
       })

@@ -66,11 +66,11 @@ describe('Validate Bill Run Licence service', () => {
         let rebillingLicence
 
         beforeEach(async () => {
-          invoice = await NewInvoiceHelper.addInvoice(billRun.id, {
+          invoice = await NewInvoiceHelper.addInvoice(billRun, {
             rebilledInvoiceId: GeneralHelper.uuid4(),
             rebilledType: 'R'
           })
-          rebillingLicence = await NewLicenceHelper.addLicence(invoice.id)
+          rebillingLicence = await NewLicenceHelper.addLicence(invoice)
         })
 
         it('throws an error', async () => {
