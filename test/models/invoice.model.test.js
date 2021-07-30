@@ -309,24 +309,12 @@ describe('Invoice Model', () => {
       expect(result).to.be.true()
     })
 
-    describe('returns `false` if this is not a deminimis invoice', () => {
-      it('because the value is above the deminimis limit', async () => {
-        const invoice = await InvoiceHelper.addInvoice(billRun.id, 'NMN0000001', 2021, 0, 0, 1, 5000)
+    it('returns `false` if this is not a minimum charge invoice', async () => {
+      const invoice = await InvoiceHelper.addInvoice(billRun.id, 'MIN0000001', 2020, 0, 0, 1, 2499, 0, 0, 0, 0)
 
-        const result = invoice.$deminimisInvoice()
+      const result = invoice.$minimumChargeInvoice()
 
-        expect(result).to.be.false()
-      })
-
-      it('because rebilledType is not `O`', async () => {
-        const invoice = await InvoiceHelper.addInvoice(
-          billRun.id, 'DEM0000001', 2021, 1, 750, 1, 1000, 0, 0, 0, 0, GeneralHelper.uuid4(), 'R'
-        )
-
-        const result = invoice.$deminimisInvoice()
-
-        expect(result).to.be.false()
-      })
+      expect(result).to.be.false()
     })
   })
 })
