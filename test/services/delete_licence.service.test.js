@@ -218,6 +218,55 @@ describe('Delete Licence service', () => {
         })
       })
 
+      describe('when an invoice contains 2 min. charge licences', () => {
+        let fixBillRun
+        let lessThanMinLicence
+        let moreThanMinLicence
+
+        beforeEach(async () => {
+          fixBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+
+          rulesServiceStub.restore()
+          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 24)
+          const { transaction: lessThanMinResponse } = await CreateTransactionService.go(
+            { ...payload, subjectToMinimumCharge: true, licenceNumber: 'LESS01' }, fixBillRun, authorisedSystem, regime
+          )
+          const lessThanMinTransaction = await TransactionModel.query().findById(lessThanMinResponse.id)
+          lessThanMinLicence = await LicenceModel.query().findById(lessThanMinTransaction.licenceId)
+
+          rulesServiceStub.restore()
+          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 26)
+          const { transaction: moreThanMinResponse } = await CreateTransactionService.go(
+            { ...payload, subjectToMinimumCharge: true, licenceNumber: 'MORE01' }, fixBillRun, authorisedSystem, regime
+          )
+          const moreThanMinTransaction = await TransactionModel.query().findById(moreThanMinResponse.id)
+          moreThanMinLicence = await LicenceModel.query().findById(moreThanMinTransaction.licenceId)
+
+          // Generate the bill run to ensure its values are updated before we delete the licence
+          await GenerateBillRunService.go(fixBillRun)
+        })
+
+        describe('one of which is for less than £25 and the other for more than £25', () => {
+          describe('if the one less than £25 is deleted', () => {
+            it('sets the `minimumChargeInvoice` flag correctly', async () => {
+              await DeleteLicenceService.go(lessThanMinLicence, notifierFake)
+
+              const result = await InvoiceModel.query().findById(lessThanMinLicence.invoiceId)
+              expect(result.minimumChargeInvoice).to.be.false()
+            })
+          })
+
+          describe('if the one more than £25 is deleted', () => {
+            it('sets the `minimumChargeInvoice` flag correctly', async () => {
+              await DeleteLicenceService.go(moreThanMinLicence, notifierFake)
+
+              const result = await InvoiceModel.query().findById(moreThanMinLicence.invoiceId)
+              expect(result.minimumChargeInvoice).to.be.true()
+            })
+          })
+        })
+      })
+
       it('updates the bill run level figures', async () => {
       // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
         await LicenceHelper.addLicence(billRun.id, 'SECOND_LICENCE', transaction.invoiceId, 'TH230000222', 2019)
