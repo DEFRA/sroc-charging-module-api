@@ -14,13 +14,21 @@ const { RegimeModel } = require('../../../app/models')
  */
 class RegimeHelper {
   /**
-   * Create a regime
+   * Create a regime. If a regime with the provided slug already exists then this will be returned and a new regime will
+   * not be created.
    *
    * @param {string} slug Short-code for the regime. Is how we match regime endpoints to regimes in our database
-   * @param {string} name Name for the regiime
+   * @param {string} name Name for the regime
    * @returns {module:RegimeModel} The newly created instance of `RegimeModel`.
    */
-  static addRegime (slug, name) {
+  static async addRegime (slug, name) {
+    const regime = await RegimeModel.query()
+      .findOne({ slug })
+
+    if (regime) {
+      return regime
+    }
+
     return RegimeModel.query()
       .insert({
         slug: slug,
