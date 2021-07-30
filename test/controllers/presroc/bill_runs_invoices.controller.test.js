@@ -39,14 +39,13 @@ const JsonWebToken = require('jsonwebtoken')
 describe('Presroc Invoices controller', () => {
   let server
   let authToken
-  let regime
   let invoice
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
     server = await init()
 
-    regime = await RegimeHelper.addRegime('wrls', 'WRLS')
+    const regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     await AuthorisedSystemHelper.addSystem('clientId', 'system1', [regime])
 
     invoice = await NewInvoiceHelper.add()
