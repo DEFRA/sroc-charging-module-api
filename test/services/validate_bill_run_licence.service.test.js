@@ -9,37 +9,31 @@ const { expect } = Code
 
 // Test helpers
 const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
-  InvoiceHelper,
-  RegimeHelper,
-  LicenceHelper
+  NewBillRunHelper,
+  NewInvoiceHelper,
+  NewLicenceHelper
 } = require('../support/helpers')
+
+const { BillRunModel } = require('../../app/models')
 
 // Thing under test
 const { ValidateBillRunLicenceService } = require('../../app/services')
 
 describe('Validate Bill Run Licence service', () => {
-  let regime
-  let authorisedSystem
   let billRun
   let invoice
   let licence
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
-
-    regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
-    billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-    invoice = await InvoiceHelper.addInvoice(billRun.id, 'CUSTOMER REFERENCE', 2020)
   })
 
   describe('When a valid bill run ID is supplied', () => {
     beforeEach(async () => {
-      licence = await LicenceHelper.addLicence(billRun.id, 'LICENCE', invoice.id)
+      licence = await NewLicenceHelper.add()
+      billRun = await BillRunModel.query().findById(licence.billRunId)
     })
 
     describe('and a valid licence ID', () => {
@@ -55,7 +49,7 @@ describe('Validate Bill Run Licence service', () => {
         let otherBillRun
 
         beforeEach(async () => {
-          otherBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+          otherBillRun = await NewBillRunHelper.add()
         })
 
         it('throws an error', async () => {
@@ -72,10 +66,11 @@ describe('Validate Bill Run Licence service', () => {
         let rebillingLicence
 
         beforeEach(async () => {
-          invoice = await InvoiceHelper.addInvoice(
-            billRun.id, 'CUSTOMER REFERENCE', 2021, 0, 0, 1, 5000, 0, 1, 0, 5000, GeneralHelper.uuid4(), 'R'
-          )
-          rebillingLicence = await LicenceHelper.addLicence(billRun.id, 'LICENCE', invoice.id)
+          invoice = await NewInvoiceHelper.add(billRun, {
+            rebilledInvoiceId: GeneralHelper.uuid4(),
+            rebilledType: 'R'
+          })
+          rebillingLicence = await NewLicenceHelper.add(invoice)
         })
 
         it('throws an error', async () => {
