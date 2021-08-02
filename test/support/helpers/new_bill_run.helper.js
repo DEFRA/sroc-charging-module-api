@@ -53,7 +53,7 @@ class NewBillRunHelper {
    *
    * @param {module:BillRunModel} billRun The bill run to be updated.
    * @param {object} updates JSON object of values to be updated. Each value in the object will be added to the existing
-   *  value in the bill run.
+   *  value in the bill run if it is a number; if it isn't a number then the existing value will be replaced.
    *
    * @returns {module:BillRunModel} The newly updated instance of `BillRunModel`.
    */
@@ -61,7 +61,12 @@ class NewBillRunHelper {
     const patch = {}
 
     for (const key in updates) {
-      patch[key] = billRun[key] + updates[key]
+      // If the value is a number then we add it to the existing number; otherwise we replace the existing value
+      if (typeof updates[key] === 'number') {
+        patch[key] = billRun[key] + updates[key]
+      } else {
+        patch[key] = updates[key]
+      }
     }
 
     return billRun.$query()

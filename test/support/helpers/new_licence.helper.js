@@ -70,7 +70,7 @@ class NewLicenceHelper {
    *
    * @param {module:LicenceModel} licence The licence to be updated.
    * @param {object} updates JSON object of values to be updated. Each value in the object will be added to the existing
-   *  value in the licence.
+   *  value in the licence if it is a number; if it isn't a number then the existing value will be replaced.
    *
    * @returns {module:LicenceModel} The newly updated instance of `LicenceModel`.
    */
@@ -78,7 +78,12 @@ class NewLicenceHelper {
     const patch = {}
 
     for (const key in updates) {
-      patch[key] = licence[key] + updates[key]
+      // If the value is a number then we add it to the existing number; otherwise we replace the existing value
+      if (typeof updates[key] === 'number') {
+        patch[key] = licence[key] + updates[key]
+      } else {
+        patch[key] = updates[key]
+      }
     }
 
     return licence.$query()

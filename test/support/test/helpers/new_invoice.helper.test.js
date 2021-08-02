@@ -36,7 +36,7 @@ describe('New Invoice helper', () => {
   })
 
   describe('#update method', () => {
-    it('adds supplied values to the existing invoice', async () => {
+    it('adds supplied numbers to the existing invoice values', async () => {
       const result = await NewInvoiceHelper.update(invoice, {
         debitLineCount: 1,
         subjectToMinimumChargeDebitValue: 1000
@@ -44,6 +44,16 @@ describe('New Invoice helper', () => {
 
       expect(result.debitLineCount).to.equal(6)
       expect(result.subjectToMinimumChargeDebitValue).to.equal(6000)
+    })
+
+    it('replaces existing invoice strings and booleans', async () => {
+      const result = await NewInvoiceHelper.update(invoice, {
+        customerReference: 'NEW_REF',
+        deminimisInvoice: true
+      })
+
+      expect(result.customerReference).to.equal('NEW_REF')
+      expect(result.deminimisInvoice).to.be.true()
     })
   })
 })

@@ -25,7 +25,7 @@ describe('New Bill Run helper', () => {
       billRun = await NewBillRunHelper.add()
     })
 
-    it('adds supplied values to the existing bill run', async () => {
+    it('adds supplied numbers to the existing bill run values', async () => {
       const result = await NewBillRunHelper.update(billRun, {
         invoiceCount: 5,
         invoiceValue: 5000
@@ -33,6 +33,14 @@ describe('New Bill Run helper', () => {
 
       expect(result.invoiceCount).to.equal(5)
       expect(result.invoiceValue).to.equal(5000)
+    })
+
+    it('replaces existing bill run strings ', async () => {
+      const result = await NewBillRunHelper.update(billRun, {
+        status: 'generated'
+      })
+
+      expect(result.status).to.equal('generated')
     })
   })
 })

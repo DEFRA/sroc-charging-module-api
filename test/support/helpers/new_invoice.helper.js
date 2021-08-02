@@ -104,7 +104,7 @@ class NewInvoiceHelper {
    *
    * @param {module:InvoiceModel} invoice The invoice to be updated.
    * @param {object} updates JSON object of values to be updated. Each value in the object will be added to the existing
-   *  value in the invoice.
+   *  value in the invoice if it is a number; if it isn't a number then the existing value will be replaced.
    *
    * @returns {module:InvoiceModel} The newly updated instance of `InvoiceModel`.
    */
@@ -112,7 +112,12 @@ class NewInvoiceHelper {
     const patch = {}
 
     for (const key in updates) {
-      patch[key] = invoice[key] + updates[key]
+      // If the value is a number then we add it to the existing number; otherwise we replace the existing value
+      if (typeof updates[key] === 'number') {
+        patch[key] = invoice[key] + updates[key]
+      } else {
+        patch[key] = updates[key]
+      }
     }
 
     return invoice.$query()

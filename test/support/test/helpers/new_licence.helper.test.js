@@ -36,7 +36,7 @@ describe('New Licence helper', () => {
   })
 
   describe('#update method', () => {
-    it('adds supplied values to the existing licence', async () => {
+    it('adds supplied numbers to the existing licence values', async () => {
       const result = await NewLicenceHelper.update(licence, {
         debitLineCount: 1,
         subjectToMinimumChargeDebitValue: 1000
@@ -44,6 +44,14 @@ describe('New Licence helper', () => {
 
       expect(result.debitLineCount).to.equal(6)
       expect(result.subjectToMinimumChargeDebitValue).to.equal(6000)
+    })
+
+    it('replaces existing licence strings', async () => {
+      const result = await NewLicenceHelper.update(licence, {
+        licenceNumber: 'NEW_REF'
+      })
+
+      expect(result.licenceNumber).to.equal('NEW_REF')
     })
   })
 })
