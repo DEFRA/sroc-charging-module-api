@@ -246,7 +246,7 @@ describe('Delete Licence service', () => {
         describe('one of which is for less than £25 and the other for more than £25', () => {
           describe('if the one less than £25 is deleted', () => {
             describe("from an 'intialised' bill run", () => {
-              it('sets the `minimumChargeInvoice` flag correctly', async () => {
+              it('sets the `minimumChargeInvoice` flag correctly (false)', async () => {
                 await DeleteLicenceService.go(lessThanMinLicence, notifierFake)
 
                 const result = await InvoiceModel.query().findById(lessThanMinLicence.invoiceId)
@@ -255,7 +255,7 @@ describe('Delete Licence service', () => {
             })
 
             describe("from a 'generated' bill run", () => {
-              it('sets the `minimumChargeInvoice` flag correctly', async () => {
+              it('sets the `minimumChargeInvoice` flag correctly (false)', async () => {
                 await GenerateBillRunService.go(fixBillRun)
                 await DeleteLicenceService.go(lessThanMinLicence, notifierFake)
 
@@ -267,7 +267,7 @@ describe('Delete Licence service', () => {
 
           describe('if the one more than £25 is deleted', () => {
             describe("from an 'intialised' bill run", () => {
-              it('sets the `minimumChargeInvoice` flag correctly', async () => {
+              it('sets the `minimumChargeInvoice` flag correctly (false)', async () => {
                 await DeleteLicenceService.go(moreThanMinLicence, notifierFake)
 
                 const result = await InvoiceModel.query().findById(moreThanMinLicence.invoiceId)
@@ -276,7 +276,7 @@ describe('Delete Licence service', () => {
             })
 
             describe("from an 'generated' bill run", () => {
-              it('sets the `minimumChargeInvoice` flag correctly', async () => {
+              it('sets the `minimumChargeInvoice` flag correctly (true)', async () => {
                 await GenerateBillRunService.go(fixBillRun)
                 await DeleteLicenceService.go(moreThanMinLicence, notifierFake)
 
