@@ -208,13 +208,6 @@ class InvoiceModel extends BaseUpsertModel {
       this.$originalInvoice()
     )
   }
-
-  /**
-   * minimumChargeInvoice method returns true if this is a minimum charge invoice
-   */
-  $minimumChargeInvoice () {
-    return this.subjectToMinimumChargeCount > 0
-  }
 }
 
 module.exports = InvoiceModel
