@@ -14,7 +14,7 @@ const { InvoiceModel } = require('../../../../app/models')
 // Thing under test
 const { NewLicenceHelper } = require('../../helpers')
 
-describe.only('New Licence helper', () => {
+describe('New Licence helper', () => {
   let licence
 
   beforeEach(async () => {
