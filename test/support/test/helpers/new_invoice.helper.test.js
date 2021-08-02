@@ -12,17 +12,39 @@ const { DatabaseHelper } = require('../../helpers')
 
 // Thing under test
 const { NewInvoiceHelper } = require('../../helpers')
+const { BillRunModel } = require('../../../../app/models')
 
 describe('New Invoice helper', () => {
-  let invoice
-
   beforeEach(async () => {
     await DatabaseHelper.clean()
   })
 
-  describe('#update method', () => {
+  describe('#add method', () => {
+    let invoice
+
     beforeEach(async () => {
-      invoice = await NewInvoiceHelper.add()
+      invoice = await NewInvoiceHelper.add(null, {
+        debitLineCount: 5,
+        subjectToMinimumChargeDebitValue: 5000
+      })
+    })
+
+    it('updates the parent bill run', async () => {
+      const billRun = await BillRunModel.query().findById(invoice.billRunId)
+
+      expect(billRun.debitLineCount).to.equal(5)
+      expect(billRun.subjectToMinimumChargeDebitValue).to.equal(5000)
+    })
+  })
+
+  describe('#update method', () => {
+    let invoice
+
+    beforeEach(async () => {
+      invoice = await NewInvoiceHelper.add(null, {
+        debitLineCount: 1,
+        subjectToMinimumChargeDebitValue: 1000
+      })
     })
 
     it('adds supplied values to the existing invoice', async () => {
@@ -31,8 +53,8 @@ describe('New Invoice helper', () => {
         subjectToMinimumChargeDebitValue: 5000
       })
 
-      expect(result.debitLineCount).to.equal(5)
-      expect(result.subjectToMinimumChargeDebitValue).to.equal(5000)
+      expect(result.debitLineCount).to.equal(6)
+      expect(result.subjectToMinimumChargeDebitValue).to.equal(6000)
     })
   })
 })

@@ -25,13 +25,18 @@ class NewInvoiceHelper {
     }
     const flags = this._flags(invoiceValues)
 
-    return InvoiceModel.query()
+    const invoice = await InvoiceModel.query()
       .insert({
         billRunId: billRun.id,
         ...invoiceValues,
         ...flags
       })
       .returning('*')
+
+    const updatePatch = this._updatePatch(invoice)
+    await NewBillRunHelper.update(billRun, updatePatch)
+
+    return invoice
   }
 
   static _defaultInvoice () {
@@ -79,6 +84,19 @@ class NewInvoiceHelper {
     }
 
     return flags
+  }
+
+  static _updatePatch (invoice) {
+    return {
+      creditLineCount: invoice.creditLineCount,
+      creditLineValue: invoice.creditLineValue,
+      debitLineCount: invoice.debitLineCount,
+      debitLineValue: invoice.debitLineValue,
+      zeroLineCount: invoice.zeroLineCount,
+      subjectToMinimumChargeCount: invoice.subjectToMinimumChargeCount,
+      subjectToMinimumChargeCreditValue: invoice.subjectToMinimumChargeCreditValue,
+      subjectToMinimumChargeDebitValue: invoice.subjectToMinimumChargeDebitValue
+    }
   }
 
   /**
