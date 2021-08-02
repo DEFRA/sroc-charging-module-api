@@ -24,13 +24,18 @@ class NewLicenceHelper {
       ...overrides
     }
 
-    return LicenceModel.query()
+    const licence = await LicenceModel.query()
       .insert({
         invoiceId: invoice.id,
         billRunId: invoice.billRunId,
         ...licenceValues
       })
       .returning('*')
+
+    const updatePatch = this._updatePatch(licence)
+    await NewInvoiceHelper.update(invoice, updatePatch)
+
+    return licence
   }
 
   static _defaultLicence () {
@@ -44,6 +49,19 @@ class NewLicenceHelper {
       subjectToMinimumChargeCount: 0,
       subjectToMinimumChargeCreditValue: 0,
       subjectToMinimumChargeDebitValue: 0
+    }
+  }
+
+  static _updatePatch (licence) {
+    return {
+      creditLineCount: licence.creditLineCount,
+      creditLineValue: licence.creditLineValue,
+      debitLineCount: licence.debitLineCount,
+      debitLineValue: licence.debitLineValue,
+      zeroLineCount: licence.zeroLineCount,
+      subjectToMinimumChargeCount: licence.subjectToMinimumChargeCount,
+      subjectToMinimumChargeCreditValue: licence.subjectToMinimumChargeCreditValue,
+      subjectToMinimumChargeDebitValue: licence.subjectToMinimumChargeDebitValue
     }
   }
 
