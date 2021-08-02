@@ -74,20 +74,31 @@ class NewLicenceHelper {
    *
    * @returns {module:LicenceModel} The newly updated instance of `LicenceModel`.
    */
-  static async update (licence, updates = {}) {
+  static async update (entity, updates = {}) {
     const patch = {}
 
-    for (const key in updates) {
-      // If the value is a number then we add it to the existing number; otherwise we replace the existing value
-      if (typeof updates[key] === 'number') {
-        patch[key] = licence[key] + updates[key]
+    for (const [key, value] of Object.entries(updates)) {
+      // If the field is "addable" then we add it to the existing number; otherwise we replace the existing value.
+      if (this._addable(key, value)) {
+        patch[key] = entity[key] + value
       } else {
-        patch[key] = updates[key]
+        patch[key] = value
       }
     }
 
-    return licence.$query()
+    return entity.$query()
       .patchAndFetch(patch)
+  }
+
+  /**
+   * When updating an entity we either add or replace values. In general, we add anything that's a number (eg. counts
+   * and values) and replace anything that isn't. However some numbers are an exception and we do want them to be
+   * replaced. This function returns true if the passed key/value pair are suitable for adding and false if they aren't.
+   */
+  static _addable (key, value) {
+    const isNumber = typeof value === 'number'
+    const exception = ['billRunNumber', 'financialYear'].includes(key)
+    return isNumber && !exception
   }
 }
 

@@ -22,7 +22,8 @@ describe('New Invoice helper', () => {
 
     invoice = await NewInvoiceHelper.add(null, {
       debitLineCount: 5,
-      subjectToMinimumChargeDebitValue: 5000
+      subjectToMinimumChargeDebitValue: 5000,
+      financialYear: 2021
     })
   })
 
@@ -54,6 +55,14 @@ describe('New Invoice helper', () => {
 
       expect(result.customerReference).to.equal('NEW_REF')
       expect(result.deminimisInvoice).to.be.true()
+    })
+
+    it('replaces financial year', async () => {
+      const result = await NewInvoiceHelper.update(invoice, {
+        financialYear: 3000
+      })
+
+      expect(result.financialYear).to.equal(3000)
     })
   })
 })
