@@ -49,6 +49,26 @@ class NewBillRunHelper {
   }
 
   /**
+   * Updates a bill run
+   *
+   * @param {module:BillRunModel} billRun The bill run to be updated.
+   * @param {object} updates JSON object of values to be updated. Each value in the object will be added to the existing
+   *  value in the bill run.
+   *
+   * @returns {module:BillRunModel} The newly updated instance of `BillRunModel`.
+   */
+  static async update (billRun, updates = {}) {
+    const patch = {}
+
+    for (const key in updates) {
+      patch[key] = billRun[key] + updates[key]
+    }
+
+    return billRun.$query()
+      .patchAndFetch(patch)
+  }
+
+  /**
    * Mock generate a bill run
    *
    * We do not _actually_ generate a bill run with this helper. We simply update the bill run record to reflect what a
