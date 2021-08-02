@@ -218,7 +218,7 @@ describe('Delete Licence service', () => {
         })
       })
 
-      describe('when an invoice contains 2 min. charge licences', () => {
+      describe('when an invoice contains two minimum charge licences', () => {
         let fixBillRun
         let lessThanMinLicence
         let moreThanMinLicence
@@ -227,7 +227,7 @@ describe('Delete Licence service', () => {
           fixBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
 
           rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 24)
+          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2400)
           const { transaction: lessThanMinResponse } = await CreateTransactionService.go(
             { ...payload, subjectToMinimumCharge: true, licenceNumber: 'LESS01' }, fixBillRun, authorisedSystem, regime
           )
@@ -235,33 +235,54 @@ describe('Delete Licence service', () => {
           lessThanMinLicence = await LicenceModel.query().findById(lessThanMinTransaction.licenceId)
 
           rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 26)
+          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2600)
           const { transaction: moreThanMinResponse } = await CreateTransactionService.go(
             { ...payload, subjectToMinimumCharge: true, licenceNumber: 'MORE01' }, fixBillRun, authorisedSystem, regime
           )
           const moreThanMinTransaction = await TransactionModel.query().findById(moreThanMinResponse.id)
           moreThanMinLicence = await LicenceModel.query().findById(moreThanMinTransaction.licenceId)
-
-          // Generate the bill run to ensure its values are updated before we delete the licence
-          await GenerateBillRunService.go(fixBillRun)
         })
 
         describe('one of which is for less than £25 and the other for more than £25', () => {
           describe('if the one less than £25 is deleted', () => {
-            it('sets the `minimumChargeInvoice` flag correctly', async () => {
-              await DeleteLicenceService.go(lessThanMinLicence, notifierFake)
+            describe("from an 'intialised' bill run", () => {
+              it('sets the `minimumChargeInvoice` flag correctly', async () => {
+                await DeleteLicenceService.go(lessThanMinLicence, notifierFake)
 
-              const result = await InvoiceModel.query().findById(lessThanMinLicence.invoiceId)
-              expect(result.minimumChargeInvoice).to.be.false()
+                const result = await InvoiceModel.query().findById(lessThanMinLicence.invoiceId)
+                expect(result.minimumChargeInvoice).to.be.false()
+              })
+            })
+
+            describe("from a 'generated' bill run", () => {
+              it('sets the `minimumChargeInvoice` flag correctly', async () => {
+                await GenerateBillRunService.go(fixBillRun)
+                await DeleteLicenceService.go(lessThanMinLicence, notifierFake)
+
+                const result = await InvoiceModel.query().findById(lessThanMinLicence.invoiceId)
+                expect(result.minimumChargeInvoice).to.be.false()
+              })
             })
           })
 
           describe('if the one more than £25 is deleted', () => {
-            it('sets the `minimumChargeInvoice` flag correctly', async () => {
-              await DeleteLicenceService.go(moreThanMinLicence, notifierFake)
+            describe("from an 'intialised' bill run", () => {
+              it('sets the `minimumChargeInvoice` flag correctly', async () => {
+                await DeleteLicenceService.go(moreThanMinLicence, notifierFake)
 
-              const result = await InvoiceModel.query().findById(moreThanMinLicence.invoiceId)
-              expect(result.minimumChargeInvoice).to.be.true()
+                const result = await InvoiceModel.query().findById(moreThanMinLicence.invoiceId)
+                expect(result.minimumChargeInvoice).to.be.false()
+              })
+            })
+
+            describe("from an 'generated' bill run", () => {
+              it('sets the `minimumChargeInvoice` flag correctly', async () => {
+                await GenerateBillRunService.go(fixBillRun)
+                await DeleteLicenceService.go(moreThanMinLicence, notifierFake)
+
+                const result = await InvoiceModel.query().findById(moreThanMinLicence.invoiceId)
+                expect(result.minimumChargeInvoice).to.be.true()
+              })
             })
           })
         })
