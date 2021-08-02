@@ -36,7 +36,7 @@ class DeleteLicenceService {
         const billRun = await licence.$relatedQuery('billRun', trx)
 
         if (licences.length) {
-          await this._handleInvoice(invoice, licence, trx)
+          await this._handleInvoice(billRun, invoice, licence, trx)
           await this._handleBillRun(billRun, licence, trx)
         } else {
           await DeleteInvoiceService.go(invoice, billRun.id, notifier, trx)
@@ -51,9 +51,10 @@ class DeleteLicenceService {
    * Updates the invoice instance that the licence belongs to, then uses the updated fields to generate a patch which is
    * applied to the invoice in the db.
    */
-  static async _handleInvoice (invoice, licence, trx) {
+  static async _handleInvoice (billRun, invoice, licence, trx) {
     this._updateInstance(invoice, licence)
-    const invoicePatch = this._invoicePatch(invoice)
+    const minimumChargeInvoice = await this._determineMinimumChargeInvoice(billRun, invoice, trx)
+    const invoicePatch = this._invoicePatch(invoice, minimumChargeInvoice)
     await invoice.$query(trx).patch(invoicePatch)
   }
 
@@ -71,13 +72,52 @@ class DeleteLicenceService {
    * Creates a patch for the invoice using the fields in _entityPatch (which are common to both invoice and bill run),
    * and then adds in additional fields based on the invoice's static methods.
    */
-  static _invoicePatch (invoice) {
+  static _invoicePatch (invoice, minimumChargeInvoice) {
     return {
       ...this._entityPatch(invoice),
       zeroValueInvoice: invoice.$zeroValueInvoice(),
       deminimisInvoice: invoice.$deminimisInvoice(),
-      minimumChargeInvoice: invoice.$minimumChargeInvoice()
+      minimumChargeInvoice
     }
+  }
+
+  /**
+   * Determine whether the connected invoice is still a minimum charge invoice
+   *
+   * When transactions are added to a bill run they can be flagged as 'subject to minimum charge'. It does not mean the
+   * resulting invoice _will_ be minimum charge because it all depends on whether the combined value is less than £25.
+   * If it is we add a minimum charge adjustment transaction to the invoice as part of 'generating' the bill run and
+   * this is when we flag it as a **minimum charge invoice**.
+   *
+   * Deleting a licence might result in the minimum charge adjustments being deleted. But this will only be relevant to
+   * generated bill runs. All this complexity means we need a method to determine what the `minimumChargeInvoice` field
+   * on the connected invoice needs to be set to.
+   *
+   * @param {module:BillRunModel} billRun The bill run the licence was deleted from. Used to get the bill run status
+   * @param {module:InvoiceModel} invoice The invoice the licence was deleted from.
+   *
+   * @returns {boolean} the value to set `minimumChargeInvoice` to (either `true` or `false`)
+   */
+  static async _determineMinimumChargeInvoice (billRun, invoice, trx) {
+    if (billRun.status === 'initialised') {
+      // We only set minimumChargeInvoice to true during the generate process when minimum charge adjustment
+      // transactions are added by us. So, if the bill run is `initialised` it will _always_ be false
+      return false
+    }
+
+    if (invoice.subjectToMinimumChargeCount <= 0) {
+      // If subjectToMinimumChargeCount is 0 then even if 'generated' we would not have looked at creating minimum
+      // charge adjustment transactions for the invoice
+      return false
+    }
+
+    const result = await invoice
+      .$relatedQuery('transactions', trx)
+      .where('minimumChargeAdjustment', true)
+      .count()
+      .first()
+
+    return result.count > 0
   }
 
   /**
