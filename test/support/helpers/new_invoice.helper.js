@@ -80,6 +80,26 @@ class NewInvoiceHelper {
 
     return flags
   }
+
+  /**
+   * Updates an invoice
+   *
+   * @param {module:InvoiceModel} invoice The invoice to be updated.
+   * @param {object} updates JSON object of values to be updated. Each value in the object will be added to the existing
+   *  value in the invoice.
+   *
+   * @returns {module:InvoiceModel} The newly updated instance of `InvoiceModel`.
+   */
+  static async update (invoice, updates = {}) {
+    const patch = {}
+
+    for (const key in updates) {
+      patch[key] = invoice[key] + updates[key]
+    }
+
+    return invoice.$query()
+      .patchAndFetch(patch)
+  }
 }
 
 module.exports = NewInvoiceHelper
