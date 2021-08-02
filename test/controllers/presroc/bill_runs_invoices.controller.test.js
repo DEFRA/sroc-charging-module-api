@@ -15,12 +15,11 @@ const { init } = require('../../../app/server')
 const {
   AuthorisationHelper,
   AuthorisedSystemHelper,
-  BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
-  RegimeHelper,
-  TransactionHelper,
-  InvoiceHelper
+  NewInvoiceHelper,
+  NewTransactionHelper,
+  RegimeHelper
 } = require('../../support/helpers')
 
 const Boom = require('@hapi/boom')
@@ -38,22 +37,18 @@ const { BillRunModel, InvoiceModel } = require('../../../app/models')
 const JsonWebToken = require('jsonwebtoken')
 
 describe('Presroc Invoices controller', () => {
-  const clientID = '1234546789'
   let server
   let authToken
-  let regime
-  let authorisedSystem
-  let billRun
   let invoice
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
     server = await init()
 
-    regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
-    billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-    invoice = await InvoiceHelper.addInvoice(billRun.id, 'CUSTOMER', '2020')
+    const regime = await RegimeHelper.addRegime('wrls', 'WRLS')
+    await AuthorisedSystemHelper.addSystem('clientId', 'system1', [regime])
+
+    invoice = await NewInvoiceHelper.add()
   })
 
   afterEach(async () => {
@@ -70,7 +65,7 @@ describe('Presroc Invoices controller', () => {
     }
 
     beforeEach(async () => {
-      authToken = AuthorisationHelper.nonAdminToken(clientID)
+      authToken = AuthorisationHelper.nonAdminToken('clientId')
 
       Sinon
         .stub(JsonWebToken, 'verify')
@@ -92,7 +87,7 @@ describe('Presroc Invoices controller', () => {
       })
 
       it('returns a 204 response', async () => {
-        const response = await server.inject(options(authToken, billRun.id, invoice.id))
+        const response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
 
         expect(response.statusCode).to.equal(204)
       })
@@ -111,7 +106,7 @@ describe('Presroc Invoices controller', () => {
         })
 
         it('returns error status 404', async () => {
-          const response = await server.inject(options(authToken, billRun.id, invoice.id))
+          const response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
 
           expect(response.statusCode).to.equal(404)
         })
@@ -129,7 +124,7 @@ describe('Presroc Invoices controller', () => {
         })
 
         it('returns error status 409', async () => {
-          const response = await server.inject(options(authToken, billRun.id, invoice.id))
+          const response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
 
           expect(response.statusCode).to.equal(409)
         })
@@ -147,7 +142,7 @@ describe('Presroc Invoices controller', () => {
     }
 
     beforeEach(async () => {
-      authToken = AuthorisationHelper.nonAdminToken(clientID)
+      authToken = AuthorisationHelper.nonAdminToken('clientId')
 
       Sinon
         .stub(JsonWebToken, 'verify')
@@ -156,15 +151,13 @@ describe('Presroc Invoices controller', () => {
 
     describe('When the request is valid', () => {
       it('returns success status 200', async () => {
-        await TransactionHelper.addTransaction(billRun.id)
-        const transactions = await billRun.$relatedQuery('transactions')
-        const invoiceId = transactions[0].invoiceId
+        const transaction = await NewTransactionHelper.add()
 
-        const response = await server.inject(options(authToken, billRun.id, invoiceId))
+        const response = await server.inject(options(authToken, transaction.billRunId, transaction.invoiceId))
         const responsePayload = JSON.parse(response.payload)
 
         expect(response.statusCode).to.equal(200)
-        expect(responsePayload.invoice.id).to.equal(invoiceId)
+        expect(responsePayload.invoice.id).to.equal(transaction.invoiceId)
         expect(responsePayload.invoice.licences).to.be.an.array()
         expect(responsePayload.invoice.licences[0].transactions).to.be.an.array()
       })
@@ -175,7 +168,7 @@ describe('Presroc Invoices controller', () => {
         it('returns error status 404', async () => {
           const unknownInvoiceId = GeneralHelper.uuid4()
 
-          const response = await server.inject(options(authToken, billRun.id, unknownInvoiceId))
+          const response = await server.inject(options(authToken, invoice.billRunId, unknownInvoiceId))
           const responsePayload = JSON.parse(response.payload)
 
           expect(response.statusCode).to.equal(404)
@@ -185,17 +178,14 @@ describe('Presroc Invoices controller', () => {
 
       describe('because it is not linked to the bill run', () => {
         it('throws an error', async () => {
-          const otherBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-          await TransactionHelper.addTransaction(otherBillRun.id)
-          const transactions = await otherBillRun.$relatedQuery('transactions')
-          const invoiceId = transactions[0].invoiceId
+          const newTransaction = await NewTransactionHelper.add()
 
-          const response = await server.inject(options(authToken, billRun.id, invoiceId))
+          const response = await server.inject(options(authToken, invoice.billRunId, newTransaction.invoiceId))
           const responsePayload = JSON.parse(response.payload)
 
           expect(response.statusCode).to.equal(409)
           expect(responsePayload.message).to.equal(
-            `Invoice ${invoiceId} is not linked to bill run ${billRun.id}.`
+            `Invoice ${newTransaction.invoiceId} is not linked to bill run ${invoice.billRunId}.`
           )
         })
       })
@@ -218,13 +208,11 @@ describe('Presroc Invoices controller', () => {
     }
 
     beforeEach(async () => {
-      // TODO: Remove use of admin system once rebill feature complete and admin auth scope removed
-      // Until rebilling is feature complete you need to be an admin user to access it
-      authToken = AuthorisationHelper.adminToken()
+      authToken = AuthorisationHelper.nonAdminToken('clientId')
+
       Sinon
         .stub(JsonWebToken, 'verify')
         .returns(AuthorisationHelper.decodeToken(authToken))
-      await AuthorisedSystemHelper.addAdminSystem(null, 'admin', 'active', regime)
 
       cancelInvoice = { id: GeneralHelper.uuid4(), rebilledType: 'C' }
       rebillInvoice = { id: GeneralHelper.uuid4(), rebilledType: 'R' }
@@ -235,13 +223,13 @@ describe('Presroc Invoices controller', () => {
           invoices: [cancelInvoice, rebillInvoice]
         })
 
-      response = await server.inject(options(authToken, billRun.id, invoice.id))
+      response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
     })
 
     it('calls InvoiceRebillingValidationService with the specified bill run and invoice', async () => {
       expect(validationStub.calledOnce).to.be.true()
       expect(validationStub.getCall(0).args[0]).to.be.an.instanceof(BillRunModel)
-      expect(validationStub.getCall(0).args[0].id).to.equal(billRun.id)
+      expect(validationStub.getCall(0).args[0].id).to.equal(invoice.billRunId)
       expect(validationStub.getCall(0).args[1]).to.be.an.instanceof(InvoiceModel)
       expect(validationStub.getCall(0).args[1].id).to.equal(invoice.id)
     })
@@ -249,7 +237,7 @@ describe('Presroc Invoices controller', () => {
     it('calls InvoiceRebillingService with the specified bill run and invoice', async () => {
       expect(rebillStub.calledOnce).to.be.true()
       expect(rebillStub.getCall(0).args[0]).to.be.an.instanceof(BillRunModel)
-      expect(rebillStub.getCall(0).args[0].id).to.equal(billRun.id)
+      expect(rebillStub.getCall(0).args[0].id).to.equal(invoice.billRunId)
       expect(rebillStub.getCall(0).args[1]).to.be.an.instanceof(InvoiceModel)
       expect(rebillStub.getCall(0).args[1].id).to.equal(invoice.id)
     })
