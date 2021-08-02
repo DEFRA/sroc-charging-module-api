@@ -3,6 +3,8 @@
 const { TransactionModel } = require('../../../app/models')
 const { RulesServiceTranslator, TransactionTranslator } = require('../../../app/translators')
 
+const { CreateTransactionTallyService } = require('../../../app/services')
+
 const GeneralHelper = require('./general.helper')
 const NewLicenceHelper = require('./new_licence.helper')
 
@@ -26,7 +28,7 @@ class NewTransactionHelper {
       licence = await NewLicenceHelper.add()
     }
 
-    return TransactionModel.query()
+    const transaction = await TransactionModel.query()
       .insert({
         ...this._defaultSimpleTransaction(licence.billRunId),
         ...this._defaultSimpleCharge(),
@@ -36,6 +38,11 @@ class NewTransactionHelper {
         ...overrides
       })
       .returning('*')
+
+    const updatePatch = this._updatePatch(transaction)
+    await NewLicenceHelper.update(licence, updatePatch)
+
+    return transaction
   }
 
   static _defaultSimpleTransaction (billRunId) {
@@ -51,6 +58,14 @@ class NewTransactionHelper {
     return new RulesServiceTranslator({
       ...chargeFixtures.simple.rulesService
     })
+  }
+
+  static _updatePatch (transaction) {
+    // We already have CreateTransactionTallyService which does a great job of turning a transaction into the values
+    // needed to updated at bill run/invoice/licence level, covering scenarios such as minimum charge, zero value etc.
+    // We therefore use it here rather than reinvent the wheel.
+    const { insertData } = CreateTransactionTallyService.go(transaction, 'licence')
+    return insertData
   }
 }
 
