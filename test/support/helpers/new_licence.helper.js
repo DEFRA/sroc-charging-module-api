@@ -14,7 +14,6 @@ class NewLicenceHelper {
    *
    * @returns {module:LicenceModel} The newly created instance of `LicenceModel`.
    */
-
   static async add (invoice, overrides) {
     if (!invoice) {
       invoice = await NewInvoiceHelper.add()
@@ -46,6 +45,26 @@ class NewLicenceHelper {
       subjectToMinimumChargeCreditValue: 0,
       subjectToMinimumChargeDebitValue: 0
     }
+  }
+
+  /**
+   * Updates a licence
+   *
+   * @param {module:LicenceModel} licence The licence to be updated.
+   * @param {object} updates JSON object of values to be updated. Each value in the object will be added to the existing
+   *  value in the licence.
+   *
+   * @returns {module:LicenceModel} The newly updated instance of `LicenceModel`.
+   */
+  static async update (licence, updates = {}) {
+    const patch = {}
+
+    for (const key in updates) {
+      patch[key] = licence[key] + updates[key]
+    }
+
+    return licence.$query()
+      .patchAndFetch(patch)
   }
 }
 
