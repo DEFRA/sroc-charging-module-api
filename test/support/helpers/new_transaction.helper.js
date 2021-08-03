@@ -23,9 +23,9 @@ class NewTransactionHelper {
    *
    * @returns {module:TransactionModel} The newly created instance of `TransactionModel`.
    */
-  static async add (licence, overrides = {}) {
+  static async create (licence, overrides = {}) {
     if (!licence) {
-      licence = await NewLicenceHelper.add()
+      licence = await NewLicenceHelper.create()
     }
 
     const transaction = await TransactionModel.query()

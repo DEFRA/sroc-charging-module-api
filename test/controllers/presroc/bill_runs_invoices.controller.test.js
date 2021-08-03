@@ -48,7 +48,7 @@ describe('Presroc Invoices controller', () => {
     const regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     await AuthorisedSystemHelper.addSystem('clientId', 'system1', [regime])
 
-    invoice = await NewInvoiceHelper.add()
+    invoice = await NewInvoiceHelper.create()
   })
 
   afterEach(async () => {
@@ -151,7 +151,7 @@ describe('Presroc Invoices controller', () => {
 
     describe('When the request is valid', () => {
       it('returns success status 200', async () => {
-        const transaction = await NewTransactionHelper.add()
+        const transaction = await NewTransactionHelper.create()
 
         const response = await server.inject(options(authToken, transaction.billRunId, transaction.invoiceId))
         const responsePayload = JSON.parse(response.payload)
@@ -178,7 +178,7 @@ describe('Presroc Invoices controller', () => {
 
       describe('because it is not linked to the bill run', () => {
         it('throws an error', async () => {
-          const newTransaction = await NewTransactionHelper.add()
+          const newTransaction = await NewTransactionHelper.create()
 
           const response = await server.inject(options(authToken, invoice.billRunId, newTransaction.invoiceId))
           const responsePayload = JSON.parse(response.payload)

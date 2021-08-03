@@ -20,7 +20,7 @@ describe('New Invoice helper', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
-    invoice = await NewInvoiceHelper.add(null, {
+    invoice = await NewInvoiceHelper.create(null, {
       debitLineCount: 5,
       debitLineValue: 250,
       financialYear: 2021,
@@ -29,7 +29,7 @@ describe('New Invoice helper', () => {
     })
   })
 
-  describe('#add method', () => {
+  describe('#create method', () => {
     it('sets flags as requested', async () => {
       expect(invoice.deminimisInvoice).to.be.false()
       expect(invoice.zeroValueInvoice).to.be.true()

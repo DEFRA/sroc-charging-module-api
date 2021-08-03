@@ -22,7 +22,7 @@ describe('New Bill Run helper', () => {
 
   describe('#update method', () => {
     beforeEach(async () => {
-      billRun = await NewBillRunHelper.add(null, null, { billRunNumber: 50000 })
+      billRun = await NewBillRunHelper.create(null, null, { billRunNumber: 50000 })
     })
 
     it('adds supplied numbers to the existing bill run values', async () => {

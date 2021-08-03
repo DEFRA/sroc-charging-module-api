@@ -20,13 +20,13 @@ describe('New Licence helper', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
-    licence = await NewLicenceHelper.add(null, {
+    licence = await NewLicenceHelper.create(null, {
       debitLineCount: 5,
       subjectToMinimumChargeDebitValue: 5000
     })
   })
 
-  describe('#add method', () => {
+  describe('#create method', () => {
     it('updates the parent invoice', async () => {
       const result = await InvoiceModel.query().findById(licence.invoiceId)
 

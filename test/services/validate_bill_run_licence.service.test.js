@@ -32,7 +32,7 @@ describe('Validate Bill Run Licence service', () => {
 
   describe('When a valid bill run ID is supplied', () => {
     beforeEach(async () => {
-      licence = await NewLicenceHelper.add()
+      licence = await NewLicenceHelper.create()
       billRun = await BillRunModel.query().findById(licence.billRunId)
     })
 
@@ -49,7 +49,7 @@ describe('Validate Bill Run Licence service', () => {
         let otherBillRun
 
         beforeEach(async () => {
-          otherBillRun = await NewBillRunHelper.add()
+          otherBillRun = await NewBillRunHelper.create()
         })
 
         it('throws an error', async () => {
@@ -66,11 +66,11 @@ describe('Validate Bill Run Licence service', () => {
         let rebillingLicence
 
         beforeEach(async () => {
-          invoice = await NewInvoiceHelper.add(billRun, {
+          invoice = await NewInvoiceHelper.create(billRun, {
             rebilledInvoiceId: GeneralHelper.uuid4(),
             rebilledType: 'R'
           })
-          rebillingLicence = await NewLicenceHelper.add(invoice)
+          rebillingLicence = await NewLicenceHelper.create(invoice)
         })
 
         it('throws an error', async () => {

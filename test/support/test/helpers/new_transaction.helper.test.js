@@ -20,10 +20,10 @@ describe('New Transaction helper', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
-    transaction = await NewTransactionHelper.add()
+    transaction = await NewTransactionHelper.create()
   })
 
-  describe('#add method', () => {
+  describe('#create method', () => {
     it('updates the parent licence', async () => {
       const result = await LicenceModel.query().findById(transaction.licenceId)
 
