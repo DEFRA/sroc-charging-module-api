@@ -23,13 +23,11 @@ class NewInvoiceHelper {
       ...this._defaultInvoice(),
       ...overrides
     }
-    const flags = this._flags(invoiceValues)
 
     const invoice = await InvoiceModel.query()
       .insert({
         billRunId: billRun.id,
-        ...invoiceValues,
-        ...flags
+        ...invoiceValues
       })
       .returning('*')
 
@@ -55,35 +53,6 @@ class NewInvoiceHelper {
       rebilledInvoiceId: undefined,
       rebilledType: undefined
     }
-  }
-
-  static _flags ({
-    creditLineCount,
-    creditLineValue,
-    debitLineCount,
-    debitLineValue,
-    zeroLineCount,
-    subjectToMinimumChargeCreditValue,
-    subjectToMinimumChargeDebitValue
-  }) {
-    const flags = {
-      zeroValueInvoice: false,
-      deminimisInvoice: false
-    }
-
-    const nonZeroLineCount = creditLineCount + debitLineCount
-    const netValue = debitLineValue - creditLineValue
-    const minimumChargeNetValue = subjectToMinimumChargeCreditValue + subjectToMinimumChargeDebitValue
-
-    if ((nonZeroLineCount === 0) && (zeroLineCount > 0)) {
-      flags.zeroValueInvoice = true
-    } else if ((netValue > 0) && (netValue < 500)) {
-      if (minimumChargeNetValue === 0) {
-        flags.deminimisInvoice = true
-      }
-    }
-
-    return flags
   }
 
   static _updatePatch (invoice) {
@@ -134,6 +103,45 @@ class NewInvoiceHelper {
     const isNumber = typeof value === 'number'
     const exception = ['billRunNumber', 'financialYear'].includes(key)
     return isNumber && !exception
+  }
+
+  /**
+   * Refreshes the zeroValueInvoice and deminimisInvoice flags on an invoice, based on its current counts and values.
+   *
+   * @param {module:InvoiceModel} invoice The invoice with flags to be refreshed.
+   *
+   * @returns {module:InvoiceModel} The newly updated instance of `InvoiceModel`.
+   */
+  static async refreshFlags (invoice) {
+    const {
+      creditLineCount,
+      creditLineValue,
+      debitLineCount,
+      debitLineValue,
+      zeroLineCount,
+      subjectToMinimumChargeCreditValue,
+      subjectToMinimumChargeDebitValue
+    } = invoice
+
+    const flags = {
+      zeroValueInvoice: false,
+      deminimisInvoice: false
+    }
+
+    const nonZeroLineCount = creditLineCount + debitLineCount
+    const netValue = debitLineValue - creditLineValue
+    const minimumChargeNetValue = subjectToMinimumChargeCreditValue + subjectToMinimumChargeDebitValue
+
+    if ((nonZeroLineCount === 0) && (zeroLineCount > 0)) {
+      flags.zeroValueInvoice = true
+    } else if ((netValue > 0) && (netValue < 500)) {
+      if (minimumChargeNetValue === 0) {
+        flags.deminimisInvoice = true
+      }
+    }
+
+    return invoice.$query()
+      .patchAndFetch(flags)
   }
 }
 
