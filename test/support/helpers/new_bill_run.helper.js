@@ -18,7 +18,7 @@ class NewBillRunHelper {
    *
    * @returns {module:BillRunModel} The newly created instance of `BillRunModel`.
    */
-  static async add (authorisedSystemId, regimeId, overrides = {}) {
+  static async create (authorisedSystemId, regimeId, overrides = {}) {
     let regime
 
     if (!regimeId) {
@@ -46,6 +46,43 @@ class NewBillRunHelper {
       region: 'A',
       status: 'initialised'
     }
+  }
+
+  /**
+   * Updates a bill run
+   *
+   * @param {module:BillRunModel} entity The bill run to be updated.
+   * @param {object} updates JSON object of values to be updated. Each value in the object will be added to the existing
+   *  value in the bill run if it is a number (unless it's an exception such as billRunNumber); if it isn't a number
+   *  then the existing value will be replaced.
+   *
+   * @returns {module:BillRunModel} The newly updated instance of `BillRunModel`.
+   */
+  static async update (entity, updates = {}) {
+    const patch = {}
+
+    for (const [key, value] of Object.entries(updates)) {
+      // If the field is "addable" then we add it to the existing number; otherwise we replace the existing value.
+      if (this._addable(key, value)) {
+        patch[key] = entity[key] + value
+      } else {
+        patch[key] = value
+      }
+    }
+
+    return entity.$query()
+      .patchAndFetch(patch)
+  }
+
+  /**
+   * When updating an entity we either add or replace values. In general, we add anything that's a number (eg. counts
+   * and values) and replace anything that isn't. However some numbers are an exception and we do want them to be
+   * replaced. This function returns true if the passed key/value pair are suitable for adding and false if they aren't.
+   */
+  static _addable (key, value) {
+    const isNumber = typeof value === 'number'
+    const exception = ['billRunNumber', 'financialYear'].includes(key)
+    return isNumber && !exception
   }
 
   /**

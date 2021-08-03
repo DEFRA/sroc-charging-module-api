@@ -14,24 +14,27 @@ class NewInvoiceHelper {
    *
    * @returns {module:InvoiceModel} The newly created instance of `InvoiceModel`.
    */
-  static async add (billRun, overrides = {}) {
+  static async create (billRun, overrides = {}) {
     if (!billRun) {
-      billRun = await NewBillRunHelper.add()
+      billRun = await NewBillRunHelper.create()
     }
 
     const invoiceValues = {
       ...this._defaultInvoice(),
       ...overrides
     }
-    const flags = this._flags(invoiceValues)
 
-    return InvoiceModel.query()
+    const invoice = await InvoiceModel.query()
       .insert({
         billRunId: billRun.id,
-        ...invoiceValues,
-        ...flags
+        ...invoiceValues
       })
       .returning('*')
+
+    const updatePatch = this._updatePatch(invoice)
+    await NewBillRunHelper.update(billRun, updatePatch)
+
+    return invoice
   }
 
   static _defaultInvoice () {
@@ -52,15 +55,74 @@ class NewInvoiceHelper {
     }
   }
 
-  static _flags ({
-    creditLineCount,
-    creditLineValue,
-    debitLineCount,
-    debitLineValue,
-    zeroLineCount,
-    subjectToMinimumChargeCreditValue,
-    subjectToMinimumChargeDebitValue
-  }) {
+  static _updatePatch (invoice) {
+    return {
+      creditLineCount: invoice.creditLineCount,
+      creditLineValue: invoice.creditLineValue,
+      debitLineCount: invoice.debitLineCount,
+      debitLineValue: invoice.debitLineValue,
+      zeroLineCount: invoice.zeroLineCount,
+      subjectToMinimumChargeCount: invoice.subjectToMinimumChargeCount,
+      subjectToMinimumChargeCreditValue: invoice.subjectToMinimumChargeCreditValue,
+      subjectToMinimumChargeDebitValue: invoice.subjectToMinimumChargeDebitValue
+    }
+  }
+
+  /**
+   * Updates an invoice
+   *
+   * @param {module:InvoiceModel} invoice The invoice to be updated.
+   * @param {object} updates JSON object of values to be updated. Each value in the object will be added to the existing
+   *  value in the bill run if it is a number (unless it's an exception such as financialYear); if it isn't a number
+   *  then the existing value will be replaced.
+   *
+   * @returns {module:InvoiceModel} The newly updated instance of `InvoiceModel`.
+   */
+  static async update (entity, updates = {}) {
+    const patch = {}
+
+    for (const [key, value] of Object.entries(updates)) {
+      // If the field is "addable" then we add it to the existing number; otherwise we replace the existing value.
+      if (this._addable(key, value)) {
+        patch[key] = entity[key] + value
+      } else {
+        patch[key] = value
+      }
+    }
+
+    return entity.$query()
+      .patchAndFetch(patch)
+  }
+
+  /**
+   * When updating an entity we either add or replace values. In general, we add anything that's a number (eg. counts
+   * and values) and replace anything that isn't. However some numbers are an exception and we do want them to be
+   * replaced. This function returns true if the passed key/value pair are suitable for adding and false if they aren't.
+   */
+  static _addable (key, value) {
+    const isNumber = typeof value === 'number'
+    const exception = ['billRunNumber', 'financialYear'].includes(key)
+    return isNumber && !exception
+  }
+
+  /**
+   * Refreshes the zeroValueInvoice and deminimisInvoice flags on an invoice, based on its current counts and values.
+   *
+   * @param {module:InvoiceModel} invoice The invoice with flags to be refreshed.
+   *
+   * @returns {module:InvoiceModel} The newly updated instance of `InvoiceModel`.
+   */
+  static async refreshFlags (invoice) {
+    const {
+      creditLineCount,
+      creditLineValue,
+      debitLineCount,
+      debitLineValue,
+      zeroLineCount,
+      subjectToMinimumChargeCreditValue,
+      subjectToMinimumChargeDebitValue
+    } = invoice
+
     const flags = {
       zeroValueInvoice: false,
       deminimisInvoice: false
@@ -78,7 +140,8 @@ class NewInvoiceHelper {
       }
     }
 
-    return flags
+    return invoice.$query()
+      .patchAndFetch(flags)
   }
 }
 
