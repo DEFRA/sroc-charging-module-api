@@ -1,6 +1,6 @@
 'use strict'
 
-const { InvoiceModel } = require('../../../app/models')
+const { InvoiceModel, BillRunModel } = require('../../../app/models')
 
 const NewBillRunHelper = require('./new_bill_run.helper')
 
@@ -31,8 +31,7 @@ class NewInvoiceHelper {
       })
       .returning('*')
 
-    const updatePatch = this._updatePatch(invoice)
-    await NewBillRunHelper.update(billRun, updatePatch)
+    await this._updateBillRun(billRun, invoice)
 
     return invoice
   }
@@ -53,6 +52,11 @@ class NewInvoiceHelper {
       rebilledInvoiceId: undefined,
       rebilledType: undefined
     }
+  }
+
+  static async _updateBillRun (billRun, objectToUpdateFrom) {
+    const updatePatch = this._updatePatch(objectToUpdateFrom)
+    await NewBillRunHelper.update(billRun, updatePatch)
   }
 
   static _updatePatch (invoice) {
@@ -90,8 +94,13 @@ class NewInvoiceHelper {
       }
     }
 
-    return invoice.$query()
+    const updatedInvoice = await invoice.$query()
       .patchAndFetch(patch)
+
+    const billRun = await BillRunModel.query().findById(invoice.billRunId)
+    await this._updateBillRun(billRun, updates)
+
+    return updatedInvoice
   }
 
   /**

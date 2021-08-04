@@ -71,6 +71,17 @@ describe('New Invoice helper', () => {
 
       expect(result.financialYear).to.equal(3000)
     })
+
+    it('updates values at bill run level', async () => {
+      await NewInvoiceHelper.update(invoice, {
+        debitLineCount: 1,
+        debitLineValue: 1000
+      })
+      const result = await BillRunModel.query().findById(invoice.billRunId)
+
+      expect(result.debitLineCount).to.equal(6)
+      expect(result.debitLineValue).to.equal(1250)
+    })
   })
 
   describe('#refreshFlags method', () => {
