@@ -78,19 +78,19 @@ class NewInvoiceHelper {
    *
    * @returns {module:InvoiceModel} The newly updated instance of `InvoiceModel`.
    */
-  static async update (entity, updates = {}) {
+  static async update (invoice, updates = {}) {
     const patch = {}
 
     for (const [key, value] of Object.entries(updates)) {
       // If the field is "addable" then we add it to the existing number; otherwise we replace the existing value.
       if (this._addable(key, value)) {
-        patch[key] = entity[key] + value
+        patch[key] = invoice[key] + value
       } else {
         patch[key] = value
       }
     }
 
-    return entity.$query()
+    return invoice.$query()
       .patchAndFetch(patch)
   }
 

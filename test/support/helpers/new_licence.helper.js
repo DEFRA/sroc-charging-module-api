@@ -74,19 +74,19 @@ class NewLicenceHelper {
    *
    * @returns {module:LicenceModel} The newly updated instance of `LicenceModel`.
    */
-  static async update (entity, updates = {}) {
+  static async update (licence, updates = {}) {
     const patch = {}
 
     for (const [key, value] of Object.entries(updates)) {
       // If the field is "addable" then we add it to the existing number; otherwise we replace the existing value.
       if (this._addable(key, value)) {
-        patch[key] = entity[key] + value
+        patch[key] = licence[key] + value
       } else {
         patch[key] = value
       }
     }
 
-    return entity.$query()
+    return licence.$query()
       .patchAndFetch(patch)
   }
 
