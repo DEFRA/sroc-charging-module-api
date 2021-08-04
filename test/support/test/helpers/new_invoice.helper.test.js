@@ -72,7 +72,7 @@ describe('New Invoice helper', () => {
       expect(result.financialYear).to.equal(3000)
     })
 
-    it('updates values at bill run level', async () => {
+    it('updates values at the bill run level', async () => {
       await NewInvoiceHelper.update(invoice, {
         debitLineCount: 1,
         debitLineValue: 1000

@@ -1,6 +1,6 @@
 'use strict'
 
-const { LicenceModel } = require('../../../app/models')
+const { InvoiceModel, LicenceModel } = require('../../../app/models')
 
 const NewInvoiceHelper = require('./new_invoice.helper')
 
@@ -32,8 +32,7 @@ class NewLicenceHelper {
       })
       .returning('*')
 
-    const updatePatch = this._updatePatch(licence)
-    await NewInvoiceHelper.update(invoice, updatePatch)
+    await this._updateInvoice(invoice, licence)
 
     return licence
   }
@@ -50,6 +49,11 @@ class NewLicenceHelper {
       subjectToMinimumChargeCreditValue: 0,
       subjectToMinimumChargeDebitValue: 0
     }
+  }
+
+  static async _updateInvoice (invoice, objectToUpdateFrom) {
+    const updatePatch = this._updatePatch(objectToUpdateFrom)
+    await NewInvoiceHelper.update(invoice, updatePatch)
   }
 
   static _updatePatch (licence) {
@@ -86,8 +90,13 @@ class NewLicenceHelper {
       }
     }
 
-    return licence.$query()
+    const updatedInvoice = await licence.$query()
       .patchAndFetch(patch)
+
+    const invoice = await InvoiceModel.query().findById(licence.invoiceId)
+    await this._updateInvoice(invoice, updates)
+
+    return updatedInvoice
   }
 
   /**
