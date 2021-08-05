@@ -1,5 +1,34 @@
 # Changelog
 
+## [v0.12.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.12.0) (2021-08-05)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.11.1...v0.12.0)
+
+**Implemented enhancements:**
+
+- Enable delete licence in production [\#500](https://github.com/DEFRA/sroc-charging-module-api/pull/500) ([Cruikshanks](https://github.com/Cruikshanks))
+- Include licence no. for min. charge in trans file [\#491](https://github.com/DEFRA/sroc-charging-module-api/pull/491) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Fixed bugs:**
+
+- Fix invoice min. charge flag when licence deleted [\#493](https://github.com/DEFRA/sroc-charging-module-api/pull/493) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Merged pull requests:**
+
+- Test helpers pass all changes up [\#499](https://github.com/DEFRA/sroc-charging-module-api/pull/499) ([StuAA78](https://github.com/StuAA78))
+- Bump joi from 17.4.1 to 17.4.2 [\#498](https://github.com/DEFRA/sroc-charging-module-api/pull/498) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Test helpers cascade changes upwards [\#497](https://github.com/DEFRA/sroc-charging-module-api/pull/497) ([StuAA78](https://github.com/StuAA78))
+- Rework test transaction helper [\#496](https://github.com/DEFRA/sroc-charging-module-api/pull/496) ([StuAA78](https://github.com/StuAA78))
+- Bump @aws-sdk/client-s3 from 3.23.0 to 3.24.0 [\#495](https://github.com/DEFRA/sroc-charging-module-api/pull/495) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Remove invalid min. charge model tests [\#494](https://github.com/DEFRA/sroc-charging-module-api/pull/494) ([Cruikshanks](https://github.com/Cruikshanks))
+- Reject requests with inverted quotation marks [\#492](https://github.com/DEFRA/sroc-charging-module-api/pull/492) ([Cruikshanks](https://github.com/Cruikshanks))
+- Rework bill run, licence and invoice creation test helpers [\#490](https://github.com/DEFRA/sroc-charging-module-api/pull/490) ([StuAA78](https://github.com/StuAA78))
+- Bump pg from 8.6.0 to 8.7.1 [\#489](https://github.com/DEFRA/sroc-charging-module-api/pull/489) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pg-query-stream from 4.1.0 to 4.2.1 [\#488](https://github.com/DEFRA/sroc-charging-module-api/pull/488) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.22.0 to 3.23.0 [\#487](https://github.com/DEFRA/sroc-charging-module-api/pull/487) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.21.0 to 3.22.0 [\#486](https://github.com/DEFRA/sroc-charging-module-api/pull/486) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @hapi/lab from 24.3.1 to 24.3.2 [\#485](https://github.com/DEFRA/sroc-charging-module-api/pull/485) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.11.1](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.11.1) (2021-07-14)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.11.0...v0.11.1)
