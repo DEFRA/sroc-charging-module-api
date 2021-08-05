@@ -6,12 +6,7 @@ const routes = [
   {
     method: 'DELETE',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/licences/{licenceId}',
-    handler: PresrocBillRunsLicencesController.delete,
-    options: {
-      app: {
-        excludeFromProd: true
-      }
-    }
+    handler: PresrocBillRunsLicencesController.delete
   }
 ]
 
