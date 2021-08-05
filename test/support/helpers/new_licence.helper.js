@@ -1,6 +1,6 @@
 'use strict'
 
-const { LicenceModel } = require('../../../app/models')
+const { InvoiceModel, LicenceModel } = require('../../../app/models')
 
 const NewInvoiceHelper = require('./new_invoice.helper')
 
@@ -32,8 +32,7 @@ class NewLicenceHelper {
       })
       .returning('*')
 
-    const updatePatch = this._updatePatch(licence)
-    await NewInvoiceHelper.update(invoice, updatePatch)
+    await this._updateInvoice(invoice, licence)
 
     return licence
   }
@@ -50,6 +49,11 @@ class NewLicenceHelper {
       subjectToMinimumChargeCreditValue: 0,
       subjectToMinimumChargeDebitValue: 0
     }
+  }
+
+  static async _updateInvoice (invoice, objectToUpdateFrom) {
+    const updatePatch = this._updatePatch(objectToUpdateFrom)
+    await NewInvoiceHelper.update(invoice, updatePatch)
   }
 
   static _updatePatch (licence) {
@@ -74,20 +78,25 @@ class NewLicenceHelper {
    *
    * @returns {module:LicenceModel} The newly updated instance of `LicenceModel`.
    */
-  static async update (entity, updates = {}) {
+  static async update (licence, updates = {}) {
     const patch = {}
 
     for (const [key, value] of Object.entries(updates)) {
       // If the field is "addable" then we add it to the existing number; otherwise we replace the existing value.
       if (this._addable(key, value)) {
-        patch[key] = entity[key] + value
+        patch[key] = licence[key] + value
       } else {
         patch[key] = value
       }
     }
 
-    return entity.$query()
+    const updatedInvoice = await licence.$query()
       .patchAndFetch(patch)
+
+    const invoice = await InvoiceModel.query().findById(licence.invoiceId)
+    await this._updateInvoice(invoice, updates)
+
+    return updatedInvoice
   }
 
   /**

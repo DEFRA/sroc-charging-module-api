@@ -9,7 +9,7 @@ const { expect } = Code
 
 // Test helpers
 const { DatabaseHelper } = require('../../helpers')
-const { InvoiceModel } = require('../../../../app/models')
+const { BillRunModel, InvoiceModel } = require('../../../../app/models')
 
 // Thing under test
 const { NewLicenceHelper } = require('../../helpers')
@@ -52,6 +52,20 @@ describe('New Licence helper', () => {
       })
 
       expect(result.licenceNumber).to.equal('NEW_REF')
+    })
+
+    it('updates values at the invoice and bill run levels', async () => {
+      await NewLicenceHelper.update(licence, {
+        debitLineCount: 1,
+        subjectToMinimumChargeDebitValue: 1000
+      })
+      const invoice = await InvoiceModel.query().findById(licence.invoiceId)
+      const billRun = await BillRunModel.query().findById(licence.billRunId)
+
+      expect(invoice.debitLineCount).to.equal(6)
+      expect(invoice.subjectToMinimumChargeDebitValue).to.equal(6000)
+      expect(billRun.debitLineCount).to.equal(6)
+      expect(billRun.subjectToMinimumChargeDebitValue).to.equal(6000)
     })
   })
 })

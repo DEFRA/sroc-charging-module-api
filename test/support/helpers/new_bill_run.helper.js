@@ -51,26 +51,26 @@ class NewBillRunHelper {
   /**
    * Updates a bill run
    *
-   * @param {module:BillRunModel} entity The bill run to be updated.
+   * @param {module:BillRunModel} billRun The bill run to be updated.
    * @param {object} updates JSON object of values to be updated. Each value in the object will be added to the existing
    *  value in the bill run if it is a number (unless it's an exception such as billRunNumber); if it isn't a number
    *  then the existing value will be replaced.
    *
    * @returns {module:BillRunModel} The newly updated instance of `BillRunModel`.
    */
-  static async update (entity, updates = {}) {
+  static async update (billRun, updates = {}) {
     const patch = {}
 
     for (const [key, value] of Object.entries(updates)) {
       // If the field is "addable" then we add it to the existing number; otherwise we replace the existing value.
       if (this._addable(key, value)) {
-        patch[key] = entity[key] + value
+        patch[key] = billRun[key] + value
       } else {
         patch[key] = value
       }
     }
 
-    return entity.$query()
+    return billRun.$query()
       .patchAndFetch(patch)
   }
 
