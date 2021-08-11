@@ -72,7 +72,7 @@ class SendTransactionFileService {
     const generatedFile = await GenerateTransactionFileService.go(billRun, filename)
 
     // The key is the remote path and filename in the S3 bucket, eg. 'wrls/transaction/nalai50001.dat'
-    const key = path.join(regime.slug, 'transaction', filename)
+    const key = path.join('export', regime.slug, 'transaction', filename)
 
     await SendFileToS3Service.go(generatedFile, key)
 
