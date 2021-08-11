@@ -54,9 +54,11 @@ describe('Send File To S3 service', () => {
   })
 
   describe('When a valid file is specified', () => {
-    it('uploads the file to the S3 bucket', async () => {
+    beforeEach(async () => {
       await SendFileToS3Service.go(filenameWithPath, key, false)
+    })
 
+    it('uploads the file to the S3 bucket', async () => {
       // Test that the S3 client was called once
       expect(s3Stub.calledOnce).to.be.true()
 
@@ -68,9 +70,13 @@ describe('Send File To S3 service', () => {
       expect(calledCommand.input.Bucket).to.equal('TEST_BUCKET')
     })
 
-    it("also uploads the file to the archive S3 bucket when copyToArchive is 'true'", async () => {
-      await SendFileToS3Service.go(filenameWithPath, key, true)
+    it('specifies the correct key to upload it to', async () => {
+      const calledCommand = s3Stub.getCall(0).firstArg
 
+      expect(calledCommand.input.Key).to.equal(key)
+    })
+
+    it("also uploads the file to the archive S3 bucket when copyToArchive is 'true'", async () => {
       // Test that the S3 client was called twice
       expect(s3Stub.calledTwice).to.be.true()
 
