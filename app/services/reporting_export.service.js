@@ -17,7 +17,6 @@ class ReportingExportService {
    */
   // TODO: confirm where to send (eg. /export/wrls/ ?)
   // TODO: - upload bucket, root folder /csv/
-  // TODO: - make sure the files have a .csv extension
   // TODO: confirm if we also write to the archive bucket? NO
   // TODO: Make sure we abort process if error occurs during _exportTables
   // TODO: confirm whether we continue uploading files if an error occurs during an upload? YES WE DO
