@@ -20,7 +20,7 @@ describe.only('Reporting Export service', () => {
   let notifierFake
 
   beforeEach(async () => {
-    exportTableStub = Sinon.stub(ExportTableService, 'go').callsFake(table => `${table}.dat`)
+    exportTableStub = Sinon.stub(ExportTableService, 'go').callsFake(table => `${table}.csv`)
     sendFileStub = Sinon.stub(SendFileToS3Service, 'go')
 
     // Create a fake function to stand in place of Notifier.omfg()
