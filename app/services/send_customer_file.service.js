@@ -128,7 +128,7 @@ class SendCustomerFileService {
     const filename = path.basename(generatedFile)
 
     // The key is the remote path and filename in the S3 bucket, eg. 'wrls/customer/nalac50001.dat'
-    const key = path.join(regime.slug, 'customer', filename)
+    const key = path.join('export', regime.slug, 'customer', filename)
 
     await SendFileToS3Service.go(generatedFile, key)
 
