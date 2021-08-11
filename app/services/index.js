@@ -44,6 +44,7 @@ const NextTransactionFileReferenceService = require('./next_transaction_file_ref
 const NextTransactionReferenceService = require('./next_transaction_reference.service')
 const ObjectCleaningService = require('./plugins/object_cleaning.service')
 const PrepareCustomerFileService = require('./prepare_customer_file.service')
+const ReportingExportService = require('./reporting_export.service')
 const RequestBillRunService = require('./plugins/request_bill_run.service')
 const RequestInvoiceService = require('./plugins/request_invoice.service')
 const RequestLicenceService = require('./plugins/request_licence.service')
@@ -113,6 +114,7 @@ module.exports = {
   NextTransactionReferenceService,
   ObjectCleaningService,
   PrepareCustomerFileService,
+  ReportingExportService,
   RequestBillRunService,
   RequestInvoiceService,
   RequestLicenceService,
