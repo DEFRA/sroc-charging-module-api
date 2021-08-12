@@ -16,6 +16,7 @@ const CreateTransactionBillRunValidationService = require('./create_transaction_
 const CreateTransactionService = require('./create_transaction.service')
 const CreateTransactionTallyService = require('./create_transaction_tally.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
+const DataExportService = require('./data_export.service')
 const DbErrorsService = require('./plugins/db_errors.service')
 const DeleteBillRunService = require('./delete_bill_run.service')
 const DeleteFileService = require('./delete_file.service')
@@ -44,7 +45,6 @@ const NextTransactionFileReferenceService = require('./next_transaction_file_ref
 const NextTransactionReferenceService = require('./next_transaction_reference.service')
 const ObjectCleaningService = require('./plugins/object_cleaning.service')
 const PrepareCustomerFileService = require('./prepare_customer_file.service')
-const ReportingExportService = require('./reporting_export.service')
 const RequestBillRunService = require('./plugins/request_bill_run.service')
 const RequestInvoiceService = require('./plugins/request_invoice.service')
 const RequestLicenceService = require('./plugins/request_licence.service')
@@ -86,6 +86,7 @@ module.exports = {
   CreateTransactionService,
   CreateTransactionTallyService,
   DatabaseHealthCheckService,
+  DataExportService,
   DbErrorsService,
   DeleteBillRunService,
   DeleteFileService,
@@ -114,7 +115,6 @@ module.exports = {
   NextTransactionReferenceService,
   ObjectCleaningService,
   PrepareCustomerFileService,
-  ReportingExportService,
   RequestBillRunService,
   RequestInvoiceService,
   RequestLicenceService,

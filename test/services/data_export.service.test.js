@@ -12,9 +12,9 @@ const { expect } = Code
 const { ExportTableService, SendFileToS3Service } = require('../../app/services')
 
 // Thing under test
-const { ReportingExportService } = require('../../app/services')
+const { DataExportService } = require('../../app/services')
 
-describe.only('Reporting Export service', () => {
+describe.only('Data Export service', () => {
   let exportTableStub
   let sendFileStub
   let notifierFake
@@ -33,7 +33,7 @@ describe.only('Reporting Export service', () => {
 
   describe('When exporting succeeds', () => {
     beforeEach(async () => {
-      await ReportingExportService.go(notifierFake)
+      await DataExportService.go(notifierFake)
     })
 
     it('calls ExportTableService with each required table', async () => {

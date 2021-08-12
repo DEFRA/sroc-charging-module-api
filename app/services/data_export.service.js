@@ -9,9 +9,9 @@ const path = require('path')
 const ExportTableService = require('./export_table.service')
 const SendFileToS3Service = require('./send_file_to_s3.service')
 
-class ReportingExportService {
+class DataExportService {
   /**
-   * Exports a set of db tables to an S3 bucket for reporting purposes
+   * Exports a set of db tables in CSV format to an S3 bucket
    *
    *
    */
@@ -82,4 +82,4 @@ class ReportingExportService {
   }
 }
 
-module.exports = ReportingExportService
+module.exports = DataExportService
