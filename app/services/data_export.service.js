@@ -15,9 +15,6 @@ class DataExportService {
    *
    *
    */
-  // TODO: confirm where to send (eg. /export/wrls/ ?)
-  // TODO: - upload bucket, root folder /csv/
-  // TODO: confirm if we also write to the archive bucket? NO
   // TODO: Make sure we abort process if error occurs during _exportTables
   // TODO: confirm whether we continue uploading files if an error occurs during an upload? YES WE DO
   // TODO: look to see if we can specify multiple files to upload in the s3 extension? [but one for another pr if too complex]
@@ -67,7 +64,7 @@ class DataExportService {
   static async _uploadTables (files) {
     for (const file of files) {
       const key = this._determineKey(file)
-      await SendFileToS3Service.go(file, key)
+      await SendFileToS3Service.go(file, key, false)
     }
   }
 
@@ -76,7 +73,7 @@ class DataExportService {
    * passed-in local file+path and appending it to our desired remote path.
    */
   static _determineKey (file) {
-    const remotePath = 'wrls'
+    const remotePath = 'csv'
     const filename = path.basename(file)
     return path.join(remotePath, filename)
   }

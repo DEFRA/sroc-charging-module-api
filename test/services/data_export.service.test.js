@@ -69,7 +69,8 @@ describe.only('Data Export service', () => {
     })
 
     it('calls SendFileToS3Service with the correct destination keys', async () => {
-      const keys = sendFileStub.getCalls().map(call => call.firstArg)
+      // args[1] of each call is the destination key, so we map them to an array we can check
+      const keys = sendFileStub.getCalls().map(call => call.args[1])
 
       expect(keys).to.only.include([
         'csv/authorised_systems.csv',
