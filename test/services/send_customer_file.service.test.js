@@ -93,7 +93,7 @@ describe('Send Customer File service', () => {
         it('sends the customer file', async () => {
           expect(sendStub.calledOnce).to.be.true()
           expect(sendStub.getCall(0).firstArg).to.equal('nalac50001.dat')
-          expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
+          expect(sendStub.getCall(0).args[1]).to.equal(`export/${regime.slug}/customer/nalac50001.dat`)
         })
 
         it('moves the customers to the exported customers table', async () => {
@@ -175,9 +175,9 @@ describe('Send Customer File service', () => {
         it('sends the customer file', async () => {
           expect(sendStub.calledTwice).to.be.true()
           expect(sendStub.getCall(0).args[0]).to.equal('nalac50001.dat')
-          expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
+          expect(sendStub.getCall(0).args[1]).to.equal(`export/${regime.slug}/customer/nalac50001.dat`)
           expect(sendStub.getCall(1).args[0]).to.equal('nalwc50001.dat')
-          expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
+          expect(sendStub.getCall(1).args[1]).to.equal(`export/${regime.slug}/customer/nalwc50001.dat`)
         })
 
         it('moves the customers to the exported customers table', async () => {
@@ -250,9 +250,9 @@ describe('Send Customer File service', () => {
         it('sends all required customer files', async () => {
           expect(sendStub.calledTwice).to.be.true()
           expect(sendStub.getCall(0).args[0]).to.equal('nalac50001.dat')
-          expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/customer/nalac50001.dat`)
+          expect(sendStub.getCall(0).args[1]).to.equal(`export/${regime.slug}/customer/nalac50001.dat`)
           expect(sendStub.getCall(1).args[0]).to.equal('nalwc50001.dat')
-          expect(sendStub.getCall(1).args[1]).to.equal(`${regime.slug}/customer/nalwc50001.dat`)
+          expect(sendStub.getCall(1).args[1]).to.equal(`export/${regime.slug}/customer/nalwc50001.dat`)
         })
 
         it('moves the customers to the exported customers table', async () => {

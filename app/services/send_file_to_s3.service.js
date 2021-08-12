@@ -9,7 +9,6 @@ const { temporaryFilePath } = ServerConfig
 
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 const fs = require('fs')
-const path = require('path')
 
 class SendFileToS3Service {
   /**
@@ -17,18 +16,15 @@ class SendFileToS3Service {
    *
    * @param {string} localFilenameWithPath The name and path of the file to be sent to S3.
    * @param {string} key The key is the path and filename the file will have in the bucket. For example,
-   * 'wrls/transaction/nalai50001.dat'. Note that we prepend this with 'export'.
+   * 'export/wrls/transaction/nalai50001.dat'.
    * @param {boolean} [copyToArchive] Whether the file is also be sent to the archive bucket. Defaults to `true`.
   */
 
   static async go (localFilenameWithPath, key, copyToArchive = true) {
-    // We always upload into the top-level export folder so prepend the key we've been given with 'export/'
-    const exportKey = path.join('export', key)
-
-    await this._sendFile(this._uploadBucket(), exportKey, localFilenameWithPath)
+    await this._sendFile(this._uploadBucket(), key, localFilenameWithPath)
 
     if (copyToArchive) {
-      await this._sendFile(this._archiveBucket(), exportKey, localFilenameWithPath)
+      await this._sendFile(this._archiveBucket(), key, localFilenameWithPath)
     }
   }
 
