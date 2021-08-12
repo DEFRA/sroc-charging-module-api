@@ -23,7 +23,7 @@ const { CustomerFileModel, CustomerModel } = require('../../app/models')
 // Thing under test
 const { ExportTableService } = require('../../app/services')
 
-describe.only('Export Table service', () => {
+describe('Export Table service', () => {
   const table = 'customers'
   const filename = table.concat('.csv')
   const filenameWithPath = path.join(temporaryFilePath, filename)
