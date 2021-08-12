@@ -70,7 +70,7 @@ describe('Send Transaction File service', () => {
 
         expect(sendStub.calledOnce).to.be.true()
         expect(sendStub.getCall(0).firstArg).to.equal('stubFilename')
-        expect(sendStub.getCall(0).args[1]).to.equal(`${regime.slug}/transaction/${billRun.fileReference}.dat`)
+        expect(sendStub.getCall(0).args[1]).to.equal(`export/${regime.slug}/transaction/${billRun.fileReference}.dat`)
       })
 
       it("sets the bill run status to 'billed'", async () => {
