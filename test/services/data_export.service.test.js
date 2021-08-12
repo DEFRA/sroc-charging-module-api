@@ -14,10 +14,11 @@ const { ExportTableService, SendFileToS3Service } = require('../../app/services'
 // Thing under test
 const { DataExportService } = require('../../app/services')
 
-describe.only('Data Export service', () => {
+describe('Data Export service', () => {
   let exportTableStub
   let sendFileStub
   let notifierFake
+  let success
 
   beforeEach(async () => {
     exportTableStub = Sinon.stub(ExportTableService, 'go').callsFake(table => `${table}.csv`)
@@ -33,7 +34,7 @@ describe.only('Data Export service', () => {
 
   describe('When exporting succeeds', () => {
     beforeEach(async () => {
-      await DataExportService.go(notifierFake)
+      success = await DataExportService.go(notifierFake)
     })
 
     it('calls ExportTableService with each required table', async () => {
@@ -83,10 +84,51 @@ describe.only('Data Export service', () => {
         'csv/transactions.csv'
       ])
     })
+
+    it('returns true', async () => {
+      expect(success).to.be.true()
+    })
   })
 
-  describe('When exporting fails', () => {
+  describe('When exporting a file fails', () => {
     beforeEach(async () => {
+      exportTableStub.onCall(0).throws()
+
+      success = await DataExportService.go(notifierFake)
+    })
+
+    it('logs an error using notifier', async () => {
+      expect(notifierFake.omfg.callCount).to.equal(1)
+      expect(notifierFake.omfg.firstArg).to.equal('Error exporting table authorised_systems')
+    })
+
+    it('does not transfer any files', async () => {
+      expect(sendFileStub.callCount).to.equal(0)
+    })
+
+    it('returns false', async () => {
+      expect(success).to.be.false()
+    })
+  })
+
+  describe('When sending a file fails', () => {
+    beforeEach(async () => {
+      sendFileStub.onCall(0).throws()
+
+      success = await DataExportService.go(notifierFake)
+    })
+
+    it('logs an error using notifier', async () => {
+      expect(notifierFake.omfg.callCount).to.equal(1)
+      expect(notifierFake.omfg.firstArg).to.equal('Error sending file authorised_systems.csv')
+    })
+
+    it('continues to transfer all files', async () => {
+      expect(sendFileStub.callCount).to.equal(8)
+    })
+
+    it('returns false', async () => {
+      expect(success).to.be.false()
     })
   })
 })

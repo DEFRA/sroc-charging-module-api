@@ -15,13 +15,18 @@ class DataExportService {
    *
    *
    */
-  // TODO: Make sure we abort process if error occurs during _exportTables
-  // TODO: confirm whether we continue uploading files if an error occurs during an upload? YES WE DO
-  // TODO: look to see if we can specify multiple files to upload in the s3 extension? [but one for another pr if too complex]
   static async go (notifier) {
-    const tables = this._tablesToExport()
-    const exportedTables = await this._exportTables(tables, notifier)
-    await this._uploadTables(exportedTables, notifier)
+    let exportedTables
+
+    try {
+      const tables = this._tablesToExport()
+      exportedTables = await this._exportTables(tables, notifier)
+      const sendSuccess = await this._sendFiles(exportedTables, notifier)
+
+      return sendSuccess
+    } catch (error) {
+      return false
+    }
   }
 
   static _tablesToExport () {
@@ -58,23 +63,44 @@ class DataExportService {
         `Error exporting table ${table}`,
         { table, error }
       )
-    }
-  }
 
-  static async _uploadTables (files) {
-    for (const file of files) {
-      const key = this._determineKey(file)
-      await SendFileToS3Service.go(file, key, false)
+      // Throw an error to signal to the caller that we failed
+      throw new Error()
     }
   }
 
   /**
-   * The key in the S3 bucket is the remote path plus the filename. We assemble this by extracting the filename from the
-   * passed-in local file+path and appending it to our desired remote path.
+   * Receives an array of filenames and sends the files to the S3 bucket. If sending a file files it will continue to
+   * send the remaining files.
+   */
+  static async _sendFiles (files, notifier) {
+    let success = true
+
+    for (const file of files) {
+      try {
+        const key = this._determineKey(file)
+        await SendFileToS3Service.go(file, key, false)
+      } catch (error) {
+        notifier.omfg(
+          `Error sending file ${file}`,
+          { file, error }
+        )
+
+        success = false
+      }
+    }
+
+    return success
+  }
+
+  /**
+   * The key in the S3 bucket is the remote path plus the filename (ie. csv/authorised_systems.csv). We assemble this by
+   * extracting the filename from the passed-in local file+path and appending it to our desired remote path.
    */
   static _determineKey (file) {
     const remotePath = 'csv'
     const filename = path.basename(file)
+
     return path.join(remotePath, filename)
   }
 }
