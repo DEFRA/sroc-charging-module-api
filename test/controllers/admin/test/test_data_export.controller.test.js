@@ -45,7 +45,7 @@ describe('Test data export controller', () => {
     Sinon.restore()
   })
 
-  describe('Show transaction: PATCH /admin/test/data-export', () => {
+  describe('Test data export: PATCH /admin/test/data-export', () => {
     let response
     let dataExportStub
 
