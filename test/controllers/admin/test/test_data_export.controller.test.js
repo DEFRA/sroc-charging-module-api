@@ -1,0 +1,86 @@
+'use strict'
+
+// Test framework dependencies
+const Lab = require('@hapi/lab')
+const Code = require('@hapi/code')
+const Sinon = require('sinon')
+
+const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
+const { expect } = Code
+
+// For running our service
+const { init } = require('../../../../app/server')
+
+// Test helpers
+const {
+  AuthorisationHelper,
+  AuthorisedSystemHelper,
+  DatabaseHelper
+} = require('../../../support/helpers')
+
+// Things we need to stub
+const JsonWebToken = require('jsonwebtoken')
+const { DataExportService } = require('../../../../app/services')
+
+describe('Test data export controller', () => {
+  let server
+  let authToken
+
+  before(async () => {
+    authToken = AuthorisationHelper.adminToken()
+  })
+
+  beforeEach(async () => {
+    Sinon
+      .stub(JsonWebToken, 'verify')
+      .returns(AuthorisationHelper.decodeToken(authToken))
+
+    await DatabaseHelper.clean()
+    server = await init()
+
+    await AuthorisedSystemHelper.addAdminSystem()
+  })
+
+  afterEach(async () => {
+    Sinon.restore()
+  })
+
+  describe('Show transaction: PATCH /admin/test/data-export', () => {
+    let response
+    let dataExportStub
+
+    const options = (token) => {
+      return {
+        method: 'PATCH',
+        url: '/admin/test/data-export',
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    describe('When exporting suceeds', () => {
+      beforeEach(async () => {
+        dataExportStub = Sinon.stub(DataExportService, 'go').returns(true)
+        response = await server.inject(options(authToken))
+      })
+
+      it('returns a 200 response', async () => {
+        expect(response.statusCode).to.equal(200)
+      })
+
+      it('calls the DataExportService', async () => {
+        expect(dataExportStub.calledOnce).to.be.true()
+      })
+    })
+
+    describe('When exporting fails', () => {
+      beforeEach(async () => {
+        dataExportStub = Sinon.stub(DataExportService, 'go').returns(false)
+        response = await server.inject(options(authToken))
+      })
+
+      it('returns a 400 response', async () => {
+        expect(response.statusCode).to.equal(400)
+      })
+    })
+  })
+})
