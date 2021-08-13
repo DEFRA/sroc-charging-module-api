@@ -25,7 +25,7 @@ const { ExportTableService } = require('../../app/services')
 
 describe('Export Table service', () => {
   const table = 'customers'
-  const filename = table.concat('.dat')
+  const filename = table.concat('.csv')
   const filenameWithPath = path.join(temporaryFilePath, filename)
 
   let regime

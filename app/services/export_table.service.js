@@ -46,7 +46,7 @@ class ExportTableService {
   }
 
   static _filename (table) {
-    return `${table}.dat`
+    return `${table}.csv`
   }
 }
 
