@@ -76,7 +76,7 @@ class DataExportService {
       )
 
       // Throw an error to signal to the caller that we failed
-      throw new Error()
+      throw error
     }
   }
 
