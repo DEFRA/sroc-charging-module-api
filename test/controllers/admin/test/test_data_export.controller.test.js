@@ -63,8 +63,8 @@ describe('Test data export controller', () => {
         response = await server.inject(options(authToken))
       })
 
-      it('returns a 200 response', async () => {
-        expect(response.statusCode).to.equal(200)
+      it('returns a 204 response', async () => {
+        expect(response.statusCode).to.equal(204)
       })
 
       it('calls the DataExportService', async () => {
