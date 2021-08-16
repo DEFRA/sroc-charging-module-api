@@ -1,6 +1,7 @@
 'use strict'
 
 const CustomerFilesTask = require('./customer_files.task')
+const DataExportTask = require('./data_export.task')
 const TaskRunner = require('./task_runner')
 
 // This determines if the module has been run directly, for example, as a script entry in `package.json` or just
@@ -11,5 +12,6 @@ if (require.main === module) {
 
 module.exports = {
   CustomerFilesTask,
+  DataExportTask,
   TaskRunner
 }
