@@ -65,6 +65,7 @@ class DataExportService {
 
       for (table of tables) {
         const file = await ExportTableService.go(table)
+        notifier.omg(`Exported table ${table} to ${file}`)
         files.push(file)
       }
 
@@ -91,6 +92,7 @@ class DataExportService {
       try {
         const key = this._determineKey(file)
         await SendFileToS3Service.go(file, key, false)
+        notifier.omg(`Sent file ${file}`)
       } catch (error) {
         notifier.omfg(
           `Error sending file ${file}`,

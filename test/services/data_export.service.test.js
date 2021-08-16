@@ -24,8 +24,8 @@ describe('Data Export service', () => {
     exportTableStub = Sinon.stub(ExportTableService, 'go').callsFake(table => `${table}.csv`)
     sendFileStub = Sinon.stub(SendFileToS3Service, 'go')
 
-    // Create a fake function to stand in place of Notifier.omfg()
-    notifierFake = { omfg: Sinon.fake() }
+    // Create fake functions to stand in place of Notifier.omg() and .omfg()
+    notifierFake = { omg: Sinon.fake(), omfg: Sinon.fake() }
   })
 
   afterEach(() => {
@@ -83,6 +83,22 @@ describe('Data Export service', () => {
         'csv/regimes.csv',
         'csv/transactions.csv'
       ])
+    })
+
+    it('logs each exported table', async () => {
+      const exportedCalls = notifierFake.omg
+        .getCalls()
+        .filter(call => call.firstArg.startsWith('Exported table'))
+
+      expect(exportedCalls.length).to.equal(8)
+    })
+
+    it('logs each sent file', async () => {
+      const sentCalls = notifierFake.omg
+        .getCalls()
+        .filter(call => call.firstArg.startsWith('Sent file'))
+
+      expect(sentCalls.length).to.equal(8)
     })
 
     it('returns true', async () => {
