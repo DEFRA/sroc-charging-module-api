@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module ReportingExportService
+ * @module DataExportService
  */
 
 const path = require('path')
