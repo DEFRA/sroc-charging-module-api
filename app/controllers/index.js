@@ -17,6 +17,7 @@ const PresrocCustomerDetailsController = require('./presroc/customer_details.con
 const RegimesController = require('./admin/regimes.controller')
 const TestBillRunsController = require('./admin/test/test_bill_runs.controller')
 const TestCustomerFilesController = require('./admin/test/test_customer_files.controller')
+const TestDataExportController = require('./admin/test/test_data_export.controller')
 const TestTransactionsController = require('./admin/test/test_transactions.controller')
 
 module.exports = {
@@ -36,5 +37,6 @@ module.exports = {
   RootController,
   TestBillRunsController,
   TestCustomerFilesController,
+  TestDataExportController,
   TestTransactionsController
 }

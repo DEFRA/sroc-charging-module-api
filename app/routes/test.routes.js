@@ -3,6 +3,7 @@
 const {
   TestBillRunsController,
   TestCustomerFilesController,
+  TestDataExportController,
   TestTransactionsController
 } = require('../controllers')
 
@@ -46,6 +47,17 @@ const routes = [
     handler: TestCustomerFilesController.show,
     options: {
       description: 'Used by the delivery team to show a customer file and its exported customers.',
+      auth: {
+        scope: ['admin']
+      }
+    }
+  },
+  {
+    method: 'PATCH',
+    path: '/admin/test/data-export',
+    handler: TestDataExportController.export,
+    options: {
+      description: 'Used by the delivery team to generate and send export files for testing.',
       auth: {
         scope: ['admin']
       }
