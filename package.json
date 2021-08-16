@@ -22,7 +22,8 @@
     "reset-test-db": "npm run clean-test-db && npm run rollback-test-db && npm run migrate-test-db",
     "nuke-db": "node db/drop.database.js && npm run create-db",
     "nuke-test-db": "NODE_ENV=test node db/drop.database.js && npm run create-test-db",
-    "customer-files-task": "node app/tasks/index.js CustomerFilesTask"
+    "customer-files-task": "node app/tasks/index.js CustomerFilesTask",
+    "data-export-task": "node app/tasks/index.js DataExportTask"
   },
   "repository": {
     "type": "git",
