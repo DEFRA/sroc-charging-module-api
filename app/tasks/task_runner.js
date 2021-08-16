@@ -6,6 +6,7 @@
 
 const { TaskNotifierLib } = require('../lib')
 const CustomerFilesTask = require('./customer_files.task')
+const DataExportTask = require('./data_export.task')
 
 /**
  * Use to run any one of our 'tasks'
@@ -47,7 +48,8 @@ class TaskRunner {
 
   static _determineTaskClass (className) {
     const taskClasses = {
-      customerfilestask: CustomerFilesTask
+      customerfilestask: CustomerFilesTask,
+      dataexporttask: DataExportTask
     }
 
     if (!taskClasses[className]) {
