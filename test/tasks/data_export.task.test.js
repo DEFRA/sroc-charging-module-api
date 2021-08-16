@@ -12,7 +12,7 @@ const { expect } = Code
 const { DataExportTask } = require('../../app/tasks')
 
 // Things we need to stub
-const { ReportingExportService } = require('../../app/services')
+const { DataExportService } = require('../../app/services')
 
 describe('Customer Files Task', () => {
   let notifierFake
@@ -21,7 +21,7 @@ describe('Customer Files Task', () => {
   beforeEach(async () => {
     notifierFake = { omg: Sinon.fake(), omfg: Sinon.fake() }
 
-    serviceStub = Sinon.stub(ReportingExportService, 'go')
+    serviceStub = Sinon.stub(DataExportService, 'go')
   })
 
   afterEach(() => {
@@ -29,7 +29,7 @@ describe('Customer Files Task', () => {
   })
 
   describe('When the task is run', () => {
-    it("calls the 'ReportingExportService'", async () => {
+    it("calls the 'DataExportService'", async () => {
       await DataExportTask.go(notifierFake)
 
       expect(serviceStub.calledOnce).to.be.true()
