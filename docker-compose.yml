@@ -10,6 +10,12 @@ services:
     env_file:
       - .env
 
+  # If you need to enable a proxy for testing, set HTTP_PROXY=http://proxy:3128 in .env and uncomment the following:
+  # proxy:
+  #   image: hinata/nginx-forward-proxy
+  #   ports:
+  #     - "3128:3128"
+
   app:
     build:
       context: .
