@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const Sinon = require('sinon')
 const Nock = require('nock')
 
-const { describe, it, before, after, afterEach } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
@@ -237,6 +237,57 @@ describe('Rules service', () => {
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'sroc')}_2020_21`)
           })
         })
+      })
+    })
+
+    describe('and a proxy was used', () => {
+      beforeEach(async () => {
+        // Ensure config returns a proxy value
+        Sinon.replace(RulesServiceConfig, 'httpProxy', 'http://test:1234')
+      })
+
+      it('uses the correct host and port', async () => {
+        const presenter = dummyPresenter('wrls', 2019, 'presroc')
+        await RulesService.go(presenter)
+
+        const { agent } = Got.post.getCall(0).args[1]
+        const { proxyOptions } = agent.https
+        expect(proxyOptions.host).to.equal('test')
+        expect(proxyOptions.port).to.equal('1234')
+      })
+    })
+
+    describe('and a proxy was used', () => {
+      beforeEach(async () => {
+        // Ensure config returns a proxy value
+        Sinon.replace(RulesServiceConfig, 'httpProxy', 'http://test:1234')
+      })
+
+      it('uses the correct host and port', async () => {
+        const presenter = dummyPresenter('wrls', 2019, 'presroc')
+        await RulesService.go(presenter)
+
+        // With Got, an agent is used to specify the proxy settings
+        const { agent } = Got.post.getCall(0).args[1]
+        const { proxyOptions } = agent.https
+        expect(proxyOptions.host).to.equal('test')
+        expect(proxyOptions.port).to.equal('1234')
+      })
+    })
+
+    describe('and a proxy was not used', () => {
+      beforeEach(async () => {
+        // Ensure config returns an empty proxy value
+        Sinon.replace(RulesServiceConfig, 'httpProxy', '')
+      })
+
+      it('uses the correct host and port', async () => {
+        const presenter = dummyPresenter('wrls', 2019, 'presroc')
+        await RulesService.go(presenter)
+
+        // If proxy settings weren't used then an agent won't have been specified
+        const arg = Got.post.getCall(0).args[1]
+        expect(arg.agent).to.not.exist()
       })
     })
   })
