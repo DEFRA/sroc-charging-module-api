@@ -1,5 +1,25 @@
 # Changelog
 
+## [v0.13.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.13.0) (2021-08-19)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.12.0...v0.13.0)
+
+**Implemented enhancements:**
+
+- Add `DataExportTask` to `TaskRunner` [\#510](https://github.com/DEFRA/sroc-charging-module-api/pull/510) ([StuAA78](https://github.com/StuAA78))
+- Add logging to `DataExportService` [\#508](https://github.com/DEFRA/sroc-charging-module-api/pull/508) ([StuAA78](https://github.com/StuAA78))
+- Create data export endpoint [\#507](https://github.com/DEFRA/sroc-charging-module-api/pull/507) ([StuAA78](https://github.com/StuAA78))
+- Add data export task [\#505](https://github.com/DEFRA/sroc-charging-module-api/pull/505) ([Cruikshanks](https://github.com/Cruikshanks))
+- Create `DataExportService` [\#501](https://github.com/DEFRA/sroc-charging-module-api/pull/501) ([StuAA78](https://github.com/StuAA78))
+
+**Merged pull requests:**
+
+- Bump @aws-sdk/client-s3 from 3.25.0 to 3.26.0 [\#509](https://github.com/DEFRA/sroc-charging-module-api/pull/509) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Specify full key when sending to S3 bucket [\#506](https://github.com/DEFRA/sroc-charging-module-api/pull/506) ([StuAA78](https://github.com/StuAA78))
+- Bump knex from 0.21.20 to 0.21.21 [\#504](https://github.com/DEFRA/sroc-charging-module-api/pull/504) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump knex from 0.21.19 to 0.21.20 [\#503](https://github.com/DEFRA/sroc-charging-module-api/pull/503) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.24.0 to 3.25.0 [\#502](https://github.com/DEFRA/sroc-charging-module-api/pull/502) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.12.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.12.0) (2021-08-05)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.11.1...v0.12.0)
