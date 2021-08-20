@@ -7,6 +7,7 @@
 const Got = require('got')
 const Tunnel = require('tunnel')
 const Boom = require('@hapi/boom')
+const { URL } = require('url')
 
 const { RulesServiceConfig } = require('../../config')
 
@@ -163,11 +164,14 @@ class RulesService {
   }
 
   static _proxyOptions (httpProxy) {
+    const { hostname: host, port } = new URL(httpProxy)
+
     return {
       agent: {
         https: Tunnel.httpsOverHttp({
           proxy: {
-            host: httpProxy
+            host,
+            port
           }
         })
       }
