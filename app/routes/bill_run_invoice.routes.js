@@ -1,22 +1,22 @@
 'use strict'
 
-const { PresrocBillRunsInvoicesController } = require('../controllers')
+const { BillRunsInvoicesController } = require('../controllers')
 
 const routes = [
   {
     method: 'DELETE',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}',
-    handler: PresrocBillRunsInvoicesController.delete
+    handler: BillRunsInvoicesController.delete
   },
   {
     method: 'GET',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}',
-    handler: PresrocBillRunsInvoicesController.view
+    handler: BillRunsInvoicesController.view
   },
   {
     method: 'PATCH',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill',
-    handler: PresrocBillRunsInvoicesController.rebill
+    handler: BillRunsInvoicesController.rebill
   }
 ]
 

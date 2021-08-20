@@ -2,7 +2,7 @@
 
 const {
   NotSupportedController,
-  PresrocCustomerDetailsController
+  CustomerDetailsController
 } = require('../controllers')
 
 const routes = [
@@ -14,7 +14,7 @@ const routes = [
   {
     method: 'POST',
     path: '/v2/{regimeId}/customer-changes',
-    handler: PresrocCustomerDetailsController.create
+    handler: CustomerDetailsController.create
   }
 ]
 

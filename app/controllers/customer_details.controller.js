@@ -2,7 +2,7 @@
 
 const { CreateCustomerDetailsService } = require('../services')
 
-class PresrocCustomerDetailsController {
+class CustomerDetailsController {
   static async create (req, h) {
     await CreateCustomerDetailsService.go(req.payload, req.app.regime)
 
@@ -10,4 +10,4 @@ class PresrocCustomerDetailsController {
   }
 }
 
-module.exports = PresrocCustomerDetailsController
+module.exports = CustomerDetailsController
