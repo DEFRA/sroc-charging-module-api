@@ -27,7 +27,7 @@ const {
 const JsonWebToken = require('jsonwebtoken')
 const { DeleteLicenceService, ValidateBillRunLicenceService } = require('../../../app/services')
 
-describe('Presroc Licences controller', () => {
+describe('Licences controller', () => {
   const clientID = '1234546789'
   let server
   let authToken

@@ -36,7 +36,7 @@ const { BillRunModel, InvoiceModel } = require('../../../app/models')
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
-describe('Presroc Invoices controller', () => {
+describe('Invoices controller', () => {
   let server
   let authToken
   let invoice
