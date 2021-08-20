@@ -1,6 +1,6 @@
 'use strict'
 
-const { CalculateChargeService } = require('../../services')
+const { CalculateChargeService } = require('../services')
 
 class CalculateChargeController {
   static async calculate (req, h) {
