@@ -29,7 +29,7 @@ const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charg
 const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
 // Things we need to stub
-const { RulesService } = require('../../app/services')
+const { RequestRulesServiceCharge } = require('../../app/services')
 
 // Thing under test
 const { GenerateBillRunService } = require('../../app/services')
@@ -64,7 +64,7 @@ describe('Generate Bill Run service', () => {
 
   describe('When a valid bill run ID is supplied', () => {
     beforeEach(async () => {
-      rulesServiceStub = Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
+      rulesServiceStub = Sinon.stub(RequestRulesServiceCharge, 'go').returns(rulesServiceResponse)
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
     })
 
@@ -104,7 +104,7 @@ describe('Generate Bill Run service', () => {
 
     it('correctly summarises debit invoices', async () => {
       rulesServiceStub.restore()
-      RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 50000)
+      RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 50000)
       await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
 
       await GenerateBillRunService.go(billRun)
@@ -117,7 +117,7 @@ describe('Generate Bill Run service', () => {
 
     it('correctly summarises credit invoices', async () => {
       rulesServiceStub.restore()
-      RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 50000)
+      RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 50000)
       await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
 
       await GenerateBillRunService.go(billRun)
@@ -150,7 +150,7 @@ describe('Generate Bill Run service', () => {
 
       it('correctly summarises zero value invoices', async () => {
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 0)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 0)
 
         // We add 2 zero value transactions so we can ensure the bill run contains the number of zero value transactions
         // rather than invoices
@@ -207,7 +207,7 @@ describe('Generate Bill Run service', () => {
     describe('When deminimis applies', () => {
       it("sets the 'deminimisInvoice' flag to true", async () => {
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 499)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 499)
         let result = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         await GenerateBillRunService.go(billRun)
 
@@ -219,7 +219,7 @@ describe('Generate Bill Run service', () => {
 
       it('correctly summarises debit invoices', async () => {
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 499)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 499)
         await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
 
         await GenerateBillRunService.go(billRun)
@@ -232,11 +232,11 @@ describe('Generate Bill Run service', () => {
 
       it('correctly summarises a debit invoice containing a credit', async () => {
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 499)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 499)
         await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
 
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 250)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 250)
         await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
 
         await GenerateBillRunService.go(billRun)
@@ -510,7 +510,7 @@ describe('Generate Bill Run service', () => {
             await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
 
             rulesServiceStub.restore()
-            RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2501)
+            RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 2501)
             minimumChargePayload.credit = false
             await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
 
@@ -568,7 +568,7 @@ describe('Generate Bill Run service', () => {
             await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
 
             rulesServiceStub.restore()
-            RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2501)
+            RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 2501)
             minimumChargePayload.credit = true
             await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
 
@@ -621,11 +621,11 @@ describe('Generate Bill Run service', () => {
             }
 
             rulesServiceStub.restore()
-            RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 1)
+            RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 1)
             await CreateTransactionService.go(minimumChargePayload, billRun, authorisedSystem, regime)
 
             rulesServiceStub.restore()
-            RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2365)
+            RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 2365)
             await CreateTransactionService.go({
               ...payload,
               credit: true

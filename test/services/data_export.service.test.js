@@ -9,10 +9,10 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Things we need to stub
-const { ExportTableService, SendFileToS3Service } = require('../../app/services')
+const { ExportTableToFileService, SendFileToS3Service } = require('../../app/services')
 
 // Thing under test
-const { DataExportService } = require('../../app/services')
+const { ExportDataFiles } = require('../../app/services')
 
 describe('Data Export service', () => {
   let exportTableStub
@@ -21,7 +21,7 @@ describe('Data Export service', () => {
   let success
 
   beforeEach(async () => {
-    exportTableStub = Sinon.stub(ExportTableService, 'go').callsFake(table => `${table}.csv`)
+    exportTableStub = Sinon.stub(ExportTableToFileService, 'go').callsFake(table => `${table}.csv`)
     sendFileStub = Sinon.stub(SendFileToS3Service, 'go')
 
     // Create fake functions to stand in place of Notifier.omg() and .omfg()
@@ -34,10 +34,10 @@ describe('Data Export service', () => {
 
   describe('When exporting succeeds', () => {
     beforeEach(async () => {
-      success = await DataExportService.go(notifierFake)
+      success = await ExportDataFiles.go(notifierFake)
     })
 
-    it('calls ExportTableService with each required table', async () => {
+    it('calls ExportTableToFileService with each required table', async () => {
       const exportedTables = exportTableStub.getCalls().map(call => call.firstArg)
 
       expect(exportTableStub.callCount).to.equal(8)
@@ -110,7 +110,7 @@ describe('Data Export service', () => {
     beforeEach(async () => {
       exportTableStub.onCall(0).throws()
 
-      success = await DataExportService.go(notifierFake)
+      success = await ExportDataFiles.go(notifierFake)
     })
 
     it('logs an error using notifier', async () => {
@@ -131,7 +131,7 @@ describe('Data Export service', () => {
     beforeEach(async () => {
       sendFileStub.onCall(0).throws()
 
-      success = await DataExportService.go(notifierFake)
+      success = await ExportDataFiles.go(notifierFake)
     })
 
     it('logs an error using notifier', async () => {

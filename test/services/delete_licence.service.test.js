@@ -34,7 +34,7 @@ const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charg
 const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
 // Things we need to stub
-const { RulesService } = require('../../app/services')
+const { RequestRulesServiceCharge } = require('../../app/services')
 
 // Thing under test
 const { DeleteLicenceService } = require('../../app/services')
@@ -56,7 +56,7 @@ describe('Delete Licence service', () => {
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
     billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
 
-    rulesServiceStub = Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
+    rulesServiceStub = Sinon.stub(RequestRulesServiceCharge, 'go').returns(rulesServiceResponse)
 
     // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
     // the valid tests we can use it straight as
@@ -64,7 +64,7 @@ describe('Delete Licence service', () => {
 
     // We use CreateTransactionService to create our transaction as this updates the stats correctly
     rulesServiceStub.restore()
-    RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
+    RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 5000)
     const { transaction: transactionResult } = await CreateTransactionService.go(
       payload, billRun, authorisedSystem, regime
     )
@@ -117,7 +117,7 @@ describe('Delete Licence service', () => {
         beforeEach(async () => {
         // Add a transaction to a second invoice
           rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
+          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 5000)
           const { transaction: secondTransactionResult } = await CreateTransactionService.go(
             { ...payload, customerReference: 'CUST2' }, billRun, authorisedSystem, regime
           )
@@ -126,7 +126,7 @@ describe('Delete Licence service', () => {
 
           // Add a credit to the original invoice to cancel out its original debit
           rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
+          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 5000)
           await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
 
           // Generate the bill run to ensure its values are updated before we delete the licence
@@ -155,7 +155,7 @@ describe('Delete Licence service', () => {
         beforeEach(async () => {
         // Add a transaction to a second invoice
           rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5000)
+          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 5000)
           const { transaction: secondTransactionResult } = await CreateTransactionService.go(
             { ...payload, customerReference: 'CUST2' }, billRun, authorisedSystem, regime
           )
@@ -164,7 +164,7 @@ describe('Delete Licence service', () => {
 
           // Add a credit to the original invoice to take its value below the deminimis limit
           rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 4750)
+          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 4750)
           await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
 
           // Generate the bill run to ensure its values are updated before we delete the licence
@@ -192,7 +192,7 @@ describe('Delete Licence service', () => {
         beforeEach(async () => {
         // Add a minimum charge transaction to a second invoice
           rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 5)
+          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 5)
           const { transaction: secondTransactionResult } = await CreateTransactionService.go(
             { ...payload, customerReference: 'CUST2', subjectToMinimumCharge: true }, billRun, authorisedSystem, regime
           )
@@ -227,7 +227,7 @@ describe('Delete Licence service', () => {
           fixBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
 
           rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2400)
+          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 2400)
           const { transaction: lessThanMinResponse } = await CreateTransactionService.go(
             { ...payload, subjectToMinimumCharge: true, licenceNumber: 'LESS01' }, fixBillRun, authorisedSystem, regime
           )
@@ -235,7 +235,7 @@ describe('Delete Licence service', () => {
           lessThanMinLicence = await LicenceModel.query().findById(lessThanMinTransaction.licenceId)
 
           rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 2600)
+          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 2600)
           const { transaction: moreThanMinResponse } = await CreateTransactionService.go(
             { ...payload, subjectToMinimumCharge: true, licenceNumber: 'MORE01' }, fixBillRun, authorisedSystem, regime
           )

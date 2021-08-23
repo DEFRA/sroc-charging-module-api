@@ -18,7 +18,7 @@ const {
 } = require('../support/helpers')
 
 // Thing under test
-const { FetchAndValidateBillRunInvoiceService } = require('../../app/services')
+const { FetchAndValidateInvoiceService } = require('../../app/services')
 
 describe('Fetch and Validate Bill Run Invoice service', () => {
   let billRun
@@ -41,7 +41,7 @@ describe('Fetch and Validate Bill Run Invoice service', () => {
       it("returns the validated 'invoice'", async () => {
         const invoice = await InvoiceHelper.addInvoice(billRun.id, 'CUSTOMER REFERENCE', 2020)
 
-        const result = await FetchAndValidateBillRunInvoiceService.go(billRun.id, invoice.id)
+        const result = await FetchAndValidateInvoiceService.go(billRun.id, invoice.id)
 
         expect(result.id).to.equal(invoice.id)
       })
@@ -51,7 +51,7 @@ describe('Fetch and Validate Bill Run Invoice service', () => {
       describe('because it is unknown', () => {
         it('throws an error', async () => {
           const unknownInvoiceId = GeneralHelper.uuid4()
-          const err = await expect(FetchAndValidateBillRunInvoiceService.go(billRun.id, unknownInvoiceId)).to.reject()
+          const err = await expect(FetchAndValidateInvoiceService.go(billRun.id, unknownInvoiceId)).to.reject()
 
           expect(err).to.be.an.error()
           expect(err.output.payload.message).to.equal(`Invoice ${unknownInvoiceId} is unknown.`)
@@ -61,7 +61,7 @@ describe('Fetch and Validate Bill Run Invoice service', () => {
         it('throws an error', async () => {
           const otherBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
           const invoice = await InvoiceHelper.addInvoice(otherBillRun.id, 'CUSTOMER REFERENCE', 2020)
-          const err = await expect(FetchAndValidateBillRunInvoiceService.go(billRun.id, invoice.id)).to.reject()
+          const err = await expect(FetchAndValidateInvoiceService.go(billRun.id, invoice.id)).to.reject()
 
           expect(err).to.be.an.error()
           expect(err.output.payload.message).to.equal(

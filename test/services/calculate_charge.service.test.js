@@ -13,7 +13,7 @@ const { presroc: fixtures } = require('../support/fixtures/calculate_charge')
 const { ValidationError } = require('joi')
 
 // Things we need to stub
-const { RulesService } = require('../../app/services')
+const { RequestRulesServiceCharge } = require('../../app/services')
 
 // Thing under test
 const { CalculateChargeService } = require('../../app/services')
@@ -32,7 +32,7 @@ describe('Calculate Charge service', () => {
   describe('When the data is valid', () => {
     describe("and is a 'simple' request", () => {
       beforeEach(async () => {
-        Sinon.stub(RulesService, 'go').returns(fixtures.simple.rulesService)
+        Sinon.stub(RequestRulesServiceCharge, 'go').returns(fixtures.simple.rulesService)
       })
 
       it('returns a calculated charge', async () => {
@@ -45,7 +45,7 @@ describe('Calculate Charge service', () => {
 
     describe("and is a 'Section 126 prorata credit' request", () => {
       beforeEach(async () => {
-        Sinon.stub(RulesService, 'go').returns(fixtures.s126ProrataCredit.rulesService)
+        Sinon.stub(RequestRulesServiceCharge, 'go').returns(fixtures.s126ProrataCredit.rulesService)
       })
 
       it('returns a calculated charge', async () => {
@@ -58,7 +58,7 @@ describe('Calculate Charge service', () => {
 
     describe("and is a 'Section agreements true' request", () => {
       beforeEach(async () => {
-        Sinon.stub(RulesService, 'go').returns(fixtures.sectionAgreementsTrue.rulesService)
+        Sinon.stub(RequestRulesServiceCharge, 'go').returns(fixtures.sectionAgreementsTrue.rulesService)
       })
 
       it('returns a calculated charge', async () => {
@@ -83,7 +83,7 @@ describe('Calculate Charge service', () => {
 
   describe("When I don't want a 'presenter response'", () => {
     beforeEach(async () => {
-      Sinon.stub(RulesService, 'go').returns(fixtures.simple.rulesService)
+      Sinon.stub(RequestRulesServiceCharge, 'go').returns(fixtures.simple.rulesService)
     })
 
     it("returns the 'rule service response'", async () => {

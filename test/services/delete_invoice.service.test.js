@@ -33,7 +33,7 @@ const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 const { CreateTransactionService, GenerateBillRunService } = require('../../app/services')
 
 // Things we need to stub
-const { RulesService } = require('../../app/services')
+const { RequestRulesServiceCharge } = require('../../app/services')
 
 // Thing under test
 const { DeleteInvoiceService } = require('../../app/services')
@@ -56,7 +56,7 @@ describe('Delete Invoice service', () => {
     // the valid tests we can use it straight as
     payload = GeneralHelper.cloneObject(requestFixtures.simple)
 
-    rulesServiceStub = Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
+    rulesServiceStub = Sinon.stub(RequestRulesServiceCharge, 'go').returns(rulesServiceResponse)
     billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
 
     // Create a fake function to stand in place of Notifier.omfg()
@@ -167,7 +167,7 @@ describe('Delete Invoice service', () => {
     describe("and it's a zero value invoice", () => {
       beforeEach(async () => {
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 0)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 0)
         await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         invoice = await InvoiceModel.query().findOne({ billRunId: billRun.id })
       })
@@ -214,7 +214,7 @@ describe('Delete Invoice service', () => {
     describe("and it's a minimum charge debit invoice", () => {
       beforeEach(async () => {
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 500)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 500)
         await CreateTransactionService.go({
           ...payload,
           subjectToMinimumCharge: true
@@ -269,7 +269,7 @@ describe('Delete Invoice service', () => {
     describe("and it's a minimum charge credit invoice", () => {
       beforeEach(async () => {
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 500)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 500)
         await CreateTransactionService.go({
           ...payload,
           subjectToMinimumCharge: true,

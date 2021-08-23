@@ -13,7 +13,7 @@ const { CustomerModel, CustomerFileModel, ExportedCustomerModel } = require('../
 const { CreateCustomerDetailsService } = require('../../app/services')
 
 // Thing under test
-const { MoveCustomersToExportedTableService } = require('../../app/services')
+const { MoveCustomerDetailsToExportedTableService } = require('../../app/services')
 
 describe('Move Customers To Exported Table service', () => {
   let regime
@@ -48,7 +48,7 @@ describe('Move Customers To Exported Table service', () => {
 
   describe('When called', () => {
     it('populates the exported_customers table', async () => {
-      await MoveCustomersToExportedTableService.go(regime, payload.region, customerFile.id)
+      await MoveCustomerDetailsToExportedTableService.go(regime, payload.region, customerFile.id)
 
       const result = await ExportedCustomerModel.query().first()
 
@@ -57,7 +57,7 @@ describe('Move Customers To Exported Table service', () => {
     })
 
     it('clears the customers table', async () => {
-      await MoveCustomersToExportedTableService.go(regime, payload.region, customerFile.id)
+      await MoveCustomerDetailsToExportedTableService.go(regime, payload.region, customerFile.id)
 
       const result = await CustomerModel.query()
 
@@ -69,7 +69,7 @@ describe('Move Customers To Exported Table service', () => {
       await CreateCustomerDetailsService.go({ ...payload, customerReference: 'A_WRNG' }, wrongRegime)
       await CreateCustomerDetailsService.go({ ...payload, customerReference: 'W_WRLS', region: 'W' }, regime)
 
-      await MoveCustomersToExportedTableService.go(regime, payload.region, customerFile.id)
+      await MoveCustomerDetailsToExportedTableService.go(regime, payload.region, customerFile.id)
 
       const customers = await CustomerModel.query()
       const customerReferences = customers.map(customer => customer.customerReference)

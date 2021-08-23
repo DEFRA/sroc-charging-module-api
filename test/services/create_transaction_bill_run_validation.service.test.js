@@ -11,7 +11,7 @@ const { expect } = Code
 const { BillRunHelper, DatabaseHelper, GeneralHelper } = require('../support/helpers')
 
 // Thing under test
-const { CreateTransactionBillRunValidationService } = require('../../app/services')
+const { ValidateBillRunRegion } = require('../../app/services')
 
 describe('Create Transaction Bill Run Validation service', () => {
   let billRun
@@ -23,7 +23,7 @@ describe('Create Transaction Bill Run Validation service', () => {
 
   describe("When the 'bill run' is valid", () => {
     it('returns nothing and throws no error', async () => {
-      await expect(CreateTransactionBillRunValidationService.go(billRun, billRun.region)).to.not.reject()
+      await expect(ValidateBillRunRegion.go(billRun, billRun.region)).to.not.reject()
     })
   })
 
@@ -31,7 +31,7 @@ describe('Create Transaction Bill Run Validation service', () => {
     describe("because it's region and the requested transaction's region do not match", () => {
       it('throws an error', async () => {
         const region = 'W'
-        const err = await expect(CreateTransactionBillRunValidationService.go(billRun, region)).to.reject(Error)
+        const err = await expect(ValidateBillRunRegion.go(billRun, region)).to.reject(Error)
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(
@@ -44,7 +44,7 @@ describe('Create Transaction Bill Run Validation service', () => {
   describe("When the 'region' is invalid", () => {
     describe("because it's empty", () => {
       it('throws an error', async () => {
-        const err = await expect(CreateTransactionBillRunValidationService.go(billRun)).to.reject(Error)
+        const err = await expect(ValidateBillRunRegion.go(billRun)).to.reject(Error)
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(

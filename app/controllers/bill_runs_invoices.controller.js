@@ -2,7 +2,7 @@
 
 const {
   DeleteInvoiceService,
-  FetchAndValidateBillRunInvoiceService,
+  FetchAndValidateInvoiceService,
   InvoiceRebillingService,
   InvoiceRebillingValidationService,
   ViewBillRunInvoiceService
@@ -11,7 +11,7 @@ const {
 class BillRunsInvoicesController {
   static async delete (req, h) {
     // We fetch and validate the invoice within the controller so a not found/conflict error is returned immediately
-    const invoice = await FetchAndValidateBillRunInvoiceService.go(req.params.billRunId, req.params.invoiceId)
+    const invoice = await FetchAndValidateInvoiceService.go(req.params.billRunId, req.params.invoiceId)
 
     // We start DeleteInvoiceService without await so that it runs in the background
     DeleteInvoiceService.go(invoice, req.params.billRunId, req.app.notifier)

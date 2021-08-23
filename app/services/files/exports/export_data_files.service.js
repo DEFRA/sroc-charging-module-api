@@ -1,12 +1,12 @@
 'use strict'
 
 /**
- * @module DataExportService
+ * @module ExportDataFilesService
  */
 
 const path = require('path')
 
-const ExportTableService = require('./export_table_to_file.service')
+const ExportTableToFileService = require('./export_table_to_file.service')
 const SendFileToS3Service = require('../send_file_to_s3.service')
 
 class ExportDataFilesService {
@@ -64,7 +64,7 @@ class ExportDataFilesService {
       const files = []
 
       for (table of tables) {
-        const file = await ExportTableService.go(table)
+        const file = await ExportTableToFileService.go(table)
         notifier.omg(`Exported table ${table} to ${file}`)
         files.push(file)
       }

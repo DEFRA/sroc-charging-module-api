@@ -16,7 +16,7 @@ const {
 
 const { CustomerFileModel, CustomerModel } = require('../../app/models')
 
-const { CreateCustomerDetailsService, MoveCustomersToExportedTableService } = require('../../app/services')
+const { CreateCustomerDetailsService, MoveCustomerDetailsToExportedTableService } = require('../../app/services')
 
 // Things we need to stub
 const {
@@ -71,7 +71,7 @@ describe('Send Customer File service', () => {
       deleteStub = Sinon.stub(DeleteFileService, 'go').returns(true)
       generateStub = Sinon.stub(GenerateCustomerFileService, 'go').callsFake(file => `${file.fileReference}.dat`)
       sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
-      moveStub = Sinon.stub(MoveCustomersToExportedTableService, 'go').returns(true)
+      moveStub = Sinon.stub(MoveCustomerDetailsToExportedTableService, 'go').returns(true)
       Sinon.stub(NextCustomerFileReferenceService, 'go').callsFake((_, region) => `nal${region.toLowerCase()}c50001`)
     })
 

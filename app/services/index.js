@@ -6,24 +6,24 @@ const AuthorisationService = require('./plugins/authorisation.service')
 const BaseNextFileReferenceService = require('./next_references/base_next_file_reference.service')
 const BillRunStatusService = require('./bill_runs/bill_run_status.service')
 const CalculateChargeService = require('./charges/calculate_charge.service')
-const CalculateMinimumChargeService = require('./bill_runs/calculate_minimum_charge_for_bill_run.service')
+const CalculateMinimumChargeForBillRunService = require('./bill_runs/calculate_minimum_charge_for_bill_run.service')
 const CognitoJwtToPemService = require('./plugins/cognito_jwt_to_pem.service')
 const CreateAuthorisedSystemService = require('./authorised_systems/create_authorised_system.service')
 const CreateBillRunService = require('./bill_runs/create_bill_run.service')
 const CreateCustomerDetailsService = require('./create_customer_details.service')
-const CreateMinimumChargeAdjustmentService = require('./transactions/create_minimum_charge_adjustment_transaction.service')
-const CreateTransactionBillRunValidationService = require('./bill_runs/validate_bill_run_region.service')
+const CreateMinimumChargeAdjustmentTransactionService = require('./transactions/create_minimum_charge_adjustment_transaction.service')
+const ValidateBillRunRegion = require('./bill_runs/validate_bill_run_region.service')
 const CreateTransactionService = require('./transactions/create_transaction.service')
 const CreateTransactionTallyService = require('./transactions/create_transaction_tally.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
-const DataExportService = require('./files/exports/export_data_files.service')
+const ExportDataFiles = require('./files/exports/export_data_files.service')
 const DbErrorsService = require('./plugins/db_errors.service')
 const DeleteBillRunService = require('./bill_runs/delete_bill_run.service')
 const DeleteFileService = require('./files/delete_file.service')
 const DeleteInvoiceService = require('./invoices/delete_invoice.service')
 const DeleteLicenceService = require('./licences/delete_licence.service')
-const ExportTableService = require('./files/exports/export_table_to_file.service')
-const FetchAndValidateBillRunInvoiceService = require('./invoices/fetch_and_validate_invoice.service')
+const ExportTableToFileService = require('./files/exports/export_table_to_file.service')
+const FetchAndValidateInvoiceService = require('./invoices/fetch_and_validate_invoice.service')
 const FilterRoutesService = require('./plugins/filter_routes.service')
 const GenerateBillRunService = require('./bill_runs/generate_bill_run.service')
 const GenerateBillRunValidationService = require('./bill_runs/generate_bill_run_validation.service')
@@ -38,7 +38,7 @@ const InvoiceRebillingValidationService = require('./invoices/invoice_rebilling_
 const ListAuthorisedSystemsService = require('./authorised_systems/list_authorised_systems.service')
 const ListCustomerFilesService = require('./files/customers/list_customer_files.service')
 const ListRegimesService = require('./regimes/list_regimes.service')
-const MoveCustomersToExportedTableService = require('./files/customers/move_customer_details_to_exported_table.service')
+const MoveCustomerDetailsToExportedTableService = require('./files/customers/move_customer_details_to_exported_table.service')
 const NextBillRunNumberService = require('./next_references/next_bill_run_number.service')
 const NextCustomerFileReferenceService = require('./next_references/next_customer_file_reference.service')
 const NextTransactionFileReferenceService = require('./next_references/next_transaction_file_reference.service')
@@ -48,7 +48,7 @@ const PrepareCustomerFileService = require('./files/customers/prepare_customer_f
 const RequestBillRunService = require('./plugins/request_bill_run.service')
 const RequestInvoiceService = require('./plugins/request_invoice.service')
 const RequestLicenceService = require('./plugins/request_licence.service')
-const RulesService = require('./charges/request_rules_service_charge.service')
+const RequestRulesServiceCharge = require('./charges/request_rules_service_charge.service')
 const SendBillRunReferenceService = require('./bill_runs/send_bill_run_reference.service')
 const SendCustomerFileService = require('./files/customers/send_customer_file.service')
 const SendFileToS3Service = require('./files/send_file_to_s3.service')
@@ -76,24 +76,24 @@ module.exports = {
   BaseNextFileReferenceService,
   BillRunStatusService,
   CalculateChargeService,
-  CalculateMinimumChargeService,
+  CalculateMinimumChargeForBillRunService,
   CognitoJwtToPemService,
   CreateAuthorisedSystemService,
   CreateBillRunService,
   CreateCustomerDetailsService,
-  CreateMinimumChargeAdjustmentService,
-  CreateTransactionBillRunValidationService,
+  CreateMinimumChargeAdjustmentTransactionService,
+  ValidateBillRunRegion,
   CreateTransactionService,
   CreateTransactionTallyService,
   DatabaseHealthCheckService,
-  DataExportService,
+  ExportDataFiles,
   DbErrorsService,
   DeleteBillRunService,
   DeleteFileService,
   DeleteInvoiceService,
   DeleteLicenceService,
-  ExportTableService,
-  FetchAndValidateBillRunInvoiceService,
+  ExportTableToFileService,
+  FetchAndValidateInvoiceService,
   FilterRoutesService,
   GenerateBillRunService,
   GenerateBillRunValidationService,
@@ -108,7 +108,7 @@ module.exports = {
   ListAuthorisedSystemsService,
   ListCustomerFilesService,
   ListRegimesService,
-  MoveCustomersToExportedTableService,
+  MoveCustomerDetailsToExportedTableService,
   NextBillRunNumberService,
   NextCustomerFileReferenceService,
   NextTransactionFileReferenceService,
@@ -118,7 +118,7 @@ module.exports = {
   RequestBillRunService,
   RequestInvoiceService,
   RequestLicenceService,
-  RulesService,
+  RequestRulesServiceCharge,
   SendBillRunReferenceService,
   SendCustomerFileService,
   SendFileToS3Service,

@@ -5,7 +5,7 @@
  */
 
 const { ViewInvoicePresenter } = require('../../presenters')
-const FetchAndValidateBillRunInvoiceService = require('./fetch_and_validate_invoice.service')
+const FetchAndValidateInvoiceService = require('./fetch_and_validate_invoice.service')
 
 class ViewBillRunInvoiceService {
   /**
@@ -18,7 +18,7 @@ class ViewBillRunInvoiceService {
    * @returns {Object} The requested invoice data
    */
   static async go (billRunId, invoiceId) {
-    let invoice = await FetchAndValidateBillRunInvoiceService.go(billRunId, invoiceId)
+    let invoice = await FetchAndValidateInvoiceService.go(billRunId, invoiceId)
 
     invoice = await this._invoiceResponseData(invoice)
 

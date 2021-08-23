@@ -21,7 +21,7 @@ const Got = require('got')
 const { RulesServiceConfig } = require('../../config')
 
 // Thing under test
-const { RulesService } = require('../../app/services')
+const { RequestRulesServiceCharge } = require('../../app/services')
 
 // Wraps regime, financial year and charge params in a dummy presenter object for passing to rules service
 const dummyPresenter = (regime, financialYear, ruleset, chargeParams = {}) => {
@@ -61,7 +61,7 @@ describe('Rules service', () => {
         describe("and the year is '2019'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('wrls', 2019, 'presroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'presroc')}_2019_20`)
@@ -71,7 +71,7 @@ describe('Rules service', () => {
         describe("and the year is '2020'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('wrls', 2020, 'presroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'presroc')}_2020_21`)
@@ -83,7 +83,7 @@ describe('Rules service', () => {
         describe("and the year is '2019'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('wrls', 2019, 'sroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'sroc')}_2019_20`)
@@ -93,7 +93,7 @@ describe('Rules service', () => {
         describe("and the year is '2020'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('wrls', 2020, 'sroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wrls', 'sroc')}_2020_21`)
@@ -107,7 +107,7 @@ describe('Rules service', () => {
         describe("and the year is '2019'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('wml', 2019, 'presroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'presroc')}_2019_20`)
@@ -117,7 +117,7 @@ describe('Rules service', () => {
         describe("and the year is '2020'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('wml', 2020, 'presroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'presroc')}_2020_21`)
@@ -129,7 +129,7 @@ describe('Rules service', () => {
         describe("and the year is '2019'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('wml', 2019, 'sroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'sroc')}_2019_20`)
@@ -139,7 +139,7 @@ describe('Rules service', () => {
         describe("and the year is '2020'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('wml', 2020, 'sroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('wml', 'sroc')}_2020_21`)
@@ -153,7 +153,7 @@ describe('Rules service', () => {
         describe("and the year is '2019'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('pas', 2019, 'presroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'presroc')}_2019_20`)
@@ -163,7 +163,7 @@ describe('Rules service', () => {
         describe("and the year is '2020'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('pas', 2020, 'presroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'presroc')}_2020_21`)
@@ -175,7 +175,7 @@ describe('Rules service', () => {
         describe("and the year is '2019'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('pas', 2019, 'sroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'sroc')}_2019_20`)
@@ -185,7 +185,7 @@ describe('Rules service', () => {
         describe("and the year is '2020'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('pas', 2020, 'sroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('pas', 'sroc')}_2020_21`)
@@ -199,7 +199,7 @@ describe('Rules service', () => {
         describe("and the year is '2019'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('cfd', 2019, 'presroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'presroc')}_2019_20`)
@@ -209,7 +209,7 @@ describe('Rules service', () => {
         describe("and the year is '2020'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('cfd', 2020, 'presroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'presroc')}_2020_21`)
@@ -221,7 +221,7 @@ describe('Rules service', () => {
         describe("and the year is '2019'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('cfd', 2019, 'sroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'sroc')}_2019_20`)
@@ -231,7 +231,7 @@ describe('Rules service', () => {
         describe("and the year is '2020'", () => {
           it('calls the correct endpoint', async () => {
             const presenter = dummyPresenter('cfd', 2020, 'sroc')
-            await RulesService.go(presenter)
+            await RequestRulesServiceCharge.go(presenter)
 
             expect(Got.post.calledOnce).to.be.true()
             expect(Got.post.getCall(0).args[0]).to.equal(`${RulesServiceHelper.path('cfd', 'sroc')}_2020_21`)
@@ -265,7 +265,7 @@ describe('Rules service', () => {
       it('throws an error and presents the messages to the user', async () => {
         const presenter = dummyPresenter('wrls', 2019, 'presroc')
 
-        const err = await expect(RulesService.go(presenter)).to.reject()
+        const err = await expect(RequestRulesServiceCharge.go(presenter)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.statusCode).to.equal(422)
@@ -290,7 +290,7 @@ describe('Rules service', () => {
       it('returns a 400 error with the error message', async () => {
         const presenter = dummyPresenter('wrls', 2019, 'presroc')
 
-        const err = await expect(RulesService.go(presenter)).to.reject()
+        const err = await expect(RequestRulesServiceCharge.go(presenter)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.statusCode).to.equal(400)
@@ -312,7 +312,7 @@ describe('Rules service', () => {
 
         const presenter = dummyPresenter('wrls', 2019, 'presroc')
 
-        const err = await expect(RulesService.go(presenter)).to.reject()
+        const err = await expect(RequestRulesServiceCharge.go(presenter)).to.reject()
 
         expect(err).to.be.an.error()
         expect(err.output.payload.statusCode).to.equal(422)
@@ -337,7 +337,7 @@ describe('Rules service', () => {
 
           const presenter = dummyPresenter('wrls', 2019, 'presroc')
 
-          const err = await expect(RulesService.go(presenter)).to.reject()
+          const err = await expect(RequestRulesServiceCharge.go(presenter)).to.reject()
 
           expect(err).to.be.an.error()
           expect(err.output.payload.statusCode).to.equal(400)
@@ -355,7 +355,7 @@ describe('Rules service', () => {
 
           const presenter = dummyPresenter('wrls', 2019, 'presroc')
 
-          const result = await expect(RulesService.go(presenter)).to.not.reject()
+          const result = await expect(RequestRulesServiceCharge.go(presenter)).to.not.reject()
 
           expect(result).to.not.be.an.error()
         })
@@ -371,7 +371,7 @@ describe('Rules service', () => {
         it('returns a 400 error with the error type', async () => {
           const presenter = dummyPresenter('wrls', 2019, 'presroc')
 
-          const err = await expect(RulesService.go(presenter)).to.reject()
+          const err = await expect(RequestRulesServiceCharge.go(presenter)).to.reject()
 
           expect(err).to.be.an.error()
           expect(err.output.payload.statusCode).to.equal(400)

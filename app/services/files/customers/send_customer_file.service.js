@@ -13,7 +13,7 @@ const { CustomerFileModel } = require('../../../models')
 
 const DeleteFileService = require('../delete_file.service')
 const GenerateCustomerFileService = require('./generate_customer_file.service')
-const MoveCustomersToExportedTableService = require('./move_customer_details_to_exported_table.service')
+const MoveCustomerDetailsToExportedTableService = require('./move_customer_details_to_exported_table.service')
 const PrepareCustomerFileService = require('./prepare_customer_file.service')
 const SendFileToS3Service = require('../send_file_to_s3.service')
 
@@ -91,7 +91,7 @@ class SendCustomerFileService {
       try {
         generatedFile = await this._generateAndSend(regime, customerFile)
 
-        await MoveCustomersToExportedTableService.go(regime, region, customerFile.id)
+        await MoveCustomerDetailsToExportedTableService.go(regime, region, customerFile.id)
 
         await this._setExportedStatusAndDate(customerFile)
 

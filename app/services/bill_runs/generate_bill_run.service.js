@@ -5,7 +5,7 @@
  */
 
 // Files in the same folder cannot be destructured from index.js so have to be required directly
-const CalculateMinimumChargeService = require('./calculate_minimum_charge_for_bill_run.service')
+const CalculateMinimumChargeForBillRunService = require('./calculate_minimum_charge_for_bill_run.service')
 
 const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../../models')
 const { raw } = require('../../models/base.model')
@@ -36,7 +36,7 @@ class GenerateBillRunService {
   static async _generateBillRun (billRun) {
     await this._setGeneratingStatus(billRun)
 
-    const minimumChargeAdjustments = await CalculateMinimumChargeService.go(billRun)
+    const minimumChargeAdjustments = await CalculateMinimumChargeForBillRunService.go(billRun)
 
     await BillRunModel.transaction(async trx => {
       await this._saveMinimumChargeTransactions(minimumChargeAdjustments, trx)

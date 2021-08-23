@@ -7,7 +7,7 @@
 const { CalculateChargeTranslator, RulesServiceTranslator } = require('../../translators')
 const { CalculateChargePresenter, RulesServicePresenter } = require('../../presenters')
 
-const RulesService = require('./request_rules_service_charge.service')
+const RequestRulesServiceCharge = require('./request_rules_service_charge.service')
 
 /**
  * Handles calling the rules service and returning a response when calculating a charge
@@ -47,7 +47,7 @@ class CalculateChargeService {
 
   static async _calculateCharge (translator) {
     const presenter = new RulesServicePresenter(translator)
-    const result = await RulesService.go(presenter.go())
+    const result = await RequestRulesServiceCharge.go(presenter.go())
 
     return new RulesServiceTranslator(result)
   }

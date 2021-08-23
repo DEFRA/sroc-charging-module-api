@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module ExportTableService
+ * @module ExportTableToFileService
  */
 
 const TransformTableToFileService = require('../transform_table_to_file.service')

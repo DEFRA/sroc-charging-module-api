@@ -26,7 +26,7 @@ const { presroc: requestFixtures } = require('../support/fixtures/create_transac
 const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
 
 // Thing under test
-const { CreateMinimumChargeAdjustmentService } = require('../../app/services')
+const { CreateMinimumChargeAdjustmentTransactionService } = require('../../app/services')
 
 describe('Create Minimum Charge Adjustment service', () => {
   let authorisedSystem
@@ -75,7 +75,7 @@ describe('Create Minimum Charge Adjustment service', () => {
       transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
       transactionRecord = await TransactionModel.query().findById(transaction.transaction.id)
       licence = await LicenceModel.query().findById(transactionRecord.licenceId)
-      minimumChargeAdjustment = await CreateMinimumChargeAdjustmentService.go(licence, chargeValue, chargeCredit)
+      minimumChargeAdjustment = await CreateMinimumChargeAdjustmentTransactionService.go(licence, chargeValue, chargeCredit)
     })
 
     it('returns a transaction', async () => {

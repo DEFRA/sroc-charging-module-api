@@ -24,7 +24,7 @@ const { presroc: requestFixtures } = require('../support/fixtures/create_transac
 const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
 
 // Things we need to stub
-const { RulesService } = require('../../app/services')
+const { RequestRulesServiceCharge } = require('../../app/services')
 
 // Thing under test
 const { CreateTransactionService } = require('../../app/services')
@@ -55,7 +55,7 @@ describe('Create Transaction service', () => {
       let result
 
       beforeEach(async () => {
-        Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
+        Sinon.stub(RequestRulesServiceCharge, 'go').returns(chargeFixtures.simple.rulesService)
         const transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         result = await TransactionModel.query().findById(transaction.transaction.id)
       })
@@ -69,7 +69,7 @@ describe('Create Transaction service', () => {
       let result
 
       beforeEach(async () => {
-        Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
+        Sinon.stub(RequestRulesServiceCharge, 'go').returns(chargeFixtures.simple.rulesService)
         const transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
         result = await TransactionModel.query().findById(transaction.transaction.id)
       })
@@ -119,7 +119,7 @@ describe('Create Transaction service', () => {
 
     describe("because the request is for a duplicate transaction (matching clientId's)", () => {
       beforeEach(async () => {
-        Sinon.stub(RulesService, 'go').returns(chargeFixtures.simple.rulesService)
+        Sinon.stub(RequestRulesServiceCharge, 'go').returns(chargeFixtures.simple.rulesService)
       })
 
       it('throws an error', async () => {

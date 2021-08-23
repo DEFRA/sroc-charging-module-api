@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module CreateMinimumChargeAdjustmentService
+ * @module CreateMinimumChargeAdjustmentTransactionService
  */
 
 class CreateMinimumChargeAdjustmentTransactionService {

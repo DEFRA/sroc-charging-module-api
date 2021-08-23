@@ -21,7 +21,7 @@ const { CreateCustomerDetailsService } = require('../../app/services')
 const { CustomerFileModel, CustomerModel } = require('../../app/models')
 
 // Thing under test
-const { ExportTableService } = require('../../app/services')
+const { ExportTableToFileService } = require('../../app/services')
 
 describe('Export Table service', () => {
   const table = 'customers'
@@ -69,7 +69,7 @@ describe('Export Table service', () => {
   })
 
   it('creates a file with the correct content', async () => {
-    const returnedFilenameWithPath = await ExportTableService.go(table)
+    const returnedFilenameWithPath = await ExportTableToFileService.go(table)
 
     const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
     const expectedContent = _expectedContent()
@@ -78,7 +78,7 @@ describe('Export Table service', () => {
   })
 
   it('returns the filename and path', async () => {
-    const returnedFilenameWithPath = await ExportTableService.go('customers')
+    const returnedFilenameWithPath = await ExportTableToFileService.go('customers')
 
     expect(returnedFilenameWithPath).to.equal(filenameWithPath)
   })

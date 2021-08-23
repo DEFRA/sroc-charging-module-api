@@ -26,7 +26,7 @@ const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charg
 const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
 // Things we need to stub
-const { RulesService } = require('../../app/services')
+const { RequestRulesServiceCharge } = require('../../app/services')
 
 // Thing under test
 const { ViewBillRunService } = require('../../app/services')
@@ -58,7 +58,7 @@ describe('View bill run service', () => {
 
   describe('When there is a matching bill run', () => {
     beforeEach(async () => {
-      rulesServiceStub = Sinon.stub(RulesService, 'go').returns(rulesServiceResponse)
+      rulesServiceStub = Sinon.stub(RequestRulesServiceCharge, 'go').returns(rulesServiceResponse)
       billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
     })
 
@@ -76,7 +76,7 @@ describe('View bill run service', () => {
         debitLineValue = 5000
 
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, creditLineValue)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, creditLineValue)
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'CREDIT',
@@ -84,14 +84,14 @@ describe('View bill run service', () => {
         }, billRun, authorisedSystem, regime)
 
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, debitLineValue)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, debitLineValue)
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'DEBIT'
         }, billRun, authorisedSystem, regime)
 
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, 0)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 0)
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'ZERO'
@@ -147,7 +147,7 @@ describe('View bill run service', () => {
         debitLineValue = 100
 
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, debitLineValue)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, debitLineValue)
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'DEBIT'
@@ -171,14 +171,14 @@ describe('View bill run service', () => {
         minimumChargeDebitLineValue = 1
 
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, minimumChargeDebitLineValue)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, minimumChargeDebitLineValue)
         await CreateTransactionService.go({
           ...payload,
           subjectToMinimumCharge: true
         }, billRun, authorisedSystem, regime)
 
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, creditLineValue)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, creditLineValue)
         await CreateTransactionService.go({
           ...payload,
           credit: true
@@ -202,7 +202,7 @@ describe('View bill run service', () => {
         debitLineValue = 1000
 
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, creditLineValue)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, creditLineValue)
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'CREDIT',
@@ -210,7 +210,7 @@ describe('View bill run service', () => {
         }, billRun, authorisedSystem, regime)
 
         rulesServiceStub.restore()
-        RulesServiceHelper.mockValue(Sinon, RulesService, rulesServiceResponse, debitLineValue)
+        RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, debitLineValue)
         await CreateTransactionService.go({
           ...payload,
           customerReference: 'DEBIT'

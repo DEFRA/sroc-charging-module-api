@@ -205,7 +205,7 @@ class BillRunGenerator {
 
   static _baseResponse () {
     return {
-      ...chargeFixtures.simple.rulesService,
+      ...chargeFixtures.simple.RequestRulesServiceCharge,
       WRLSChargingResponse: {
         ...chargeFixtures.simple.rulesService.WRLSChargingResponse
       }
