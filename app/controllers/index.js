@@ -8,12 +8,12 @@ const AuthorisedSystemsController = require('./admin/authorised_systems.controll
 const CustomersController = require('./admin/customers.controller')
 const DatabaseController = require('./admin/health/database.controller')
 const NotSupportedController = require('./not_supported.controller')
-const PresrocBillRunsController = require('./presroc/bill_runs.controller')
-const PresrocBillRunsInvoicesController = require('./presroc/bill_runs_invoices.controller')
-const PresrocBillRunsLicencesController = require('./presroc/bill_runs_licences.controller')
-const PresrocBillRunsTransactionsController = require('./presroc/bill_runs_transactions.controller')
-const PresrocCalculateChargeController = require('./presroc/calculate_charge.controller')
-const PresrocCustomerDetailsController = require('./presroc/customer_details.controller')
+const BillRunsController = require('./bill_runs.controller')
+const BillRunsInvoicesController = require('./bill_runs_invoices.controller')
+const BillRunsLicencesController = require('./bill_runs_licences.controller')
+const BillRunsTransactionsController = require('./bill_runs_transactions.controller')
+const CalculateChargeController = require('./calculate_charge.controller')
+const CustomerDetailsController = require('./customer_details.controller')
 const RegimesController = require('./admin/regimes.controller')
 const TestBillRunsController = require('./admin/test/test_bill_runs.controller')
 const TestCustomerFilesController = require('./admin/test/test_customer_files.controller')
@@ -24,15 +24,15 @@ module.exports = {
   AdminBillRunsController,
   AirbrakeController,
   AuthorisedSystemsController,
+  BillRunsController,
+  BillRunsInvoicesController,
+  BillRunsLicencesController,
+  BillRunsTransactionsController,
+  CalculateChargeController,
+  CustomerDetailsController,
   CustomersController,
   DatabaseController,
   NotSupportedController,
-  PresrocBillRunsController,
-  PresrocBillRunsInvoicesController,
-  PresrocBillRunsLicencesController,
-  PresrocBillRunsTransactionsController,
-  PresrocCalculateChargeController,
-  PresrocCustomerDetailsController,
   RegimesController,
   RootController,
   TestBillRunsController,

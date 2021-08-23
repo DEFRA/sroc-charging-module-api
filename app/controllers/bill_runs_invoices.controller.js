@@ -6,7 +6,7 @@ const {
   InvoiceRebillingService,
   InvoiceRebillingValidationService,
   ViewBillRunInvoiceService
-} = require('../../services')
+} = require('../services')
 
 class BillRunsInvoicesController {
   static async delete (req, h) {

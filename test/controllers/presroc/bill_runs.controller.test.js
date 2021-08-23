@@ -39,7 +39,7 @@ const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_ch
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
-describe('Presroc Bill Runs controller', () => {
+describe('Bill Runs controller', () => {
   const clientID = '1234546789'
   let server
   let authToken

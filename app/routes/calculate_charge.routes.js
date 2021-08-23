@@ -1,6 +1,6 @@
 'use strict'
 
-const { NotSupportedController, PresrocCalculateChargeController } = require('../controllers')
+const { NotSupportedController, CalculateChargeController } = require('../controllers')
 
 const routes = [
   {
@@ -11,7 +11,7 @@ const routes = [
   {
     method: 'POST',
     path: '/v2/{regimeId}/calculate-charge',
-    handler: PresrocCalculateChargeController.calculate
+    handler: CalculateChargeController.calculate
   }
 ]
 

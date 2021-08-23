@@ -2,7 +2,7 @@
 
 const {
   NotSupportedController,
-  PresrocBillRunsTransactionsController
+  BillRunsTransactionsController
 } = require('../controllers')
 
 const routes = [
@@ -14,12 +14,12 @@ const routes = [
   {
     method: 'POST',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/transactions',
-    handler: PresrocBillRunsTransactionsController.create
+    handler: BillRunsTransactionsController.create
   },
   {
     method: 'GET',
     path: '/v2/{regimeId}/bill-runs/{billRunId}/transactions/{transactionId}',
-    handler: PresrocBillRunsTransactionsController.view
+    handler: BillRunsTransactionsController.view
   }
 ]
 

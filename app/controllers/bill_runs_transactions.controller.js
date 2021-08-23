@@ -3,7 +3,7 @@
 const {
   CreateTransactionBillRunValidationService,
   CreateTransactionService
-} = require('../../services')
+} = require('../services')
 
 class BillRunsTransactionsController {
   static async create (req, h) {

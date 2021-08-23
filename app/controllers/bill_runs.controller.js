@@ -11,7 +11,7 @@ const {
   SendCustomerFileService,
   SendTransactionFileService,
   ViewBillRunService
-} = require('../../services')
+} = require('../services')
 
 class BillRunsController {
   static async create (req, h) {
