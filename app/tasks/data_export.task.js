@@ -4,7 +4,7 @@
  * @module DataExportTask
  */
 
-const { DataExportService } = require('../services')
+const { ExportDataFiles } = require('../services')
 
 class DataExportTask {
   /**
@@ -18,7 +18,7 @@ class DataExportTask {
   static async go (notifier) {
     notifier.omg('Starting data export task')
 
-    await DataExportService.go(notifier)
+    await ExportDataFiles.go(notifier)
 
     notifier.omg('Finished data export task')
   }

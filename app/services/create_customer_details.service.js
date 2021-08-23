@@ -9,7 +9,7 @@ const { CustomerTranslator } = require('../translators')
 
 class CreateCustomerDetailsService {
   /**
-   * Takes the provided payload and creates an entry in the customers table,  which will be periodically sent to SSCL to
+   * Takes the provided payload and creates an entry in the customers table, which will be periodically sent to SSCL to
    * update customer details.
    *
    * @param {object} payload Object containing the customer data to be saved.

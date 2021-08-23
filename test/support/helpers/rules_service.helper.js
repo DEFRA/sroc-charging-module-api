@@ -31,8 +31,8 @@ class RulesServiceHelper {
    *
    * @returns {module:Sinon} A Sinon stub object
    */
-  static mockValue (Sinon, RulesService, rulesServiceResponse, chargeValue) {
-    return Sinon.stub(RulesService, 'go').returns({
+  static mockValue (Sinon, RequestRulesServiceCharge, rulesServiceResponse, chargeValue) {
+    return Sinon.stub(RequestRulesServiceCharge, 'go').returns({
       ...rulesServiceResponse,
       WRLSChargingResponse: {
         ...rulesServiceResponse.WRLSChargingResponse,

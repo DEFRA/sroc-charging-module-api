@@ -20,7 +20,7 @@ const {
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { DataExportService } = require('../../../../app/services')
+const { ExportDataFiles } = require('../../../../app/services')
 
 describe('Test data export controller', () => {
   let server
@@ -59,7 +59,7 @@ describe('Test data export controller', () => {
 
     describe('When exporting suceeds', () => {
       beforeEach(async () => {
-        dataExportStub = Sinon.stub(DataExportService, 'go').returns(true)
+        dataExportStub = Sinon.stub(ExportDataFiles, 'go').returns(true)
         response = await server.inject(options(authToken))
       })
 
@@ -67,14 +67,14 @@ describe('Test data export controller', () => {
         expect(response.statusCode).to.equal(204)
       })
 
-      it('calls the DataExportService', async () => {
+      it('calls the ExportDataFiles', async () => {
         expect(dataExportStub.calledOnce).to.be.true()
       })
     })
 
     describe('When exporting fails', () => {
       beforeEach(async () => {
-        dataExportStub = Sinon.stub(DataExportService, 'go').returns(false)
+        dataExportStub = Sinon.stub(ExportDataFiles, 'go').returns(false)
         response = await server.inject(options(authToken))
       })
 

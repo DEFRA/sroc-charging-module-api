@@ -26,7 +26,7 @@ const Boom = require('@hapi/boom')
 
 const {
   DeleteInvoiceService,
-  FetchAndValidateBillRunInvoiceService,
+  FetchAndValidateInvoiceService,
   InvoiceRebillingService,
   InvoiceRebillingValidationService
 } = require('../../../app/services')
@@ -77,7 +77,7 @@ describe('Invoices controller', () => {
       let deleteStub
 
       before(async () => {
-        fetchStub = Sinon.stub(FetchAndValidateBillRunInvoiceService, 'go').returns()
+        fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').returns()
         deleteStub = Sinon.stub(DeleteInvoiceService, 'go').returns()
       })
 
@@ -98,7 +98,7 @@ describe('Invoices controller', () => {
         let fetchStub
 
         before(async () => {
-          fetchStub = Sinon.stub(FetchAndValidateBillRunInvoiceService, 'go').throws(Boom.notFound())
+          fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').throws(Boom.notFound())
         })
 
         after(async () => {
@@ -116,7 +116,7 @@ describe('Invoices controller', () => {
         let fetchStub
 
         before(async () => {
-          fetchStub = Sinon.stub(FetchAndValidateBillRunInvoiceService, 'go').throws(Boom.conflict())
+          fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').throws(Boom.conflict())
         })
 
         after(async () => {
