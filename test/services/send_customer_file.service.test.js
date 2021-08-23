@@ -16,8 +16,7 @@ const {
 
 const { CustomerFileModel, CustomerModel } = require('../../app/models')
 
-const { CreateCustomerDetailsService } = require('../../app/services')
-const { MoveCustomersToExportedTableService } = require('../../app/services')
+const { CreateCustomerDetailsService, MoveCustomersToExportedTableService } = require('../../app/services')
 
 // Things we need to stub
 const {
