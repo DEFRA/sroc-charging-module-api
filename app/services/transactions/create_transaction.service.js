@@ -4,10 +4,10 @@
  * @module CreateTransactionService
  */
 
-const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
-const { TransactionTranslator } = require('../translators')
-const CalculateChargeService = require('./calculate_charge.service')
-const { CreateTransactionPresenter } = require('../presenters')
+const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../../models')
+const { TransactionTranslator } = require('../../translators')
+const CalculateChargeService = require('../charges/calculate_charge.service')
+const { CreateTransactionPresenter } = require('../../presenters')
 
 class CreateTransactionService {
   static async go (payload, billRun, authorisedSystem, regime) {

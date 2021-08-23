@@ -6,12 +6,12 @@
 
 const path = require('path')
 
-const { ServerConfig } = require('../../../config')
+const { ServerConfig } = require('../../../../config')
 const { removeTemporaryFiles } = ServerConfig
 
 const GenerateTransactionFileService = require('./generate_transaction_file.service')
 const SendFileToS3Service = require('../send_file_to_s3.service')
-const DeleteFileService = require('./delete_file.service')
+const DeleteFileService = require('../delete_file.service')
 
 class SendTransactionFileService {
   /**

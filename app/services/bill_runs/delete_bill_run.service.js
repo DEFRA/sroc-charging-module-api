@@ -4,7 +4,7 @@
  * @module DeleteInvoiceService
  */
 
-const { BillRunModel } = require('../models')
+const { BillRunModel } = require('../../models')
 
 class DeleteBillRunService {
   /**

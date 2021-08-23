@@ -9,7 +9,7 @@ const Tunnel = require('tunnel')
 const Boom = require('@hapi/boom')
 const { URL } = require('url')
 
-const { RulesServiceConfig } = require('../../config')
+const { RulesServiceConfig } = require('../../../config')
 
 /**
  * Handles requests to the Rules Service

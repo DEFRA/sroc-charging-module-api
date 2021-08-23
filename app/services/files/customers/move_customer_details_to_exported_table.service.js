@@ -4,7 +4,7 @@
  * @module MoveCustomerDetailsToExportedTableService
  */
 
-const { CustomerModel, ExportedCustomerModel } = require('../../models')
+const { CustomerModel, ExportedCustomerModel } = require('../../../models')
 
 class MoveCustomerDetailsToExportedTableService {
   /**

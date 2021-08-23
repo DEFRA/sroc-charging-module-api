@@ -4,9 +4,9 @@
  * @module CreateAuthorisedSystemService
  */
 
-const { AuthorisedSystemModel, RegimeModel } = require('../models')
-const { AuthorisedSystemTranslator } = require('../translators')
-const { JsonPresenter } = require('../presenters')
+const { AuthorisedSystemModel, RegimeModel } = require('../../models')
+const { AuthorisedSystemTranslator } = require('../../translators')
+const { JsonPresenter } = require('../../presenters')
 
 /**
  * Creates a new authorised system record

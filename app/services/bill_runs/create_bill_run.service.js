@@ -4,12 +4,12 @@
  * @module CreateBillRunService
  */
 
-const { BillRunModel } = require('../models')
-const { BillRunTranslator } = require('../translators')
-const { CreateBillRunPresenter } = require('../presenters')
+const { BillRunModel } = require('../../models')
+const { BillRunTranslator } = require('../../translators')
+const { CreateBillRunPresenter } = require('../../presenters')
 
 // Files in the same folder cannot be destructured from index.js so have to be required directly
-const NextBillRunNumberService = require('./next_bill_run_number.service')
+const NextBillRunNumberService = require('../next_references/next_bill_run_number.service')
 
 /**
  * Creates a new bill run record

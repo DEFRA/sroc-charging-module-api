@@ -4,8 +4,8 @@
  * @module CalculateChargeService
  */
 
-const { CalculateChargeTranslator, RulesServiceTranslator } = require('../translators')
-const { CalculateChargePresenter, RulesServicePresenter } = require('../presenters')
+const { CalculateChargeTranslator, RulesServiceTranslator } = require('../../translators')
+const { CalculateChargePresenter, RulesServicePresenter } = require('../../presenters')
 
 const RulesService = require('./request_rules_service_charge.service')
 

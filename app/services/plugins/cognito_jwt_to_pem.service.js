@@ -18,7 +18,7 @@ class CognitoJwtToPemService {
   }
 
   static _getKeys (environment) {
-    return require(`../../keys/${environment}.jwk.json`)
+    return require(`../../../keys/${environment}.jwk.json`)
   }
 
   static _pemFromJwk (key) {

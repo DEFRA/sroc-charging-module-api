@@ -1,14 +1,14 @@
 'use strict'
 
 /**
- * @module FetchAndValidateBillRunInvoiceService
+ * @module FetchAndValidateInvoiceService
  */
 
 const Boom = require('@hapi/boom')
 
-const { InvoiceModel } = require('../models')
+const { InvoiceModel } = require('../../models')
 
-class FetchAndValidateBillRunInvoiceService {
+class FetchAndValidateInvoiceService {
   /**
   * Fetches then validates that an invoice exists and is linked to the specified bill run
   *
@@ -43,4 +43,4 @@ class FetchAndValidateBillRunInvoiceService {
   }
 }
 
-module.exports = FetchAndValidateBillRunInvoiceService
+module.exports = FetchAndValidateInvoiceService

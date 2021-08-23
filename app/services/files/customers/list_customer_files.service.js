@@ -4,8 +4,8 @@
  * @module ListCustomerFilesService
  */
 
-const { CustomerFileModel } = require('../models')
-const { JsonPresenter } = require('../presenters')
+const { CustomerFileModel } = require('../../../models')
+const { JsonPresenter } = require('../../../presenters')
 
 class ListCustomerFilesService {
   /**

@@ -4,7 +4,7 @@
  * @module BillRunStatusService
  */
 
-const { BillRunStatusPresenter } = require('../presenters')
+const { BillRunStatusPresenter } = require('../../presenters')
 
 class BillRunStatusService {
   /**
