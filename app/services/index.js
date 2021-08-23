@@ -12,16 +12,15 @@ const CreateAuthorisedSystemService = require('./authorised_systems/create_autho
 const CreateBillRunService = require('./bill_runs/create_bill_run.service')
 const CreateCustomerDetailsService = require('./create_customer_details.service')
 const CreateMinimumChargeAdjustmentTransactionService = require('./transactions/create_minimum_charge_adjustment_transaction.service')
-const ValidateBillRunRegion = require('./bill_runs/validate_bill_run_region.service')
 const CreateTransactionService = require('./transactions/create_transaction.service')
 const CreateTransactionTallyService = require('./transactions/create_transaction_tally.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
-const ExportDataFiles = require('./files/exports/export_data_files.service')
 const DbErrorsService = require('./plugins/db_errors.service')
 const DeleteBillRunService = require('./bill_runs/delete_bill_run.service')
 const DeleteFileService = require('./files/delete_file.service')
 const DeleteInvoiceService = require('./invoices/delete_invoice.service')
 const DeleteLicenceService = require('./licences/delete_licence.service')
+const ExportDataFiles = require('./files/exports/export_data_files.service')
 const ExportTableToFileService = require('./files/exports/export_table_to_file.service')
 const FetchAndValidateInvoiceService = require('./invoices/fetch_and_validate_invoice.service')
 const FilterRoutesService = require('./plugins/filter_routes.service')
@@ -66,8 +65,9 @@ const TransformRecordsToFileService = require('./files/transform_records_to_file
 const TransformTableToFileService = require('./files/transform_table_to_file.service')
 const UpdateAuthorisedSystemService = require('./authorised_systems/update_authorised_system.service')
 const ValidateBillRunLicenceService = require('./licences/validate_bill_run_licence.service')
-const ViewInvoiceService = require('./invoices/view_invoice.service')
+const ValidateBillRunRegion = require('./bill_runs/validate_bill_run_region.service')
 const ViewBillRunService = require('./bill_runs/view_bill_run.service')
+const ViewInvoiceService = require('./invoices/view_invoice.service')
 
 module.exports = {
   AdminSendTransactionFileService,
@@ -82,16 +82,15 @@ module.exports = {
   CreateBillRunService,
   CreateCustomerDetailsService,
   CreateMinimumChargeAdjustmentTransactionService,
-  ValidateBillRunRegion,
   CreateTransactionService,
   CreateTransactionTallyService,
   DatabaseHealthCheckService,
-  ExportDataFiles,
   DbErrorsService,
   DeleteBillRunService,
   DeleteFileService,
   DeleteInvoiceService,
   DeleteLicenceService,
+  ExportDataFiles,
   ExportTableToFileService,
   FetchAndValidateInvoiceService,
   FilterRoutesService,
@@ -136,6 +135,7 @@ module.exports = {
   TransformTableToFileService,
   UpdateAuthorisedSystemService,
   ValidateBillRunLicenceService,
-  ViewInvoiceService,
-  ViewBillRunService
+  ValidateBillRunRegion,
+  ViewBillRunService,
+  ViewInvoiceService
 }
