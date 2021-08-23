@@ -15,7 +15,7 @@ const { CreateCustomerDetailsService } = require('../../app/services')
 // Thing under test
 const { MoveCustomerDetailsToExportedTableService } = require('../../app/services')
 
-describe('Move Customers To Exported Table service', () => {
+describe('Move Customer Details To Exported Table service', () => {
   let regime
   let customerFile
 

@@ -13,7 +13,7 @@ const { BillRunHelper, DatabaseHelper, GeneralHelper } = require('../support/hel
 // Thing under test
 const { ValidateBillRunRegion } = require('../../app/services')
 
-describe('Create Transaction Bill Run Validation service', () => {
+describe('Validate Bill Run Region service', () => {
   let billRun
 
   beforeEach(async () => {

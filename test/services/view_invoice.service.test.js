@@ -16,9 +16,9 @@ const {
 } = require('../support/helpers')
 
 // Thing under test
-const { ViewBillRunInvoiceService } = require('../../app/services')
+const { ViewInvoiceService } = require('../../app/services')
 
-describe('View bill run service', () => {
+describe('View Invoice service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
   })
@@ -37,7 +37,7 @@ describe('View bill run service', () => {
 
     describe('and a valid invoice ID', () => {
       it('returns the expected response', async () => {
-        const result = await ViewBillRunInvoiceService.go(billRun.id, invoiceId)
+        const result = await ViewInvoiceService.go(billRun.id, invoiceId)
 
         expect(result.invoice.id).to.equal(invoiceId)
         expect(result.invoice.netTotal).to.equal(0)
@@ -52,7 +52,7 @@ describe('View bill run service', () => {
       describe('because it is unknown', () => {
         it('throws an error', async () => {
           const unknownInvoiceId = GeneralHelper.uuid4()
-          const err = await expect(ViewBillRunInvoiceService.go(billRun.id, unknownInvoiceId)).to.reject()
+          const err = await expect(ViewInvoiceService.go(billRun.id, unknownInvoiceId)).to.reject()
 
           expect(err).to.be.an.error()
           expect(err.output.payload.message).to.equal(`Invoice ${unknownInvoiceId} is unknown.`)
@@ -62,7 +62,7 @@ describe('View bill run service', () => {
       describe('because it is not linked to the bill run', () => {
         it('throws an error', async () => {
           const otherBillRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
-          const err = await expect(ViewBillRunInvoiceService.go(otherBillRun.id, invoiceId)).to.reject()
+          const err = await expect(ViewInvoiceService.go(otherBillRun.id, invoiceId)).to.reject()
 
           expect(err).to.be.an.error()
           expect(err.output.payload.message).to.equal(

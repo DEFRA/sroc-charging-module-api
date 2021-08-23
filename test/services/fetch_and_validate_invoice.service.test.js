@@ -20,7 +20,7 @@ const {
 // Thing under test
 const { FetchAndValidateInvoiceService } = require('../../app/services')
 
-describe('Fetch and Validate Bill Run Invoice service', () => {
+describe('Fetch and Validate Invoice service', () => {
   let billRun
   let authorisedSystem
   let regime

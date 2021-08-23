@@ -14,7 +14,7 @@ const { ExportTableToFileService, SendFileToS3Service } = require('../../app/ser
 // Thing under test
 const { ExportDataFiles } = require('../../app/services')
 
-describe('Data Export service', () => {
+describe('Export Data Files service', () => {
   let exportTableStub
   let sendFileStub
   let notifierFake

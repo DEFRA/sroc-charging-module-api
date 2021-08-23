@@ -28,7 +28,7 @@ const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charg
 // Thing under test
 const { CreateMinimumChargeAdjustmentTransactionService } = require('../../app/services')
 
-describe('Create Minimum Charge Adjustment service', () => {
+describe('Create Minimum Charge Adjustment Transaction service', () => {
   let authorisedSystem
   let regime
   let payload

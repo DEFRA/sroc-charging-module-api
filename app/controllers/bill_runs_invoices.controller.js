@@ -5,7 +5,7 @@ const {
   FetchAndValidateInvoiceService,
   InvoiceRebillingService,
   InvoiceRebillingValidationService,
-  ViewBillRunInvoiceService
+  ViewInvoiceService
 } = require('../services')
 
 class BillRunsInvoicesController {
@@ -20,7 +20,7 @@ class BillRunsInvoicesController {
   }
 
   static async view (req, h) {
-    const result = await ViewBillRunInvoiceService.go(req.app.billRun.id, req.params.invoiceId)
+    const result = await ViewInvoiceService.go(req.app.billRun.id, req.params.invoiceId)
 
     return h.response(result).code(200)
   }

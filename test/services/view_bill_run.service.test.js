@@ -31,7 +31,7 @@ const { RequestRulesServiceCharge } = require('../../app/services')
 // Thing under test
 const { ViewBillRunService } = require('../../app/services')
 
-describe('View bill run service', () => {
+describe('View Bill Run service', () => {
   let billRun
   let payload
   let regime

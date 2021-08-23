@@ -34,7 +34,7 @@ const MINIMUM_CHARGE_LIMIT = 2500
 // Thing under test
 const { CalculateMinimumChargeForBillRunService } = require('../../app/services')
 
-describe('Calculate Minimum Charge service', () => {
+describe('Calculate Minimum Charge For Bill Run service', () => {
   let authorisedSystem
   let regime
   let payload

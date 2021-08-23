@@ -14,7 +14,7 @@ const { NotFoundError } = require('objection')
 // Thing under test
 const { NextBillRunNumberService } = require('../../app/services')
 
-describe('Get Next Sequence Counter service', () => {
+describe('Next Bill Run Number service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
   })

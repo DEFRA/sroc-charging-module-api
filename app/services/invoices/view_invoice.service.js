@@ -1,13 +1,13 @@
 'use strict'
 
 /**
- * @module ViewBillRunInvoiceService
+ * @module ViewInvoiceService
  */
 
 const { ViewInvoicePresenter } = require('../../presenters')
 const FetchAndValidateInvoiceService = require('./fetch_and_validate_invoice.service')
 
-class ViewBillRunInvoiceService {
+class ViewInvoiceService {
   /**
    * Locates and validates an invoice for the specificed bill run and returns the data needed by the View Invoice
    * endpoint
@@ -93,4 +93,4 @@ class ViewBillRunInvoiceService {
   }
 }
 
-module.exports = ViewBillRunInvoiceService
+module.exports = ViewInvoiceService

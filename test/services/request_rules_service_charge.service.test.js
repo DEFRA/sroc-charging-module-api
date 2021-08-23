@@ -33,7 +33,7 @@ const dummyPresenter = (regime, financialYear, ruleset, chargeParams = {}) => {
   }
 }
 
-describe('Rules service', () => {
+describe('Request Rules Service Charge service', () => {
   describe('when calling the rule service succeeds', () => {
     before(async () => {
       // Use a spy to confirm what endpoint we try to call on the rules service

@@ -66,7 +66,7 @@ const TransformRecordsToFileService = require('./files/transform_records_to_file
 const TransformTableToFileService = require('./files/transform_table_to_file.service')
 const UpdateAuthorisedSystemService = require('./authorised_systems/update_authorised_system.service')
 const ValidateBillRunLicenceService = require('./licences/validate_bill_run_licence.service')
-const ViewBillRunInvoiceService = require('./invoices/view_bill_run_invoice.service')
+const ViewInvoiceService = require('./invoices/view_invoice.service')
 const ViewBillRunService = require('./bill_runs/view_bill_run.service')
 
 module.exports = {
@@ -136,6 +136,6 @@ module.exports = {
   TransformTableToFileService,
   UpdateAuthorisedSystemService,
   ValidateBillRunLicenceService,
-  ViewBillRunInvoiceService,
+  ViewInvoiceService,
   ViewBillRunService
 }
