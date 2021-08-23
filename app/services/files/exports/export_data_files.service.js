@@ -6,10 +6,10 @@
 
 const path = require('path')
 
-const ExportTableService = require('./export_table.service')
-const SendFileToS3Service = require('./send_file_to_s3.service')
+const ExportTableService = require('./export_table_to_file.service')
+const SendFileToS3Service = require('../send_file_to_s3.service')
 
-class DataExportService {
+class ExportDataFilesService {
   /**
    * Exports a set of db tables in CSV format to an S3 bucket.
    *
@@ -118,4 +118,4 @@ class DataExportService {
   }
 }
 
-module.exports = DataExportService
+module.exports = ExportDataFilesService

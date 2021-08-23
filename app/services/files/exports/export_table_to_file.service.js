@@ -4,11 +4,11 @@
  * @module ExportTableService
  */
 
-const TransformTableToFileService = require('./transform_table_to_file.service')
+const TransformTableToFileService = require('../transform_table_to_file.service')
 
-const { db } = require('../../db')
+const { db } = require('../../../db')
 
-class ExportTableService {
+class ExportTableToFileService {
   /**
    * Writes the content of a database table to a file in CSV format.
    *
@@ -50,4 +50,4 @@ class ExportTableService {
   }
 }
 
-module.exports = ExportTableService
+module.exports = ExportTableToFileService

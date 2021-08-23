@@ -5,7 +5,7 @@
  */
 
 const { CustomerModel } = require('../models')
-const TransformRecordsToFileService = require('./transform_records_to_file.service')
+const TransformRecordsToFileService = require('../transform_records_to_file.service')
 const {
   CustomerFileBodyPresenter,
   CustomerFileHeadPresenter,

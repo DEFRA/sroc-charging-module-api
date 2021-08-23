@@ -5,10 +5,10 @@
  */
 
 // Files in the same folder cannot be destructured from index.js so have to be required directly
-const CalculateMinimumChargeService = require('./calculate_minimum_charge.service')
+const CalculateMinimumChargeService = require('./calculate_minimum_charge_for_bill_run.service')
 
-const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../models')
-const { raw } = require('../models/base.model')
+const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../../models')
+const { raw } = require('../../models/base.model')
 
 class GenerateBillRunService {
   /**

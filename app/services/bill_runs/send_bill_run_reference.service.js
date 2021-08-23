@@ -6,7 +6,7 @@
 
 const Boom = require('@hapi/boom')
 
-const { BillRunModel } = require('../models')
+const { BillRunModel } = require('../../models')
 const NextTransactionFileReferenceService = require('./next_transaction_file_reference.service')
 const NextTransactionReferenceService = require('./next_transaction_reference.service')
 

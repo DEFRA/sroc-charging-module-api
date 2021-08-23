@@ -7,7 +7,7 @@
 const { CalculateChargeTranslator, RulesServiceTranslator } = require('../translators')
 const { CalculateChargePresenter, RulesServicePresenter } = require('../presenters')
 
-const RulesService = require('./rules.service')
+const RulesService = require('./request_rules_service_charge.service')
 
 /**
  * Handles calling the rules service and returning a response when calculating a charge

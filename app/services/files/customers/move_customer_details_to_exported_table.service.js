@@ -1,12 +1,12 @@
 'use strict'
 
 /**
- * @module MoveCustomersToExportedTableService
+ * @module MoveCustomerDetailsToExportedTableService
  */
 
-const { CustomerModel, ExportedCustomerModel } = require('../models')
+const { CustomerModel, ExportedCustomerModel } = require('../../models')
 
-class MoveCustomersToExportedTableService {
+class MoveCustomerDetailsToExportedTableService {
   /**
    * Adds customers to the `exported_customers` table and deletes them from the `customers` table.
    *
@@ -50,4 +50,4 @@ class MoveCustomersToExportedTableService {
   }
 }
 
-module.exports = MoveCustomersToExportedTableService
+module.exports = MoveCustomerDetailsToExportedTableService

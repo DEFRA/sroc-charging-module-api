@@ -4,8 +4,8 @@
  * @module ListRegimesService
  */
 
-const { RegimeModel } = require('../models')
-const { JsonPresenter } = require('../presenters')
+const { RegimeModel } = require('../../models')
+const { JsonPresenter } = require('../../presenters')
 
 /**
  * Returns an array of regimes

@@ -4,9 +4,9 @@
  * @module BaseNextFileReferenceService
  */
 
-const { SequenceCounterModel } = require('../models')
+const { SequenceCounterModel } = require('../../models')
 
-const { RulesServiceConfig } = require('../../config')
+const { RulesServiceConfig } = require('../../../config')
 
 class BaseNextFileReferenceService {
   /**

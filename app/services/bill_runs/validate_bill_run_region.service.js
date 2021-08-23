@@ -1,12 +1,12 @@
 'use strict'
 
 /**
- * @module CreateTransactionBillRunValidationService
+ * @module ValidateBillRunRegionService
  */
 
 const Boom = require('@hapi/boom')
 
-class CreateTransactionBillRunValidationService {
+class ValidateBillRunRegionService {
   /**
    * Checks if the supplied region matches that of the bill run. Throws a 'Boom.badData()' error if it does not
    *
@@ -29,4 +29,4 @@ class CreateTransactionBillRunValidationService {
   }
 }
 
-module.exports = CreateTransactionBillRunValidationService
+module.exports = ValidateBillRunRegionService

@@ -4,7 +4,7 @@
  * @module CreateTransactionTallyService
  */
 
-const { raw } = require('../models/base.model')
+const { raw } = require('../../models/base.model')
 
 class CreateTransactionTallyService {
   /**

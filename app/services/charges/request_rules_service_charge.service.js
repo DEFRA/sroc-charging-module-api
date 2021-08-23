@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module RulesService
+ * @module RequestRulesServiceChargeService
  */
 
 const Got = require('got')
@@ -20,7 +20,7 @@ const { RulesServiceConfig } = require('../../config')
  * Because each regime and ruleset has different rules for how a charge is calculated the rules service has an endpoint
  * for each one. Part of what this service does is determining the appropriate endpoint to call.
  */
-class RulesService {
+class RequestRulesServiceChargeService {
   /**
    * Initiator method of the service. When called the service will take the inputs, call the appropriate endpoint on the
    * rules service and return the response.
@@ -179,4 +179,4 @@ class RulesService {
   }
 }
 
-module.exports = RulesService
+module.exports = RequestRulesServiceChargeService
