@@ -30,8 +30,7 @@ class SendCustomerFileService {
    * - Calls GenerateCustomerFileService to generate the customer file
    * - Calls SendFileToS3Service to send the customer file to the S3 bucket
    * - Deletes the linked customer change records
-   * - Sets the `customer_file`s record status to `exported` and `exportedDate` to the current date;
-   * - Deletes the file if `ServerConfig.removeTemporaryFiles` is set to `true`.
+   * - Sets the `customer_file`s record status to `exported` and `exportedDate` to the current date.
    *
    * @param {module:RegimeModel} regime The regime that the customer file is to be generated for.
    * @param {array} regions An arry of regions we want to send a customer file for.
