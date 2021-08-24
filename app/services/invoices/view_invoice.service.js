@@ -42,7 +42,7 @@ class ViewInvoiceService {
         'rebilledInvoiceId'
       )
       .withGraphFetched('licences.transactions')
-      .modifyGraph('licences', (builder) => {
+      .modifyGraph('licences', builder => {
         builder.select(
           'id',
           'licenceNumber',
@@ -50,7 +50,7 @@ class ViewInvoiceService {
           'creditLineValue'
         )
       })
-      .modifyGraph('licences.transactions', (builder) => {
+      .modifyGraph('licences.transactions', builder => {
         builder.select(
           'id',
           'clientId',

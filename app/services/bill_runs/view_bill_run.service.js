@@ -48,7 +48,7 @@ class ViewBillRunService {
         'fileReference'
       )
       .withGraphFetched('invoices.licences')
-      .modifyGraph('invoices', (builder) => {
+      .modifyGraph('invoices', builder => {
         builder.select(
           'id',
           'customerReference',
@@ -66,7 +66,7 @@ class ViewBillRunService {
           'rebilledInvoiceId'
         )
       })
-      .modifyGraph('invoices.licences', (builder) => {
+      .modifyGraph('invoices.licences', builder => {
         builder.select(
           'id',
           'licenceNumber'
