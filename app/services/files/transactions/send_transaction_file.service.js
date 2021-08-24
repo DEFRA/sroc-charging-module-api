@@ -6,9 +6,6 @@
 
 const path = require('path')
 
-const { ServerConfig } = require('../../../../config')
-const { removeTemporaryFiles } = ServerConfig
-
 const GenerateTransactionFileService = require('./generate_transaction_file.service')
 const SendFileToS3Service = require('../send_file_to_s3.service')
 const DeleteFileService = require('../delete_file.service')
@@ -46,9 +43,7 @@ class SendTransactionFileService {
       await this._setBilledStatus(billRun)
 
       // We delete the file last of all to ensure we still set the bill run status, even if deletion fails.
-      if (this._removeTemporaryFiles()) {
-        await DeleteFileService.go(generatedFile)
-      }
+      await DeleteFileService.go(generatedFile)
     } catch (error) {
       notifier.omfg('Error sending transaction file', { generatedFile, error })
     }
@@ -81,10 +76,6 @@ class SendTransactionFileService {
 
   static _filename (fileReference) {
     return `${fileReference}.dat`
-  }
-
-  static _removeTemporaryFiles () {
-    return removeTemporaryFiles
   }
 
   static async _setBillingNotRequiredStatus (billRun) {
