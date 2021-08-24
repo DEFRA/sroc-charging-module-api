@@ -71,10 +71,8 @@ class InvoiceRebillingCreateTransactionService {
     await InvoiceModel.updateTally({ ...transaction, rebilledType, rebilledInvoiceId }, trx)
     await LicenceModel.updateTally(transaction, trx)
 
-    const newTransaction = await transaction.$query(trx)
+    return transaction.$query(trx)
       .insert(transaction)
-
-    return newTransaction
   }
 }
 

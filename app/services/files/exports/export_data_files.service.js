@@ -31,9 +31,7 @@ class ExportDataFilesService {
     try {
       const tables = this._tablesToExport()
       exportedTables = await this._exportTables(tables, notifier)
-      const sendSuccess = await this._sendFiles(exportedTables, notifier)
-
-      return sendSuccess
+      return this._sendFiles(exportedTables, notifier)
     } catch (error) {
       return false
     }

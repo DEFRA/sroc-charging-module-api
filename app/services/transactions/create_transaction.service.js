@@ -59,15 +59,13 @@ class CreateTransactionService {
 
       const licenceId = await LicenceModel.updateTally(translator, trx)
 
-      const transaction = await TransactionModel.query(trx)
+      return TransactionModel.query(trx)
         .insert({
           ...translator,
           invoiceId,
           licenceId
         })
         .returning(['id', 'client_id'])
-
-      return transaction
     })
   }
 
