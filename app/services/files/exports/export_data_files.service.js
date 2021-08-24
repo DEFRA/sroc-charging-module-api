@@ -8,6 +8,7 @@ const path = require('path')
 
 const ExportTableToFileService = require('./export_table_to_file.service')
 const SendFileToS3Service = require('../send_file_to_s3.service')
+const DeleteFileService = require('../delete_file.service')
 
 class ExportDataFilesService {
   /**
@@ -16,9 +17,10 @@ class ExportDataFilesService {
    * When called it will attempt to export the tables to CSV files. If any one of these fails to export, an error will
    * be logged using notifier, the process will stop, and the service will return `false`.
    *
-   * Once the tables are exported, it will then attempt to send them to an S3 bucket (in the /csv/ 'folder'). If any
-   * file fails to send, an error will be logged using notifier, the process will continue, and once complete the
-   * service will return `false`. If all files are sent successfully then the service will return `true`.
+   * Once the tables are exported, it will then attempt to send them to an S3 bucket (in the /csv/ 'folder'), deleting
+   * each one after it's been sent. If any file fails to send or delete, an error will be logged using notifier, the
+   * process will continue, and once complete the service will return `false`. If all files are sent and deleted
+   * successfully then the service will return `true`.
    *
    * @param {@module:RequestNotifierLib} notifier Instance of `RequestNotifierLib` class. We use it to log errors rather
    * than throwing them as this service is intended to run in the background.
@@ -80,8 +82,9 @@ class ExportDataFilesService {
   }
 
   /**
-   * Receives an array of filenames and sends the files to the S3 bucket. If sending a file fails then an error will be
-   * logged with notifier and it will continue to send the remaining files.
+   * Receives an array of filenames and sends the files to the S3 bucket, deleting each one after it's been sent. If
+   * sending/deleting a file fails then an error will be logged with notifier and it will continue to send the remaining
+   * files.
    */
   static async _sendFiles (files, notifier) {
     let success = true
@@ -90,6 +93,7 @@ class ExportDataFilesService {
       try {
         const key = this._determineKey(file)
         await SendFileToS3Service.go(file, key, false)
+        await DeleteFileService.go(file)
         notifier.omg(`Sent file ${file}`)
       } catch (error) {
         notifier.omfg(

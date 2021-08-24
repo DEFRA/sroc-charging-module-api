@@ -9,7 +9,11 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Things we need to stub
-const { ExportTableToFileService, SendFileToS3Service } = require('../../../../app/services')
+const {
+  DeleteFileService,
+  ExportTableToFileService,
+  SendFileToS3Service
+} = require('../../../../app/services')
 
 // Thing under test
 const { ExportDataFiles } = require('../../../../app/services')
@@ -17,12 +21,14 @@ const { ExportDataFiles } = require('../../../../app/services')
 describe('Export Data Files service', () => {
   let exportTableStub
   let sendFileStub
+  let deleteStub
   let notifierFake
   let success
 
   beforeEach(async () => {
     exportTableStub = Sinon.stub(ExportTableToFileService, 'go').callsFake(table => `${table}.csv`)
     sendFileStub = Sinon.stub(SendFileToS3Service, 'go')
+    deleteStub = Sinon.stub(DeleteFileService, 'go')
 
     // Create fake functions to stand in place of Notifier.omg() and .omfg()
     notifierFake = { omg: Sinon.fake(), omfg: Sinon.fake() }
@@ -82,6 +88,22 @@ describe('Export Data Files service', () => {
         'csv/licences.csv',
         'csv/regimes.csv',
         'csv/transactions.csv'
+      ])
+    })
+
+    it('deletes each file', async () => {
+      // firstArg of each call is the file to be deleted, so we map them to an array we can check
+      const keys = deleteStub.getCalls().map(call => call.firstArg)
+
+      expect(keys).to.only.include([
+        'authorised_systems.csv',
+        'bill_runs.csv',
+        'customer_files.csv',
+        'exported_customers.csv',
+        'invoices.csv',
+        'licences.csv',
+        'regimes.csv',
+        'transactions.csv'
       ])
     })
 
