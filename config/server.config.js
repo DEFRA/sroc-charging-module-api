@@ -20,8 +20,7 @@ const config = {
       stripTrailingSlash: true
     }
   },
-  temporaryFilePath: process.env.TMPDIR || '/tmp/',
-  removeTemporaryFiles: process.env.REMOVE_TMP_FILES || true
+  temporaryFilePath: process.env.TMPDIR || '/tmp/'
 }
 
 module.exports = config
