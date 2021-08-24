@@ -38,7 +38,7 @@ class InvoiceRebillingValidationService {
   }
 
   static async _currentBillRun (invoice) {
-    return await BillRunModel.query().findById(invoice.billRunId)
+    return BillRunModel.query().findById(invoice.billRunId)
   }
 
   static _validateNotOnNewBillRun (currentBillRun, newBillRun, invoiceId) {
