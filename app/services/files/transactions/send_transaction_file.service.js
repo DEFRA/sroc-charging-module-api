@@ -6,9 +6,6 @@
 
 const path = require('path')
 
-const { ServerConfig } = require('../../../../config')
-const { removeTemporaryFiles } = ServerConfig
-
 const GenerateTransactionFileService = require('./generate_transaction_file.service')
 const SendFileToS3Service = require('../send_file_to_s3.service')
 const DeleteFileService = require('../delete_file.service')
@@ -20,7 +17,6 @@ class SendTransactionFileService {
    * - Checks that a transaction file is required;
    * - Calls GenerateTransactionFileService to generate the transaction file;
    * - Calls SendFileToS3Service to send the transaction file to the S3 bucket;
-   * - Deletes the file if ServerConfig.removeTemporaryFiles is set to `true`;
    * - Sets the bill run status to 'billed' if everything was successful.
    *
    * @param {module:RegimeModel} regime The regime that the bill run belongs to. The regime slug will form part of the
@@ -46,9 +42,7 @@ class SendTransactionFileService {
       await this._setBilledStatus(billRun)
 
       // We delete the file last of all to ensure we still set the bill run status, even if deletion fails.
-      if (this._removeTemporaryFiles()) {
-        await DeleteFileService.go(generatedFile)
-      }
+      await DeleteFileService.go(generatedFile)
     } catch (error) {
       notifier.omfg('Error sending transaction file', { generatedFile, error })
     }
@@ -81,10 +75,6 @@ class SendTransactionFileService {
 
   static _filename (fileReference) {
     return `${fileReference}.dat`
-  }
-
-  static _removeTemporaryFiles () {
-    return removeTemporaryFiles
   }
 
   static async _setBillingNotRequiredStatus (billRun) {

@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
@@ -36,9 +36,9 @@ describe('Send Transaction File service', () => {
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     billRun = await BillRunHelper.addBillRun(regime.id, GeneralHelper.uuid4())
 
-    deleteStub = Sinon.stub(DeleteFileService, 'go').returns(true)
+    deleteStub = Sinon.stub(DeleteFileService, 'go')
     generateStub = Sinon.stub(GenerateTransactionFileService, 'go').returns('stubFilename')
-    sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
+    sendStub = Sinon.stub(SendFileToS3Service, 'go')
 
     // Create a fake function to stand in place of Notifier.omfg()
     notifierFake = { omfg: Sinon.fake() }
@@ -81,28 +81,10 @@ describe('Send Transaction File service', () => {
         expect(refreshedBillRun.status).to.equal('billed')
       })
 
-      describe('and removeTemporary files is set to `true`', () => {
-        before(async () => {
-          Sinon.stub(SendTransactionFileService, '_removeTemporaryFiles').returns(true)
-        })
+      it('deletes the file', async () => {
+        await SendTransactionFileService.go(regime, billRun)
 
-        it('deletes the file', async () => {
-          await SendTransactionFileService.go(regime, billRun)
-
-          expect(deleteStub.calledOnce).to.equal(true)
-        })
-      })
-
-      describe('and removeTemporary files is set to `false`', () => {
-        before(async () => {
-          Sinon.stub(SendTransactionFileService, '_removeTemporaryFiles').returns(false)
-        })
-
-        it("doesn't delete the file", async () => {
-          await SendTransactionFileService.go(regime, billRun)
-
-          expect(deleteStub.called).to.equal(false)
-        })
+        expect(deleteStub.calledOnce).to.equal(true)
       })
     })
 

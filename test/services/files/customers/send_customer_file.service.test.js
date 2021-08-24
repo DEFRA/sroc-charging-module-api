@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, beforeEach, afterEach } = exports.lab = Lab.script()
+const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
@@ -68,10 +68,10 @@ describe('Send Customer File service', () => {
       await CreateCustomerDetailsService.go({ ...payload, region: 'A', customerReference: 'AA12345678' }, regime)
       await CreateCustomerDetailsService.go({ ...payload, region: 'W', customerReference: 'WA87654321' }, regime)
 
-      deleteStub = Sinon.stub(DeleteFileService, 'go').returns(true)
+      deleteStub = Sinon.stub(DeleteFileService, 'go')
       generateStub = Sinon.stub(GenerateCustomerFileService, 'go').callsFake(file => `${file.fileReference}.dat`)
-      sendStub = Sinon.stub(SendFileToS3Service, 'go').returns(true)
-      moveStub = Sinon.stub(MoveCustomerDetailsToExportedTableService, 'go').returns(true)
+      sendStub = Sinon.stub(SendFileToS3Service, 'go')
+      moveStub = Sinon.stub(MoveCustomerDetailsToExportedTableService, 'go')
       Sinon.stub(NextCustomerFileReferenceService, 'go').callsFake((_, region) => `nal${region.toLowerCase()}c50001`)
     })
 
@@ -105,24 +105,8 @@ describe('Send Customer File service', () => {
           expect(args[2]).to.equal(customerFile.id)
         })
 
-        describe('and when removeTemporary files is set to `true`', () => {
-          before(async () => {
-            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(true)
-          })
-
-          it('deletes the file', async () => {
-            expect(deleteStub.calledOnce).to.equal(true)
-          })
-        })
-
-        describe('and when removeTemporary files is set to `false`', () => {
-          before(async () => {
-            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(false)
-          })
-
-          it("doesn't delete the file", async () => {
-            expect(deleteStub.called).to.equal(false)
-          })
+        it('deletes the file', async () => {
+          expect(deleteStub.calledOnce).to.equal(true)
         })
 
         describe("on the matching 'customer_files' record", () => {
@@ -193,24 +177,8 @@ describe('Send Customer File service', () => {
           expect(secondArgs[2]).to.equal(customerFiles[1].id)
         })
 
-        describe('and when removeTemporary files is set to `true`', () => {
-          before(async () => {
-            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(true)
-          })
-
-          it('deletes the file', async () => {
-            expect(deleteStub.calledTwice).to.equal(true)
-          })
-        })
-
-        describe('and when removeTemporary files is set to `false`', () => {
-          before(async () => {
-            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(false)
-          })
-
-          it("doesn't delete the file", async () => {
-            expect(deleteStub.called).to.equal(false)
-          })
+        it('deletes the file', async () => {
+          expect(deleteStub.calledTwice).to.equal(true)
         })
 
         describe("on the matching 'customer_files' records", () => {
@@ -268,24 +236,8 @@ describe('Send Customer File service', () => {
           expect(secondArgs[2]).to.equal(customerFiles[1].id)
         })
 
-        describe('and when removeTemporary files is set to `true`', () => {
-          before(async () => {
-            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(true)
-          })
-
-          it('deletes the file', async () => {
-            expect(deleteStub.calledTwice).to.equal(true)
-          })
-        })
-
-        describe('and when removeTemporary files is set to `false`', () => {
-          before(async () => {
-            Sinon.stub(SendCustomerFileService, '_removeTemporaryFiles').returns(false)
-          })
-
-          it("doesn't delete the file", async () => {
-            expect(deleteStub.called).to.equal(false)
-          })
+        it('deletes the file', async () => {
+          expect(deleteStub.calledTwice).to.equal(true)
         })
 
         describe("on the matching 'customer_files' records", () => {
