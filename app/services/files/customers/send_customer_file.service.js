@@ -6,9 +6,6 @@
 
 const path = require('path')
 
-const { ServerConfig } = require('../../../../config')
-const { removeTemporaryFiles } = ServerConfig
-
 const { CustomerFileModel } = require('../../../models')
 
 const DeleteFileService = require('../delete_file.service')
@@ -95,9 +92,7 @@ class SendCustomerFileService {
 
         await this._setExportedStatusAndDate(customerFile)
 
-        if (this._removeTemporaryFiles()) {
-          await DeleteFileService.go(generatedFile)
-        }
+        await DeleteFileService.go(generatedFile)
 
         notifier.omg('Completed sending customer file', { regime: regime.slug, region, generatedFile })
       } catch (error) {
@@ -133,13 +128,6 @@ class SendCustomerFileService {
     await SendFileToS3Service.go(generatedFile, key)
 
     return generatedFile
-  }
-
-  /**
-   * Returns the state of the `removeTemporaryFiles` config setting. Kept in a separate method for ease of testing.
-   */
-  static _removeTemporaryFiles () {
-    return removeTemporaryFiles
   }
 }
 
