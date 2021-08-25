@@ -1,6 +1,24 @@
 name: CI
 
-on: push
+# We want this workflow to trigger when
+#
+# - a change is made to `main` either because of a direct push or when a PR is merged
+# - whenever a PR is created or updated by a team member
+# - whenever a PR is created or updated by Dependabot
+#
+# That last scenario is what triggers `pull_request_target` to be fired but it is insecure and can allow malicious
+# access to repo secrets. This is why we also add the activity type 'labeled'. Only those with write permissions to the
+# repo are able to add labels to PR's, which is our way of determining the PR came from Dependabot rather than an
+# anonymous user
+# https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/automating-dependabot-with-github-actions#handling-pull_request-events
+# https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  pull_request_target:
+    types: [labeled]
 
 jobs:
   build:
