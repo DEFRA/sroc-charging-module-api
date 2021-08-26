@@ -20,7 +20,7 @@ class BillRunsInvoicesController {
   }
 
   static async view (req, h) {
-    const result = await ViewInvoiceService.go(req.app.billRun.id, req.params.invoiceId)
+    const result = await ViewInvoiceService.go(req.app.billRun.id, req.params.invoiceId, req.app.billRun.ruleset)
 
     return h.response(result).code(200)
   }

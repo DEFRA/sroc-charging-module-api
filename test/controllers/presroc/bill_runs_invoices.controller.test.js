@@ -36,7 +36,7 @@ const { BillRunModel, InvoiceModel } = require('../../../app/models')
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
-describe('Invoices controller', () => {
+describe.only('Invoices controller', () => {
   let server
   let authToken
   let invoice
@@ -132,7 +132,7 @@ describe('Invoices controller', () => {
     })
   })
 
-  describe('View bill run invoice: GET /v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}', () => {
+  describe.only('View bill run invoice: GET /v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}', () => {
     const options = (token, billRunId, invoiceId) => {
       return {
         method: 'GET',
