@@ -1,0 +1,52 @@
+name: DOCKER
+
+on:
+  push:
+    # Trigger this workflow on changes to `main`
+    branches: [ main ]
+    # Trigger this workflow if a semver tag is pushed
+    tags: [ 'v*.*.*' ]
+
+env:
+  # Will default to docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository will be <account>/<repo>, for example, DEFRA/sroc-charging-module-api
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Login against a Docker registry
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Extract metadata (tags, labels) for Docker
+      # https://github.com/docker/metadata-action
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      # Build and push Docker image with Buildx
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          target: production
+          build-args: |
+            GIT_COMMIT=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+            DOCKER_TAG=${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
