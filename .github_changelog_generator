@@ -1,1 +1,3 @@
+user=DEFRA
+project=sroc-charging-module-api
 add-sections={"housekeeping":{"prefix":"**Housekeeping updates:**","labels":["housekeeping"]},"documentation":{"prefix":"**Documentation updates:**","labels":["documentation"]},"dependencies":{"prefix":"**Dependency updates:**","labels":["dependencies"]}}
