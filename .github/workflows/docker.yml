@@ -9,7 +9,7 @@ on:
 
 env:
   # Will default to docker.io for Docker Hub if empty
-  REGISTRY: ghcr.io
+  GHC_REGISTRY: ghcr.io
   # github.repository will be <account>/<repo>, for example, DEFRA/sroc-charging-module-api
   IMAGE_NAME: ${{ github.repository }}
 
@@ -20,12 +20,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Login against a Docker registry
+      # Login against DockerHub
       # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
+      - name: Log into Docker Hub
         uses: docker/login-action@v1
         with:
-          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Login against a GitHub Container registry
+      # https://github.com/docker/login-action
+      - name: Log into GH Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.GHC_REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -35,10 +43,32 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.GHC_REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      # We combine the tags generated for GHC registry with ones for DockerHub. We do this by using sed to replace
+      # appearances of ghcr.io with docker.io in the original tags. The combination of the original tags plus the
+      # sed calculated ones are combined and stored as a multiline string in a new env var.
+      #
+      # Some things to note
+      #  - each line of the HEREDOC must output something. That is why we call 'echo' in each one
+      #  - steps.meta.outputs.tags is itself a multiline string so we must wrap the call in quotes else the second line
+      #    of the string is interpreted as a command
+      #  - GitHub action's `set-output` truncates multiline strings which is why we have resorted to what you see below
+      #    to get a value which contains all the possible tags as a multiline string
+      #
+      # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#multiline-strings
+      # https://github.community/t/set-output-truncates-multiline-strings/16852/8
+      - name: Set all tags
+        run: |
+          echo 'ALL_TAGS<<EOF' >> $GITHUB_ENV
+          echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
+          echo "${{ steps.meta.outputs.tags }}" | sed -e 's|${{ env.GHC_REGISTRY }}|docker.io|g' >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
 
       # Build and push Docker image with Buildx
+      # Note: This will push to both GitHub Container registry and DockerHub thanks to the `Set all tags` step
       # https://github.com/docker/build-push-action
+      # https://github.com/docker/build-push-action/blob/master/docs/advanced/push-multi-registries.md
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
@@ -48,5 +78,5 @@ jobs:
             GIT_COMMIT=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
             DOCKER_TAG=${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta_github.outputs.labels }}
+          tags: ${{ env.ALL_TAGS }}
