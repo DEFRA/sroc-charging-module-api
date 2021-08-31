@@ -6,8 +6,6 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/DEFRA/sroc-charging-module-api/badge.svg)](https://snyk.io/test/github/DEFRA/sroc-charging-module-api)
 [![Licence](https://img.shields.io/badge/Licence-OGLv3-blue.svg)](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3)
 
-> A work in progress version 2 of the original [Charging Module API](https://github.com/DEFRA/charging-module-api)
-
 This API provides an interface for calculating charges, queuing transactions and generating transaction files used to produce invoices.
 
 ## Prerequisites
