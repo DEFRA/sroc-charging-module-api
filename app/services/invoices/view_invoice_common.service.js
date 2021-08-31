@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module ViewInvoicePresrocService
+ * @module ViewInvoiceCommonService
  */
 
 const FetchAndValidateInvoiceService = require('./fetch_and_validate_invoice.service')
