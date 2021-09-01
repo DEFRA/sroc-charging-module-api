@@ -93,9 +93,9 @@ class ViewTransactionChargeSrocService {
     return presenter.go()
   }
 }
+```
 
-# ...
-
+```javascript
 class ViewTransactionChargePresrocService {
   static async go (billRun, transactionId) {
     let transaction = await this._transaction(transactionId)
@@ -108,7 +108,7 @@ class ViewTransactionChargePresrocService {
   }
 
   static _response (transaction) {
-    const presenter = new ViewTransactionChargePresrocPresenter(transaction) # <- This line!
+    const presenter = new ViewTransactionChargePresrocPresenter(transaction) // <- This line!
 
     return presenter.go()
   }
@@ -151,9 +151,9 @@ class ViewTransactionChargeSrocService extends ViewTransactionChargeCommonServic
     return presenter.go()
   }
 }
+```
 
-# ...
-
+```javascript
 class ViewTransactionChargePresrocService extends ViewTransactionChargeCommonService {
   static _response (transaction) {
     const presenter = new ViewTransactionChargePresrocPresenter(transaction)
@@ -195,7 +195,13 @@ class ViewTransactionChargePresenter extends BasePresenter {
 }
 ```
 
-The existing presenter should be renamed using `git mv app/presenters/view_transaction_charge.presenter.js app/presenters/view_transaction_charge_presroc.presenter.js`. This should then be copied as `app/presenters/view_transaction_charge_sroc.presenter.js`. Finally, the new `ViewTransactionChargeSrocPresenter` should be updated based on whatever changes are needed for the new ruleset.
+The existing presenter should be renamed.
+
+```bash
+git mv app/presenters/view_transaction_charge.presenter.js app/presenters/view_transaction_charge_presroc.presenter.js
+```
+
+This should then be copied as `app/presenters/view_transaction_charge_sroc.presenter.js`. Finally, the new `ViewTransactionChargeSrocPresenter` should be updated based on whatever changes are needed for the new ruleset.
 
 ```javascript
 class ViewTransactionChargePresrocPresenter extends BasePresenter {
