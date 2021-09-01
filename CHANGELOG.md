@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/DEFRA/sroc-charging-module-api/tree/HEAD)
+## [v0.13.1](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.13.1) (2021-09-01)
 
-[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.13.0...HEAD)
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.13.0...v0.13.1)
 
 **Implemented enhancements:**
 
@@ -10,11 +10,18 @@
 
 **Fixed bugs:**
 
+- Fix automatic push to DockerHub [\#532](https://github.com/DEFRA/sroc-charging-module-api/pull/532) ([Cruikshanks](https://github.com/Cruikshanks))
 - Fix dependabot builds [\#521](https://github.com/DEFRA/sroc-charging-module-api/pull/521) ([Cruikshanks](https://github.com/Cruikshanks))
 - Fix proxy config defect [\#511](https://github.com/DEFRA/sroc-charging-module-api/pull/511) ([StuAA78](https://github.com/StuAA78))
 
+**Security fixes:**
+
+- Use `npm audit fix to patch` vulnerabilities [\#524](https://github.com/DEFRA/sroc-charging-module-api/pull/524) ([Cruikshanks](https://github.com/Cruikshanks))
+
 **Housekeeping updates:**
 
+- Add GitHub actions to Dependabot checks [\#529](https://github.com/DEFRA/sroc-charging-module-api/pull/529) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add pushing to DockerHub to Docker workflow [\#527](https://github.com/DEFRA/sroc-charging-module-api/pull/527) ([Cruikshanks](https://github.com/Cruikshanks))
 - Add Docker build and push to GitHub workflows [\#522](https://github.com/DEFRA/sroc-charging-module-api/pull/522) ([Cruikshanks](https://github.com/Cruikshanks))
 - Delete `REMOVE_TMP_FILES` environment variable [\#517](https://github.com/DEFRA/sroc-charging-module-api/pull/517) ([StuAA78](https://github.com/StuAA78))
 - CMEA-102: SonarCloud fixes [\#516](https://github.com/DEFRA/sroc-charging-module-api/pull/516) ([StuAA78](https://github.com/StuAA78))
@@ -23,10 +30,15 @@
 
 **Documentation updates:**
 
+- Add dev guide amending code to handle new rulesets [\#530](https://github.com/DEFRA/sroc-charging-module-api/pull/530) ([Cruikshanks](https://github.com/Cruikshanks))
+- Remove WIP message from top of README [\#526](https://github.com/DEFRA/sroc-charging-module-api/pull/526) ([Cruikshanks](https://github.com/Cruikshanks))
+- Add custom sections to CHANGELOG [\#525](https://github.com/DEFRA/sroc-charging-module-api/pull/525) ([Cruikshanks](https://github.com/Cruikshanks))
 - Document services folder [\#519](https://github.com/DEFRA/sroc-charging-module-api/pull/519) ([StuAA78](https://github.com/StuAA78))
 
 **Dependency updates:**
 
+- Bump actions/setup-node from 1 to 2.4.0 [\#531](https://github.com/DEFRA/sroc-charging-module-api/pull/531) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.27.0 to 3.28.0 [\#528](https://github.com/DEFRA/sroc-charging-module-api/pull/528) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump nock from 13.1.2 to 13.1.3 [\#520](https://github.com/DEFRA/sroc-charging-module-api/pull/520) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump nock from 13.1.1 to 13.1.2 [\#515](https://github.com/DEFRA/sroc-charging-module-api/pull/515) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump @aws-sdk/client-s3 from 3.26.0 to 3.27.0 [\#512](https://github.com/DEFRA/sroc-charging-module-api/pull/512) ([dependabot[bot]](https://github.com/apps/dependabot))
