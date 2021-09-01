@@ -88,7 +88,7 @@ class ViewTransactionChargeSrocService {
   }
 
   static _response (transaction) {
-    const presenter = new ViewTransactionChargeSrocPresenter(transaction) # <- This line!
+    const presenter = new ViewTransactionChargeSrocPresenter(transaction) // <- This line!
 
     return presenter.go()
   }
