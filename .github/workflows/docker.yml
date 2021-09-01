@@ -8,7 +8,7 @@ on:
     tags: [ 'v*.*.*' ]
 
 env:
-  # Will default to docker.io for Docker Hub if empty
+  # Our main, default container registry
   GHC_REGISTRY: ghcr.io
   # github.repository will be <account>/<repo>, for example, DEFRA/sroc-charging-module-api
   IMAGE_NAME: ${{ github.repository }}
