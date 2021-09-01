@@ -115,7 +115,7 @@ class ViewTransactionChargePresrocService {
 }
 ```
 
-Depending on the service and the changes needed between the rulesets it could more than this. The intentis that by creating these new services we have the flexibility to make them whilst still serving all requests through a single endpoint.
+Depending on the service and the changes needed between the rulesets it could more than this. The intent is that by creating these new services we have the flexibility to make them whilst still serving all requests through a single endpoint.
 
 #### Common service
 
