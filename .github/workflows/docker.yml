@@ -62,7 +62,7 @@ jobs:
         run: |
           echo 'ALL_TAGS<<EOF' >> $GITHUB_ENV
           echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
-          echo "${{ steps.meta.outputs.tags }}" | sed -e 's|${{ env.GHC_REGISTRY }}|docker.io|g' >> $GITHUB_ENV
+          echo "${{ steps.meta.outputs.tags }}" | sed -e 's|${{ env.GHC_REGISTRY }}/defra|docker.io/environmentagency|g' >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
       # Build and push Docker image with Buildx
