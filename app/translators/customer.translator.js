@@ -17,11 +17,13 @@ class CustomerTranslator extends BaseTranslator {
       customerReference: Joi.string().uppercase().max(12).required(),
       customerName: Joi.string().max(360).required(),
       addressLine1: Joi.string().max(240).required(),
-      addressLine2: Joi.string().max(240),
-      addressLine3: Joi.string().max(240),
-      addressLine4: Joi.string().max(240),
-      addressLine5: Joi.string().max(60),
-      addressLine6: Joi.string().max(60),
+      // We default these fields to `null` to ensure that any unspecified fields are overwritten with `null` when
+      // updating an existing record:
+      addressLine2: Joi.string().max(240).default(null),
+      addressLine3: Joi.string().max(240).default(null),
+      addressLine4: Joi.string().max(240).default(null),
+      addressLine5: Joi.string().max(60).default(null),
+      addressLine6: Joi.string().max(60).default(null),
       postcode: Joi.string().max(60).required()
     })
   }
