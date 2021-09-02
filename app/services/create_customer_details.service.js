@@ -37,7 +37,7 @@ class CreateCustomerDetailsService {
     // Note that we have defaulted all unspecified fields to `null` in the translator to ensure that merging will
     // overwrite any unspecified fields with `null`
     return CustomerModel.query()
-      .insert({ ...translator })
+      .insert(translator)
       .onConflict('customerReference')
       .merge()
   }
