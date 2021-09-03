@@ -68,7 +68,7 @@ describe('Export Table To File service', () => {
     Sinon.restore()
   })
 
-  it('creates a file with the correct content', async () => {
+  it.only('creates a file with the correct content', async () => {
     const returnedFilenameWithPath = await ExportTableToFileService.go(table)
 
     const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')

@@ -17,7 +17,18 @@ class StreamTransformCSVService {
     return new Transform({
       objectMode: true,
       transform: function (array, _encoding, callback) {
-        const wrapped = array.map(element => `"${element}"`)
+        const wrapped = array.map(element => {
+          // If element is an object then we need to stringify it
+          if (typeof element === 'object') {
+            element = JSON.stringify(element)
+          }
+          // If element is a string then convert all quotes " to two quotes "" as required by CSV format
+          if (typeof element === 'string') {
+            element.replace(/"/g, '""')
+          }
+          // Finally, return element wrapped in quotes
+          return `"${element}"`
+        })
         const csv = wrapped.join()
 
         callback(null, csv.concat('\n'))
