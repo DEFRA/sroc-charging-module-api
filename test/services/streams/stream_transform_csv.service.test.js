@@ -15,7 +15,7 @@ const { StreamHelper } = require('../../support/helpers')
 // Thing under test
 const { StreamTransformCSVService } = require('../../../app/services')
 
-describe.only('Stream Transform CSV service', () => {
+describe('Stream Transform CSV service', () => {
   describe('When data is passed to it', () => {
     it('returns a stream', async () => {
       const result = StreamTransformCSVService.go()
@@ -34,7 +34,7 @@ describe.only('Stream Transform CSV service', () => {
     })
 
     it('correctly formats objects', async () => {
-      const testData = ['{"__DecisionID__":"52c1088f-41b7-4f26-a7db-cab9792dc1cb0","WRLSChargingResponse":{"chargeValue":215.28,"decisionPoints":{"sourceFactor":9,"seasonFactor":14.4,"lossFactor":14.4,"volumeFactor":1,"abatementAdjustment":215.28,"s127Agreement":215.28,"s130Agreement":215.28,"secondPartCharge":false,"waterUndertaker":false,"eiucFactor":0,"compensationCharge":false,"eiucSourceFactor":0,"sucFactor":215.28},"messages":[],"sucFactor":14.95,"volumeFactor":1,"sourceFactor":9,"seasonFactor":1.6,"lossFactor":1,"abatementAdjustment":"S126 x 1.0","s127Agreement":null,"s130Agreement":null,"eiucSourceFactor":0,"eiucFactor":0}}']
+      const testData = [{ __DecisionID__: '52c1088f-41b7-4f26-a7db-cab9792dc1cb0', WRLSChargingResponse: { chargeValue: 215.28, decisionPoints: { sourceFactor: 9, seasonFactor: 14.4, lossFactor: 14.4, volumeFactor: 1, abatementAdjustment: 215.28, s127Agreement: 215.28, s130Agreement: 215.28, secondPartCharge: false, waterUndertaker: false, eiucFactor: 0, compensationCharge: false, eiucSourceFactor: 0, sucFactor: 215.28 }, messages: [], sucFactor: 14.95, volumeFactor: 1, sourceFactor: 9, seasonFactor: 1.6, lossFactor: 1, abatementAdjustment: 'S126 x 1.0', s127Agreement: null, s130Agreement: null, eiucSourceFactor: 0, eiucFactor: 0 } }]
 
       const transformStream = StreamTransformCSVService.go()
       const [result] = await StreamHelper.testTransformStream(transformStream, testData)
