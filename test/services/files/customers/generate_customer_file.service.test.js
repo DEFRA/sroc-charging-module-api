@@ -25,7 +25,7 @@ const { CustomerFileModel, CustomerModel } = require('../../../../app/models')
 // Thing under test
 const { GenerateCustomerFileService } = require('../../../../app/services')
 
-describe.only('Generate Customer File service', () => {
+describe('Generate Customer File service', () => {
   const fileReference = 'nalwc50003'
   const filename = fileReference.concat('.dat')
   const filenameWithPath = path.join(temporaryFilePath, filename)

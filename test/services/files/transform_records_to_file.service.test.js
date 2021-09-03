@@ -26,7 +26,7 @@ const { temporaryFilePath } = require('../../../config/server.config')
 // Thing under test
 const { TransformRecordsToFileService } = require('../../../app/services')
 
-describe.only('Transform Records To File service', () => {
+describe('Transform Records To File service', () => {
   let billRun
   let transaction
   let additionalData

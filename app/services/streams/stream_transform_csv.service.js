@@ -18,8 +18,9 @@ class StreamTransformCSVService {
       objectMode: true,
       transform: function (array, _encoding, callback) {
         const wrapped = array.map(element => {
-          // If element is an object then we need to stringify it
-          if (typeof element === 'object') {
+          // JSON objects give us `[object Object]` when we wrap them in quotes. We want to stringify these objects to
+          // prevent this, but we ONLY want to stringify these types of objects
+          if (`"${element}"` === '[object Object]') {
             element = JSON.stringify(element)
           }
           // If element is a string then convert all quotes " to two quotes "" as required by CSV format
