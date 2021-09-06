@@ -44,6 +44,26 @@ describe('Customer translator', () => {
         expect(result.customerReference).to.equal('CUSTOMERREF1')
       })
     })
+
+    describe('when not passed address lines 2-6', () => {
+      it('defaults to `null`', async () => {
+        const validInput = input
+        delete validInput.addressLine2
+        delete validInput.addressLine3
+        delete validInput.addressLine4
+        delete validInput.addressLine5
+        delete validInput.addressLine6
+
+        const result = new CustomerTranslator(validInput)
+
+        expect(result).to.not.be.an.error()
+        expect(result.addressLine2).to.equal(null)
+        expect(result.addressLine3).to.equal(null)
+        expect(result.addressLine4).to.equal(null)
+        expect(result.addressLine5).to.equal(null)
+        expect(result.addressLine6).to.equal(null)
+      })
+    })
   })
 
   describe('Validation', () => {

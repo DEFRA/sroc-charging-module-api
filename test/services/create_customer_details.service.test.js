@@ -63,6 +63,19 @@ describe('Create Customer Details service', () => {
       expect(result.length).to.equal(1)
       expect(result[0].postcode).to.equal('NEW_POSTCODE')
     })
+
+    it('sets to `null` anything not received', async () => {
+      const partialPayload = payload
+      delete partialPayload.addressLine2
+
+      await CreateCustomerDetailsService.go(payload, regime)
+      await CreateCustomerDetailsService.go(partialPayload, regime)
+
+      const result = await CustomerModel.query()
+
+      expect(result.length).to.equal(1)
+      expect(result[0].addressLine2).to.equal(null)
+    })
   })
 
   describe('When an invalid payload is supplied', () => {
