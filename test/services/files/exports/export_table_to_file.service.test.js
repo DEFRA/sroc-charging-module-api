@@ -60,15 +60,25 @@ describe('Export Table To File service', () => {
     await customer.$query().patch({ customerFileId })
 
     // We separately pull out the customer record so we can compare the exported file against the exact db contents
-    // including the createdAt and updatedAt fields
     customerRecord = await CustomerModel.query().findById(customer.id)
+
+    // Date fields are converted when exporting to a different format so update the record to the expected format
+    customerRecord.createdAt = formatDate(customerRecord.createdAt)
+    customerRecord.updatedAt = formatDate(customerRecord.updatedAt)
   })
+
+  // Formats a date by stringifying it, then removing the ""s from the resulting string
+  function formatDate (date) {
+    return JSON
+      .stringify(date)
+      .replace(/"/g, '')
+  }
 
   afterEach(async () => {
     Sinon.restore()
   })
 
-  it('creates a file with the correct content', async () => {
+  it.only('creates a file with the correct content', async () => {
     const returnedFilenameWithPath = await ExportTableToFileService.go(table)
 
     const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
