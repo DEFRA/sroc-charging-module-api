@@ -12,12 +12,36 @@ const { ConvertToCSVService } = require('../../app/services')
 
 describe('Convert To CSV service', () => {
   describe('When data is passed to it', () => {
-    it('correctly formats strings, numbers and booleans', async () => {
-      const testData = ['first', 2, false]
+    it('correctly formats strings', async () => {
+      const testData = ['one', 'two', 'three']
 
       const result = ConvertToCSVService.go(testData)
 
-      expect(result).to.equal('"first","2","false"\n')
+      expect(result).to.equal('"one","two","three"\n')
+    })
+
+    it('correctly formats numbers', async () => {
+      const testData = [1, 2, 3]
+
+      const result = ConvertToCSVService.go(testData)
+
+      expect(result).to.equal('"1","2","3"\n')
+    })
+
+    it('correctly formats booleans', async () => {
+      const testData = [true, false]
+
+      const result = ConvertToCSVService.go(testData)
+
+      expect(result).to.equal('"true","false"\n')
+    })
+
+    it('correctly formats null', async () => {
+      const testData = [null]
+
+      const result = ConvertToCSVService.go(testData)
+
+      expect(result).to.equal('"null"\n')
     })
 
     it('correctly formats objects', async () => {
@@ -34,6 +58,16 @@ describe('Convert To CSV service', () => {
       const result = ConvertToCSVService.go(testData)
 
       expect(result).to.equal('"Some ""Quotes"" Here"\n')
+    })
+
+    it('correctly formats dates', async () => {
+      const testDateAndTime = new Date()
+      const testData = [testDateAndTime]
+
+      const result = ConvertToCSVService.go(testData)
+
+      // Note that we don't include quotes in our assertion as stringifying a date adds quotes already
+      expect(result).to.equal(`${JSON.stringify(testDateAndTime)}\n`)
     })
   })
 })
