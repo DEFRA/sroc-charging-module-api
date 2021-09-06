@@ -6,6 +6,10 @@
 
 class ConvertToCSVService {
   /**
+   * Converts an array into a CSV row, ie. each item contained in "", comma-separated, ending in a newline.
+   *
+   * @param {array} array The array to be converted.
+   * @returns A string containing the converted CSV row.
    */
   static go (array) {
     const wrappedArray = array.map(element => {
@@ -14,15 +18,16 @@ class ConvertToCSVService {
       return `"${element}"`
     })
 
-    // Join all the elements of wrapped with commas between them, append a newline, and return the resulting CSV line
+    // Join all the elements with a comma between them, append a newline, and return the resulting CSV row
     return wrappedArray
       .join()
       .concat('\n')
   }
 
-  // Handles objects by stringifying it, then removing any start and end quotes that have been added while doing it.
+  // Handles objects by stringifying them, then removing any start and end quotes that have been added while doing it.
   static _handleObject (object) {
     const stringified = JSON.stringify(object)
+    // Some objects will be wrapped in quotes when stringified. We don't want this at this stage so we remove them.
     return this._wrappedInQuotes(stringified) ? this._chopString(stringified) : stringified
   }
 
