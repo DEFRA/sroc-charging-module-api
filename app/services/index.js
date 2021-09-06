@@ -8,6 +8,7 @@ const BillRunStatusService = require('./bill_runs/bill_run_status.service')
 const CalculateChargeService = require('./charges/calculate_charge.service')
 const CalculateMinimumChargeForBillRunService = require('./bill_runs/calculate_minimum_charge_for_bill_run.service')
 const CognitoJwtToPemService = require('./plugins/cognito_jwt_to_pem.service')
+const ConvertToCSVService = require('./convert_to_csv.service')
 const CreateAuthorisedSystemService = require('./authorised_systems/create_authorised_system.service')
 const CreateBillRunService = require('./bill_runs/create_bill_run.service')
 const CreateCustomerDetailsService = require('./create_customer_details.service')
@@ -78,6 +79,7 @@ module.exports = {
   CalculateChargeService,
   CalculateMinimumChargeForBillRunService,
   CognitoJwtToPemService,
+  ConvertToCSVService,
   CreateAuthorisedSystemService,
   CreateBillRunService,
   CreateCustomerDetailsService,
