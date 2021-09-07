@@ -20,12 +20,20 @@ describe('Convert To CSV service', () => {
       expect(result).to.equal('"one","two","three"\n')
     })
 
+    it('correctly formats empty strings', async () => {
+      const testData = ['not empty', '', 'not empty']
+
+      const result = ConvertToCSVService.go(testData)
+
+      expect(result).to.equal('"not empty",,"not empty"\n')
+    })
+
     it('correctly formats numbers', async () => {
       const testData = [1, 2, 3]
 
       const result = ConvertToCSVService.go(testData)
 
-      expect(result).to.equal('"1","2","3"\n')
+      expect(result).to.equal('1,2,3\n')
     })
 
     it('correctly formats booleans', async () => {
@@ -33,15 +41,15 @@ describe('Convert To CSV service', () => {
 
       const result = ConvertToCSVService.go(testData)
 
-      expect(result).to.equal('"true","false"\n')
+      expect(result).to.equal('true,false\n')
     })
 
     it('correctly formats null', async () => {
-      const testData = [null]
+      const testData = ['not null', null, 'not null']
 
       const result = ConvertToCSVService.go(testData)
 
-      expect(result).to.equal('"null"\n')
+      expect(result).to.equal('"not null",,"not null"\n')
     })
 
     it('correctly formats objects', async () => {
@@ -53,11 +61,11 @@ describe('Convert To CSV service', () => {
     })
 
     it('correctly handles strings with quotes', async () => {
-      const testData = ['Some "Quotes" Here']
+      const testData = ['Some "Quotes" Here', '"And here"']
 
       const result = ConvertToCSVService.go(testData)
 
-      expect(result).to.equal('"Some ""Quotes"" Here"\n')
+      expect(result).to.equal('"Some ""Quotes"" Here","""And here"""\n')
     })
 
     it('correctly formats dates', async () => {
