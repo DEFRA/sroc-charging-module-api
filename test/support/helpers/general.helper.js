@@ -69,6 +69,19 @@ class GeneralHelper {
   static sleep (ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
+
+  /**
+   * Format a date as `2021-09-06T14:01:15.929Z`
+   *
+   * In some places (eg. storing a date in a CSV format) we format a date using JSON.stringify(). This has the side-
+   * effect of putting quotes around it. Since we generally wouldn't want this, we use this helper method to do the
+   * formatting, by stringifying the date then removing the surrounding quotes.
+   */
+  static formatDate (date) {
+    return JSON
+      .stringify(date)
+      .replace(/"/g, '')
+  }
 }
 
 module.exports = GeneralHelper

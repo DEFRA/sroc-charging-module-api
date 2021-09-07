@@ -12,7 +12,7 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const { DatabaseHelper, RegimeHelper } = require('../../../support/helpers')
+const { DatabaseHelper, GeneralHelper, RegimeHelper } = require('../../../support/helpers')
 
 const { temporaryFilePath } = require('../../../../config/server.config')
 
@@ -63,16 +63,9 @@ describe('Export Table To File service', () => {
     customerRecord = await CustomerModel.query().findById(customer.id)
 
     // Date fields are converted when exporting to a different format so update the record to the expected format
-    customerRecord.createdAt = formatDate(customerRecord.createdAt)
-    customerRecord.updatedAt = formatDate(customerRecord.updatedAt)
+    customerRecord.createdAt = GeneralHelper.formatDate(customerRecord.createdAt)
+    customerRecord.updatedAt = GeneralHelper.formatDate(customerRecord.updatedAt)
   })
-
-  // Formats a date by stringifying it, then removing the ""s from the resulting string
-  function formatDate (date) {
-    return JSON
-      .stringify(date)
-      .replace(/"/g, '')
-  }
 
   afterEach(async () => {
     Sinon.restore()
