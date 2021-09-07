@@ -12,10 +12,6 @@ class CustomersController {
 
     return h.response().code(204)
   }
-
-  static async show (_req, h) {
-    return h.response().code(204)
-  }
 }
 
 module.exports = CustomersController
