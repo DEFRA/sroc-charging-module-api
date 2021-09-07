@@ -11,7 +11,7 @@ const { temporaryFilePath } = require('../../../config/server.config')
 
 const StreamReadableDataService = require('../streams/stream_readable_data.service')
 const StreamReadableRecordsService = require('../streams/stream_readable_records.service')
-const StreamTransformCSVService = require('../streams/stream_transform_csv.service')
+const StreamTransformDatRowService = require('../streams/stream_transform_dat_row.service')
 const StreamTransformUsingPresenterService = require('../streams/stream_transform_using_presenter.service')
 const StreamWritableFileService = require('../streams/stream_writable_file.service')
 
@@ -61,8 +61,8 @@ class TransformRecordsToFileService {
   }
 
   /**
-   * Transforms a stream of data and writes it to a file in CSV format. Intended to be used to write a "section" of a
-   * file, ie. head, body or tail.
+   * Transforms a stream of data and writes it to a file in dat format (ie. quotes around everything and
+   * comma-separated). Intended to be used to write a "section" of a file, ie. head, body or tail.
    *
    * @param {ReadableStream} inputStream The stream of data to be written.
    * @param {module:Presenter} presenter The presenter to use to transform the data.
@@ -83,7 +83,7 @@ class TransformRecordsToFileService {
     await promisifiedPipeline(
       inputStream,
       this._presenterTransformStream(presenter, additionalData, lineCount),
-      this._csvTransformStream(),
+      this._datTransformStream(),
       this._writeToFileStream(filenameWithPath, append)
     )
 
@@ -146,10 +146,10 @@ class TransformRecordsToFileService {
   }
 
   /**
-   * Transform stream which returns a comma-separated row of data, terminating in a newline.
+   * Transform stream which returns a quoted and comma-separated row of data, terminating in a newline.
    */
-  static _csvTransformStream () {
-    return StreamTransformCSVService.go()
+  static _datTransformStream () {
+    return StreamTransformDatRowService.go()
   }
 
   /**
