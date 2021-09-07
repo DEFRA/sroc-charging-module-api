@@ -17,9 +17,9 @@ const { StreamHelper } = require('../../support/helpers')
 const { ConvertToCSVService } = require('../../../app/services')
 
 // Thing under test
-const { StreamTransformCSVService } = require('../../../app/services')
+const { StreamTransformCSVRowService } = require('../../../app/services')
 
-describe('Stream Transform CSV service', () => {
+describe('Stream Transform CSV Row service', () => {
   let csvStub
 
   beforeEach(() => {
@@ -32,7 +32,7 @@ describe('Stream Transform CSV service', () => {
 
   describe('When data is passed to it', () => {
     it('returns a stream', async () => {
-      const result = StreamTransformCSVService.go()
+      const result = StreamTransformCSVRowService.go()
 
       expect(result).to.be.an.instanceof(stream.Stream)
     })
@@ -40,7 +40,7 @@ describe('Stream Transform CSV service', () => {
     it('passes data to ConvertToCSVService', async () => {
       const testData = ['test', 'data']
 
-      const transformStream = StreamTransformCSVService.go()
+      const transformStream = StreamTransformCSVRowService.go()
       await StreamHelper.testTransformStream(transformStream, testData)
 
       expect(csvStub.calledOnce).to.be.true()

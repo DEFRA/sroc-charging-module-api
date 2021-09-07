@@ -59,7 +59,8 @@ const ShowRegimeService = require('./regimes/show_regime.service')
 const ShowTransactionService = require('./transactions/show_transaction.service')
 const StreamReadableDataService = require('./streams/stream_readable_data.service')
 const StreamReadableRecordsService = require('./streams/stream_readable_records.service')
-const StreamTransformCSVService = require('./streams/stream_transform_csv.service')
+const StreamTransformCSVRowService = require('./streams/stream_transform_csv_row.service')
+const StreamTransformDatRowService = require('./streams/stream_transform_dat_row.service')
 const StreamTransformUsingPresenterService = require('./streams/stream_transform_using_presenter.service')
 const StreamWritableFileService = require('./streams/stream_writable_file.service')
 const TransformRecordsToFileService = require('./files/transform_records_to_file.service')
@@ -130,7 +131,8 @@ module.exports = {
   ShowTransactionService,
   StreamReadableDataService,
   StreamReadableRecordsService,
-  StreamTransformCSVService,
+  StreamTransformCSVRowService,
+  StreamTransformDatRowService,
   StreamTransformUsingPresenterService,
   StreamWritableFileService,
   TransformRecordsToFileService,

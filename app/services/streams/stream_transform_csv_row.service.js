@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module StreamTransformCSVService
+ * @module StreamTransformCSVRowService
  */
 
 const { Transform } = require('stream')
@@ -13,7 +13,7 @@ const ConvertToCSVService = require('../convert_to_csv.service')
  *
  * @returns {TransformStream} A stream of data.
  */
-class StreamTransformCSVService {
+class StreamTransformCSVRowService {
   static go () {
     return new Transform({
       objectMode: true,
@@ -24,4 +24,4 @@ class StreamTransformCSVService {
   }
 }
 
-module.exports = StreamTransformCSVService
+module.exports = StreamTransformCSVRowService
