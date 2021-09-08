@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.13.2](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.13.2) (2021-09-08)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.13.1...v0.13.2)
+
+**Fixed bugs:**
+
+- Fix CSV transform object defect [\#534](https://github.com/DEFRA/sroc-charging-module-api/pull/534) ([StuAA78](https://github.com/StuAA78))
+- Fix customer details `null` defect [\#533](https://github.com/DEFRA/sroc-charging-module-api/pull/533) ([StuAA78](https://github.com/StuAA78))
+
+**Housekeeping updates:**
+
+- Create `StreamTransformDatRowService` [\#538](https://github.com/DEFRA/sroc-charging-module-api/pull/538) ([StuAA78](https://github.com/StuAA78))
+- Remove `GET /admin/{regimeId}/customers` endpoint [\#536](https://github.com/DEFRA/sroc-charging-module-api/pull/536) ([StuAA78](https://github.com/StuAA78))
+
 ## [v0.13.1](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.13.1) (2021-09-01)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.13.0...v0.13.1)
