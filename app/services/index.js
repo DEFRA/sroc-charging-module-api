@@ -8,6 +8,7 @@ const BillRunStatusService = require('./bill_runs/bill_run_status.service')
 const CalculateChargeService = require('./charges/calculate_charge.service')
 const CalculateMinimumChargeForBillRunService = require('./bill_runs/calculate_minimum_charge_for_bill_run.service')
 const CognitoJwtToPemService = require('./plugins/cognito_jwt_to_pem.service')
+const ConvertToCSVService = require('./convert_to_csv.service')
 const CreateAuthorisedSystemService = require('./authorised_systems/create_authorised_system.service')
 const CreateBillRunService = require('./bill_runs/create_bill_run.service')
 const CreateCustomerDetailsService = require('./create_customer_details.service')
@@ -58,7 +59,7 @@ const ShowRegimeService = require('./regimes/show_regime.service')
 const ShowTransactionService = require('./transactions/show_transaction.service')
 const StreamReadableDataService = require('./streams/stream_readable_data.service')
 const StreamReadableRecordsService = require('./streams/stream_readable_records.service')
-const StreamTransformCSVService = require('./streams/stream_transform_csv.service')
+const StreamTransformCSVRowService = require('./streams/stream_transform_csv_row.service')
 const StreamTransformDatRowService = require('./streams/stream_transform_dat_row.service')
 const StreamTransformUsingPresenterService = require('./streams/stream_transform_using_presenter.service')
 const StreamWritableFileService = require('./streams/stream_writable_file.service')
@@ -79,6 +80,7 @@ module.exports = {
   CalculateChargeService,
   CalculateMinimumChargeForBillRunService,
   CognitoJwtToPemService,
+  ConvertToCSVService,
   CreateAuthorisedSystemService,
   CreateBillRunService,
   CreateCustomerDetailsService,
@@ -129,7 +131,7 @@ module.exports = {
   ShowTransactionService,
   StreamReadableDataService,
   StreamReadableRecordsService,
-  StreamTransformCSVService,
+  StreamTransformCSVRowService,
   StreamTransformDatRowService,
   StreamTransformUsingPresenterService,
   StreamWritableFileService,

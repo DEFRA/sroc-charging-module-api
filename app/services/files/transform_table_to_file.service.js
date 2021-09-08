@@ -13,7 +13,7 @@ const { TableFilePresenter } = require('../../presenters')
 
 const StreamReadableDataService = require('../streams/stream_readable_data.service')
 const StreamReadableRecordsService = require('../streams/stream_readable_records.service')
-const StreamTransformCSVService = require('../streams/stream_transform_csv.service')
+const StreamTransformCSVRowService = require('../streams/stream_transform_csv_row.service')
 const StreamTransformUsingPresenterService = require('../streams/stream_transform_using_presenter.service')
 const StreamWritableFileService = require('../streams/stream_writable_file.service')
 
@@ -124,7 +124,7 @@ class TransformTableToFileService {
    * Transform stream which returns a comma-separated row of data, terminating in a newline.
    */
   static _csvTransformStream () {
-    return StreamTransformCSVService.go()
+    return StreamTransformCSVRowService.go()
   }
 
   /**

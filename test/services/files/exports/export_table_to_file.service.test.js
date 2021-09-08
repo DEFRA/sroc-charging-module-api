@@ -12,7 +12,7 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const { DatabaseHelper, RegimeHelper } = require('../../../support/helpers')
+const { DatabaseHelper, GeneralHelper, RegimeHelper } = require('../../../support/helpers')
 
 const { temporaryFilePath } = require('../../../../config/server.config')
 
@@ -60,8 +60,11 @@ describe('Export Table To File service', () => {
     await customer.$query().patch({ customerFileId })
 
     // We separately pull out the customer record so we can compare the exported file against the exact db contents
-    // including the createdAt and updatedAt fields
     customerRecord = await CustomerModel.query().findById(customer.id)
+
+    // Date fields are converted when exporting to a different format so update the record to the expected format
+    customerRecord.createdAt = GeneralHelper.formatDate(customerRecord.createdAt)
+    customerRecord.updatedAt = GeneralHelper.formatDate(customerRecord.updatedAt)
   })
 
   afterEach(async () => {
