@@ -4,8 +4,11 @@
 
 > WIP - We'll be adding a breakdown of what each of the subfolders contains and is used for in the future.
 
-- 📂 [Controllers folder](controllers.md)
 - 📂 [Services folder](services.md)
+
+## Versioning
+
+Information on our versioning can be found in [versioning.md](versioning.md).
 
 ## Refactoring for ruleset changes
 
