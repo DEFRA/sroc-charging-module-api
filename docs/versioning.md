@@ -140,3 +140,7 @@ As a safeguard against accidentally using the `v1` endpoint instead of the `v2` 
 ```
 
 And finally, as before we ensure we have our `POST /v2/something` route added to `routes.js`.
+
+## Deprecating a version
+
+Once `v2` is complete and all endpoints are ready, we consider `v1` to be deprecated. We will give sufficient notice to users that they should migrate to `v2` as soon as possible; after that time, we remove all `v1`-specific code from the API. Having the version number in the names of files, services etc. allows us to easily identify which these are, and treating `v2` as "the new normal" means we can simply delete `v1` assets knowing that `v2` will be entirely unaffected.
