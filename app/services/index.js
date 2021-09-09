@@ -21,6 +21,7 @@ const DeleteBillRunService = require('./bill_runs/delete_bill_run.service')
 const DeleteFileService = require('./files/delete_file.service')
 const DeleteInvoiceService = require('./invoices/delete_invoice.service')
 const DeleteLicenceService = require('./licences/delete_licence.service')
+const DeprecatedEndpointService = require('./plugins/deprecated_endpoint.service')
 const ExportDataFiles = require('./files/exports/export_data_files.service')
 const ExportTableToFileService = require('./files/exports/export_table_to_file.service')
 const FetchAndValidateInvoiceService = require('./invoices/fetch_and_validate_invoice.service')
@@ -93,6 +94,7 @@ module.exports = {
   DeleteFileService,
   DeleteInvoiceService,
   DeleteLicenceService,
+  DeprecatedEndpointService,
   ExportDataFiles,
   ExportTableToFileService,
   FetchAndValidateInvoiceService,
