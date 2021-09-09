@@ -5,12 +5,26 @@
  * @module DeprecatedEndpointService
  */
 
-/**
- *
- */
 class DeprecatedEndpointService {
-  static go () {
+  /**
+   *
+   *
+   * @param {*} route
+   * @returns
+   */
+  static go (route) {
+    const headers = {}
+    const { deprecated } = route.settings?.app
 
+    if (deprecated) {
+      headers.deprecation = true
+    }
+
+    if (deprecated?.succeeded && deprecated.successor) {
+      headers.link = `<${deprecated.successor}>; rel="successor-version"`
+    }
+
+    return headers
   }
 }
 
