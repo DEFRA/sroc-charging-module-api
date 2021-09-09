@@ -8,6 +8,7 @@ const {
   AuthorisationPlugin,
   BlippPlugin,
   DbErrorsPlugin,
+  DeprecatedEndpointPlugin,
   HapiNowAuthPlugin,
   HapiPinoPlugin,
   InvalidCharactersPlugin,
@@ -34,6 +35,7 @@ const registerPlugins = async (server) => {
   await server.register(RouterPlugin)
   await server.register(HapiPinoPlugin(TestConfig.logInTest))
   await server.register(AirbrakePlugin)
+  await server.register(DeprecatedEndpointPlugin)
   await server.register(RequestNotifierPlugin)
   await server.register(MissingPayloadPlugin)
   await server.register(InvalidCharactersPlugin)
