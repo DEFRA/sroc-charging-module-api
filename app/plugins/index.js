@@ -5,6 +5,7 @@ const { ServerConfig } = require('../../config')
 const AirbrakePlugin = require('./airbrake.plugin')
 const AuthorisationPlugin = require('./authorisation.plugin')
 const DbErrorsPlugin = require('./db_errors.plugin')
+const DeprecatedRoutePlugin = require('./deprecated_route.plugin')
 const HapiNowAuthPlugin = require('./hapi_now_auth.plugin')
 const HapiPinoPlugin = require('./hapi_pino.plugin')
 const InvalidCharactersPlugin = require('./invalid_characters.plugin')
@@ -35,6 +36,7 @@ module.exports = {
   AuthorisationPlugin,
   BlippPlugin,
   DbErrorsPlugin,
+  DeprecatedRoutePlugin,
   HapiNowAuthPlugin,
   HapiPinoPlugin,
   InvalidCharactersPlugin,
