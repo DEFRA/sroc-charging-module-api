@@ -64,16 +64,12 @@ const deprecationHeaders = route => {
 /**
  * Returns true if deprecation object exists, otherwise returns undefined
  */
-const isDeprecated = deprecation => {
-  return deprecation ? true : undefined
-}
+const isDeprecated = deprecation => deprecation ? true : undefined
 
 /**
  * Returns successor link if deprecation.successor exists, otherwise returns undefined
  */
-const successorLink = deprecation => {
-  return deprecation?.successor ? `<${deprecation.successor}>; rel="successor-version"` : undefined
-}
+const successorLink = deprecation => deprecation?.successor ? `<${deprecation.successor}>; rel="successor-version"` : undefined
 
 const addHeaders = (response, headers) => {
   for (const header in headers) {
