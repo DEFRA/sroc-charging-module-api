@@ -25,8 +25,9 @@ class RouteHelper {
    * Intended to mimic routes such as `/` and `/status` which anyone can access.
    *
    * @param {Object} server A Hapi server instance
+   * @param {Object} additionalOptions Additional options to be added to the route
    */
-  static addPublicRoute (server) {
+  static addPublicRoute (server, additionalOptions = {}) {
     server.route({
       method: 'GET',
       path: '/test/public',
@@ -34,7 +35,8 @@ class RouteHelper {
         return { type: 'public' }
       },
       options: {
-        auth: false
+        auth: false,
+        ...additionalOptions
       }
     })
   }
