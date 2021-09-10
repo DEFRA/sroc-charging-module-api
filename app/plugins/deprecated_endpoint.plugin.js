@@ -4,8 +4,6 @@
  * @module DeprecatedEndpointPlugin
  */
 
-const { DeprecatedEndpointService } = require('../services')
-
 /**
  * As part of our versioning strategy, we need to be able to mark endpoints as being deprecated:
  * https://blog.stoplight.io/deprecating-api-endpoints
@@ -21,7 +19,6 @@ const { DeprecatedEndpointService } = require('../services')
  *       options: {
  *         app: {
  *           deprecated: {
- *             succeeded: true,
  *             successor: '/not-deprecated'
  *           }
  *         }
@@ -29,14 +26,53 @@ const { DeprecatedEndpointService } = require('../services')
  *     }
  *   ]
  *
- * This plugin passes the route to DeprecatedEndpointService, which will determine whether the route is deprecated and
- * if so, returns the required headers to be added to the response. As defined in the link above, we set the following
- * headers:
+ * As defined in the link above, we set the following headers:
  *
- * - deprecation: This is `true` if the endpoint is deprecated, or will not be added if it isn't deprecated.
- * - link: This is a link in the form `</not-deprecated>; rel="successor-version"` if the endpoint is marked as
- *   succeeded and a successor endpoint is defined; otherwise, it is not added.
+ * - deprecation: This is `true` if the endpoint is deprecated (which is set by the presence of the `deprecated`
+ *   object), or will not be added if it isn't deprecated.
+ * - link: This is a link in the form `</not-deprecated>; rel="successor-version"` if a successor endpoint is defined;
+ *   otherwise, it is not added. An example of a deprecated endpoint without a successor is:
+ *
+ *   const routes = [
+ *     {
+ *       method: 'GET',
+ *       path: '/deprecated',
+ *       handler: Controller.handler,
+ *       options: {
+ *         app: {
+ *           deprecated: {
+ *           }
+ *         }
+ *       }
+ *     }
+ *   ]
  */
+
+/**
+ * Returns deprecation headers based on options in route.settings.app.deprecation
+ */
+const deprecationHeaders = route => {
+  const { deprecation } = route.settings?.app
+
+  return {
+    deprecation: isDeprecated(deprecation),
+    link: successorLink(deprecation)
+  }
+}
+
+/**
+ * Returns true if deprecation object exists, otherwise returns undefined
+ */
+const isDeprecated = deprecation => {
+  return deprecation ? true : undefined
+}
+
+/**
+ * Returns successor link if deprecation.successor exists, otherwise returns undefined
+ */
+const successorLink = deprecation => {
+  return deprecation?.successor ? `<${deprecation.successor}>; rel="successor-version"` : undefined
+}
 
 const addHeaders = (response, headers) => {
   for (const header in headers) {
@@ -50,7 +86,7 @@ const DeprecatedEndpointPlugin = {
     server.ext('onPreResponse', (request, _h) => {
       const { route, response } = request
 
-      const headers = DeprecatedEndpointService.go(route)
+      const headers = deprecationHeaders(route)
       addHeaders(response, headers)
 
       return response

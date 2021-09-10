@@ -18,10 +18,10 @@ const requestOptions = {
   url: '/test/public'
 }
 
-const appDeprecatedOptions = options => {
+const appDeprecationOptions = options => {
   return {
     app: {
-      deprecated: options
+      deprecation: options
     }
   }
 }
@@ -37,13 +37,12 @@ describe('Add deprecated endpoint info', () => {
   describe('When a request is made', () => {
     describe('if the endpoint is marked as deprecated', () => {
       describe('and the endpoint has a successor', () => {
-        const deprecated = appDeprecatedOptions({
-          succeeded: true,
+        const deprecation = appDeprecationOptions({
           successor: '/replacement-path'
         })
 
         it('sets the `deprecated` and `link` headers', async () => {
-          await RouteHelper.addPublicRoute(server, deprecated)
+          await RouteHelper.addPublicRoute(server, deprecation)
 
           const response = await server.inject(requestOptions)
 
@@ -54,12 +53,10 @@ describe('Add deprecated endpoint info', () => {
       })
 
       describe('and the endpoint does not have a successor', () => {
-        const deprecated = appDeprecatedOptions({
-          succeeded: false
-        })
+        const deprecation = appDeprecationOptions({ })
 
         it('sets the `deprecated` header only', async () => {
-          await RouteHelper.addPublicRoute(server, deprecated)
+          await RouteHelper.addPublicRoute(server, deprecation)
 
           const response = await server.inject(requestOptions)
 
