@@ -55,6 +55,8 @@ jobs:
       #    of the string is interpreted as a command
       #  - GitHub action's `set-output` truncates multiline strings which is why we have resorted to what you see below
       #    to get a value which contains all the possible tags as a multiline string
+      #  - the 'if' determines if this is a push to `main` or a new tag. If a push to `main` we add a unique tag, for
+      #    example `v0.13.2-2-g9ce6d11`. This is to support testing
       #
       # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#multiline-strings
       # https://github.community/t/set-output-truncates-multiline-strings/16852/8
@@ -63,6 +65,7 @@ jobs:
           echo 'ALL_TAGS<<EOF' >> $GITHUB_ENV
           echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
           echo "${{ steps.meta.outputs.tags }}" | sed -e 's|${{ env.GHC_REGISTRY }}/defra|docker.io/environmentagency|g' >> $GITHUB_ENV
+          if [ ${{ startsWith(github.ref, 'refs/tags/v') }} = false ]; then echo "${{env.GHC_REGISTRY}}/${{env.IMAGE_NAME}}:$(git describe --always --tags)"; fi >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
       # Build and push Docker image with Buildx
