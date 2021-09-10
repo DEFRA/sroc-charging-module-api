@@ -8,7 +8,7 @@ const {
   AuthorisationPlugin,
   BlippPlugin,
   DbErrorsPlugin,
-  DeprecatedEndpointPlugin,
+  DeprecatedRoutePlugin,
   HapiNowAuthPlugin,
   HapiPinoPlugin,
   InvalidCharactersPlugin,
@@ -41,7 +41,7 @@ const registerPlugins = async (server) => {
   await server.register(PayloadCleanerPlugin)
   await server.register(DbErrorsPlugin)
   await server.register(VersionInfoPlugin)
-  await server.register(DeprecatedEndpointPlugin)
+  await server.register(DeprecatedRoutePlugin)
   await server.register(RequestBillRunPlugin)
   // We register the invoice and licence plugins after the bill run plugin as the bill run plugin performs validation
   // that is assumed to be done by the time we get to these plugins
