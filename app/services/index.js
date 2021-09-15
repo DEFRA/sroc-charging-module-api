@@ -53,7 +53,6 @@ const SendBillRunReferenceService = require('./bill_runs/send_bill_run_reference
 const SendCustomerFileService = require('./files/customers/send_customer_file.service')
 const SendFileToS3Service = require('./files/send_file_to_s3.service')
 const SendTransactionFileService = require('./files/transactions/send_transaction_file.service')
-const ShowCustomerFileService = require('./files/customers/show_customer_file.service')
 const ShowTransactionService = require('./transactions/show_transaction.service')
 const StreamReadableDataService = require('./streams/stream_readable_data.service')
 const StreamReadableRecordsService = require('./streams/stream_readable_records.service')
@@ -68,6 +67,7 @@ const ValidateBillRunLicenceService = require('./licences/validate_bill_run_lice
 const ValidateBillRunRegion = require('./bill_runs/validate_bill_run_region.service')
 const ViewAuthorisedSystemService = require('./authorised_systems/view_authorised_system.service')
 const ViewBillRunService = require('./bill_runs/view_bill_run.service')
+const ViewCustomerFileService = require('./files/customers/view_customer_file.service')
 const ViewInvoiceService = require('./invoices/view_invoice.service')
 const ViewRegimeService = require('./regimes/view_regime.service')
 
@@ -125,7 +125,6 @@ module.exports = {
   SendCustomerFileService,
   SendFileToS3Service,
   SendTransactionFileService,
-  ShowCustomerFileService,
   ShowTransactionService,
   StreamReadableDataService,
   StreamReadableRecordsService,
@@ -140,6 +139,7 @@ module.exports = {
   ValidateBillRunRegion,
   ViewAuthorisedSystemService,
   ViewBillRunService,
+  ViewCustomerFileService,
   ViewInvoiceService,
   ViewRegimeService
 }
