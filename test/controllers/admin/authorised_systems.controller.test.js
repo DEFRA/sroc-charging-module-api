@@ -85,7 +85,7 @@ describe('Authorised systems controller', () => {
     })
   })
 
-  describe('Show authorised system: GET /admin/authorised-systems/{id}', () => {
+  describe('View authorised system: GET /admin/authorised-systems/{id}', () => {
     const options = (id, token) => {
       return {
         method: 'GET',

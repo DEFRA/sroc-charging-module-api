@@ -53,7 +53,6 @@ const SendBillRunReferenceService = require('./bill_runs/send_bill_run_reference
 const SendCustomerFileService = require('./files/customers/send_customer_file.service')
 const SendFileToS3Service = require('./files/send_file_to_s3.service')
 const SendTransactionFileService = require('./files/transactions/send_transaction_file.service')
-const ShowAuthorisedSystemService = require('./authorised_systems/show_authorised_system.service')
 const ShowCustomerFileService = require('./files/customers/show_customer_file.service')
 const ShowRegimeService = require('./regimes/show_regime.service')
 const ShowTransactionService = require('./transactions/show_transaction.service')
@@ -68,6 +67,7 @@ const TransformTableToFileService = require('./files/transform_table_to_file.ser
 const UpdateAuthorisedSystemService = require('./authorised_systems/update_authorised_system.service')
 const ValidateBillRunLicenceService = require('./licences/validate_bill_run_licence.service')
 const ValidateBillRunRegion = require('./bill_runs/validate_bill_run_region.service')
+const ViewAuthorisedSystemService = require('./authorised_systems/view_authorised_system.service')
 const ViewBillRunService = require('./bill_runs/view_bill_run.service')
 const ViewInvoiceService = require('./invoices/view_invoice.service')
 
@@ -125,7 +125,6 @@ module.exports = {
   SendCustomerFileService,
   SendFileToS3Service,
   SendTransactionFileService,
-  ShowAuthorisedSystemService,
   ShowCustomerFileService,
   ShowRegimeService,
   ShowTransactionService,
@@ -140,6 +139,7 @@ module.exports = {
   UpdateAuthorisedSystemService,
   ValidateBillRunLicenceService,
   ValidateBillRunRegion,
+  ViewAuthorisedSystemService,
   ViewBillRunService,
   ViewInvoiceService
 }
