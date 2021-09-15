@@ -49,7 +49,7 @@ describe('Test transactions controller', () => {
     Sinon.restore()
   })
 
-  describe('Show transaction: GET /admin/test/transactions/{id}', () => {
+  describe('View transaction: GET /admin/test/transactions/{id}', () => {
     const options = (id, token) => {
       return {
         method: 'GET',

@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module ShowTransactionService
+ * @module ViewTransactionService
  */
 
 const Boom = require('@hapi/boom')
@@ -19,7 +19,7 @@ const { JsonPresenter } = require('../../presenters')
  * @returns {module:TransactionModel} an instance `TransactionModel` if found else it will throw a `Boom.notFound()`
  * error (404)
  */
-class ShowTransactionService {
+class ViewTransactionService {
   static async go (id) {
     const transaction = await this._transaction(id)
 
@@ -60,4 +60,4 @@ class ShowTransactionService {
   }
 }
 
-module.exports = ShowTransactionService
+module.exports = ViewTransactionService

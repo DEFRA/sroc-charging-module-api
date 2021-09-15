@@ -22,7 +22,7 @@ const routes = [
   {
     method: 'GET',
     path: '/admin/test/transactions/{id}',
-    handler: TestTransactionsController.show,
+    handler: TestTransactionsController.view,
     options: {
       description: "Used by the delivery team to check all a transaction's data.",
       auth: {
