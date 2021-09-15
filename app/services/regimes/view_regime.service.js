@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module ShowRegimeService
+ * @module ViewRegimeService
  */
 
 const Boom = require('@hapi/boom')
@@ -17,7 +17,7 @@ const { JsonPresenter } = require('../../presenters')
  * @param {string} id Id of the regime to find
  * @returns {module:RegimeModel} a `RegimeModel` if found else it will throw a B
  */
-class ShowRegimeService {
+class ViewRegimeService {
   static async go (id) {
     const regime = await this._regime(id)
 
@@ -41,4 +41,4 @@ class ShowRegimeService {
   }
 }
 
-module.exports = ShowRegimeService
+module.exports = ViewRegimeService

@@ -79,7 +79,7 @@ describe('Regimes controller', () => {
     })
   })
 
-  describe('Show regime: GET /admin/regimes/{id}', () => {
+  describe('View regime: GET /admin/regimes/{id}', () => {
     const options = (id, token) => {
       return {
         method: 'GET',

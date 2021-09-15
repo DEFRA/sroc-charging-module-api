@@ -16,7 +16,7 @@ const routes = [
   {
     method: 'GET',
     path: '/admin/regimes/{id}',
-    handler: RegimesController.show,
+    handler: RegimesController.view,
     options: {
       auth: {
         scope: ['admin']

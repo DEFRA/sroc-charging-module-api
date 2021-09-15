@@ -18,7 +18,7 @@ const RegimeModel = require('../../../app/models/regime.model')
 const { DataError } = require('objection')
 
 // Thing under test
-const { ShowRegimeService } = require('../../../app/services')
+const { ViewRegimeService } = require('../../../app/services')
 
 describe('Show Regime service', () => {
   beforeEach(async () => {
@@ -29,7 +29,7 @@ describe('Show Regime service', () => {
     it('returns a regime', async () => {
       const regime = await RegimeHelper.addRegime('ice', 'Ice')
 
-      const result = await ShowRegimeService.go(regime.id)
+      const result = await ViewRegimeService.go(regime.id)
 
       expect(result instanceof RegimeModel).to.equal(true)
       expect(result.id).to.equal(regime.id)
@@ -40,7 +40,7 @@ describe('Show Regime service', () => {
       await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
       await AuthorisedSystemHelper.addSystem('987654321', 'system2', [regime])
 
-      const result = await ShowRegimeService.go(regime.id)
+      const result = await ViewRegimeService.go(regime.id)
 
       expect(result.authorisedSystems.length).to.equal(2)
       expect(result.authorisedSystems[0].name).to.equal('system1')
@@ -50,7 +50,7 @@ describe('Show Regime service', () => {
   describe('When there is no matching regime', () => {
     it('returns throws an error', async () => {
       const id = GeneralHelper.uuid4()
-      const err = await expect(ShowRegimeService.go(id)).to.reject(Error, `No regime found with id ${id}`)
+      const err = await expect(ViewRegimeService.go(id)).to.reject(Error, `No regime found with id ${id}`)
 
       expect(err).to.be.an.error()
     })
@@ -58,7 +58,7 @@ describe('Show Regime service', () => {
 
   describe('When an invalid UUID is used', () => {
     it('returns throws an error', async () => {
-      const err = await expect(ShowRegimeService.go('123456789')).to.reject(DataError)
+      const err = await expect(ViewRegimeService.go('123456789')).to.reject(DataError)
 
       expect(err).to.be.an.error()
     })
