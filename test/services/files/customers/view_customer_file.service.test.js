@@ -17,7 +17,7 @@ const { CustomerFileModel } = require('../../../../app/models')
 const { DataError } = require('objection')
 
 // Thing under test
-const { ShowCustomerFileService } = require('../../../../app/services')
+const { ViewCustomerFileService } = require('../../../../app/services')
 
 describe('Show Customer File service', () => {
   beforeEach(async () => {
@@ -28,7 +28,7 @@ describe('Show Customer File service', () => {
     it('returns the details for it', async () => {
       const customerFile = await CustomerHelper.addCustomerFile()
 
-      const result = await ShowCustomerFileService.go(customerFile.id)
+      const result = await ViewCustomerFileService.go(customerFile.id)
 
       expect(result).to.be.an.instanceOf(CustomerFileModel)
       expect(result.id).to.equal(customerFile.id)
@@ -39,7 +39,7 @@ describe('Show Customer File service', () => {
       await CustomerHelper.addExportedCustomer(customerFile, 'BB02BEEB')
       await CustomerHelper.addExportedCustomer(customerFile, 'CC02BEEB')
 
-      const result = await ShowCustomerFileService.go(customerFile.id)
+      const result = await ViewCustomerFileService.go(customerFile.id)
 
       expect(result.exportedCustomers.length).to.equal(2)
       expect(result.exportedCustomers[0].customerReference).to.equal('BB02BEEB')
@@ -49,7 +49,7 @@ describe('Show Customer File service', () => {
   describe('When there is no matching customer file', () => {
     it('throws an error', async () => {
       const id = GeneralHelper.uuid4()
-      const err = await expect(ShowCustomerFileService.go(id)).to.reject(Error, `No customer file found with id ${id}`)
+      const err = await expect(ViewCustomerFileService.go(id)).to.reject(Error, `No customer file found with id ${id}`)
 
       expect(err).to.be.an.error()
     })
@@ -57,7 +57,7 @@ describe('Show Customer File service', () => {
 
   describe('When an invalid UUID is used', () => {
     it('throws an error', async () => {
-      const err = await expect(ShowCustomerFileService.go('123456789')).to.reject(DataError)
+      const err = await expect(ViewCustomerFileService.go('123456789')).to.reject(DataError)
 
       expect(err).to.be.an.error()
     })

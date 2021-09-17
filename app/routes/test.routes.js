@@ -22,7 +22,7 @@ const routes = [
   {
     method: 'GET',
     path: '/admin/test/transactions/{id}',
-    handler: TestTransactionsController.show,
+    handler: TestTransactionsController.view,
     options: {
       description: "Used by the delivery team to check all a transaction's data.",
       auth: {
@@ -44,9 +44,9 @@ const routes = [
   {
     method: 'GET',
     path: '/admin/test/customer-files/{id}',
-    handler: TestCustomerFilesController.show,
+    handler: TestCustomerFilesController.view,
     options: {
-      description: 'Used by the delivery team to show a customer file and its exported customers.',
+      description: 'Used by the delivery team to view a customer file and its exported customers.',
       auth: {
         scope: ['admin']
       }

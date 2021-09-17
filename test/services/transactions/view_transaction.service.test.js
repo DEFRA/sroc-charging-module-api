@@ -20,7 +20,7 @@ const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('
 const { DataError } = require('objection')
 
 // Thing under test
-const { ShowTransactionService } = require('../../../app/services')
+const { ViewTransactionService } = require('../../../app/services')
 
 describe('Show Transaction service', () => {
   beforeEach(async () => {
@@ -54,14 +54,14 @@ describe('Show Transaction service', () => {
     })
 
     it('returns a transaction', async () => {
-      const result = await ShowTransactionService.go(creditTransaction.id)
+      const result = await ViewTransactionService.go(creditTransaction.id)
 
       expect(result instanceof TransactionModel).to.equal(true)
       expect(result.id).to.equal(creditTransaction.id)
     })
 
     it("returns a result that includes the related 'bill run'", async () => {
-      const result = await ShowTransactionService.go(creditTransaction.id)
+      const result = await ViewTransactionService.go(creditTransaction.id)
 
       const billRun = await BillRunModel.query().findById(creditTransaction.billRunId)
 
@@ -69,7 +69,7 @@ describe('Show Transaction service', () => {
     })
 
     it("returns a result that includes the related 'invoice'", async () => {
-      const result = await ShowTransactionService.go(creditTransaction.id)
+      const result = await ViewTransactionService.go(creditTransaction.id)
 
       const invoice = await InvoiceModel.query().findById(creditTransaction.invoiceId)
 
@@ -77,7 +77,7 @@ describe('Show Transaction service', () => {
     })
 
     it("returns a result that includes the related 'licence'", async () => {
-      const result = await ShowTransactionService.go(creditTransaction.id)
+      const result = await ViewTransactionService.go(creditTransaction.id)
 
       const licence = await LicenceModel.query().findById(creditTransaction.licenceId)
 
@@ -85,19 +85,19 @@ describe('Show Transaction service', () => {
     })
 
     it('returns a positive signedChargeValue if the transaction is a debit', async () => {
-      const result = await ShowTransactionService.go(debitTransaction.id)
+      const result = await ViewTransactionService.go(debitTransaction.id)
 
       expect(Math.sign(result.signedChargeValue)).to.equal(1)
     })
 
     it('returns a negative signedChargeValue if the transaction is a credit', async () => {
-      const result = await ShowTransactionService.go(creditTransaction.id)
+      const result = await ViewTransactionService.go(creditTransaction.id)
 
       expect(Math.sign(result.signedChargeValue)).to.equal(-1)
     })
 
     it("returns the 'transactionType' for the invoice", async () => {
-      const result = await ShowTransactionService.go(creditTransaction.id)
+      const result = await ViewTransactionService.go(creditTransaction.id)
 
       expect(result.invoice.transactionType).to.equal('C')
     })
@@ -106,7 +106,7 @@ describe('Show Transaction service', () => {
   describe('When there is no matching transaction', () => {
     it('throws an error', async () => {
       const id = GeneralHelper.uuid4()
-      const err = await expect(ShowTransactionService.go(id)).to.reject(Error, `No transaction found with id ${id}`)
+      const err = await expect(ViewTransactionService.go(id)).to.reject(Error, `No transaction found with id ${id}`)
 
       expect(err).to.be.an.error()
     })
@@ -114,7 +114,7 @@ describe('Show Transaction service', () => {
 
   describe('When an invalid UUID is used', () => {
     it('throws an error', async () => {
-      const err = await expect(ShowTransactionService.go('123456789')).to.reject(DataError)
+      const err = await expect(ViewTransactionService.go('123456789')).to.reject(DataError)
 
       expect(err).to.be.an.error()
     })

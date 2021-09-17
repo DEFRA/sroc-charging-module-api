@@ -13,9 +13,9 @@ const AuthorisedSystemModel = require('../../../app/models/authorised_system.mod
 const { DataError } = require('objection')
 
 // Thing under test
-const { ShowAuthorisedSystemService } = require('../../../app/services')
+const { ViewAuthorisedSystemService } = require('../../../app/services')
 
-describe('Show Authorised System service', () => {
+describe('View Authorised System service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
   })
@@ -25,7 +25,7 @@ describe('Show Authorised System service', () => {
       it('returns a result that includes a list of related regimes', async () => {
         const authorisedSystem = await AuthorisedSystemHelper.addAdminSystem()
 
-        const result = await ShowAuthorisedSystemService.go(authorisedSystem.id)
+        const result = await ViewAuthorisedSystemService.go(authorisedSystem.id)
 
         // The admin user's authorisations are created when it's seeded into the db. So, the AuthorisedSystemHelper
         // automatically handles creating the regime as part of `addAdminSystem()` to replicate how the system would
@@ -38,7 +38,7 @@ describe('Show Authorised System service', () => {
     it('returns the matching record', async () => {
       const authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1')
 
-      const result = await ShowAuthorisedSystemService.go(authorisedSystem.id)
+      const result = await ViewAuthorisedSystemService.go(authorisedSystem.id)
 
       expect(result instanceof AuthorisedSystemModel).to.equal(true)
       expect(result.id).to.equal(authorisedSystem.id)
@@ -52,7 +52,7 @@ describe('Show Authorised System service', () => {
       const authorisedSystem = await AuthorisedSystemHelper
         .addSystem('1234546789', 'system1', [regime1, regime2, regime3])
 
-      const result = await ShowAuthorisedSystemService.go(authorisedSystem.id)
+      const result = await ViewAuthorisedSystemService.go(authorisedSystem.id)
 
       expect(result.regimes.length).to.equal(3)
       expect(result.regimes[0].slug).to.equal('ice')
@@ -62,7 +62,7 @@ describe('Show Authorised System service', () => {
   describe('When there is no matching regime', () => {
     it('throws an error', async () => {
       const id = GeneralHelper.uuid4()
-      const err = await expect(ShowAuthorisedSystemService.go(id)).to.reject(Error, `No authorised system found with id ${id}`)
+      const err = await expect(ViewAuthorisedSystemService.go(id)).to.reject(Error, `No authorised system found with id ${id}`)
 
       expect(err).to.be.an.error()
     })
@@ -70,7 +70,7 @@ describe('Show Authorised System service', () => {
 
   describe('When an invalid UUID is used', () => {
     it('returns throws an error', async () => {
-      const err = await expect(ShowAuthorisedSystemService.go('123456789')).to.reject(DataError)
+      const err = await expect(ViewAuthorisedSystemService.go('123456789')).to.reject(DataError)
 
       expect(err).to.be.an.error()
     })

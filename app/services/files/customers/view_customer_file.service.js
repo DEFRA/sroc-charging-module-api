@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module ShowCustomerFileService
+ * @module ViewCustomerFileService
  */
 
 const Boom = require('@hapi/boom')
@@ -17,7 +17,7 @@ const { JsonPresenter } = require('../../../presenters')
  * @param {string} id Id of the customer file to find
  * @returns {module:CustomerFileModel} a `CustomerFileModel` if found else it will throw a Boom 404 error
  */
-class ShowCustomerFileService {
+class ViewCustomerFileService {
   static async go (id) {
     const customerFile = await this._customerFile(id)
 
@@ -41,4 +41,4 @@ class ShowCustomerFileService {
   }
 }
 
-module.exports = ShowCustomerFileService
+module.exports = ViewCustomerFileService

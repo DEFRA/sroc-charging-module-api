@@ -1,6 +1,6 @@
 'use strict'
 
-const { ListCustomerFilesService, ShowCustomerFileService } = require('../../../services')
+const { ListCustomerFilesService, ViewCustomerFileService } = require('../../../services')
 
 class TestCustomerFilesController {
   static async index (req, h) {
@@ -9,8 +9,8 @@ class TestCustomerFilesController {
     return h.response(result).code(200)
   }
 
-  static async show (req, h) {
-    const result = await ShowCustomerFileService.go(req.params.id)
+  static async view (req, h) {
+    const result = await ViewCustomerFileService.go(req.params.id)
 
     return h.response(result).code(200)
   }

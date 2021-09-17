@@ -16,7 +16,7 @@ const routes = [
   {
     method: 'GET',
     path: '/admin/authorised-systems/{id}',
-    handler: AuthorisedSystemsController.show,
+    handler: AuthorisedSystemsController.view,
     options: {
       auth: {
         scope: ['admin']
