@@ -1,13 +1,13 @@
 'use strict'
 
 /**
- * @module ListCustomerFilesService
+ * @module TestListCustomerFilesService
  */
 
 const { CustomerFileModel } = require('../../../models')
 const { JsonPresenter } = require('../../../presenters')
 
-class ListCustomerFilesService {
+class TestListCustomerFilesService {
   /**
    * Returns a JSON array of customer files
    *
@@ -35,4 +35,4 @@ class ListCustomerFilesService {
   }
 }
 
-module.exports = ListCustomerFilesService
+module.exports = TestListCustomerFilesService

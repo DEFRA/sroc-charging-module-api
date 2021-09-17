@@ -21,7 +21,7 @@ const {
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { ListCustomerFilesService, ViewCustomerFileService } = require('../../../../app/services')
+const { TestListCustomerFilesService, ViewCustomerFileService } = require('../../../../app/services')
 
 describe('Test customer files controller', () => {
   let server
@@ -58,7 +58,7 @@ describe('Test customer files controller', () => {
 
     describe('When there are customer files', () => {
       beforeEach(async () => {
-        Sinon.stub(ListCustomerFilesService, 'go').returns([
+        Sinon.stub(TestListCustomerFilesService, 'go').returns([
           {
             id: GeneralHelper.uuid4(),
             regimeId: regime.id,

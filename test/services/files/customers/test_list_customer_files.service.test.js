@@ -11,9 +11,9 @@ const { expect } = Code
 const { DatabaseHelper, CustomerHelper, RegimeHelper } = require('../../../support/helpers')
 
 // Thing under test
-const { ListCustomerFilesService } = require('../../../../app/services')
+const { TestListCustomerFilesService } = require('../../../../app/services')
 
-describe('List Customer Files service', () => {
+describe('Test List Customer Files service', () => {
   let regime
 
   beforeEach(async () => {
@@ -29,7 +29,7 @@ describe('List Customer Files service', () => {
       })
 
       it('returns an empty array', async () => {
-        const result = await ListCustomerFilesService.go(regime)
+        const result = await TestListCustomerFilesService.go(regime)
 
         expect(result).to.equal([])
       })
@@ -37,7 +37,7 @@ describe('List Customer Files service', () => {
 
     describe('for any regimes', () => {
       it('returns an empty array', async () => {
-        const result = await ListCustomerFilesService.go(regime)
+        const result = await TestListCustomerFilesService.go(regime)
 
         expect(result).to.equal([])
       })
@@ -55,14 +55,14 @@ describe('List Customer Files service', () => {
       })
 
       it('returns them', async () => {
-        const result = await ListCustomerFilesService.go(regime)
+        const result = await TestListCustomerFilesService.go(regime)
 
         expect(result.length).to.equal(2)
         expect(result[1].fileReference).to.equal('nalac50002')
       })
 
       it('does not returns records for other regimes', async () => {
-        const result = await ListCustomerFilesService.go(regime)
+        const result = await TestListCustomerFilesService.go(regime)
         const filteredResults = result.filter(file => file.fileReference === 'balac50001')
 
         expect(filteredResults).to.be.empty()
