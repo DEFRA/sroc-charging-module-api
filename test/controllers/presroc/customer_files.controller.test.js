@@ -5,7 +5,7 @@ const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
 
-const { describe, it, before, beforeEach } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
@@ -33,6 +33,10 @@ describe('List Customer Files controller', () => {
     Sinon
       .stub(JsonWebToken, 'verify')
       .returns(AuthorisationHelper.decodeToken(authToken))
+  })
+
+  after(async () => {
+    Sinon.restore()
   })
 
   beforeEach(async () => {
