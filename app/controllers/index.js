@@ -14,6 +14,7 @@ const BillRunsLicencesController = require('./bill_runs_licences.controller')
 const BillRunsTransactionsController = require('./bill_runs_transactions.controller')
 const CalculateChargeController = require('./calculate_charge.controller')
 const CustomerDetailsController = require('./customer_details.controller')
+const CustomerFilesController = require('./customer_files.controller')
 const RegimesController = require('./admin/regimes.controller')
 const TestBillRunsController = require('./admin/test/test_bill_runs.controller')
 const TestCustomerFilesController = require('./admin/test/test_customer_files.controller')
@@ -30,6 +31,7 @@ module.exports = {
   BillRunsTransactionsController,
   CalculateChargeController,
   CustomerDetailsController,
+  CustomerFilesController,
   CustomersController,
   DatabaseController,
   NotSupportedController,
