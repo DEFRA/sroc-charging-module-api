@@ -36,6 +36,7 @@ const InvoiceRebillingInitialiseService = require('./invoices/invoice_rebilling_
 const InvoiceRebillingService = require('./invoices/invoice_rebilling.service')
 const InvoiceRebillingValidationService = require('./invoices/invoice_rebilling_validation.service')
 const ListAuthorisedSystemsService = require('./authorised_systems/list_authorised_systems.service')
+const ListCustomerFilesService = require('./files/customers/list_customer_files.service')
 const ListRegimesService = require('./regimes/list_regimes.service')
 const MoveCustomerDetailsToExportedTableService = require('./files/customers/move_customer_details_to_exported_table.service')
 const NextBillRunNumberService = require('./next_references/next_bill_run_number.service')
@@ -108,7 +109,7 @@ module.exports = {
   InvoiceRebillingService,
   InvoiceRebillingValidationService,
   ListAuthorisedSystemsService,
-  TestListCustomerFilesService,
+  ListCustomerFilesService,
   ListRegimesService,
   MoveCustomerDetailsToExportedTableService,
   NextBillRunNumberService,
@@ -131,6 +132,7 @@ module.exports = {
   StreamTransformDatRowService,
   StreamTransformUsingPresenterService,
   StreamWritableFileService,
+  TestListCustomerFilesService,
   TransformRecordsToFileService,
   TransformTableToFileService,
   UpdateAuthorisedSystemService,
