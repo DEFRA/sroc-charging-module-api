@@ -7,6 +7,7 @@ const BillRunInvoiceRoutes = require('./bill_run_invoice.routes')
 const BillRunLicenceRoutes = require('./bill_run_licence.routes')
 const BillRunTransactionRoutes = require('./bill_run_transaction.routes')
 const CustomerDetailsRoutes = require('./customer_details.routes')
+const CustomerFilesRoutes = require('./customer_files.routes')
 const CustomerRoutes = require('./customer.routes')
 const DatabaseRoutes = require('./database.routes')
 const RegimeRoutes = require('./regime.routes')
@@ -23,6 +24,7 @@ module.exports = {
   BillRunLicenceRoutes,
   BillRunTransactionRoutes,
   CustomerDetailsRoutes,
+  CustomerFilesRoutes,
   CustomerRoutes,
   DatabaseRoutes,
   RegimeRoutes,
