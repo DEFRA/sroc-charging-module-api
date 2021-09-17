@@ -1,5 +1,32 @@
 # Changelog
 
+## [v0.13.3](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.13.3) (2021-09-16)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.13.2...v0.13.3)
+
+**Implemented enhancements:**
+
+- Create `DeprecatedRoutePlugin` [\#544](https://github.com/DEFRA/sroc-charging-module-api/pull/544) ([StuAA78](https://github.com/StuAA78))
+- Amend CSV export format [\#537](https://github.com/DEFRA/sroc-charging-module-api/pull/537) ([StuAA78](https://github.com/StuAA78))
+
+**Fixed bugs:**
+
+- Fix 2 - issue with unique Docker Tag [\#545](https://github.com/DEFRA/sroc-charging-module-api/pull/545) ([Cruikshanks](https://github.com/Cruikshanks))
+- Reset the Dependabot build fix [\#541](https://github.com/DEFRA/sroc-charging-module-api/pull/541) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Housekeeping updates:**
+
+- Generate and add unique tag in docker workflow [\#543](https://github.com/DEFRA/sroc-charging-module-api/pull/543) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Documentation updates:**
+
+- Versioning docs [\#540](https://github.com/DEFRA/sroc-charging-module-api/pull/540) ([StuAA78](https://github.com/StuAA78))
+
+**Dependency updates:**
+
+- Bump @aws-sdk/client-s3 from 3.30.0 to 3.31.0 [\#546](https://github.com/DEFRA/sroc-charging-module-api/pull/546) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.28.0 to 3.30.0 [\#539](https://github.com/DEFRA/sroc-charging-module-api/pull/539) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.13.2](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.13.2) (2021-09-08)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.13.1...v0.13.2)
