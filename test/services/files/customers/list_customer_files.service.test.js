@@ -29,7 +29,7 @@ describe('List Customer Files service', () => {
       })
 
       it('returns an empty array', async () => {
-        const result = await ListCustomerFilesService.go(regime)
+        const result = await ListCustomerFilesService.go(regime, 30)
 
         expect(result).to.equal([])
       })
@@ -37,7 +37,7 @@ describe('List Customer Files service', () => {
 
     describe('for any regimes', () => {
       it('returns an empty array', async () => {
-        const result = await ListCustomerFilesService.go(regime)
+        const result = await ListCustomerFilesService.go(regime, 30)
 
         expect(result).to.equal([])
       })
@@ -47,54 +47,73 @@ describe('List Customer Files service', () => {
   describe('When there are customer files', () => {
     let todayFile
     let yesterdayFile
-    let lastWeekFile
-    let tooOldFile
+    let yearAgo
     let initialisedFile
     let otherRegimeFile
+    let todayCustomer
+    let yesterdayCustomer
+    let yearAgoCustomer
 
     describe('for the requested regime', () => {
       beforeEach(async () => {
         todayFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50001', 'exported')
-        await CustomerHelper.addExportedCustomer(todayFile, '0DAY')
+        todayCustomer = await CustomerHelper.addExportedCustomer(todayFile, '0DAY')
 
         yesterdayFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50002', 'exported', GeneralHelper.daysAgoDate(1))
-        await CustomerHelper.addExportedCustomer(yesterdayFile, '1DAY')
+        yesterdayCustomer = await CustomerHelper.addExportedCustomer(yesterdayFile, '1DAY')
 
-        lastWeekFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50003', 'exported', GeneralHelper.daysAgoDate(7))
-        await CustomerHelper.addExportedCustomer(lastWeekFile, '7DAY')
+        yearAgo = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50003', 'exported', GeneralHelper.daysAgoDate(365))
+        yearAgoCustomer = await CustomerHelper.addExportedCustomer(yearAgo, '365DAY')
 
-        tooOldFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50004', 'exported', GeneralHelper.daysAgoDate(31))
-        await CustomerHelper.addExportedCustomer(tooOldFile, '31DAY')
-
-        initialisedFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50005', 'initialised')
+        initialisedFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50004', 'initialised')
 
         const otherRegime = await RegimeHelper.addRegime('other', 'Other')
-        otherRegimeFile = await CustomerHelper.addCustomerFile(otherRegime, 'A', 'nalac50006', 'exported')
+        otherRegimeFile = await CustomerHelper.addCustomerFile(otherRegime, 'A', 'nalac50005', 'exported')
         await CustomerHelper.addExportedCustomer(otherRegimeFile, 'OTHER0DAY')
       })
 
-      it('returns files exported in the last 30 days', async () => {
-        const customerFiles = await ListCustomerFilesService.go(regime)
-        console.log('🚀 ~ file: list_customer_files.service.test.js ~ line 78 ~ it.only ~ customerFiles', customerFiles[0])
+      it('returns files exported in the specified number of days', async () => {
+        const customerFiles = await ListCustomerFilesService.go(regime, 30)
         const result = customerFiles.map(file => file.fileReference)
 
         expect(result).to.include([
           todayFile.fileReference,
-          yesterdayFile.fileReference,
-          lastWeekFile.fileReference
+          yesterdayFile.fileReference
         ])
-        expect(result).to.not.include(tooOldFile.fileReference)
+        expect(result).to.not.include(yearAgo.fileReference)
+      })
+
+      it("returns only today's files if given an argument of 0 days", async () => {
+        const customerFiles = await ListCustomerFilesService.go(regime, 0)
+        const result = customerFiles.map(file => file.fileReference)
+
+        expect(result).to.include(todayFile.fileReference)
+        expect(result).to.not.include([
+          yesterdayFile.fileReference,
+          yearAgo.fileReference
+        ])
+      })
+
+      it('returns customer references in the exported files', async () => {
+        const customerFiles = await ListCustomerFilesService.go(regime, 30)
+        const result = customerFiles.map(file => file.exportedCustomers[0])
+
+        expect(result).to.include([
+          todayCustomer.customerReference,
+          yesterdayCustomer.customerReference
+        ])
+        expect(result).to.not.include(yearAgoCustomer.customerReference)
       })
 
       it('does not return records for other regimes', async () => {
-        const customerFiles = await ListCustomerFilesService.go(regime)
+        const customerFiles = await ListCustomerFilesService.go(regime, 30)
         const result = customerFiles.map(file => file.fileReference)
 
         expect(result).to.not.include(otherRegimeFile.fileReference)
       })
 
       it('only returns exported files', async () => {
-        const customerFiles = await ListCustomerFilesService.go(regime)
+        const customerFiles = await ListCustomerFilesService.go(regime, 30)
         const result = customerFiles.map(file => file.fileReference)
 
         expect(result).to.not.include(initialisedFile.fileReference)

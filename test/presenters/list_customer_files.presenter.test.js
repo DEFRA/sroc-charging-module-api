@@ -11,7 +11,7 @@ const { expect } = Code
 const { ListCustomerFilesPresenter } = require('../../app/presenters')
 
 describe('List Customer Files presenter', () => {
-  it.only('correctly presents the data', () => {
+  it('correctly presents the data', () => {
     const data = [
       {
         fileReference: 'FILE1',

@@ -5,11 +5,10 @@
  */
 
 const { CustomerFileModel } = require('../../../models')
-// NOTE: REPLACE THIS WITH BETTER PRESENTER
-const { JsonPresenter } = require('../../../presenters')
+const { ListCustomerFilesPresenter } = require('../../../presenters')
 
 class ListCustomerFilesService {
-  static async go (regime, days = 30) {
+  static async go (regime, days) {
     const customerFiles = await this._customerFiles(regime.id, days)
 
     return this._response(customerFiles)
@@ -45,7 +44,7 @@ class ListCustomerFilesService {
   }
 
   static _response (customerFiles) {
-    const presenter = new JsonPresenter(customerFiles)
+    const presenter = new ListCustomerFilesPresenter(customerFiles)
 
     return presenter.go()
   }
