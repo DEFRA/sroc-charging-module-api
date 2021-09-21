@@ -59,6 +59,7 @@ const StreamTransformCSVRowService = require('./streams/stream_transform_csv_row
 const StreamTransformDatRowService = require('./streams/stream_transform_dat_row.service')
 const StreamTransformUsingPresenterService = require('./streams/stream_transform_using_presenter.service')
 const StreamWritableFileService = require('./streams/stream_writable_file.service')
+const TestListCustomerFilesService = require('./files/customers/test_list_customer_files.service')
 const TransformRecordsToFileService = require('./files/transform_records_to_file.service')
 const TransformTableToFileService = require('./files/transform_table_to_file.service')
 const UpdateAuthorisedSystemService = require('./authorised_systems/update_authorised_system.service')
@@ -131,6 +132,7 @@ module.exports = {
   StreamTransformDatRowService,
   StreamTransformUsingPresenterService,
   StreamWritableFileService,
+  TestListCustomerFilesService,
   TransformRecordsToFileService,
   TransformTableToFileService,
   UpdateAuthorisedSystemService,
