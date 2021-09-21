@@ -94,6 +94,13 @@ describe('List Customer Files service', () => {
         ])
       })
 
+      it('returns files exported on the specified day', async () => {
+        const customerFiles = await ListCustomerFilesService.go(regime, 1)
+        const result = customerFiles.map(file => file.fileReference)
+
+        expect(result).to.include(yesterdayFile.fileReference)
+      })
+
       it('returns customer references in the exported files', async () => {
         const customerFiles = await ListCustomerFilesService.go(regime, 30)
         const result = customerFiles.map(file => file.exportedCustomers[0])
