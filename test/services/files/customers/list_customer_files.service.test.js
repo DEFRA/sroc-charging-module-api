@@ -55,17 +55,27 @@ describe('List Customer Files service', () => {
     describe('for the requested regime', () => {
       beforeEach(async () => {
         todayFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50001', 'exported')
+        await CustomerHelper.addExportedCustomer(todayFile, '0DAY')
+
         yesterdayFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50002', 'exported', GeneralHelper.daysAgoDate(1))
+        await CustomerHelper.addExportedCustomer(yesterdayFile, '1DAY')
+
         lastWeekFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50003', 'exported', GeneralHelper.daysAgoDate(7))
+        await CustomerHelper.addExportedCustomer(lastWeekFile, '7DAY')
+
         tooOldFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50004', 'exported', GeneralHelper.daysAgoDate(31))
+        await CustomerHelper.addExportedCustomer(tooOldFile, '31DAY')
+
         initialisedFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50005', 'initialised')
 
         const otherRegime = await RegimeHelper.addRegime('other', 'Other')
         otherRegimeFile = await CustomerHelper.addCustomerFile(otherRegime, 'A', 'nalac50006', 'exported')
+        await CustomerHelper.addExportedCustomer(otherRegimeFile, 'OTHER0DAY')
       })
 
       it('returns files exported in the last 30 days', async () => {
         const customerFiles = await ListCustomerFilesService.go(regime)
+        console.log('🚀 ~ file: list_customer_files.service.test.js ~ line 78 ~ it.only ~ customerFiles', customerFiles[0])
         const result = customerFiles.map(file => file.fileReference)
 
         expect(result).to.include([

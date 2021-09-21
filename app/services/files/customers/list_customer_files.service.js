@@ -24,6 +24,11 @@ class ListCustomerFilesService {
       // do we want a modifier here?
       .where('status', 'exported')
       .where('exportedAt', '>', startDate)
+      .select('fileReference')
+      .withGraphFetched('exportedCustomers')
+      .modifyGraph('exportedCustomers', builder => {
+        builder.select('customerReference')
+      })
   }
 
   /**
