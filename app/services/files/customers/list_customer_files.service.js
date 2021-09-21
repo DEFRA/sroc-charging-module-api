@@ -8,6 +8,16 @@ const { CustomerFileModel } = require('../../../models')
 const { ListCustomerFilesPresenter } = require('../../../presenters')
 
 class ListCustomerFilesService {
+  /**
+   * Returns exported customer files and the customer references in them. The number of days to go back is required,
+   * where 0 = all customer files exported today, 1 = all customer files exported yesterday and today, etc.
+   *
+   * @param {module:RegimeModel} regime Instance of `RegimeModel` for the regime the customer files belong to.
+   * @param {integer} days The number of days of exported files to return.
+   * @returns {Object[]} customerObj An array of objects representing exported customer files.
+   * @returns {string} customerObj.fileReference The file reference of the exported customer file.
+   * @returns {string[]} customerObj.exportedCustomers An array of customer references included in the exported file.
+   */
   static async go (regime, days) {
     const customerFiles = await this._customerFiles(regime.id, days)
 
@@ -20,7 +30,6 @@ class ListCustomerFilesService {
     return CustomerFileModel
       .query()
       .where('regimeId', regimeId)
-      // do we want a modifier here?
       .where('status', 'exported')
       .where('exportedAt', '>', startDate)
       .select('fileReference')
