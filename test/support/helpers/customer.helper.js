@@ -26,6 +26,7 @@ class CustomerFileHelper {
         regimeId: this._regimeId(regime),
         region,
         fileReference,
+        status,
         exportedAt: this._exportedAt(status, exportedAt)
       })
       .returning('*')
