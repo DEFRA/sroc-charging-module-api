@@ -5,7 +5,7 @@ const { CustomerFilesController } = require('../controllers')
 const routes = [
   {
     method: 'GET',
-    path: '/v2/{regimeId}/customer-files',
+    path: '/v2/{regimeId}/customer-files/{days?}',
     handler: CustomerFilesController.index
   }
 ]
