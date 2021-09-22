@@ -1,6 +1,7 @@
 'use strict'
 
 const Hapi = require('@hapi/hapi')
+const Joi = require('joi')
 const { ServerConfig, TestConfig } = require('../config')
 const { JwtStrategyAuthLib } = require('./lib')
 const {
@@ -57,6 +58,9 @@ const registerPlugins = async (server) => {
 const init = async () => {
   // Create the hapi server
   const server = Hapi.server(ServerConfig.hapi)
+
+  // Set default validator (required when adding validation to a route)
+  server.validator(Joi)
 
   await registerPlugins(server)
   await server.initialize()
