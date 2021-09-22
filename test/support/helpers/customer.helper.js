@@ -14,18 +14,20 @@ class CustomerFileHelper {
    * generate a random UUID and use that instead
    * @param {string} [region] Region to use. Defaults to 'A'
    * @param {string} [fileReference] File reference to use. Defaults to 'nalac50001'
-   * @param {string} [status] Status to use. Defaults to 'exported'. If set to `exported` it will also default
-   * `exported_at` to `Date.now()`
+   * @param {string} [status] Status to use. Defaults to 'exported'. If set to `exported` it will set `exported_at` to
+   * the `exportedAt` parameter.
+   * @param {date} [exportedAt] Date to use for `exported_at`. Defaults to the current date.
    *
    * @returns {module:CustomerFileModel} The newly created instance of `CustomerFileModel`
    */
-  static addCustomerFile (regime = null, region = 'A', fileReference = 'nalac50001', status = 'exported') {
+  static addCustomerFile (regime = null, region = 'A', fileReference = 'nalac50001', status = 'exported', exportedAt = new Date()) {
     return CustomerFileModel.query()
       .insert({
         regimeId: this._regimeId(regime),
         region,
         fileReference,
-        exportedAt: this._exportedAt(status)
+        status,
+        exportedAt: this._exportedAt(status, exportedAt)
       })
       .returning('*')
   }
@@ -52,8 +54,8 @@ class CustomerFileHelper {
     return regime?.id ?? GeneralHelper.uuid4()
   }
 
-  static _exportedAt (status) {
-    return status === 'exported' ? new Date().toISOString() : null
+  static _exportedAt (status, exportDate) {
+    return status === 'exported' ? exportDate.toISOString() : null
   }
 
   static _customerFileId (customerFile) {

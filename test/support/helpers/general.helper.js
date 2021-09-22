@@ -82,6 +82,19 @@ class GeneralHelper {
       .stringify(date)
       .replace(/"/g, '')
   }
+
+  /**
+   * Returns the date a given number of days ago, where 0 = today, 1 = yesterday, etc. The returned Date object will
+   * have its time set to the current time, eg. if Date.now() is 2021-09-06T14:01:15.929Z then daysAgoDate(1) would be
+   * 2021-09-05T14:01:15.929Z.
+   */
+  static daysAgoDate (days) {
+    const date = new Date()
+
+    date.setDate(date.getDate() - days)
+
+    return date
+  }
 }
 
 module.exports = GeneralHelper

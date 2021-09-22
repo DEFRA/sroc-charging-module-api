@@ -57,12 +57,10 @@ describe('List Customer Files controller', () => {
     }
 
     describe('When the request is valid', () => {
-      it('returns `true`', async () => {
+      it('returns a 204 response', async () => {
         const response = await server.inject(options(authToken))
-        const responsePayload = JSON.parse(response.payload)
 
-        expect(response.statusCode).to.equal(200)
-        expect(responsePayload).to.be.true()
+        expect(response.statusCode).to.equal(204)
       })
     })
   })
