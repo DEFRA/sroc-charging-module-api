@@ -20,8 +20,9 @@ class BasePresenter {
     const dateObject = new Date(date)
 
     // We use .toLocaleString() to convert the date into a format close to the one we need, eg. "25 Mar 2021"
-    // Passing 'en-GB' ensures it returns the elements in the correct order.
-    const dateString = dateObject.toLocaleString('en-GB', {
+    // Passing 'en-nz' ensures it returns the elements in the correct order and correctly gives us 'Sep' for September
+    // (whereas en-gb gives us 'Sept').
+    const dateString = dateObject.toLocaleString('en-nz', {
       day: '2-digit',
       month: 'short',
       year: 'numeric'
