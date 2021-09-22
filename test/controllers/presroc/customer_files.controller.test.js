@@ -49,7 +49,7 @@ describe('List Customer Files controller', () => {
     await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
   })
 
-  describe('List customer files: GET /v2/{regimeId}/customer-files', () => {
+  describe('List customer files: GET /v2/{regimeId}/customer-files/{days?}', () => {
     let listStub
 
     const options = (token, pathParam = '') => {
@@ -88,9 +88,49 @@ describe('List Customer Files controller', () => {
       })
 
       it('passes the days parameter to ListCustomerFilesService', async () => {
-        await server.inject(options(authToken, '30'))
+        await server.inject(options(authToken, '15'))
 
-        expect(listStub.firstCall.args[1]).to.equal('30')
+        expect(listStub.firstCall.args[1]).to.equal(15)
+      })
+
+      it('defaults to 30 days if the days parameter is not specified', async () => {
+        await server.inject(options(authToken))
+
+        expect(listStub.firstCall.args[1]).to.equal(30)
+      })
+    })
+
+    describe('When the request is invalid', () => {
+      describe('because an invalid days parameter was provided', () => {
+        it('returns a 400 response', async () => {
+          const response = await server.inject(options(authToken, 'FAIL'))
+
+          expect(response.statusCode).to.equal(400)
+        })
+      })
+
+      describe('because a string was provided for the days parameter', () => {
+        it('returns a 400 response', async () => {
+          const response = await server.inject(options(authToken, 'FAIL'))
+
+          expect(response.statusCode).to.equal(400)
+        })
+      })
+
+      describe('because a negative number was provided for the days parameter', () => {
+        it('returns a 400 response', async () => {
+          const response = await server.inject(options(authToken, '-1'))
+
+          expect(response.statusCode).to.equal(400)
+        })
+      })
+
+      describe('because a non-integer number was provided for the days parameter', () => {
+        it('returns a 400 response', async () => {
+          const response = await server.inject(options(authToken, '4.2'))
+
+          expect(response.statusCode).to.equal(400)
+        })
       })
     })
   })
