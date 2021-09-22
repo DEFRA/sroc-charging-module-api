@@ -61,7 +61,7 @@ describe('List Customer Files controller', () => {
     }
 
     beforeEach(async () => {
-      listStub = Sinon.stub(ListCustomerFilesService, 'go')
+      listStub = Sinon.stub(ListCustomerFilesService, 'go').returns(['result'])
     })
 
     afterEach(async () => {
@@ -73,6 +73,13 @@ describe('List Customer Files controller', () => {
         const response = await server.inject(options(authToken))
 
         expect(response.statusCode).to.equal(200)
+      })
+
+      it('returns the output of ListCustomerFilesService', async () => {
+        const response = await server.inject(options(authToken))
+        const payload = JSON.parse(response.payload)
+
+        expect(payload).to.equal(['result'])
       })
 
       it('calls ListCustomerFilesService', async () => {
