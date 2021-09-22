@@ -100,6 +100,12 @@ describe('List Customer Files controller', () => {
         expect(listStub.firstCall.args[1]).to.equal(15)
       })
 
+      it('accepts a value of 0 days', async () => {
+        await server.inject(options(authToken, '0'))
+
+        expect(listStub.firstCall.args[1]).to.equal(0)
+      })
+
       it('defaults to 30 days if the days parameter is not specified', async () => {
         await server.inject(options(authToken))
 

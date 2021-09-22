@@ -11,7 +11,7 @@ const routes = [
     options: {
       validate: {
         params: {
-          days: Joi.number().integer().positive().default(30)
+          days: Joi.number().integer().min(0).default(30)
         },
         options: {
           // We only want to validate the days parameter and not regimeId. Setting allowUnknown to `true` means we don't
