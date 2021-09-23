@@ -29,7 +29,7 @@ const { GenerateBillRunService } = require('../../../app/services')
 // Thing under test
 const { DeleteLicenceService } = require('../../../app/services')
 
-describe.only('Delete Licence service', () => {
+describe('Delete Licence service', () => {
   let billRun
   let invoice
   let licence
