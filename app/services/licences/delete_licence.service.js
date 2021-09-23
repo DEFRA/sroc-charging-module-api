@@ -25,26 +25,30 @@ class DeleteLicenceService {
    */
   static async go (licence, notifier) {
     try {
-      await LicenceModel.transaction(async trx => {
-        // We only need to delete the licence as it will cascade down to the transaction level.
-        await LicenceModel
-          .query(trx)
-          .deleteById(licence.id)
-
-        const invoice = await licence.$relatedQuery('invoice', trx)
-        const licences = await invoice.$relatedQuery('licences', trx)
-        const billRun = await licence.$relatedQuery('billRun', trx)
-
-        if (licences.length) {
-          await this._handleInvoice(billRun, invoice, licence, trx)
-          await this._handleBillRun(billRun, licence, trx)
-        } else {
-          await DeleteInvoiceService.go(invoice, billRun.id, notifier, trx)
-        }
-      })
+      await this._deleteLicence(licence, notifier)
     } catch (error) {
       notifier.omfg('Error deleting licence', { id: licence.id, error })
     }
+  }
+
+  static async _deleteLicence (licence, notifier) {
+    await LicenceModel.transaction(async trx => {
+      // We only need to delete the licence as it will cascade down to the transaction level.
+      await LicenceModel
+        .query(trx)
+        .deleteById(licence.id)
+
+      const invoice = await licence.$relatedQuery('invoice', trx)
+      const licences = await invoice.$relatedQuery('licences', trx)
+      const billRun = await licence.$relatedQuery('billRun', trx)
+
+      if (licences.length) {
+        await this._handleInvoice(billRun, invoice, licence, trx)
+        await this._handleBillRun(billRun, licence, trx)
+      } else {
+        await DeleteInvoiceService.go(invoice, billRun.id, notifier, trx)
+      }
+    })
   }
 
   /**
