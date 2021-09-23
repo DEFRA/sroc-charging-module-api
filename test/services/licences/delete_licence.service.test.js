@@ -81,7 +81,7 @@ describe('Delete Licence service', () => {
        *   .toKnexQuery() gives us the underlying Knex query
        *   .toString() gives us the SQL query as a string
        *
-       * Finally, we push query strings to the queries array if they set the status to 'generating'.
+       * Finally, we push query strings to the queries array if they set the status to 'pending'.
        */
       const queries = []
       for (let call = 0; call < spy.callCount; call++) {
