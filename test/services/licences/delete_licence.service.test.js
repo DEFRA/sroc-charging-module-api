@@ -55,7 +55,6 @@ describe('Delete Licence service', () => {
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
     billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-    console.log('🚀 ~ file: delete_licence.service.test.js ~ line 58 ~ beforeEach ~ billRun', billRun)
 
     rulesServiceStub = Sinon.stub(RequestRulesServiceCharge, 'go').returns(rulesServiceResponse)
 
@@ -120,14 +119,6 @@ describe('Delete Licence service', () => {
       }
 
       expect(queries.length).to.equal(1)
-    })
-
-    it('restores the bill run status after deletion', async () => {
-      await DeleteLicenceService.go(licence, billRun, notifierFake)
-
-      const result = await BillRunModel.query().findById(billRun.id)
-
-      expect(result.status).to.equal('initialised')
     })
 
     describe('when there are licences left', () => {
@@ -323,7 +314,7 @@ describe('Delete Licence service', () => {
       })
 
       it('updates the bill run level figures', async () => {
-      // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
+        // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
         await LicenceHelper.addLicence(billRun.id, 'SECOND_LICENCE', transaction.invoiceId, 'TH230000222', 2019)
 
         await GenerateBillRunService.go(billRun)
@@ -334,6 +325,19 @@ describe('Delete Licence service', () => {
         expect(result.invoiceValue).to.equal(0)
         expect(result.debitLineCount).to.equal(0)
         expect(result.debitLineValue).to.equal(0)
+      })
+
+      it('restores the bill run status after deletion', async () => {
+        // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
+        await LicenceHelper.addLicence(billRun.id, 'SECOND_LICENCE', transaction.invoiceId, 'TH230000222', 2019)
+
+        await GenerateBillRunService.go(billRun)
+
+        await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+        const result = await BillRunModel.query().findById(billRun.id)
+
+        expect(result.status).to.equal('generated')
       })
     })
 
@@ -351,6 +355,14 @@ describe('Delete Licence service', () => {
         const result = await BillRunModel.query().findById(transaction.billRunId)
         expect(result.debitLineCount).to.equal(0)
         expect(result.debitLineValue).to.equal(0)
+      })
+
+      it('sets the bill run status to `initialised`', async () => {
+        await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+        const result = await BillRunModel.query().findById(billRun.id)
+
+        expect(result.status).to.equal('initialised')
       })
     })
   })

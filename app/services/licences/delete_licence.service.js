@@ -28,19 +28,36 @@ class DeleteLicenceService {
    */
   static async go (licence, billRun, notifier) {
     try {
-      const { status: previousStatus } = billRun
       await LicenceModel.transaction(async trx => {
-        await this._setStatus(billRun, 'pending', trx)
+        const initialBillRunStatus = await this._getCurrentBillRunStatus(billRun, trx)
+
+        await this._setBillRunStatus(billRun, 'pending', trx)
         await this._deleteLicence(licence, notifier, trx)
-        await this._setStatus(billRun, previousStatus, trx)
+
+        // If the bill run's status has not changed during deletion then set it back to its original value; otherwise,
+        // leave it alone (as it will have changed for a reason, eg. the bill run is now empty)
+        const finalBillRunStatus = await this._getCurrentBillRunStatus(billRun, trx)
+        if (finalBillRunStatus === 'pending') {
+          await this._setBillRunStatus(billRun, initialBillRunStatus, trx)
+        }
       })
     } catch (error) {
       notifier.omfg('Error deleting licence', { id: licence.id, error })
     }
   }
 
-  static async _setStatus (billRun, status, trx) {
-    return billRun.$query(trx).patch({ status })
+  static async _setBillRunStatus (billRun, status, trx) {
+    return billRun
+      .$query(trx)
+      .patch({ status })
+  }
+
+  static async _getCurrentBillRunStatus (billRun, trx) {
+    const { status } = await billRun
+      .$query(trx)
+      .select('status')
+
+    return status
   }
 
   static async _deleteLicence (licence, notifier, trx) {
