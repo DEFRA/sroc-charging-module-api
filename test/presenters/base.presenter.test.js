@@ -38,12 +38,38 @@ describe('Base presenter', () => {
 
   describe('_formatDate method', () => {
     it('correctly formats dates', async () => {
-      const date = '2021-01-12T14:41:10.511Z'
       const presenter = new BasePresenter()
 
-      const result = presenter._formatDate(date)
+      // We check an array of dates, one for each month, to ensure that every month is formatted correctly
+      const results = [
+        '2021-01-12T14:41:10.511Z',
+        '2021-02-12T14:41:10.511Z',
+        '2021-03-12T14:41:10.511Z',
+        '2021-04-12T14:41:10.511Z',
+        '2021-05-12T14:41:10.511Z',
+        '2021-06-12T14:41:10.511Z',
+        '2021-07-12T14:41:10.511Z',
+        '2021-08-12T14:41:10.511Z',
+        '2021-09-12T14:41:10.511Z',
+        '2021-10-12T14:41:10.511Z',
+        '2021-11-12T14:41:10.511Z',
+        '2021-12-12T14:41:10.511Z'
+      ].map(date => presenter._formatDate(date))
 
-      expect(result).to.equal('12-JAN-2021')
+      expect(results).to.equal([
+        '12-JAN-2021',
+        '12-FEB-2021',
+        '12-MAR-2021',
+        '12-APR-2021',
+        '12-MAY-2021',
+        '12-JUN-2021',
+        '12-JUL-2021',
+        '12-AUG-2021',
+        '12-SEP-2021',
+        '12-OCT-2021',
+        '12-NOV-2021',
+        '12-DEC-2021'
+      ])
     })
   })
 
