@@ -20,10 +20,12 @@ class DeleteLicenceService {
    * bill run has been generated.
    *
    * @param {module:LicenceModel} licence The licence to be deleted.
+   * @param {module:BillRunModel} billRun The bill run the licence belongs to, which we use to determine its current
+   * status.
    * @param {@module:RequestNotifierLib} notifier Instance of `RequestNotifierLib` class. We use it to log errors rather
    * than throwing them as this service is intended to run in the background.
    */
-  static async go (licence, notifier) {
+  static async go (licence, billRun, notifier) {
     try {
       await this._deleteLicence(licence, notifier)
     } catch (error) {

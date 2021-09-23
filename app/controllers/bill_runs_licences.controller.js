@@ -8,7 +8,7 @@ class BillRunsLicencesController {
     await ValidateBillRunLicenceService.go(req.app.billRun.id, req.app.licence)
 
     // We start DeleteLicenceService without await so that it runs in the background
-    DeleteLicenceService.go(req.app.licence, req.app.notifier)
+    DeleteLicenceService.go(req.app.licence, req.app.billRun, req.app.notifier)
 
     return h.response().code(204)
   }
