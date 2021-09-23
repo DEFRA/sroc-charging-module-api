@@ -11,9 +11,10 @@ const DeleteInvoiceService = require('../invoices/delete_invoice.service')
 class DeleteLicenceService {
   /**
    * Deletes a licence along with its transactions and updates the invoice accordingly. Intended to be run as a
-   * background task by a controller, ie. called without an await. Note that the licence will _not_ be validated to
-   * ensure it is linked to the bill run; it is expected that this will be done from the calling controller so that it
-   * can present the appropriate error to the user immediately.
+   * background task by a controller, ie. called without an await. While the licence is being deleted, the bill run's
+   * status will be set to `pending`, and restored to its original status afterwards. Note that the licence will _not_
+   * be validated to ensure it is linked to the bill run; it is expected that this will be done from the calling
+   * controller so that it can present the appropriate error to the user immediately.
    *
    * The invoice will be updated by subtracting the licence's credit/debit line count/value etc. and updating the zero
    * value, deminimis and minimum charge invoice flags. Note that this will be done regardless of whether or not the
@@ -27,30 +28,38 @@ class DeleteLicenceService {
    */
   static async go (licence, billRun, notifier) {
     try {
-      await this._deleteLicence(licence, notifier)
+      const { status: previousStatus } = billRun
+      await LicenceModel.transaction(async trx => {
+        await this._setStatus(billRun, 'pending', trx)
+        await this._deleteLicence(licence, notifier, trx)
+        await this._setStatus(billRun, previousStatus, trx)
+      })
     } catch (error) {
       notifier.omfg('Error deleting licence', { id: licence.id, error })
     }
   }
 
-  static async _deleteLicence (licence, notifier) {
-    await LicenceModel.transaction(async trx => {
-      // We only need to delete the licence as it will cascade down to the transaction level.
-      await LicenceModel
-        .query(trx)
-        .deleteById(licence.id)
+  static async _setStatus (billRun, status, trx) {
+    return billRun.$query(trx).patch({ status })
+  }
 
-      const invoice = await licence.$relatedQuery('invoice', trx)
-      const licences = await invoice.$relatedQuery('licences', trx)
-      const billRun = await licence.$relatedQuery('billRun', trx)
+  static async _deleteLicence (licence, notifier, trx) {
+    // We only need to delete the licence as it will cascade down to the transaction level.
+    await LicenceModel
+      .query(trx)
+      .deleteById(licence.id)
 
-      if (licences.length) {
-        await this._handleInvoice(billRun, invoice, licence, trx)
-        await this._handleBillRun(billRun, licence, trx)
-      } else {
-        await DeleteInvoiceService.go(invoice, billRun.id, notifier, trx)
-      }
-    })
+    const invoice = await licence.$relatedQuery('invoice', trx)
+    const licences = await invoice.$relatedQuery('licences', trx)
+    // Even though the service received the bill run, we query again to refresh it
+    const billRun = await licence.$relatedQuery('billRun', trx)
+
+    if (licences.length) {
+      await this._handleInvoice(billRun, invoice, licence, trx)
+      await this._handleBillRun(billRun, licence, trx)
+    } else {
+      await DeleteInvoiceService.go(invoice, billRun.id, notifier, trx)
+    }
   }
 
   /**

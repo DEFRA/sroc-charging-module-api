@@ -39,7 +39,7 @@ const { RequestRulesServiceCharge } = require('../../../app/services')
 // Thing under test
 const { DeleteLicenceService } = require('../../../app/services')
 
-describe.only('Delete Licence service', () => {
+describe('Delete Licence service', () => {
   let regime
   let authorisedSystem
   let billRun
@@ -55,6 +55,7 @@ describe.only('Delete Licence service', () => {
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
     billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    console.log('🚀 ~ file: delete_licence.service.test.js ~ line 58 ~ beforeEach ~ billRun', billRun)
 
     rulesServiceStub = Sinon.stub(RequestRulesServiceCharge, 'go').returns(rulesServiceResponse)
 
@@ -94,6 +95,39 @@ describe.only('Delete Licence service', () => {
       const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
 
       expect(transactions).to.be.empty()
+    })
+
+    it('sets the bill run status to `pending` during deletion', async () => {
+      const spy = Sinon.spy(BillRunModel, 'query')
+
+      await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+      /**
+       * Iterate over each query call to get the underlying SQL query:
+       *   .getCall gives us the given call
+       *   The Objection function we spy on returns a query object so we get the returnValue
+       *   .toKnexQuery() gives us the underlying Knex query
+       *   .toString() gives us the SQL query as a string
+       *
+       * Finally, we push query strings to the queries array if they set the status to 'generating'.
+       */
+      const queries = []
+      for (let call = 0; call < spy.callCount; call++) {
+        const queryString = spy.getCall(call).returnValue.toKnexQuery().toString()
+        if (queryString.includes('set "status" = \'pending\'')) {
+          queries.push(queryString)
+        }
+      }
+
+      expect(queries.length).to.equal(1)
+    })
+
+    it('restores the bill run status after deletion', async () => {
+      await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+      const result = await BillRunModel.query().findById(billRun.id)
+
+      expect(result.status).to.equal('initialised')
     })
 
     describe('when there are licences left', () => {
