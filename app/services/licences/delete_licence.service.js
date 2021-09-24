@@ -11,39 +11,74 @@ const DeleteInvoiceService = require('../invoices/delete_invoice.service')
 class DeleteLicenceService {
   /**
    * Deletes a licence along with its transactions and updates the invoice accordingly. Intended to be run as a
-   * background task by a controller, ie. called without an await. Note that the licence will _not_ be validated to
-   * ensure it is linked to the bill run; it is expected that this will be done from the calling controller so that it
-   * can present the appropriate error to the user immediately.
+   * background task by a controller, ie. called without an await. While the licence is being deleted, the bill run's
+   * status will be set to `pending`, and restored to its original status afterwards. Note that the licence will _not_
+   * be validated to ensure it is linked to the bill run; it is expected that this will be done from the calling
+   * controller so that it can present the appropriate error to the user immediately.
    *
    * The invoice will be updated by subtracting the licence's credit/debit line count/value etc. and updating the zero
    * value, deminimis and minimum charge invoice flags. Note that this will be done regardless of whether or not the
    * bill run has been generated.
    *
    * @param {module:LicenceModel} licence The licence to be deleted.
+   * @param {module:BillRunModel} billRun The bill run the licence belongs to, which we use to determine its current
+   * status.
    * @param {@module:RequestNotifierLib} notifier Instance of `RequestNotifierLib` class. We use it to log errors rather
    * than throwing them as this service is intended to run in the background.
    */
-  static async go (licence, notifier) {
+  static async go (licence, billRun, notifier) {
     try {
       await LicenceModel.transaction(async trx => {
-        // We only need to delete the licence as it will cascade down to the transaction level.
-        await LicenceModel
-          .query(trx)
-          .deleteById(licence.id)
+        const { status: initialBillRunStatus } = billRun
 
-        const invoice = await licence.$relatedQuery('invoice', trx)
-        const licences = await invoice.$relatedQuery('licences', trx)
-        const billRun = await licence.$relatedQuery('billRun', trx)
-
-        if (licences.length) {
-          await this._handleInvoice(billRun, invoice, licence, trx)
-          await this._handleBillRun(billRun, licence, trx)
-        } else {
-          await DeleteInvoiceService.go(invoice, billRun.id, notifier, trx)
-        }
+        await this._setBillRunStatusPending(billRun, trx)
+        await this._deleteLicence(licence, notifier, trx)
+        await this._revertBillRunStatus(billRun, initialBillRunStatus, trx)
       })
     } catch (error) {
       notifier.omfg('Error deleting licence', { id: licence.id, error })
+    }
+  }
+
+  static async _setBillRunStatusPending (billRun, trx) {
+    await billRun
+      .$query(trx)
+      .patch({ status: 'pending' })
+  }
+
+  // Reverts the bill run status, but only if it is 'pending'. This means it won't be touched if the status changed during
+  // deletion (ie. to 'initialised' due to the bill run being empty following deletion of the licence).
+  static async _revertBillRunStatus (billRun, status, trx) {
+    await billRun
+      .$query(trx)
+      .select('pending')
+      .patch({ status })
+  }
+
+  static async _getCurrentBillRunStatus (billRun, trx) {
+    const { status } = await billRun
+      .$query(trx)
+      .select('status')
+
+    return status
+  }
+
+  static async _deleteLicence (licence, notifier, trx) {
+    // We only need to delete the licence as it will cascade down to the transaction level.
+    await LicenceModel
+      .query(trx)
+      .deleteById(licence.id)
+
+    const invoice = await licence.$relatedQuery('invoice', trx)
+    const licences = await invoice.$relatedQuery('licences', trx)
+    // Even though the service received the bill run, we query again to refresh it
+    const billRun = await licence.$relatedQuery('billRun', trx)
+
+    if (licences.length) {
+      await this._handleInvoice(billRun, invoice, licence, trx)
+      await this._handleBillRun(billRun, licence, trx)
+    } else {
+      await DeleteInvoiceService.go(invoice, billRun.id, notifier, trx)
     }
   }
 

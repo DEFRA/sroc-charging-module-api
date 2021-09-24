@@ -10,13 +10,11 @@ const { expect } = Code
 
 // Test helpers
 const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
-  LicenceHelper,
-  RegimeHelper,
-  RulesServiceHelper
+  NewLicenceHelper,
+  NewTransactionHelper,
+  NewInvoiceHelper
 } = require('../../support/helpers')
 
 const {
@@ -26,50 +24,25 @@ const {
   TransactionModel
 } = require('../../../app/models')
 
-const { CreateTransactionService, GenerateBillRunService } = require('../../../app/services')
-
-const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
-const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
-
-const { rulesService: rulesServiceResponse } = chargeFixtures.simple
-
-// Things we need to stub
-const { RequestRulesServiceCharge } = require('../../../app/services')
+const { GenerateBillRunService } = require('../../../app/services')
 
 // Thing under test
 const { DeleteLicenceService } = require('../../../app/services')
 
 describe('Delete Licence service', () => {
-  let regime
-  let authorisedSystem
   let billRun
+  let invoice
+  let licence
   let transaction
   let notifierFake
-  let rulesServiceStub
-  let payload
-  let licence
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
-    regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
-    billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-
-    rulesServiceStub = Sinon.stub(RequestRulesServiceCharge, 'go').returns(rulesServiceResponse)
-
-    // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
-    // the valid tests we can use it straight as
-    payload = GeneralHelper.cloneObject(requestFixtures.simple)
-
-    // We use CreateTransactionService to create our transaction as this updates the stats correctly
-    rulesServiceStub.restore()
-    RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 5000)
-    const { transaction: transactionResult } = await CreateTransactionService.go(
-      payload, billRun, authorisedSystem, regime
-    )
-    transaction = await TransactionModel.query().findById(transactionResult.id)
+    transaction = await NewTransactionHelper.create()
     licence = await LicenceModel.query().findById(transaction.licenceId)
+    invoice = await InvoiceModel.query().findById(transaction.invoiceId)
+    billRun = await BillRunModel.query().findById(transaction.billRunId)
 
     // Create a fake function to stand in place of Notifier.omfg()
     notifierFake = { omfg: Sinon.fake() }
@@ -81,7 +54,7 @@ describe('Delete Licence service', () => {
 
   describe('When a valid licence is supplied', () => {
     it('deletes the licence', async () => {
-      await DeleteLicenceService.go(licence, notifierFake)
+      await DeleteLicenceService.go(licence, billRun, notifierFake)
 
       const result = await LicenceModel.query().findById(transaction.licenceId)
 
@@ -89,21 +62,47 @@ describe('Delete Licence service', () => {
     })
 
     it('deletes the licence transactions', async () => {
-      await DeleteLicenceService.go(licence, notifierFake)
+      await DeleteLicenceService.go(licence, billRun, notifierFake)
 
       const transactions = await TransactionModel.query().select().where({ billRunId: billRun.id })
 
       expect(transactions).to.be.empty()
     })
 
+    it('sets the bill run status to `pending` during deletion', async () => {
+      const spy = Sinon.spy(BillRunModel, 'query')
+
+      await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+      /**
+       * Iterate over each query call to get the underlying SQL query:
+       *   .getCall gives us the given call
+       *   The Objection function we spy on returns a query object so we get the returnValue
+       *   .toKnexQuery() gives us the underlying Knex query
+       *   .toString() gives us the SQL query as a string
+       *
+       * Finally, we push query strings to the queries array if they set the status to 'pending'.
+       */
+      const queries = []
+      for (let call = 0; call < spy.callCount; call++) {
+        const queryString = spy.getCall(call).returnValue.toKnexQuery().toString()
+        if (queryString.includes('set "status" = \'pending\'')) {
+          queries.push(queryString)
+        }
+      }
+
+      expect(queries.length).to.equal(1)
+    })
+
     describe('when there are licences left', () => {
       it('updates the invoice level figures', async () => {
         // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
-        await LicenceHelper.addLicence(billRun.id, 'SECOND_LICENCE', transaction.invoiceId, 'TH230000222', 2019)
+        await NewLicenceHelper.create(invoice, { licenceNumber: 'SECOND_LICENCE' })
+
         // Generate the bill run to ensure its values are updated before we delete the licence
         await GenerateBillRunService.go(billRun)
 
-        await DeleteLicenceService.go(licence, notifierFake)
+        await DeleteLicenceService.go(licence, billRun, notifierFake)
 
         const result = await InvoiceModel.query().findById(transaction.invoiceId)
         expect(result.debitLineCount).to.equal(0)
@@ -115,33 +114,27 @@ describe('Delete Licence service', () => {
         let secondLicence
 
         beforeEach(async () => {
-        // Add a transaction to a second invoice
-          rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 5000)
-          const { transaction: secondTransactionResult } = await CreateTransactionService.go(
-            { ...payload, customerReference: 'CUST2' }, billRun, authorisedSystem, regime
-          )
-          secondTransaction = await TransactionModel.query().findById(secondTransactionResult.id)
-          secondLicence = await LicenceModel.query().findById(secondTransaction.licenceId)
+          // Add a credit to the original invoice to cancel out its original debit and make it zero value
+          await NewTransactionHelper.create(licence, { chargeCredit: true })
 
-          // Add a credit to the original invoice to cancel out its original debit
-          rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 5000)
-          await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
+          // Create a second invoice with a transaction
+          const secondInvoice = await NewInvoiceHelper.create(billRun)
+          secondLicence = await NewLicenceHelper.create(secondInvoice)
+          secondTransaction = await NewTransactionHelper.create(secondLicence, { customerReference: 'CUST2' })
 
           // Generate the bill run to ensure its values are updated before we delete the licence
           await GenerateBillRunService.go(billRun)
         })
 
         it('to `true` when still applicable', async () => {
-          await DeleteLicenceService.go(secondLicence, notifierFake)
+          await DeleteLicenceService.go(secondLicence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(transaction.invoiceId)
           expect(result.zeroValueInvoice).to.be.true()
         })
 
         it('to `false` when not applicable', async () => {
-          await DeleteLicenceService.go(licence, notifierFake)
+          await DeleteLicenceService.go(licence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(secondTransaction.invoiceId)
           expect(result.zeroValueInvoice).to.be.false()
@@ -153,33 +146,27 @@ describe('Delete Licence service', () => {
         let secondLicence
 
         beforeEach(async () => {
-        // Add a transaction to a second invoice
-          rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 5000)
-          const { transaction: secondTransactionResult } = await CreateTransactionService.go(
-            { ...payload, customerReference: 'CUST2' }, billRun, authorisedSystem, regime
-          )
-          secondTransaction = await TransactionModel.query().findById(secondTransactionResult.id)
-          secondLicence = await LicenceModel.query().findById(secondTransaction.licenceId)
+          // Create a second, non-deminimis invoice
+          const secondInvoice = await NewInvoiceHelper.create(billRun)
+          secondLicence = await NewLicenceHelper.create(secondInvoice)
+          secondTransaction = await NewTransactionHelper.create(secondLicence)
 
-          // Add a credit to the original invoice to take its value below the deminimis limit
-          rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 4750)
-          await CreateTransactionService.go({ ...payload, credit: true }, billRun, authorisedSystem, regime)
+          // Add a credit to the original invoice to make it deminimis
+          await NewTransactionHelper.create(licence, { chargeCredit: true, chargeValue: 771 })
 
           // Generate the bill run to ensure its values are updated before we delete the licence
           await GenerateBillRunService.go(billRun)
         })
 
         it('to `true` when still applicable', async () => {
-          await DeleteLicenceService.go(secondLicence, notifierFake)
+          await DeleteLicenceService.go(secondLicence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(transaction.invoiceId)
           expect(result.deminimisInvoice).to.be.true()
         })
 
         it('to `false` when not applicable', async () => {
-          await DeleteLicenceService.go(licence, notifierFake)
+          await DeleteLicenceService.go(licence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(secondTransaction.invoiceId)
           expect(result.deminimisInvoice).to.be.false()
@@ -190,28 +177,24 @@ describe('Delete Licence service', () => {
         let minimumChargeLicence
 
         beforeEach(async () => {
-        // Add a minimum charge transaction to a second invoice
-          rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 5)
-          const { transaction: secondTransactionResult } = await CreateTransactionService.go(
-            { ...payload, customerReference: 'CUST2', subjectToMinimumCharge: true }, billRun, authorisedSystem, regime
-          )
-          const minimumChargeTransaction = await TransactionModel.query().findById(secondTransactionResult.id)
-          minimumChargeLicence = await LicenceModel.query().findById(minimumChargeTransaction.licenceId)
+          // Create a second minimum charge licence
+          const minimumChargeInvoice = await NewInvoiceHelper.create(billRun)
+          minimumChargeLicence = await NewLicenceHelper.create(minimumChargeInvoice)
+          await NewTransactionHelper.create(minimumChargeLicence, { subjectToMinimumCharge: true, chargeValue: 1 })
 
           // Generate the bill run to ensure its values are updated before we delete the licence
           await GenerateBillRunService.go(billRun)
         })
 
         it('to `true` when still applicable', async () => {
-          await DeleteLicenceService.go(licence, notifierFake)
+          await DeleteLicenceService.go(licence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(minimumChargeLicence.invoiceId)
           expect(result.minimumChargeInvoice).to.be.true()
         })
 
         it('to `false` when not applicable', async () => {
-          await DeleteLicenceService.go(minimumChargeLicence, notifierFake)
+          await DeleteLicenceService.go(minimumChargeLicence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(licence.invoiceId)
           expect(result.minimumChargeInvoice).to.be.false()
@@ -220,36 +203,30 @@ describe('Delete Licence service', () => {
 
       describe('when an invoice contains two minimum charge licences', () => {
         let fixBillRun
+        let fixInvoice
         let lessThanMinLicence
         let moreThanMinLicence
 
         beforeEach(async () => {
-          fixBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+          fixInvoice = await NewInvoiceHelper.create()
+          fixBillRun = await BillRunModel.query().findById(fixInvoice.billRunId)
 
-          rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 2400)
-          const { transaction: lessThanMinResponse } = await CreateTransactionService.go(
-            { ...payload, subjectToMinimumCharge: true, licenceNumber: 'LESS01' }, fixBillRun, authorisedSystem, regime
-          )
-          const lessThanMinTransaction = await TransactionModel.query().findById(lessThanMinResponse.id)
-          lessThanMinLicence = await LicenceModel.query().findById(lessThanMinTransaction.licenceId)
+          // Create a £24 minimum charge licence
+          lessThanMinLicence = await NewLicenceHelper.create(fixInvoice, { licenceNumber: 'LESS01' })
+          await NewTransactionHelper.create(lessThanMinLicence, { subjectToMinimumCharge: true, chargeValue: 2400 })
 
-          rulesServiceStub.restore()
-          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 2600)
-          const { transaction: moreThanMinResponse } = await CreateTransactionService.go(
-            { ...payload, subjectToMinimumCharge: true, licenceNumber: 'MORE01' }, fixBillRun, authorisedSystem, regime
-          )
-          const moreThanMinTransaction = await TransactionModel.query().findById(moreThanMinResponse.id)
-          moreThanMinLicence = await LicenceModel.query().findById(moreThanMinTransaction.licenceId)
+          // Create a £26 minimum charge licence
+          moreThanMinLicence = await NewLicenceHelper.create(fixInvoice, { licenceNumber: 'MORE01' })
+          await NewTransactionHelper.create(moreThanMinLicence, { subjectToMinimumCharge: true, chargeValue: 2600 })
         })
 
         describe('one of which is for less than £25 and the other for more than £25', () => {
           describe('if the one less than £25 is deleted', () => {
-            describe("from an 'intialised' bill run", () => {
+            describe("from an 'initialised' bill run", () => {
               it('sets the `minimumChargeInvoice` flag correctly (false)', async () => {
-                await DeleteLicenceService.go(lessThanMinLicence, notifierFake)
+                await DeleteLicenceService.go(lessThanMinLicence, fixBillRun, notifierFake)
 
-                const result = await InvoiceModel.query().findById(lessThanMinLicence.invoiceId)
+                const result = await InvoiceModel.query().findById(fixInvoice.id)
                 expect(result.minimumChargeInvoice).to.be.false()
               })
             })
@@ -257,30 +234,30 @@ describe('Delete Licence service', () => {
             describe("from a 'generated' bill run", () => {
               it('sets the `minimumChargeInvoice` flag correctly (false)', async () => {
                 await GenerateBillRunService.go(fixBillRun)
-                await DeleteLicenceService.go(lessThanMinLicence, notifierFake)
+                await DeleteLicenceService.go(lessThanMinLicence, fixBillRun, notifierFake)
 
-                const result = await InvoiceModel.query().findById(lessThanMinLicence.invoiceId)
+                const result = await InvoiceModel.query().findById(fixInvoice.id)
                 expect(result.minimumChargeInvoice).to.be.false()
               })
             })
           })
 
           describe('if the one more than £25 is deleted', () => {
-            describe("from an 'intialised' bill run", () => {
+            describe("from an 'initialised' bill run", () => {
               it('sets the `minimumChargeInvoice` flag correctly (false)', async () => {
-                await DeleteLicenceService.go(moreThanMinLicence, notifierFake)
+                await DeleteLicenceService.go(moreThanMinLicence, fixBillRun, notifierFake)
 
-                const result = await InvoiceModel.query().findById(moreThanMinLicence.invoiceId)
+                const result = await InvoiceModel.query().findById(fixInvoice.id)
                 expect(result.minimumChargeInvoice).to.be.false()
               })
             })
 
-            describe("from an 'generated' bill run", () => {
+            describe("from a 'generated' bill run", () => {
               it('sets the `minimumChargeInvoice` flag correctly (true)', async () => {
                 await GenerateBillRunService.go(fixBillRun)
-                await DeleteLicenceService.go(moreThanMinLicence, notifierFake)
+                await DeleteLicenceService.go(moreThanMinLicence, fixBillRun, notifierFake)
 
-                const result = await InvoiceModel.query().findById(moreThanMinLicence.invoiceId)
+                const result = await InvoiceModel.query().findById(fixInvoice.id)
                 expect(result.minimumChargeInvoice).to.be.true()
               })
             })
@@ -289,34 +266,55 @@ describe('Delete Licence service', () => {
       })
 
       it('updates the bill run level figures', async () => {
-      // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
-        await LicenceHelper.addLicence(billRun.id, 'SECOND_LICENCE', transaction.invoiceId, 'TH230000222', 2019)
+        // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
+        await NewLicenceHelper.create(invoice, { licenceNumber: 'SECOND_LICENCE' })
 
         await GenerateBillRunService.go(billRun)
 
-        await DeleteLicenceService.go(licence, notifierFake)
+        await DeleteLicenceService.go(licence, billRun, notifierFake)
 
         const result = await BillRunModel.query().findById(transaction.billRunId)
         expect(result.invoiceValue).to.equal(0)
         expect(result.debitLineCount).to.equal(0)
         expect(result.debitLineValue).to.equal(0)
       })
+
+      it('restores the bill run status after deletion', async () => {
+        // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
+        await NewLicenceHelper.create(invoice, { licenceNumber: 'SECOND_LICENCE' })
+
+        await GenerateBillRunService.go(billRun)
+
+        await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+        const result = await BillRunModel.query().findById(billRun.id)
+
+        expect(result.status).to.equal('generated')
+      })
     })
 
     describe('when there are no licences left', () => {
       it('deletes the invoice', async () => {
-        await DeleteLicenceService.go(licence, notifierFake)
+        await DeleteLicenceService.go(licence, billRun, notifierFake)
 
         const result = await InvoiceModel.query().findById(transaction.invoiceId)
         expect(result).to.be.undefined()
       })
 
       it('updates the bill run level figures', async () => {
-        await DeleteLicenceService.go(licence, notifierFake)
+        await DeleteLicenceService.go(licence, billRun, notifierFake)
 
         const result = await BillRunModel.query().findById(transaction.billRunId)
         expect(result.debitLineCount).to.equal(0)
         expect(result.debitLineValue).to.equal(0)
+      })
+
+      it('sets the bill run status to `initialised`', async () => {
+        await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+        const result = await BillRunModel.query().findById(billRun.id)
+
+        expect(result.status).to.equal('initialised')
       })
     })
   })
@@ -324,7 +322,7 @@ describe('Delete Licence service', () => {
   describe('When an error occurs', () => {
     it('calls the notifier', async () => {
       const invalidParamater = GeneralHelper.uuid4()
-      await DeleteLicenceService.go(invalidParamater, notifierFake)
+      await DeleteLicenceService.go(invalidParamater, billRun, notifierFake)
 
       expect(notifierFake.omfg.callCount).to.equal(1)
       expect(notifierFake.omfg.firstArg).to.equal('Error deleting licence')
