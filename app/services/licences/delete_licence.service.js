@@ -29,7 +29,7 @@ class DeleteLicenceService {
   static async go (licence, billRun, notifier) {
     try {
       await LicenceModel.transaction(async trx => {
-        const initialBillRunStatus = await this._getCurrentBillRunStatus(billRun, trx)
+        const { status: initialBillRunStatus } = billRun
 
         await this._setBillRunStatus(billRun, 'pending', trx)
         await this._deleteLicence(licence, notifier, trx)
