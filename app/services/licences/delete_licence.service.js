@@ -31,24 +31,27 @@ class DeleteLicenceService {
       await LicenceModel.transaction(async trx => {
         const { status: initialBillRunStatus } = billRun
 
-        await this._setBillRunStatus(billRun, 'pending', trx)
+        await this._setBillRunStatusPending(billRun, trx)
         await this._deleteLicence(licence, notifier, trx)
-
-        // If the bill run's status has not changed during deletion then set it back to its original value; otherwise,
-        // leave it alone (as it will have changed for a reason, eg. the bill run is now empty)
-        const finalBillRunStatus = await this._getCurrentBillRunStatus(billRun, trx)
-        if (finalBillRunStatus === 'pending') {
-          await this._setBillRunStatus(billRun, initialBillRunStatus, trx)
-        }
+        await this._revertBillRunStatus(billRun, initialBillRunStatus, trx)
       })
     } catch (error) {
       notifier.omfg('Error deleting licence', { id: licence.id, error })
     }
   }
 
-  static async _setBillRunStatus (billRun, status, trx) {
-    return billRun
+  static async _setBillRunStatusPending (billRun, trx) {
+    await billRun
       .$query(trx)
+      .patch({ status: 'pending' })
+  }
+
+  // Reverts the bill run status, but only if it is 'pending'. This means it won't be touched if the status changed during
+  // deletion (ie. to 'initialised' due to the bill run being empty following deletion of the licence).
+  static async _revertBillRunStatus (billRun, status, trx) {
+    await billRun
+      .$query(trx)
+      .select('pending')
       .patch({ status })
   }
 
