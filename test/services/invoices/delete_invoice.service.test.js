@@ -186,6 +186,53 @@ describe('Delete Invoice service', () => {
       })
     })
 
+    describe("and it's a deminimis invoice", () => {
+      beforeEach(async () => {
+        transaction = await NewTransactionHelper.create(null, { chargeValue: 499 })
+        invoice = await InvoiceModel.query().findById(transaction.invoiceId)
+        billRun = await BillRunModel.query().findById(transaction.billRunId)
+      })
+
+      it('deletes the invoice', async () => {
+        await DeleteInvoiceService.go(invoice, billRun.id)
+
+        const result = await InvoiceModel.query().findById(invoice.id)
+
+        expect(result).to.not.exist()
+      })
+
+      it('updates the bill run values', async () => {
+        // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
+        await GenerateBillRunService.go(billRun)
+        invoice = await invoice.$query()
+
+        await DeleteInvoiceService.go(invoice, billRun.id)
+
+        billRun = await billRun.$query()
+
+        expect(billRun.debitLineCount).to.equal(0)
+        expect(billRun.debitLineValue).to.equal(0)
+        expect(billRun.invoiceCount).to.equal(0)
+        expect(billRun.invoiceValue).to.equal(0)
+      })
+
+      it('deletes the invoice licences', async () => {
+        await DeleteInvoiceService.go(invoice, billRun.id)
+
+        const licences = await LicenceModel.query().select().where({ invoiceId: invoice.id })
+
+        expect(licences).to.be.empty()
+      })
+
+      it('deletes the invoice transactions', async () => {
+        await DeleteInvoiceService.go(invoice, billRun.id)
+
+        const transactions = await TransactionModel.query().select().where({ invoiceId: invoice.id })
+
+        expect(transactions).to.be.empty()
+      })
+    })
+
     describe("and it's a minimum charge debit invoice", () => {
       beforeEach(async () => {
         transaction = await NewTransactionHelper.create(null, { subjectToMinimumCharge: true })
