@@ -55,27 +55,42 @@ describe('Delete Invoice service', () => {
         billRun = await BillRunModel.query().findById(transaction.billRunId)
       })
 
+      describe("when the bill run is 'generated'", () => {
+        it('updates the bill run values correctly', async () => {
+          // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
+          await GenerateBillRunService.go(billRun)
+          invoice = await invoice.$query()
+
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.debitLineCount).to.equal(0)
+          expect(billRun.debitLineValue).to.equal(0)
+          expect(billRun.invoiceCount).to.equal(0)
+          expect(billRun.invoiceValue).to.equal(0)
+        })
+      })
+
+      describe("when the bill run is not 'generated'", () => {
+        it('updates the bill run values correctly', async () => {
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.debitLineCount).to.equal(0)
+          expect(billRun.debitLineValue).to.equal(0)
+          expect(billRun.invoiceCount).to.equal(0)
+          expect(billRun.invoiceValue).to.equal(0)
+        })
+      })
+
       it('deletes the invoice', async () => {
         await DeleteInvoiceService.go(invoice, billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
         expect(result).to.not.exist()
-      })
-
-      it('updates the bill run values', async () => {
-        // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
-        await GenerateBillRunService.go(billRun)
-        invoice = await invoice.$query()
-
-        await DeleteInvoiceService.go(invoice, billRun.id)
-
-        billRun = await billRun.$query()
-
-        expect(billRun.debitLineCount).to.equal(0)
-        expect(billRun.debitLineValue).to.equal(0)
-        expect(billRun.invoiceCount).to.equal(0)
-        expect(billRun.invoiceValue).to.equal(0)
       })
 
       it('deletes the invoice licences', async () => {
@@ -102,27 +117,42 @@ describe('Delete Invoice service', () => {
         billRun = await BillRunModel.query().findById(transaction.billRunId)
       })
 
+      describe("when the bill run is 'generated'", () => {
+        it('updates the bill run values', async () => {
+          // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
+          await GenerateBillRunService.go(billRun)
+          invoice = await invoice.$query()
+
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.creditLineCount).to.equal(0)
+          expect(billRun.creditLineValue).to.equal(0)
+          expect(billRun.creditNoteCount).to.equal(0)
+          expect(billRun.creditNoteValue).to.equal(0)
+        })
+      })
+
+      describe("when the bill run is not 'generated'", () => {
+        it('updates the bill run values correctly', async () => {
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.creditLineCount).to.equal(0)
+          expect(billRun.creditLineValue).to.equal(0)
+          expect(billRun.creditNoteCount).to.equal(0)
+          expect(billRun.creditNoteValue).to.equal(0)
+        })
+      })
+
       it('deletes the invoice', async () => {
         await DeleteInvoiceService.go(invoice, billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
         expect(result).to.not.exist()
-      })
-
-      it('updates the bill run values', async () => {
-        // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
-        await GenerateBillRunService.go(billRun)
-        invoice = await invoice.$query()
-
-        await DeleteInvoiceService.go(invoice, billRun.id)
-
-        billRun = await billRun.$query()
-
-        expect(billRun.creditLineCount).to.equal(0)
-        expect(billRun.creditLineValue).to.equal(0)
-        expect(billRun.creditNoteCount).to.equal(0)
-        expect(billRun.creditNoteValue).to.equal(0)
       })
 
       it('deletes the invoice licences', async () => {
@@ -149,28 +179,44 @@ describe('Delete Invoice service', () => {
         billRun = await BillRunModel.query().findById(transaction.billRunId)
       })
 
+      describe("when the bill run is 'generated'", () => {
+        it('updates the bill run values', async () => {
+          // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
+          await GenerateBillRunService.go(billRun)
+          invoice = await invoice.$query()
+
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.zeroLineCount).to.equal(0)
+          expect(billRun.creditNoteCount).to.equal(0)
+          expect(billRun.creditNoteValue).to.equal(0)
+          expect(billRun.invoiceCount).to.equal(0)
+          expect(billRun.invoiceValue).to.equal(0)
+        })
+      })
+
+      describe("when the bill run is not 'generated'", () => {
+        it('updates the bill run values correctly', async () => {
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.zeroLineCount).to.equal(0)
+          expect(billRun.creditNoteCount).to.equal(0)
+          expect(billRun.creditNoteValue).to.equal(0)
+          expect(billRun.invoiceCount).to.equal(0)
+          expect(billRun.invoiceValue).to.equal(0)
+        })
+      })
+
       it('deletes the invoice', async () => {
         await DeleteInvoiceService.go(invoice, billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
         expect(result).to.not.exist()
-      })
-
-      it('updates the bill run values', async () => {
-        // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
-        await GenerateBillRunService.go(billRun)
-        invoice = await invoice.$query()
-
-        await DeleteInvoiceService.go(invoice, billRun.id)
-
-        billRun = await billRun.$query()
-
-        expect(billRun.zeroLineCount).to.equal(0)
-        expect(billRun.creditNoteCount).to.equal(0)
-        expect(billRun.creditNoteValue).to.equal(0)
-        expect(billRun.invoiceCount).to.equal(0)
-        expect(billRun.invoiceValue).to.equal(0)
       })
 
       it('deletes the invoice licences', async () => {
@@ -197,27 +243,42 @@ describe('Delete Invoice service', () => {
         billRun = await BillRunModel.query().findById(transaction.billRunId)
       })
 
+      describe("when the bill run is 'generated'", () => {
+        it('updates the bill run values', async () => {
+          // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
+          await GenerateBillRunService.go(billRun)
+          invoice = await invoice.$query()
+
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.debitLineCount).to.equal(0)
+          expect(billRun.debitLineValue).to.equal(0)
+          expect(billRun.invoiceCount).to.equal(0)
+          expect(billRun.invoiceValue).to.equal(0)
+        })
+      })
+
+      describe("when the bill run is not 'generated'", () => {
+        it('updates the bill run values correctly', async () => {
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.debitLineCount).to.equal(0)
+          expect(billRun.debitLineValue).to.equal(0)
+          expect(billRun.invoiceCount).to.equal(0)
+          expect(billRun.invoiceValue).to.equal(0)
+        })
+      })
+
       it('deletes the invoice', async () => {
         await DeleteInvoiceService.go(invoice, billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
         expect(result).to.not.exist()
-      })
-
-      it('updates the bill run values', async () => {
-        // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
-        await GenerateBillRunService.go(billRun)
-        invoice = await invoice.$query()
-
-        await DeleteInvoiceService.go(invoice, billRun.id)
-
-        billRun = await billRun.$query()
-
-        expect(billRun.debitLineCount).to.equal(0)
-        expect(billRun.debitLineValue).to.equal(0)
-        expect(billRun.invoiceCount).to.equal(0)
-        expect(billRun.invoiceValue).to.equal(0)
       })
 
       it('deletes the invoice licences', async () => {
@@ -244,29 +305,46 @@ describe('Delete Invoice service', () => {
         billRun = await BillRunModel.query().findById(transaction.billRunId)
       })
 
+      describe("when the bill run is 'generated'", () => {
+        it('updates the bill run values', async () => {
+          // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
+          await GenerateBillRunService.go(billRun)
+          invoice = await invoice.$query()
+
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.debitLineCount).to.equal(0)
+          expect(billRun.debitLineValue).to.equal(0)
+          expect(billRun.subjectToMinimumChargeCount).to.equal(0)
+          expect(billRun.subjectToMinimumChargeDebitValue).to.equal(0)
+          expect(billRun.invoiceCount).to.equal(0)
+          expect(billRun.invoiceValue).to.equal(0)
+        })
+      })
+
+      describe("when the bill run is not 'generated'", () => {
+        it('updates the bill run values correctly', async () => {
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.debitLineCount).to.equal(0)
+          expect(billRun.debitLineValue).to.equal(0)
+          expect(billRun.subjectToMinimumChargeCount).to.equal(0)
+          expect(billRun.subjectToMinimumChargeDebitValue).to.equal(0)
+          expect(billRun.invoiceCount).to.equal(0)
+          expect(billRun.invoiceValue).to.equal(0)
+        })
+      })
+
       it('deletes the invoice', async () => {
         await DeleteInvoiceService.go(invoice, billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
         expect(result).to.not.exist()
-      })
-
-      it('updates the bill run values', async () => {
-        // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
-        await GenerateBillRunService.go(billRun)
-        invoice = await invoice.$query()
-
-        await DeleteInvoiceService.go(invoice, billRun.id)
-
-        billRun = await billRun.$query()
-
-        expect(billRun.debitLineCount).to.equal(0)
-        expect(billRun.debitLineValue).to.equal(0)
-        expect(billRun.subjectToMinimumChargeCount).to.equal(0)
-        expect(billRun.subjectToMinimumChargeDebitValue).to.equal(0)
-        expect(billRun.invoiceCount).to.equal(0)
-        expect(billRun.invoiceValue).to.equal(0)
       })
 
       it('deletes the invoice licences', async () => {
@@ -293,29 +371,46 @@ describe('Delete Invoice service', () => {
         billRun = await BillRunModel.query().findById(transaction.billRunId)
       })
 
+      describe("when the bill run is 'generated'", () => {
+        it('updates the bill run values', async () => {
+          // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
+          await GenerateBillRunService.go(billRun)
+          invoice = await invoice.$query()
+
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.creditLineCount).to.equal(0)
+          expect(billRun.creditLineValue).to.equal(0)
+          expect(billRun.subjectToMinimumChargeCount).to.equal(0)
+          expect(billRun.subjectToMinimumChargeCreditValue).to.equal(0)
+          expect(billRun.creditNoteCount).to.equal(0)
+          expect(billRun.creditNoteValue).to.equal(0)
+        })
+      })
+
+      describe("when the bill run is not 'generated'", () => {
+        it('updates the bill run values correctly', async () => {
+          await DeleteInvoiceService.go(invoice, billRun.id)
+
+          billRun = await billRun.$query()
+
+          expect(billRun.creditLineCount).to.equal(0)
+          expect(billRun.creditLineValue).to.equal(0)
+          expect(billRun.subjectToMinimumChargeCount).to.equal(0)
+          expect(billRun.subjectToMinimumChargeCreditValue).to.equal(0)
+          expect(billRun.creditNoteCount).to.equal(0)
+          expect(billRun.creditNoteValue).to.equal(0)
+        })
+      })
+
       it('deletes the invoice', async () => {
         await DeleteInvoiceService.go(invoice, billRun.id)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
         expect(result).to.not.exist()
-      })
-
-      it('updates the bill run values', async () => {
-        // We generate the bill run and retrieve the invoice again to ensure that the invoice-level figures are updated
-        await GenerateBillRunService.go(billRun)
-        invoice = await invoice.$query()
-
-        await DeleteInvoiceService.go(invoice, billRun.id)
-
-        billRun = await billRun.$query()
-
-        expect(billRun.creditLineCount).to.equal(0)
-        expect(billRun.creditLineValue).to.equal(0)
-        expect(billRun.subjectToMinimumChargeCount).to.equal(0)
-        expect(billRun.subjectToMinimumChargeCreditValue).to.equal(0)
-        expect(billRun.creditNoteCount).to.equal(0)
-        expect(billRun.creditNoteValue).to.equal(0)
       })
 
       it('deletes the invoice licences', async () => {
