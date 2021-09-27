@@ -359,7 +359,6 @@ describe('Delete Invoice service', () => {
         const otherInvoice = await NewInvoiceHelper.create(billRun, { customerReference: 'SOMEONE_ELSE' })
         const otherLicence = await NewLicenceHelper.create(otherInvoice, { licenceNumber: 'OTHER_LICENCE' })
         await NewTransactionHelper.create(otherLicence, { customerReference: 'SOMEONE_ELSE' })
-
       })
 
       it('leaves the bill run status as-is', async () => {
