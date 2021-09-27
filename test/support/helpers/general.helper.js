@@ -84,14 +84,29 @@ class GeneralHelper {
   }
 
   /**
-   * Returns the date a given number of days ago, where 0 = today, 1 = yesterday, etc. The returned Date object will
-   * have its time set to the current time, eg. if Date.now() is 2021-09-06T14:01:15.929Z then daysAgoDate(1) would be
-   * 2021-09-05T14:01:15.929Z.
+   * Returns the date a given number of days ago, where 0 = today, 1 = yesterday, etc. Optionally, the time element of
+   * the returned date object can be specified, with the hour, minute, second and millisecond component of the time
+   * specified separately. Any not specified will default to the current hour, minute, second or millisecond, eg. if
+   * the current date and time is 2021-03-05T11:06:43.123Z then daysAgoDate(1, 9, 29) would be 2021-03-04T09:29:43.123Z
+   *
+   * @param {integer} days Number of days to go back, eg. 0 = today, 1 = yesterday, etc.
+   * @param {integer} [hour] The hour part of the time to return. Defaults to the current hour.
+   * @param {integer} [minute] The minute part of the time to return. Defaults to the current minute.
+   * @param {integer} [second] The second part of the time to return. Defaults to the current second.
+   * @param {integer} [millisecond] The millisecond part of the time to return. Defaults to the current millisecond.
+   * @returns {date} The resulting date object.
    */
-  static daysAgoDate (days) {
+  static daysAgoDate (
+    days,
+    hour = new Date().getHours(),
+    minute = new Date().getMinutes(),
+    second = new Date().getSeconds(),
+    millisecond = new Date().getMilliseconds()
+  ) {
     const date = new Date()
 
     date.setDate(date.getDate() - days)
+    date.setHours(hour, minute, second, millisecond)
 
     return date
   }
