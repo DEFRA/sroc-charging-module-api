@@ -47,7 +47,8 @@ describe('List Customer Files service', () => {
   describe('When there are customer files', () => {
     let todayFile
     let yesterdayFile
-    let yearAgo
+    let yearAgoFile
+    let midnightFile
     let initialisedFile
     let otherRegimeFile
     let todayCustomer
@@ -62,14 +63,17 @@ describe('List Customer Files service', () => {
         yesterdayFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50002', 'exported', GeneralHelper.daysAgoDate(1))
         yesterdayCustomer = await CustomerHelper.addExportedCustomer(yesterdayFile, '1DAY')
 
-        yearAgo = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50003', 'exported', GeneralHelper.daysAgoDate(365))
-        yearAgoCustomer = await CustomerHelper.addExportedCustomer(yearAgo, '365DAY')
+        yearAgoFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50003', 'exported', GeneralHelper.daysAgoDate(365))
+        yearAgoCustomer = await CustomerHelper.addExportedCustomer(yearAgoFile, '365DAY')
 
         initialisedFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50004', 'initialised')
 
         const otherRegime = await RegimeHelper.addRegime('other', 'Other')
         otherRegimeFile = await CustomerHelper.addCustomerFile(otherRegime, 'A', 'nalac50005', 'exported')
         await CustomerHelper.addExportedCustomer(otherRegimeFile, 'OTHER0DAY')
+
+        midnightFile = await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50006', 'exported', GeneralHelper.daysAgoDate(60, 0, 0, 0, 0))
+        await CustomerHelper.addCustomerFile(regime, 'A', 'nalac50006', 'initialised')
       })
 
       it('returns files exported in the specified number of days', async () => {
@@ -80,7 +84,7 @@ describe('List Customer Files service', () => {
           todayFile.fileReference,
           yesterdayFile.fileReference
         ])
-        expect(result).to.not.include(yearAgo.fileReference)
+        expect(result).to.not.include(yearAgoFile.fileReference)
       })
 
       it("returns only today's files if given an argument of 0 days", async () => {
@@ -90,7 +94,7 @@ describe('List Customer Files service', () => {
         expect(result).to.include(todayFile.fileReference)
         expect(result).to.not.include([
           yesterdayFile.fileReference,
-          yearAgo.fileReference
+          yearAgoFile.fileReference
         ])
       })
 
@@ -124,6 +128,13 @@ describe('List Customer Files service', () => {
         const result = customerFiles.map(file => file.fileReference)
 
         expect(result).to.not.include(initialisedFile.fileReference)
+      })
+
+      it('includes files exported at exactly midnight (ie. 00:00:00.000)', async () => {
+        const customerFiles = await ListCustomerFilesService.go(regime, 60)
+        const result = customerFiles.map(file => file.fileReference)
+
+        expect(result).to.include(midnightFile.fileReference)
       })
     })
   })
