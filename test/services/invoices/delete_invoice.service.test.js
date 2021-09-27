@@ -360,9 +360,6 @@ describe('Delete Invoice service', () => {
         const otherLicence = await NewLicenceHelper.create(otherInvoice, { licenceNumber: 'OTHER_LICENCE' })
         const otherTransaction = await NewTransactionHelper.create(otherLicence, { customerReference: 'SOMEONE_ELSE' })
 
-        await otherTransaction.$query().patch({ billRunId: billRun.id })
-        await LicenceModel.query().patch({ billRunId: billRun.id }).findById(otherTransaction.licenceId)
-        await InvoiceModel.query().patch({ billRunId: billRun.id }).findById(otherTransaction.invoiceId)
       })
 
       it('leaves the bill run status as-is', async () => {
