@@ -29,7 +29,7 @@ const { GenerateBillRunService } = require('../../../app/services')
 // Thing under test
 const { DeleteInvoiceService } = require('../../../app/services')
 
-describe.only('Delete Invoice service', () => {
+describe('Delete Invoice service', () => {
   let notifierFake
 
   beforeEach(async () => {
