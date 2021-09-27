@@ -10,7 +10,7 @@ const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { init } = require('../../../app/server')
+const { init } = require('../../app/server')
 
 // Test helpers
 const {
@@ -20,9 +20,9 @@ const {
   GeneralHelper,
   RegimeHelper,
   RulesServiceHelper
-} = require('../../support/helpers')
+} = require('../support/helpers')
 
-const { presroc: fixtures } = require('../../support/fixtures/calculate_charge')
+const { presroc: fixtures } = require('../support/fixtures/calculate_charge')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
