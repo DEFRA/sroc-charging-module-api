@@ -31,7 +31,7 @@ class ListCustomerFilesService {
       .query()
       .where('regimeId', regimeId)
       .where('status', 'exported')
-      .where('exportedAt', '>', startDate)
+      .where('exportedAt', '>=', startDate)
       .select('id', 'fileReference', 'status', 'exportedAt')
       .withGraphFetched('exportedCustomers')
       .modifyGraph('exportedCustomers', builder => {
