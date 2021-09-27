@@ -167,6 +167,10 @@ describe('Delete Invoice service', () => {
         billRun = await billRun.$query()
 
         expect(billRun.zeroLineCount).to.equal(0)
+        expect(billRun.creditNoteCount).to.equal(0)
+        expect(billRun.creditNoteValue).to.equal(0)
+        expect(billRun.invoiceCount).to.equal(0)
+        expect(billRun.invoiceValue).to.equal(0)
       })
 
       it('deletes the invoice licences', async () => {

@@ -83,15 +83,17 @@ class DeleteInvoiceService {
       subjectToMinimumChargeDebitValue: raw('subject_to_minimum_charge_debit_value - ?', invoice.subjectToMinimumChargeDebitValue)
     }
 
+    if (!this._patchBillRunSummary(invoice)) {
+      return update
+    }
+
     // Determine if the invoice is a credit note or invoice and update the credit note/invoice stats accordingly.
     if (invoice.$creditNote()) {
       Object.assign(update, {
         creditNoteCount: raw('credit_note_count - 1'),
         creditNoteValue: raw('credit_note_value - ?', invoice.$absoluteNetTotal())
       })
-      // Deminimis invoices (ones less than £5 in value) are not included in the invoice values when a bill run is
-      // generated. So, their values shouldn't be deducted when deleted
-    } else if (!invoice.deminimisInvoice) {
+    } else {
       Object.assign(update, {
         invoiceCount: raw('invoice_count - 1'),
         invoiceValue: raw('invoice_value - ?', invoice.$absoluteNetTotal())
@@ -99,6 +101,27 @@ class DeleteInvoiceService {
     }
 
     return update
+  }
+
+  /**
+   * Determine if an invoice when deleted should cause the bill run summary to be patched
+   *
+   * We refer to the credit note/invoice fields in a bill run (`_count` and `_value`) as the bill run summary. These
+   * values are determined when a bill run is generated.
+   *
+   * Zero value and deminimis (ones less than £5 in value) invoices are not included in the summary values when a bill
+   * run is generated. So, their values shouldn't be deducted when deleted from the bill run.
+   *
+   * @param {module:InvoiceModel} invoice The invoice which is being deleted
+   *
+   * @returns {boolean} true if the bill run summary should be patched else false
+   */
+  static _patchBillRunSummary (invoice) {
+    if (invoice.deminimisInvoice || invoice.zeroValueInvoice) {
+      return false
+    }
+
+    return true
   }
 }
 
