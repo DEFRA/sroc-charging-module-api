@@ -94,12 +94,16 @@ describe('Licences controller', () => {
         await server.inject(options(authToken, billRun.id, licence.id))
 
         expect(validationStub.calledOnce).to.be.true()
+        expect(validationStub.firstCall.args[0]).to.equal(billRun.id)
+        expect(validationStub.firstCall.args[1]).to.equal(licence)
       })
 
       it('calls the licence deletion service', async () => {
         await server.inject(options(authToken, billRun.id, licence.id))
 
         expect(deletionStub.calledOnce).to.be.true()
+        expect(deletionStub.firstCall.args[0]).to.equal(licence)
+        expect(deletionStub.firstCall.args[1]).to.equal(billRun)
       })
     })
 
