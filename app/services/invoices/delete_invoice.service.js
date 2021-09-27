@@ -89,7 +89,9 @@ class DeleteInvoiceService {
         creditNoteCount: raw('credit_note_count - 1'),
         creditNoteValue: raw('credit_note_value - ?', invoice.$absoluteNetTotal())
       })
-    } else {
+      // Deminimis invoices (ones less than £5 in value) are not included in the invoice values when a bill run is
+      // generated. So, their values shouldn't be deducted when deleted
+    } else if (!invoice.deminimisInvoice) {
       Object.assign(update, {
         invoiceCount: raw('invoice_count - 1'),
         invoiceValue: raw('invoice_value - ?', invoice.$absoluteNetTotal())
