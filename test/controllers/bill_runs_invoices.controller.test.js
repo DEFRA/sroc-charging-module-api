@@ -9,7 +9,7 @@ const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab
 const { expect } = Code
 
 // For running our service
-const { init } = require('../../../app/server')
+const { init } = require('../../app/server')
 
 // Test helpers
 const {
@@ -20,7 +20,7 @@ const {
   NewInvoiceHelper,
   NewTransactionHelper,
   RegimeHelper
-} = require('../../support/helpers')
+} = require('../support/helpers')
 
 const Boom = require('@hapi/boom')
 
@@ -29,9 +29,9 @@ const {
   FetchAndValidateInvoiceService,
   InvoiceRebillingService,
   InvoiceRebillingValidationService
-} = require('../../../app/services')
+} = require('../../app/services')
 
-const { BillRunModel, InvoiceModel } = require('../../../app/models')
+const { BillRunModel, InvoiceModel } = require('../../app/models')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')

@@ -9,7 +9,7 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { init } = require('../../../app/server')
+const { init } = require('../../app/server')
 
 // Test helpers
 const {
@@ -21,11 +21,11 @@ const {
   LicenceHelper,
   RegimeHelper,
   InvoiceHelper
-} = require('../../support/helpers')
+} = require('../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { DeleteLicenceService, ValidateBillRunLicenceService } = require('../../../app/services')
+const { DeleteLicenceService, ValidateBillRunLicenceService } = require('../../app/services')
 
 describe('Licences controller', () => {
   const clientID = '1234546789'
@@ -94,12 +94,16 @@ describe('Licences controller', () => {
         await server.inject(options(authToken, billRun.id, licence.id))
 
         expect(validationStub.calledOnce).to.be.true()
+        expect(validationStub.firstCall.args[0]).to.equal(billRun.id)
+        expect(validationStub.firstCall.args[1]).to.equal(licence)
       })
 
       it('calls the licence deletion service', async () => {
         await server.inject(options(authToken, billRun.id, licence.id))
 
         expect(deletionStub.calledOnce).to.be.true()
+        expect(deletionStub.firstCall.args[0]).to.equal(licence)
+        expect(deletionStub.firstCall.args[1]).to.equal(billRun)
       })
     })
 

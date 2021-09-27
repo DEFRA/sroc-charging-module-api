@@ -9,7 +9,7 @@ const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
-const { init } = require('../../../app/server')
+const { init } = require('../../app/server')
 
 // Test helpers
 const {
@@ -17,11 +17,11 @@ const {
   AuthorisedSystemHelper,
   DatabaseHelper,
   RegimeHelper
-} = require('../../support/helpers')
+} = require('../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { CreateCustomerDetailsService } = require('../../../app/services')
+const { CreateCustomerDetailsService } = require('../../app/services')
 
 describe('Customer Details controller', () => {
   const clientID = '1234546789'
