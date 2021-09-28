@@ -117,7 +117,11 @@ class DeleteInvoiceService {
    * run is generated. So, their values shouldn't be deducted when deleted from a generated bill run.
    *
    * @param {module:InvoiceModel} invoice The invoice which is being deleted
-   * @param {module:BillRunModel} billRun The bill run which the invoice is being deleted from
+   * @param {module:BillRunModel} billRun The bill run which the invoice is being deleted from. (note - we rely on the
+   * fact the instance we'll get is that from `req.app.billRun` in the controller as it will retain the original
+   * status. The status might well get updated as part of the delete, for example, when deleting a licence but as long
+   * as we have access to the instance prior to the patch, it's status will reflect what it was when the delete
+   * operation started)
    *
    * @returns {boolean} true if the bill run summary should be patched else false
    */
