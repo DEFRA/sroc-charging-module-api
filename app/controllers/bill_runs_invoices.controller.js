@@ -14,7 +14,7 @@ class BillRunsInvoicesController {
     const invoice = await FetchAndValidateInvoiceService.go(req.params.billRunId, req.params.invoiceId)
 
     // We start DeleteInvoiceService without await so that it runs in the background
-    DeleteInvoiceService.go(invoice, req.params.billRunId, req.app.notifier)
+    DeleteInvoiceService.go(invoice, req.app.billRun, req.app.notifier)
 
     return h.response().code(204)
   }

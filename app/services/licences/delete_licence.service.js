@@ -78,7 +78,7 @@ class DeleteLicenceService {
       await this._handleInvoice(billRun, invoice, licence, trx)
       await this._handleBillRun(billRun, licence, trx)
     } else {
-      await DeleteInvoiceService.go(invoice, billRun.id, notifier, trx)
+      await DeleteInvoiceService.go(invoice, billRun, notifier, trx)
     }
   }
 
