@@ -61,7 +61,7 @@ describe('Delete Invoice service', () => {
           await GenerateBillRunService.go(billRun)
           invoice = await invoice.$query()
 
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -74,7 +74,7 @@ describe('Delete Invoice service', () => {
 
       describe("when the bill run is not 'generated'", () => {
         it('updates the bill run values correctly', async () => {
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -86,7 +86,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -94,7 +94,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice licences', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const licences = await LicenceModel.query().select().where({ invoiceId: invoice.id })
 
@@ -102,7 +102,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice transactions', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const transactions = await TransactionModel.query().select().where({ invoiceId: invoice.id })
 
@@ -123,7 +123,7 @@ describe('Delete Invoice service', () => {
           await GenerateBillRunService.go(billRun)
           invoice = await invoice.$query()
 
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -136,7 +136,7 @@ describe('Delete Invoice service', () => {
 
       describe("when the bill run is not 'generated'", () => {
         it('updates the bill run values correctly', async () => {
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -148,7 +148,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -156,7 +156,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice licences', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const licences = await LicenceModel.query().select().where({ invoiceId: invoice.id })
 
@@ -164,7 +164,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice transactions', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const transactions = await TransactionModel.query().select().where({ invoiceId: invoice.id })
 
@@ -185,7 +185,7 @@ describe('Delete Invoice service', () => {
           await GenerateBillRunService.go(billRun)
           invoice = await invoice.$query()
 
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -199,7 +199,7 @@ describe('Delete Invoice service', () => {
 
       describe("when the bill run is not 'generated'", () => {
         it('updates the bill run values correctly', async () => {
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -212,7 +212,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -220,7 +220,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice licences', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const licences = await LicenceModel.query().select().where({ invoiceId: invoice.id })
 
@@ -228,7 +228,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice transactions', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const transactions = await TransactionModel.query().select().where({ invoiceId: invoice.id })
 
@@ -249,7 +249,7 @@ describe('Delete Invoice service', () => {
           await GenerateBillRunService.go(billRun)
           invoice = await invoice.$query()
 
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -262,7 +262,7 @@ describe('Delete Invoice service', () => {
 
       describe("when the bill run is not 'generated'", () => {
         it('updates the bill run values correctly', async () => {
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -274,7 +274,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -282,7 +282,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice licences', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const licences = await LicenceModel.query().select().where({ invoiceId: invoice.id })
 
@@ -290,7 +290,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice transactions', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const transactions = await TransactionModel.query().select().where({ invoiceId: invoice.id })
 
@@ -311,7 +311,7 @@ describe('Delete Invoice service', () => {
           await GenerateBillRunService.go(billRun)
           invoice = await invoice.$query()
 
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -326,7 +326,7 @@ describe('Delete Invoice service', () => {
 
       describe("when the bill run is not 'generated'", () => {
         it('updates the bill run values correctly', async () => {
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -340,7 +340,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -348,7 +348,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice licences', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const licences = await LicenceModel.query().select().where({ invoiceId: invoice.id })
 
@@ -356,7 +356,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice transactions', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const transactions = await TransactionModel.query().select().where({ invoiceId: invoice.id })
 
@@ -377,7 +377,7 @@ describe('Delete Invoice service', () => {
           await GenerateBillRunService.go(billRun)
           invoice = await invoice.$query()
 
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -392,7 +392,7 @@ describe('Delete Invoice service', () => {
 
       describe("when the bill run is not 'generated'", () => {
         it('updates the bill run values correctly', async () => {
-          await DeleteInvoiceService.go(invoice, billRun.id)
+          await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
           billRun = await billRun.$query()
 
@@ -406,7 +406,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const result = await InvoiceModel.query().findById(invoice.id)
 
@@ -414,7 +414,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice licences', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const licences = await LicenceModel.query().select().where({ invoiceId: invoice.id })
 
@@ -422,7 +422,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('deletes the invoice transactions', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         const transactions = await TransactionModel.query().select().where({ invoiceId: invoice.id })
 
@@ -440,7 +440,7 @@ describe('Delete Invoice service', () => {
       })
 
       it("changes the bill run status to 'initialised'", async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         billRun = await billRun.$query()
 
@@ -461,7 +461,7 @@ describe('Delete Invoice service', () => {
       })
 
       it('leaves the bill run status as-is', async () => {
-        await DeleteInvoiceService.go(invoice, billRun.id)
+        await DeleteInvoiceService.go(invoice, billRun, notifierFake)
 
         billRun = await billRun.$query()
 
