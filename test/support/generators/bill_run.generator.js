@@ -66,6 +66,9 @@ class BillRunGenerator {
     }
 
     switch (invoice.type) {
+      case 'standard':
+        await this._standardInvoice(invoiceData)
+        break
       case 'mixed-invoice':
         await this._mixedInvoice(invoiceData)
         break
@@ -181,6 +184,19 @@ class BillRunGenerator {
 
     invoiceData.data = this._transactionData(...transactionData, false, false)
     for (let index = 0; index < invoiceData.invoice.transactionMultiplier; index++) {
+      await this._addTransaction(invoiceData)
+    }
+  }
+
+  static async _standardInvoice (invoiceData) {
+    const transactionData = [
+      invoiceData.invoice,
+      '50.22',
+      91.82
+    ]
+
+    invoiceData.data = this._transactionData(...transactionData, false, false)
+    for (let index = 0; index < (invoiceData.invoice.transactionMultiplier); index++) {
       await this._addTransaction(invoiceData)
     }
   }
