@@ -116,7 +116,7 @@ class BillRunGenerator {
     ]
 
     invoiceData.data = this._transactionData(...transactionData, false, false)
-    for (let index = 0; index < invoiceData.invoice.transactionMultiplier; index++) {
+    for (let index = 0; index < invoiceData.invoice.transactionMultiplier * 3; index++) {
       await this._addTransaction(invoiceData)
     }
   }
@@ -196,7 +196,7 @@ class BillRunGenerator {
     ]
 
     invoiceData.data = this._transactionData(...transactionData, false, false)
-    for (let index = 0; index < (invoiceData.invoice.transactionMultiplier); index++) {
+    for (let index = 0; index < (invoiceData.invoice.transactionMultiplier * 3); index++) {
       await this._addTransaction(invoiceData)
     }
   }
