@@ -40,6 +40,7 @@ class BillRunGenerator {
         customerIndex += 1
         const customerReference = `CM${customerIndex.toString().padStart(9, '0')}`
         const licenceNumber = `SROC/TF${customerIndex.toString().padStart(4, '0')}/01`
+        const transactionMultiplier = payload.transactionMultiplier == null ? 1 : payload.transactionMultiplier
 
         invoices.push({
           region: payload.region,
@@ -47,7 +48,8 @@ class BillRunGenerator {
           periodStart: '01-APR-2018',
           periodEnd: '31-MAR-2019',
           licenceNumber: licenceNumber,
-          type: options.type
+          type: options.type,
+          transactionMultiplier: transactionMultiplier
         })
       }
     })
@@ -64,6 +66,9 @@ class BillRunGenerator {
     }
 
     switch (invoice.type) {
+      case 'standard':
+        await this._standardInvoice(invoiceData)
+        break
       case 'mixed-invoice':
         await this._mixedInvoice(invoiceData)
         break
@@ -111,9 +116,9 @@ class BillRunGenerator {
     ]
 
     invoiceData.data = this._transactionData(...transactionData, false, false)
-    await this._addTransaction(invoiceData)
-    await this._addTransaction(invoiceData)
-    await this._addTransaction(invoiceData)
+    for (let index = 0; index < invoiceData.invoice.transactionMultiplier * 3; index++) {
+      await this._addTransaction(invoiceData)
+    }
   }
 
   static async _deminimisInvoice (invoiceData) {
@@ -137,11 +142,14 @@ class BillRunGenerator {
     ]
 
     invoiceData.data = this._transactionData(...transactionData, false, true)
-    await this._addTransaction(invoiceData)
-    await this._addTransaction(invoiceData)
+    for (let index = 0; index < (invoiceData.invoice.transactionMultiplier * 2); index++) {
+      await this._addTransaction(invoiceData)
+    }
 
     invoiceData.data = this._transactionData(...transactionData, true, true)
-    await this._addTransaction(invoiceData)
+    for (let index = 0; index < invoiceData.invoice.transactionMultiplier; index++) {
+      await this._addTransaction(invoiceData)
+    }
   }
 
   static async _mixedInvoice (invoiceData) {
@@ -152,11 +160,14 @@ class BillRunGenerator {
     ]
 
     invoiceData.data = this._transactionData(...transactionData, false, false)
-    await this._addTransaction(invoiceData)
-    await this._addTransaction(invoiceData)
+    for (let index = 0; index < (invoiceData.invoice.transactionMultiplier * 2); index++) {
+      await this._addTransaction(invoiceData)
+    }
 
     invoiceData.data = this._transactionData(...transactionData, true, false)
-    await this._addTransaction(invoiceData)
+    for (let index = 0; index < invoiceData.invoice.transactionMultiplier; index++) {
+      await this._addTransaction(invoiceData)
+    }
   }
 
   static async _mixedCredit (invoiceData) {
@@ -167,11 +178,27 @@ class BillRunGenerator {
     ]
 
     invoiceData.data = this._transactionData(...transactionData, true, false)
-    await this._addTransaction(invoiceData)
-    await this._addTransaction(invoiceData)
+    for (let index = 0; index < (invoiceData.invoice.transactionMultiplier * 2); index++) {
+      await this._addTransaction(invoiceData)
+    }
 
     invoiceData.data = this._transactionData(...transactionData, false, false)
-    await this._addTransaction(invoiceData)
+    for (let index = 0; index < invoiceData.invoice.transactionMultiplier; index++) {
+      await this._addTransaction(invoiceData)
+    }
+  }
+
+  static async _standardInvoice (invoiceData) {
+    const transactionData = [
+      invoiceData.invoice,
+      '50.22',
+      91.82
+    ]
+
+    invoiceData.data = this._transactionData(...transactionData, false, false)
+    for (let index = 0; index < (invoiceData.invoice.transactionMultiplier * 3); index++) {
+      await this._addTransaction(invoiceData)
+    }
   }
 
   static _transactionData (invoice, volume, chargeValue, credit, subjectToMinimumCharge) {

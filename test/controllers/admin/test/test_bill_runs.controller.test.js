@@ -70,7 +70,8 @@ describe('Test Bill Run Controller', () => {
           { type: 'mixed-credit', count: 1 },
           { type: 'zero-value', count: 1 },
           { type: 'deminimis', count: 1 },
-          { type: 'minimum-charge', count: 1 }
+          { type: 'minimum-charge', count: 1 },
+          { type: 'standard', count: 1 }
         ]
       }
 
@@ -97,9 +98,9 @@ describe('Test Bill Run Controller', () => {
       expect(response.statusCode).to.equal(201)
       expect(responsePayload.billRun.id).to.exist()
 
-      expect(invoices.length).to.equal(5)
+      expect(invoices.length).to.equal(6)
 
-      expect(transactions.length).to.equal(15)
+      expect(transactions.length).to.equal(18)
       expect(transactions.filter(tran => tran.chargeCredit).length).to.equal(4)
       expect(transactions.filter(tran => tran.subjectToMinimumCharge).length).to.equal(3)
     })
