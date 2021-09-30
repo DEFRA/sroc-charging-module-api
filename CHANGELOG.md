@@ -1,5 +1,46 @@
 # Changelog
 
+## [v0.14.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.14.0) (2021-09-30)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.13.3...v0.14.0)
+
+**Implemented enhancements:**
+
+- Update test bill run generator with trans. multiplier [\#570](https://github.com/DEFRA/sroc-charging-module-api/pull/570) ([Cruikshanks](https://github.com/Cruikshanks))
+- Expand info returned in customer-files endpoint [\#558](https://github.com/DEFRA/sroc-charging-module-api/pull/558) ([Cruikshanks](https://github.com/Cruikshanks))
+- Amend 0 days parameter with `ListCustomerFilesController` [\#556](https://github.com/DEFRA/sroc-charging-module-api/pull/556) ([StuAA78](https://github.com/StuAA78))
+- List customer files controller and route [\#555](https://github.com/DEFRA/sroc-charging-module-api/pull/555) ([StuAA78](https://github.com/StuAA78))
+- Implement `ListCustomerFilesService` [\#554](https://github.com/DEFRA/sroc-charging-module-api/pull/554) ([StuAA78](https://github.com/StuAA78))
+- Set up customer files endpoint and dummy service [\#549](https://github.com/DEFRA/sroc-charging-module-api/pull/549) ([StuAA78](https://github.com/StuAA78))
+
+**Fixed bugs:**
+
+- Fix deleting invoice from initialised bill run [\#568](https://github.com/DEFRA/sroc-charging-module-api/pull/568) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix deleting a zero value invoice recalculation [\#567](https://github.com/DEFRA/sroc-charging-module-api/pull/567) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix incorrect `ValidateBillRunLicenceService` parameter issue [\#566](https://github.com/DEFRA/sroc-charging-module-api/pull/566) ([StuAA78](https://github.com/StuAA78))
+- Fix WRLS bill run data 10018/10005 [\#564](https://github.com/DEFRA/sroc-charging-module-api/pull/564) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix `ListCustomerFilesService` time boundary defect [\#562](https://github.com/DEFRA/sroc-charging-module-api/pull/562) ([StuAA78](https://github.com/StuAA78))
+- Fix deleting a deminimis invoice recalculation [\#561](https://github.com/DEFRA/sroc-charging-module-api/pull/561) ([Cruikshanks](https://github.com/Cruikshanks))
+- Delete Licence not updating bill run status [\#559](https://github.com/DEFRA/sroc-charging-module-api/pull/559) ([StuAA78](https://github.com/StuAA78))
+- Fix customer file head invalid date format [\#557](https://github.com/DEFRA/sroc-charging-module-api/pull/557) ([StuAA78](https://github.com/StuAA78))
+
+**Housekeeping updates:**
+
+- Move controller tests out of `presroc` folder [\#565](https://github.com/DEFRA/sroc-charging-module-api/pull/565) ([StuAA78](https://github.com/StuAA78))
+- Rename show endpoints to view [\#547](https://github.com/DEFRA/sroc-charging-module-api/pull/547) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Dependency updates:**
+
+- Bump hapi-pino from 8.3.0 to 8.4.0 [\#571](https://github.com/DEFRA/sroc-charging-module-api/pull/571) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-node from 2.4.0 to 2.4.1 [\#569](https://github.com/DEFRA/sroc-charging-module-api/pull/569) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.33.0 to 3.34.0 [\#563](https://github.com/DEFRA/sroc-charging-module-api/pull/563) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nodemon from 2.0.12 to 2.0.13 [\#560](https://github.com/DEFRA/sroc-charging-module-api/pull/560) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.32.0 to 3.33.0 [\#553](https://github.com/DEFRA/sroc-charging-module-api/pull/553) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @hapi/hapi from 20.1.5 to 20.2.0 [\#552](https://github.com/DEFRA/sroc-charging-module-api/pull/552) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.31.0 to 3.32.0 [\#551](https://github.com/DEFRA/sroc-charging-module-api/pull/551) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @now-ims/hapi-now-auth from 2.0.4 to 2.1.0 [\#550](https://github.com/DEFRA/sroc-charging-module-api/pull/550) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump objection from 2.2.15 to 2.2.16 [\#548](https://github.com/DEFRA/sroc-charging-module-api/pull/548) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.13.3](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.13.3) (2021-09-16)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.13.2...v0.13.3)
