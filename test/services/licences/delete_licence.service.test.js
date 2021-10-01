@@ -52,7 +52,7 @@ describe('Delete Licence service', () => {
     Sinon.restore()
   })
 
-  describe('When a valid licence is supplied', () => {
+  describe.only('When a valid licence is supplied', () => {
     it('deletes the licence', async () => {
       await DeleteLicenceService.go(licence, billRun, notifierFake)
 
@@ -261,6 +261,49 @@ describe('Delete Licence service', () => {
                 expect(result.minimumChargeInvoice).to.be.true()
               })
             })
+          })
+        })
+      })
+
+      describe('when an invoice contains a licence with zero value', () => {
+        let zeroValueLicence
+
+        beforeEach(async () => {
+          // Create a licence with zero value
+          zeroValueLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'ZERO01' })
+          await NewTransactionHelper.create(zeroValueLicence, { chargeValue: 0 })
+        })
+
+        describe.only('and a licence with a debit value is deleted', () => {
+          it('correctly updates the bill run level figures', async () => {
+            await GenerateBillRunService.go(billRun)
+
+            await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+            const result = await BillRunModel.query().findById(zeroValueLicence.billRunId)
+            expect(result.zeroLineCount).to.equal(1)
+            expect(result.invoiceCount).to.equal(0)
+            expect(result.invoiceValue).to.equal(0)
+            expect(result.netTotal).to.equal(0)
+          })
+        })
+
+        describe('and a licence with a credit value is deleted', () => {
+          beforeEach(async () => {
+            // Patch the existing transaction to be a credit
+            transaction.$query().patch({ chargeCredit: true })
+          })
+
+          it('correctly updates the bill run level figures', async () => {
+            await GenerateBillRunService.go(billRun)
+
+            await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+            const result = await BillRunModel.query().findById(zeroValueLicence.billRunId)
+            expect(result.zeroLineCount).to.equal(1)
+            expect(result.creditNoteCount).to.equal(0)
+            expect(result.creditNoteValue).to.equal(0)
+            expect(result.netTotal).to.equal(0)
           })
         })
       })
