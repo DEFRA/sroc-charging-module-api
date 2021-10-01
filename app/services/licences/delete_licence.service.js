@@ -75,8 +75,10 @@ class DeleteLicenceService {
     const billRun = await licence.$relatedQuery('billRun', trx)
 
     if (licences.length) {
+      // Store the invoice's current transaction type (C=Credit, I=Invoice) as we may need it to adjust the bill run
+      const invoiceTransactionType = invoice.$transactionType()
       await this._handleInvoice(billRun, invoice, licence, trx)
-      await this._handleBillRun(billRun, licence, trx)
+      await this._handleBillRun(billRun, invoice, licence, invoiceTransactionType, trx)
     } else {
       await DeleteInvoiceService.go(invoice, billRun, notifier, trx)
     }
@@ -97,8 +99,8 @@ class DeleteLicenceService {
    * Updates the bill run instance that the licence belongs to, then uses the updated fields to generate a patch which
    * is applied to the bill run in the db.
    */
-  static async _handleBillRun (billRun, licence, trx) {
-    this._updateBillRunInstance(billRun, licence)
+  static async _handleBillRun (billRun, invoice, licence, invoiceTransactionType, trx) {
+    this._updateBillRunInstance(billRun, invoice, licence, invoiceTransactionType)
     const billRunPatch = this._billRunPatch(billRun)
     await billRun.$query(trx).patch(billRunPatch)
   }
@@ -200,12 +202,32 @@ class DeleteLicenceService {
 
   /**
    * Updates the bill run instance by first calling _updateInstance to update the standard fields, then updates two
-   * additional fields unique to the bill run.
+   * additional fields unique to the bill run, and finally adjusts the credit note/invoice count if the invoice that
+   * the licence belongs to is now zero value.
    */
-  static _updateBillRunInstance (billRun, licence) {
+  static _updateBillRunInstance (billRun, invoice, licence, invoiceTransactionType) {
     this._updateInstance(billRun, licence)
     billRun.creditNoteValue -= licence.creditLineValue
     billRun.invoiceValue -= licence.debitLineValue
+    this._handleZeroValueInvoice(billRun, invoice, invoiceTransactionType)
+  }
+
+  /**
+   * If the invoice is now zero value then we need to remove it from the bill run-level counts. We use the transaction
+   * type that we retrieved prior to adjusting the invoice to determine which count (invoice/credit note) we decrement.
+   */
+  static _handleZeroValueInvoice (billRun, invoice, invoiceTransactionType) {
+    if (!invoice.$zeroValueInvoice()) {
+      return
+    }
+
+    if (invoiceTransactionType === 'C') {
+      billRun.creditNoteCount -= 1
+    }
+
+    if (invoiceTransactionType === 'I') {
+      billRun.invoiceCount -= 1
+    }
   }
 }
 

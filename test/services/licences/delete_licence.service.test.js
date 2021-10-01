@@ -52,7 +52,7 @@ describe('Delete Licence service', () => {
     Sinon.restore()
   })
 
-  describe.only('When a valid licence is supplied', () => {
+  describe('When a valid licence is supplied', () => {
     it('deletes the licence', async () => {
       await DeleteLicenceService.go(licence, billRun, notifierFake)
 
@@ -274,7 +274,7 @@ describe('Delete Licence service', () => {
           await NewTransactionHelper.create(zeroValueLicence, { chargeValue: 0 })
         })
 
-        describe.only('and a licence with a debit value is deleted', () => {
+        describe('and a licence with a debit value is deleted', () => {
           it('correctly updates the bill run level figures', async () => {
             await GenerateBillRunService.go(billRun)
 
@@ -284,7 +284,6 @@ describe('Delete Licence service', () => {
             expect(result.zeroLineCount).to.equal(1)
             expect(result.invoiceCount).to.equal(0)
             expect(result.invoiceValue).to.equal(0)
-            expect(result.netTotal).to.equal(0)
           })
         })
 
@@ -303,7 +302,6 @@ describe('Delete Licence service', () => {
             expect(result.zeroLineCount).to.equal(1)
             expect(result.creditNoteCount).to.equal(0)
             expect(result.creditNoteValue).to.equal(0)
-            expect(result.netTotal).to.equal(0)
           })
         })
       })
