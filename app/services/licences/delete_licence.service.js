@@ -163,7 +163,7 @@ class DeleteLicenceService {
     return {
       ...this._entityPatch(billRun),
       creditNoteCount: billRun.creditNoteCount,
-      creditNoteValue: billRun.crediteNoteValue,
+      creditNoteValue: billRun.creditNoteValue,
       invoiceCount: billRun.invoiceCount,
       invoiceValue: billRun.invoiceValue
     }
