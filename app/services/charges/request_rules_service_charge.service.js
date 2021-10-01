@@ -5,9 +5,7 @@
  */
 
 const Got = require('got')
-const Tunnel = require('tunnel')
 const Boom = require('@hapi/boom')
-const { URL } = require('url')
 
 const { RulesServiceConfig } = require('../../../config')
 
@@ -40,16 +38,15 @@ class RequestRulesServiceChargeService {
    * @returns {Object} The `response.body` provided after calling the rules service
    */
   static async go (presenter) {
-    const { url, username, password, httpProxy, timeout } = RulesServiceConfig
+    const { url, username, password, timeout } = RulesServiceConfig
     const { ruleset, regime, financialYear, chargeParams } = presenter
     const path = this._makeRulesPath(ruleset, regime, financialYear)
     const requestOptions = this._requestOptions(url, chargeParams, timeout, username, password)
-    const proxyOptions = httpProxy ? this._proxyOptions(httpProxy) : ''
 
     let response
 
     try {
-      response = await this._callRulesService(path, requestOptions, proxyOptions)
+      response = await this._callRulesService(path, requestOptions)
       await this._throwErrorIfMessagesReceived(response)
     } catch (error) {
       await this._handleErrors(error)
@@ -116,11 +113,8 @@ class RequestRulesServiceChargeService {
     return `${application}/${ruleset}${suffix}`
   }
 
-  static async _callRulesService (path, requestOptions, proxyOptions) {
-    const response = await Got.post(path, {
-      ...requestOptions,
-      ...proxyOptions
-    })
+  static async _callRulesService (path, requestOptions) {
+    const response = await Got.post(path, requestOptions)
     return response.body
   }
 
@@ -160,21 +154,6 @@ class RequestRulesServiceChargeService {
       timeout,
       username,
       password
-    }
-  }
-
-  static _proxyOptions (httpProxy) {
-    const { hostname: host, port } = new URL(httpProxy)
-
-    return {
-      agent: {
-        https: Tunnel.httpsOverHttp({
-          proxy: {
-            host,
-            port
-          }
-        })
-      }
     }
   }
 }

@@ -2,6 +2,8 @@
 
 const Hapi = require('@hapi/hapi')
 const Joi = require('joi')
+const GlobalAgent = require('global-agent')
+
 const { ServerConfig, TestConfig } = require('../config')
 const { JwtStrategyAuthLib } = require('./lib')
 const {
@@ -56,6 +58,12 @@ const registerPlugins = async (server) => {
 }
 
 const init = async () => {
+  // We use global-agent to seamlessly route requests via a proxy if one is defined in .env. However we do not want
+  // this in a test environment as it prevents Nock from successfully intercepting requests.
+  if (ServerConfig.environment !== 'test') {
+    GlobalAgent.bootstrap()
+  }
+
   // Create the hapi server
   const server = Hapi.server(ServerConfig.hapi)
 

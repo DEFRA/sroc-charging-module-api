@@ -10,7 +10,8 @@ services:
     env_file:
       - .env
 
-  # If you need to enable a proxy for testing, set HTTP_PROXY=http://proxy:3128 in .env and uncomment the following:
+  # If you need to enable a proxy for testing, set GLOBAL_AGENT_HTTP_PROXY=http://proxy:3128 in .env and uncomment the
+  # following: (See the 'app' section for details on how to require traffic to go via this proxy)
   # proxy:
   #   image: hinata/nginx-forward-proxy
   #   ports:
@@ -56,6 +57,9 @@ services:
     # up and running before starting the app. So do not use this to manage critical dependency ordering.
     depends_on:
       - db
+    # If you want to require traffic to go via a proxy, uncomment the line below:
+    # dns: 0.0.0.0
+
 
 volumes:
   cma_db_volume:
