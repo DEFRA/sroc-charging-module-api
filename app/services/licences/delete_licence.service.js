@@ -31,7 +31,7 @@ class DeleteLicenceService {
       await LicenceModel.transaction(async trx => {
         const { status: initialBillRunStatus } = billRun
 
-        await this._setBillRunStatusPending(billRun, trx)
+        await this._setBillRunStatusPending(billRun)
         await this._deleteLicence(licence, notifier, trx)
         await this._revertBillRunStatus(billRun, initialBillRunStatus, trx)
       })
@@ -40,9 +40,9 @@ class DeleteLicenceService {
     }
   }
 
-  static async _setBillRunStatusPending (billRun, trx) {
+  static async _setBillRunStatusPending (billRun) {
     await billRun
-      .$query(trx)
+      .$query()
       .patch({ status: 'pending' })
   }
 
