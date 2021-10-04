@@ -64,6 +64,18 @@ describe('Customer translator', () => {
         expect(result.addressLine6).to.equal(null)
       })
     })
+
+    describe('when not passed a postcode', () => {
+      it('defaults to `.`', async () => {
+        const validInput = input
+        delete validInput.postcode
+
+        const result = new CustomerTranslator(validInput)
+
+        expect(result).to.not.be.an.error()
+        expect(result.postcode).to.equal('.')
+      })
+    })
   })
 
   describe('Validation', () => {
