@@ -43,9 +43,9 @@ class DeleteLicenceService {
     }
   }
 
-  static async _setBillRunStatusPending (billRun, trx) {
+  static async _setBillRunStatusPending (billRun) {
     await billRun
-      .$query(trx)
+      .$query()
       .patch({ status: 'pending' })
   }
 
