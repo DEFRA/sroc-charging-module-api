@@ -75,11 +75,11 @@ class DeleteLicenceService {
     const billRun = await licence.$relatedQuery('billRun', trx)
 
     if (licences.length) {
-      // Store the invoice's current transaction type (C=Credit, I=Invoice) as we may need it to adjust the bill run
+      // Store the invoice's current transaction type (credit/invoice/zero) as we may need it to adjust the bill run
       const invoiceTransactionType = this._transactionType(invoice)
-      const invoiceNetTotal = invoice.$netTotal()
+      const invoiceAbsoluteNetTotal = invoice.$absoluteNetTotal()
       await this._handleInvoice(billRun, invoice, licence, trx)
-      await this._handleBillRun(billRun, invoice, licence, invoiceTransactionType, invoiceNetTotal, initialBillRunStatus, trx)
+      await this._handleBillRun(billRun, invoice, licence, invoiceTransactionType, invoiceAbsoluteNetTotal, initialBillRunStatus, trx)
     } else {
       await DeleteInvoiceService.go(invoice, billRun, notifier, trx)
     }
@@ -100,8 +100,8 @@ class DeleteLicenceService {
    * Updates the bill run instance that the licence belongs to, then uses the updated fields to generate a patch which
    * is applied to the bill run in the db.
    */
-  static async _handleBillRun (billRun, invoice, licence, invoiceTransactionType, previousNetTotal, initialBillRunStatus, trx) {
-    this._updateBillRunInstance(billRun, invoice, licence, invoiceTransactionType, previousNetTotal, initialBillRunStatus)
+  static async _handleBillRun (billRun, invoice, licence, invoiceTransactionType, previousInvoiceAbsoluteNetTotal, initialBillRunStatus, trx) {
+    this._updateBillRunInstance(billRun, invoice, licence, invoiceTransactionType, previousInvoiceAbsoluteNetTotal, initialBillRunStatus)
     const billRunPatch = this._billRunPatch(billRun)
     await billRun.$query(trx).patch(billRunPatch)
   }
@@ -206,7 +206,7 @@ class DeleteLicenceService {
    * additional fields unique to the bill run, and finally adjusts the credit note/invoice count if the invoice that
    * the licence belongs to is now zero value.
    */
-  static _updateBillRunInstance (billRun, invoice, licence, previousTransactionType, previousInvoiceNetTotal, initialBillRunStatus) {
+  static _updateBillRunInstance (billRun, invoice, licence, previousTransactionType, previousInvoiceAbsoluteNetTotal, initialBillRunStatus) {
     this._updateInstance(billRun, licence)
 
     // We only update the bill run stats if the bill run is generated
@@ -214,72 +214,34 @@ class DeleteLicenceService {
       return
     }
 
-    const currentLicenceNetTotal = licence.$netTotal()
-    const currentInvoiceNetTotal = invoice.$netTotal()
+    const currentInvoiceAbsoluteNetTotal = invoice.$absoluteNetTotal()
     const currentTransactionType = this._transactionType(invoice)
 
-    /**
-     * if the updated invoice was a credit note and is still a credit note then subtract the licence net total from billRun.creditNoteValue
-     * if the updated invoice was an invoice and still is an invoice then subtract the licence net total from billRun.invoiceValue
-     * if the updated invoice was a credit note but is now an invoice then subtract net total from creditNoteValue and add to invoiceValue
-     *  and subtract 1 from creditNoteCount and increment invoiceCount
-     * if the updated invoice was an invoice but is now a credit note then subtract net total from invoiceValue and add to creditNoteValue
-     *  and subtract 1 from invoiceCount and increment creditNoteCount
-     * if the updated invoice was a credit note but is now zero value then subtract net total from creditNoteValue
-     *  and subtract 1 from creditNoteCount
-     * if the updated invoice was an invoice but is now zero value then subtract net total from invoiceValue
-     *  and subtract 1 from invoiceCount
-     */
-
-    if (previousTransactionType === 'C' && currentTransactionType === 'C') {
-      billRun.creditNoteValue += currentLicenceNetTotal
-    }
-
-    if (previousTransactionType === 'C' && currentTransactionType === 'I') {
-      billRun.creditNoteValue += previousInvoiceNetTotal
-      billRun.invoiceValue += currentInvoiceNetTotal
+    // Remove the old invoice value from the appropriate bill run field and adjust the count accordingly
+    if (previousTransactionType === 'C') {
       billRun.creditNoteCount -= 1
-      billRun.invoiceCount += 1
+      billRun.creditNoteValue -= previousInvoiceAbsoluteNetTotal
     }
-
-    if (previousTransactionType === 'C' && currentTransactionType === 'Z') {
-      billRun.creditNoteValue -= previousInvoiceNetTotal
-      billRun.creditNoteCount -= 1
-    }
-
-    if (previousTransactionType === 'I' && currentTransactionType === 'I') {
-      billRun.invoiceValue -= currentLicenceNetTotal
-    }
-
-    if (previousTransactionType === 'I' && currentTransactionType === 'C') {
-      billRun.invoiceValue -= previousInvoiceNetTotal
-      billRun.creditNoteValue -= currentInvoiceNetTotal
+    if (previousTransactionType === 'I') {
       billRun.invoiceCount -= 1
+      billRun.invoiceValue -= previousInvoiceAbsoluteNetTotal
+    }
+
+    // Add the new invoice value to the appropriate bill run field and adjust the count accordingly
+    if (currentTransactionType === 'C') {
       billRun.creditNoteCount += 1
+      billRun.creditNoteValue += currentInvoiceAbsoluteNetTotal
     }
-
-    if (previousTransactionType === 'I' && currentTransactionType === 'Z') {
-      billRun.invoiceValue -= previousInvoiceNetTotal
-      billRun.invoiceCount -= 1
-    }
-
-    if (previousTransactionType === 'Z' && currentTransactionType === 'Z') {
-      // Nothing needed
-    }
-
-    if (previousTransactionType === 'Z' && currentTransactionType === 'I') {
-      billRun.invoiceValue += currentInvoiceNetTotal
+    if (currentTransactionType === 'I') {
       billRun.invoiceCount += 1
-    }
-
-    if (previousTransactionType === 'Z' && currentTransactionType === 'C') {
-      billRun.creditNoteCount += 1
-      billRun.creditNoteValue -= currentInvoiceNetTotal
+      billRun.invoiceValue += currentInvoiceAbsoluteNetTotal
     }
   }
 
   /**
-   * Returns 'C' if the invoice is a credit, 'I' if it is a debit, and 'Z' if it is zero value
+   * Returns 'C' if the invoice is a credit, 'I' if it is a debit, and 'Z' if it is zero value. The regular
+   * $transactionType() method will return 'I' if it has a net value of 0 (ie. is zero value) so we need this helper
+   * method so we can distinguish between a debit and zero value.
    */
   static _transactionType (invoice) {
     return invoice.$zeroValueInvoice() ? 'Z' : invoice.$transactionType()
