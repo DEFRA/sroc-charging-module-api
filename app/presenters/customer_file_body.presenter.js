@@ -29,15 +29,8 @@ class CustomerFileBodyPresenter extends BasePresenter {
       col08: this._cleanseNull(data.addressLine4),
       col09: this._cleanseNull(data.addressLine5),
       col10: this._cleanseNull(data.addressLine6),
-      col11: this._handlePostcode(data.postcode)
+      col11: data.postcode
     }
-  }
-
-  /**
-   * Returns the trimmed postcode, or '.' if the postcode is either null or '' after trimming
-   */
-  _handlePostcode (postcode) {
-    return postcode?.trim() ? postcode.trim() : '.'
   }
 }
 

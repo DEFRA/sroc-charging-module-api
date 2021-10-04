@@ -90,8 +90,7 @@ describe('Create Customer Details service', () => {
           '"region" is required',
           '"customerReference" is required',
           '"customerName" is required',
-          '"addressLine1" is required',
-          '"postcode" is required'
+          '"addressLine1" is required'
         ])
       })
     })

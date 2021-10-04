@@ -51,27 +51,4 @@ describe('Customer File Body Presenter', () => {
     expect(result.col10).to.equal(data.addressLine6)
     expect(result.col11).to.equal(data.postcode)
   })
-
-  describe('when given an empty postcode', () => {
-    it("returns a '.' for an empty postcode", () => {
-      const presenter = new CustomerFileBodyPresenter({ ...data, postcode: '' })
-      const result = presenter.go()
-
-      expect(result.col11).to.equal('.')
-    })
-
-    it("returns a '.' for a null postcode", () => {
-      const presenter = new CustomerFileBodyPresenter({ ...data, postcode: null })
-      const result = presenter.go()
-
-      expect(result.col11).to.equal('.')
-    })
-
-    it("returns a '.' for a postcode of only spaces", () => {
-      const presenter = new CustomerFileBodyPresenter({ ...data, postcode: '   ' })
-      const result = presenter.go()
-
-      expect(result.col11).to.equal('.')
-    })
-  })
 })

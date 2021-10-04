@@ -24,7 +24,7 @@ class CustomerTranslator extends BaseTranslator {
       addressLine4: Joi.string().max(240).default(null),
       addressLine5: Joi.string().max(60).default(null),
       addressLine6: Joi.string().max(60).default(null),
-      postcode: Joi.string().max(60).required()
+      postcode: Joi.string().max(60).default('.')
     })
   }
 
