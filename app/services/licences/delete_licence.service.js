@@ -34,7 +34,7 @@ class DeleteLicenceService {
         // We need to know the bill run's initial status before it's set to `pending`
         const { status: initialStatus } = billRun
 
-        await this._setBillRunStatusPending(billRun, trx)
+        await this._setBillRunStatusPending(billRun)
         await this._deleteLicence(licence, notifier, initialStatus, trx)
         await this._revertBillRunStatus(billRun, initialStatus, trx)
       })
