@@ -26,6 +26,9 @@ class NewTransactionHelper {
   static async create (licence, overrides = {}) {
     if (!licence) {
       licence = await NewLicenceHelper.create()
+    } else {
+      // Refresh the licence we've been passed to ensure any previous changes aren't overwritten
+      licence = await licence.$query()
     }
 
     const transaction = await TransactionModel.query()

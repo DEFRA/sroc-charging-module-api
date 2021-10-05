@@ -13,14 +13,16 @@ const {
   DatabaseHelper,
   GeneralHelper,
   NewLicenceHelper,
-  NewTransactionHelper,
-  NewInvoiceHelper
+  NewBillRunHelper,
+  NewInvoiceHelper,
+  NewTransactionHelper
 } = require('../../support/helpers')
 
 const {
   BillRunModel,
   InvoiceModel,
   LicenceModel,
+  RegimeModel,
   TransactionModel
 } = require('../../../app/models')
 
@@ -102,6 +104,9 @@ describe('Delete Licence service', () => {
         // Generate the bill run to ensure its values are updated before we delete the licence
         await GenerateBillRunService.go(billRun)
 
+        // Refresh bill run
+        billRun = await billRun.$query()
+
         await DeleteLicenceService.go(licence, billRun, notifierFake)
 
         const result = await InvoiceModel.query().findById(transaction.invoiceId)
@@ -124,9 +129,15 @@ describe('Delete Licence service', () => {
 
           // Generate the bill run to ensure its values are updated before we delete the licence
           await GenerateBillRunService.go(billRun)
+
+          // Refresh bill run
+          billRun = await billRun.$query()
         })
 
         it('to `true` when still applicable', async () => {
+          // Refresh licence entity
+          secondLicence = await secondLicence.$query()
+
           await DeleteLicenceService.go(secondLicence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(transaction.invoiceId)
@@ -134,6 +145,9 @@ describe('Delete Licence service', () => {
         })
 
         it('to `false` when not applicable', async () => {
+          // Refresh licence entity
+          licence = await licence.$query()
+
           await DeleteLicenceService.go(licence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(secondTransaction.invoiceId)
@@ -156,9 +170,15 @@ describe('Delete Licence service', () => {
 
           // Generate the bill run to ensure its values are updated before we delete the licence
           await GenerateBillRunService.go(billRun)
+
+          // Refresh bill run
+          billRun = await billRun.$query()
         })
 
         it('to `true` when still applicable', async () => {
+          // Refresh licence entity
+          secondLicence = await secondLicence.$query()
+
           await DeleteLicenceService.go(secondLicence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(transaction.invoiceId)
@@ -166,6 +186,9 @@ describe('Delete Licence service', () => {
         })
 
         it('to `false` when not applicable', async () => {
+          // Refresh licence entity
+          licence = await licence.$query()
+
           await DeleteLicenceService.go(licence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(secondTransaction.invoiceId)
@@ -184,9 +207,15 @@ describe('Delete Licence service', () => {
 
           // Generate the bill run to ensure its values are updated before we delete the licence
           await GenerateBillRunService.go(billRun)
+
+          // Refresh bill run
+          billRun = await billRun.$query()
         })
 
         it('to `true` when still applicable', async () => {
+          // Refresh licence entity
+          licence = await licence.$query()
+
           await DeleteLicenceService.go(licence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(minimumChargeLicence.invoiceId)
@@ -194,6 +223,9 @@ describe('Delete Licence service', () => {
         })
 
         it('to `false` when not applicable', async () => {
+          // Refresh licence entity
+          minimumChargeLicence = await minimumChargeLicence.$query()
+
           await DeleteLicenceService.go(minimumChargeLicence, billRun, notifierFake)
 
           const result = await InvoiceModel.query().findById(licence.invoiceId)
@@ -224,6 +256,9 @@ describe('Delete Licence service', () => {
           describe('if the one less than £25 is deleted', () => {
             describe("from an 'initialised' bill run", () => {
               it('sets the `minimumChargeInvoice` flag correctly (false)', async () => {
+                // Refresh licence entity
+                lessThanMinLicence = await lessThanMinLicence.$query()
+
                 await DeleteLicenceService.go(lessThanMinLicence, fixBillRun, notifierFake)
 
                 const result = await InvoiceModel.query().findById(fixInvoice.id)
@@ -234,6 +269,11 @@ describe('Delete Licence service', () => {
             describe("from a 'generated' bill run", () => {
               it('sets the `minimumChargeInvoice` flag correctly (false)', async () => {
                 await GenerateBillRunService.go(fixBillRun)
+
+                // Refresh entities
+                fixBillRun = await fixBillRun.$query()
+                lessThanMinLicence = await lessThanMinLicence.$query()
+
                 await DeleteLicenceService.go(lessThanMinLicence, fixBillRun, notifierFake)
 
                 const result = await InvoiceModel.query().findById(fixInvoice.id)
@@ -245,6 +285,9 @@ describe('Delete Licence service', () => {
           describe('if the one more than £25 is deleted', () => {
             describe("from an 'initialised' bill run", () => {
               it('sets the `minimumChargeInvoice` flag correctly (false)', async () => {
+                // Refresh licence entity
+                moreThanMinLicence = await moreThanMinLicence.$query()
+
                 await DeleteLicenceService.go(moreThanMinLicence, fixBillRun, notifierFake)
 
                 const result = await InvoiceModel.query().findById(fixInvoice.id)
@@ -255,6 +298,11 @@ describe('Delete Licence service', () => {
             describe("from a 'generated' bill run", () => {
               it('sets the `minimumChargeInvoice` flag correctly (true)', async () => {
                 await GenerateBillRunService.go(fixBillRun)
+
+                // Refresh entities
+                fixBillRun = await fixBillRun.$query()
+                moreThanMinLicence = await moreThanMinLicence.$query()
+
                 await DeleteLicenceService.go(moreThanMinLicence, fixBillRun, notifierFake)
 
                 const result = await InvoiceModel.query().findById(fixInvoice.id)
@@ -265,11 +313,255 @@ describe('Delete Licence service', () => {
         })
       })
 
+      describe('when an invoice is overall in debit', () => {
+        describe('and it remains a debit after deleting licence', () => {
+          let creditLicence
+
+          beforeEach(async () => {
+            // Create a credit licence small enough to leave the invoice as a debit
+            creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+            await NewTransactionHelper.create(creditLicence, { chargeValue: 50, chargeCredit: true })
+
+            await GenerateBillRunService.go(billRun)
+
+            // Refresh bill run
+            billRun = await billRun.$query()
+          })
+
+          it('correctly updates the bill run level figures', async () => {
+            // Refresh licence entity
+            creditLicence = await creditLicence.$query()
+
+            // Delete the credit licence to leave the invoice a debit
+            await DeleteLicenceService.go(creditLicence, billRun, notifierFake)
+
+            const result = await BillRunModel.query().findById(transaction.billRunId)
+
+            expect(result.invoiceCount).to.equal(1)
+            expect(result.invoiceValue).to.equal(772)
+            expect(result.creditNoteCount).to.be.equal(0)
+            expect(result.creditNoteValue).to.equal(0)
+          })
+        })
+
+        describe('and it becomes a credit after deleting licence', () => {
+          beforeEach(async () => {
+            // Create a credit licence small enough to leave the invoice as a debit
+            const creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+            await NewTransactionHelper.create(creditLicence, { chargeValue: 50, chargeCredit: true })
+
+            await GenerateBillRunService.go(billRun)
+
+            // Refresh bill run
+            billRun = await billRun.$query()
+          })
+
+          it('correctly updates the bill run level figures', async () => {
+            // Delete the debit licence to make the invoice a credit
+            await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+            const result = await BillRunModel.query().findById(transaction.billRunId)
+            expect(result.creditNoteCount).to.be.equal(1)
+            expect(result.creditNoteValue).to.equal(50)
+            expect(result.invoiceCount).to.equal(0)
+            expect(result.invoiceValue).to.equal(0)
+          })
+        })
+
+        describe('and it becomes zero value after deleting licence', () => {
+          beforeEach(async () => {
+            // Create a zero value licence
+            const zeroValueLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'ZERO' })
+            await NewTransactionHelper.create(zeroValueLicence, { chargeValue: 0, chargeCredit: true })
+
+            await GenerateBillRunService.go(billRun)
+
+            // Refresh bill run
+            billRun = await billRun.$query()
+          })
+
+          it('correctly updates the bill run level figures', async () => {
+            // Delete the debit licence to make the invoice a credit
+            await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+            const result = await BillRunModel.query().findById(transaction.billRunId)
+            expect(result.zeroLineCount).to.equal(1)
+            expect(result.invoiceCount).to.equal(0)
+            expect(result.invoiceValue).to.equal(0)
+          })
+        })
+      })
+
+      describe('when an invoice is overall in credit', () => {
+        describe('and it remains a credit after deleting licence', () => {
+          beforeEach(async () => {
+            // Create a credit licence big enough to make the invoice a credit
+            const creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+            await NewTransactionHelper.create(creditLicence, { chargeValue: 50000, chargeCredit: true })
+
+            await GenerateBillRunService.go(billRun)
+
+            // Refresh bill run
+            billRun = await billRun.$query()
+          })
+
+          it('correctly updates the bill run level figures', async () => {
+            // Delete the debit licence to leave the invoice a credit
+            await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+            const result = await BillRunModel.query().findById(transaction.billRunId)
+            expect(result.creditNoteCount).to.be.equal(1)
+            expect(result.creditNoteValue).to.equal(50000)
+            expect(result.invoiceCount).to.equal(0)
+            expect(result.invoiceValue).to.equal(0)
+          })
+        })
+
+        describe('and it becomes a debit after deleting licence', () => {
+          let creditLicence
+
+          beforeEach(async () => {
+            // Create a credit licence big enough to make the invoice a credit
+            creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+            await NewTransactionHelper.create(creditLicence, { chargeValue: 50000, chargeCredit: true })
+
+            await GenerateBillRunService.go(billRun)
+
+            // Refresh bill run
+            billRun = await billRun.$query()
+          })
+
+          it('correctly updates the bill run level figures', async () => {
+            creditLicence = await creditLicence.$query()
+
+            // Delete the credit licence to make the invoice a debit
+            await DeleteLicenceService.go(creditLicence, billRun, notifierFake)
+
+            const result = await BillRunModel.query().findById(transaction.billRunId)
+            expect(result.invoiceCount).to.equal(1)
+            expect(result.invoiceValue).to.equal(772)
+            expect(result.creditNoteCount).to.equal(0)
+            expect(result.creditNoteValue).to.equal(0)
+          })
+        })
+
+        describe('and it becomes zero value after deleting licence', () => {
+          let fixBillRun
+          let creditLicence
+
+          beforeEach(async () => {
+            // Create a fresh bill run with credit and zero value licences on it
+            const regime = await RegimeModel.query().findById(billRun.regimeId)
+            const authorisedSystem = await regime.$relatedQuery('authorisedSystems').first()
+            fixBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
+
+            const fixInvoice = await NewInvoiceHelper.create(fixBillRun)
+
+            const zeroValueLicence = await NewLicenceHelper.create(fixInvoice, { licenceNumber: 'ZERO' })
+            await NewTransactionHelper.create(zeroValueLicence, { chargeValue: 0 })
+
+            creditLicence = await NewLicenceHelper.create(fixInvoice, { licenceNumber: 'CREDIT' })
+            await NewTransactionHelper.create(creditLicence, { chargeCredit: true })
+
+            await GenerateBillRunService.go(fixBillRun)
+
+            // Refresh bill run
+            fixBillRun = await fixBillRun.$query()
+          })
+
+          it('correctly updates the bill run level figures', async () => {
+            // Refresh licence entity
+            creditLicence = await creditLicence.$query()
+
+            // Delete the credit licence to make the invoice zero value
+            await DeleteLicenceService.go(creditLicence, fixBillRun, notifierFake)
+
+            const result = await fixBillRun.$query()
+            expect(result.zeroLineCount).to.equal(1)
+            expect(result.creditNoteCount).to.equal(0)
+            expect(result.creditNoteValue).to.equal(0)
+          })
+        })
+      })
+
+      describe('when an invoice is overall zero value', () => {
+        let creditLicence
+        let zeroValueLicence
+
+        beforeEach(async () => {
+          // Create a credit licence
+          creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+          await NewTransactionHelper.create(creditLicence, { chargeCredit: true })
+
+          // Create a zero value licence
+          zeroValueLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'ZERO' })
+          await NewTransactionHelper.create(zeroValueLicence, { chargeValue: 0 })
+
+          // Generate the bill run and refresh its instance
+          await GenerateBillRunService.go(billRun)
+          billRun = await billRun.$query()
+        })
+
+        describe('and it remains zero value after deleting licence', () => {
+          it('correctly updates the bill run level figures', async () => {
+            // Refresh licence entity
+            zeroValueLicence = await zeroValueLicence.$query()
+
+            // Delete the zero value licence to leave the invoice overall zero value
+            await DeleteLicenceService.go(zeroValueLicence, billRun, notifierFake)
+
+            const result = await BillRunModel.query().findById(transaction.billRunId)
+
+            expect(result.invoiceCount).to.equal(0)
+            expect(result.invoiceValue).to.equal(0)
+            expect(result.creditNoteCount).to.be.equal(0)
+            expect(result.creditNoteValue).to.equal(0)
+          })
+        })
+
+        describe('and it becomes a credit after deleting licence', () => {
+          it('correctly updates the bill run level figures', async () => {
+            // Refresh licence entity
+            licence = await licence.$query()
+
+            // Delete the debit licence to make the invoice a credit
+            await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+            const result = await BillRunModel.query().findById(transaction.billRunId)
+            expect(result.creditNoteCount).to.be.equal(1)
+            expect(result.creditNoteValue).to.equal(772)
+            expect(result.invoiceCount).to.equal(0)
+            expect(result.invoiceValue).to.equal(0)
+            expect(result.zeroLineCount).to.equal(1)
+          })
+        })
+
+        describe('and it becomes a debit after deleting licence', () => {
+          it('correctly updates the bill run level figures', async () => {
+            // Refresh licence entity
+            creditLicence = await creditLicence.$query()
+
+            // Delete the credit licence to make the invoice a credit
+            await DeleteLicenceService.go(creditLicence, billRun, notifierFake)
+
+            const result = await BillRunModel.query().findById(transaction.billRunId)
+            expect(result.invoiceCount).to.equal(1)
+            expect(result.invoiceValue).to.equal(772)
+            expect(result.creditNoteCount).to.be.equal(0)
+            expect(result.creditNoteValue).to.equal(0)
+            expect(result.zeroLineCount).to.equal(1)
+          })
+        })
+      })
+
       it('updates the bill run level figures', async () => {
         // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
         await NewLicenceHelper.create(invoice, { licenceNumber: 'SECOND_LICENCE' })
 
         await GenerateBillRunService.go(billRun)
+
+        // Refresh bill run
+        billRun = await billRun.$query()
 
         await DeleteLicenceService.go(licence, billRun, notifierFake)
 
@@ -284,6 +576,9 @@ describe('Delete Licence service', () => {
         await NewLicenceHelper.create(invoice, { licenceNumber: 'SECOND_LICENCE' })
 
         await GenerateBillRunService.go(billRun)
+
+        // Refresh bill run
+        billRun = await billRun.$query()
 
         await DeleteLicenceService.go(licence, billRun, notifierFake)
 

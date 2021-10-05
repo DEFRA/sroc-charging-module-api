@@ -10,15 +10,17 @@ const DeleteInvoiceService = require('../invoices/delete_invoice.service')
 
 class DeleteLicenceService {
   /**
-   * Deletes a licence along with its transactions and updates the invoice accordingly. Intended to be run as a
-   * background task by a controller, ie. called without an await. While the licence is being deleted, the bill run's
-   * status will be set to `pending`, and restored to its original status afterwards. Note that the licence will _not_
-   * be validated to ensure it is linked to the bill run; it is expected that this will be done from the calling
+   * Deletes a licence along with its transactions and updates the invoice and bill run accordingly. Intended to be run
+   * as a background task by a controller, ie. called without an await. While the licence is being deleted, the bill
+   * run's status will be set to `pending`, and restored to its original status afterwards. Note that the licence will
+   * _not_ be validated to ensure it is linked to the bill run; it is expected that this will be done from the calling
    * controller so that it can present the appropriate error to the user immediately.
    *
    * The invoice will be updated by subtracting the licence's credit/debit line count/value etc. and updating the zero
    * value, deminimis and minimum charge invoice flags. Note that this will be done regardless of whether or not the
    * bill run has been generated.
+   *
+   * If the bill run has been generated then the credit note/invoice count and value fields will be updated.
    *
    * @param {module:LicenceModel} licence The licence to be deleted.
    * @param {module:BillRunModel} billRun The bill run the licence belongs to, which we use to determine its current
@@ -29,11 +31,12 @@ class DeleteLicenceService {
   static async go (licence, billRun, notifier) {
     try {
       await LicenceModel.transaction(async trx => {
-        const { status: initialBillRunStatus } = billRun
+        // We need to know the bill run's initial status before it's set to `pending`
+        const { status: initialStatus } = billRun
 
         await this._setBillRunStatusPending(billRun)
-        await this._deleteLicence(licence, notifier, trx)
-        await this._revertBillRunStatus(billRun, initialBillRunStatus, trx)
+        await this._deleteLicence(licence, notifier, initialStatus, trx)
+        await this._revertBillRunStatus(billRun, initialStatus, trx)
       })
     } catch (error) {
       notifier.omfg('Error deleting licence', { id: licence.id, error })
@@ -63,7 +66,7 @@ class DeleteLicenceService {
     return status
   }
 
-  static async _deleteLicence (licence, notifier, trx) {
+  static async _deleteLicence (licence, notifier, initialStatus, trx) {
     // We only need to delete the licence as it will cascade down to the transaction level.
     await LicenceModel
       .query(trx)
@@ -75,8 +78,9 @@ class DeleteLicenceService {
     const billRun = await licence.$relatedQuery('billRun', trx)
 
     if (licences.length) {
+      const previousInvoice = invoice.$clone()
       await this._handleInvoice(billRun, invoice, licence, trx)
-      await this._handleBillRun(billRun, licence, trx)
+      await this._handleBillRun(billRun, invoice, licence, previousInvoice, initialStatus, trx)
     } else {
       await DeleteInvoiceService.go(invoice, billRun, notifier, trx)
     }
@@ -97,8 +101,14 @@ class DeleteLicenceService {
    * Updates the bill run instance that the licence belongs to, then uses the updated fields to generate a patch which
    * is applied to the bill run in the db.
    */
-  static async _handleBillRun (billRun, licence, trx) {
-    this._updateBillRunInstance(billRun, licence)
+  static async _handleBillRun (billRun, invoice, licence, previousInvoice, initialStatus, trx) {
+    this._updateInstance(billRun, licence)
+
+    // We only need to update the bill run instance if it's been generated
+    if (initialStatus === 'generated') {
+      this._updateBillRunInstance(billRun, invoice, previousInvoice)
+    }
+
     const billRunPatch = this._billRunPatch(billRun)
     await billRun.$query(trx).patch(billRunPatch)
   }
@@ -163,7 +173,7 @@ class DeleteLicenceService {
     return {
       ...this._entityPatch(billRun),
       creditNoteCount: billRun.creditNoteCount,
-      creditNoteValue: billRun.crediteNoteValue,
+      creditNoteValue: billRun.creditNoteValue,
       invoiceCount: billRun.invoiceCount,
       invoiceValue: billRun.invoiceValue
     }
@@ -199,13 +209,43 @@ class DeleteLicenceService {
   }
 
   /**
-   * Updates the bill run instance by first calling _updateInstance to update the standard fields, then updates two
-   * additional fields unique to the bill run.
+   * Updates the bill run instance by removing the previous invoice net total from the appropriate credit/invoice field
+   * (based on whether the previous invoice was overall credit or invoice) and decrementing the appropriate count by 1;
+   * and then adding the new net invoice total to the appropriate credit/invoice field (based on whether the invoice is
+   * now overall credit or invoice) and incrementing the count by 1.
    */
-  static _updateBillRunInstance (billRun, licence) {
-    this._updateInstance(billRun, licence)
-    billRun.creditNoteValue -= licence.creditLineValue
-    billRun.invoiceValue -= licence.debitLineValue
+  static _updateBillRunInstance (billRun, updatedInvoice, previousInvoice) {
+    const previousTransactionType = this._transactionType(previousInvoice)
+    const currentTransactionType = this._transactionType(updatedInvoice)
+
+    // Remove the old invoice value from the appropriate bill run field and adjust the count accordingly
+    if (previousTransactionType === 'C') {
+      billRun.creditNoteCount -= 1
+      billRun.creditNoteValue -= previousInvoice.$absoluteNetTotal()
+    }
+    if (previousTransactionType === 'I') {
+      billRun.invoiceCount -= 1
+      billRun.invoiceValue -= previousInvoice.$absoluteNetTotal()
+    }
+
+    // Add the new invoice value to the appropriate bill run field and adjust the count accordingly
+    if (currentTransactionType === 'C') {
+      billRun.creditNoteCount += 1
+      billRun.creditNoteValue += updatedInvoice.$absoluteNetTotal()
+    }
+    if (currentTransactionType === 'I') {
+      billRun.invoiceCount += 1
+      billRun.invoiceValue += updatedInvoice.$absoluteNetTotal()
+    }
+  }
+
+  /**
+   * Returns 'C' if the invoice is a credit, 'I' if it is a debit, and 'Z' if it is zero value. The regular
+   * $transactionType() method will return 'I' if it has a net value of 0 (ie. is zero value) so we need this helper
+   * method so we can distinguish between a debit and zero value.
+   */
+  static _transactionType (invoice) {
+    return invoice.$zeroValueInvoice() ? 'Z' : invoice.$transactionType()
   }
 }
 

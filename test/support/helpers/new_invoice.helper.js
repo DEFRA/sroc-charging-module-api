@@ -17,6 +17,9 @@ class NewInvoiceHelper {
   static async create (billRun, overrides = {}) {
     if (!billRun) {
       billRun = await NewBillRunHelper.create()
+    } else {
+      // Refresh the bill run we've been passed to ensure any previous changes aren't overwritten
+      billRun = await billRun.$query()
     }
 
     const invoiceValues = {

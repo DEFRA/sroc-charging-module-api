@@ -17,6 +17,9 @@ class NewLicenceHelper {
   static async create (invoice, overrides) {
     if (!invoice) {
       invoice = await NewInvoiceHelper.create()
+    } else {
+      // Refresh the invoice we've been passed to ensure any previous changes aren't overwritten
+      invoice = await invoice.$query()
     }
 
     const licenceValues = {
