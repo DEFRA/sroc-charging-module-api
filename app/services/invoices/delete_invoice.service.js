@@ -18,18 +18,21 @@ class DeleteInvoiceService {
    * @param {module:BillRunModel} billRun The bill run that the invoice belongs to.
    * @param {@module:RequestNotifierLib} notifier Instance of `RequestNotifierLib` class. We use it to log errors rather
    * than throwing them as this service is intended to run in the background.
+   * @param {string} [status] Status of the bill run. If this service is being called from within another service then
+   * the status may have changed to `pending`, in which case we need to be given the status prior to this so we can
+   * determine if the bill run has been generated. Will default to the bill run's current status if not specified.
    * @param {object} [existingTrx] Optional transaction instance; only needed if calling this service from within an
    * existing transaction.
    */
-  static async go (invoice, billRun, notifier, existingTrx = null) {
+  static async go (invoice, billRun, notifier, status = billRun.status, existingTrx = null) {
     try {
       // If this service is being called from within an existing transaction then pass it through to the _deleteInvoice
       // function; otherwise, call it from within a "create transaction" block.
       if (existingTrx) {
-        await this._deleteInvoice(invoice, billRun, existingTrx)
+        await this._deleteInvoice(invoice, billRun, status, existingTrx)
       } else {
         await InvoiceModel.transaction(async trx => {
-          await this._deleteInvoice(invoice, billRun, trx)
+          await this._deleteInvoice(invoice, billRun, status, trx)
         })
       }
     } catch (error) {
@@ -38,8 +41,8 @@ class DeleteInvoiceService {
     }
   }
 
-  static async _deleteInvoice (invoice, billRun, trx) {
-    const billRunPatch = this._billRunPatch(invoice, billRun)
+  static async _deleteInvoice (invoice, billRun, status, trx) {
+    const billRunPatch = this._billRunPatch(invoice, status)
 
     // We only need to delete the invoice as the deletion will cascade down to the licence level, and from there down
     // to the transaction level.
@@ -71,9 +74,9 @@ class DeleteInvoiceService {
    * Create a patch which when applied to a bill run will subtract the counts and values of the passed-in invoice.
    *
    * @param {module:InvoiceModel} invoice The invoice which is to have its values subtracted from a bill run.
-   * @param {module:BillRunModel} billRun The bill run which the invoice is being deleted from.
+   * @param {string} status The status of the bill run which the invoice is being deleted from.
    */
-  static _billRunPatch (invoice, billRun) {
+  static _billRunPatch (invoice, status) {
     const update = {
       creditLineCount: raw('credit_line_count - ?', invoice.creditLineCount),
       creditLineValue: raw('credit_line_value - ?', invoice.creditLineValue),
@@ -85,7 +88,7 @@ class DeleteInvoiceService {
       subjectToMinimumChargeDebitValue: raw('subject_to_minimum_charge_debit_value - ?', invoice.subjectToMinimumChargeDebitValue)
     }
 
-    if (!this._patchBillRunSummary(invoice, billRun)) {
+    if (!this._patchBillRunSummary(invoice, status)) {
       return update
     }
 
@@ -117,16 +120,12 @@ class DeleteInvoiceService {
    * run is generated. So, their values shouldn't be deducted when deleted from a generated bill run.
    *
    * @param {module:InvoiceModel} invoice The invoice which is being deleted
-   * @param {module:BillRunModel} billRun The bill run which the invoice is being deleted from. (note - we rely on the
-   * fact the instance we'll get is that from `req.app.billRun` in the controller as it will retain the original
-   * status. The status might well get updated as part of the delete, for example, when deleting a licence but as long
-   * as we have access to the instance prior to the patch, it's status will reflect what it was when the delete
-   * operation started)
+   * @param {string} status The status of the bill run which the invoice is being deleted from
    *
    * @returns {boolean} true if the bill run summary should be patched else false
    */
-  static _patchBillRunSummary (invoice, billRun) {
-    if (billRun.status !== 'generated' || invoice.deminimisInvoice || invoice.zeroValueInvoice) {
+  static _patchBillRunSummary (invoice, status) {
+    if (status !== 'generated' || invoice.deminimisInvoice || invoice.zeroValueInvoice) {
       return false
     }
 

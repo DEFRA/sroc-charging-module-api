@@ -82,7 +82,7 @@ class DeleteLicenceService {
       await this._handleInvoice(billRun, invoice, licence, trx)
       await this._handleBillRun(billRun, invoice, licence, previousInvoice, initialStatus, trx)
     } else {
-      await DeleteInvoiceService.go(invoice, billRun, notifier, trx)
+      await DeleteInvoiceService.go(invoice, billRun, notifier, initialStatus, trx)
     }
   }
 
@@ -218,24 +218,28 @@ class DeleteLicenceService {
     const previousTransactionType = this._transactionType(previousInvoice)
     const currentTransactionType = this._transactionType(updatedInvoice)
 
-    // Remove the old invoice value from the appropriate bill run field and adjust the count accordingly
-    if (previousTransactionType === 'C') {
-      billRun.creditNoteCount -= 1
-      billRun.creditNoteValue -= previousInvoice.$absoluteNetTotal()
-    }
-    if (previousTransactionType === 'I') {
-      billRun.invoiceCount -= 1
-      billRun.invoiceValue -= previousInvoice.$absoluteNetTotal()
+    // If the old invoice isn't deminimis, remove its value from the appropriate bill run field and adjust the count
+    if (!previousInvoice.$deminimisInvoice()) {
+      if (previousTransactionType === 'C') {
+        billRun.creditNoteCount -= 1
+        billRun.creditNoteValue -= previousInvoice.$absoluteNetTotal()
+      }
+      if (previousTransactionType === 'I') {
+        billRun.invoiceCount -= 1
+        billRun.invoiceValue -= previousInvoice.$absoluteNetTotal()
+      }
     }
 
-    // Add the new invoice value to the appropriate bill run field and adjust the count accordingly
-    if (currentTransactionType === 'C') {
-      billRun.creditNoteCount += 1
-      billRun.creditNoteValue += updatedInvoice.$absoluteNetTotal()
-    }
-    if (currentTransactionType === 'I') {
-      billRun.invoiceCount += 1
-      billRun.invoiceValue += updatedInvoice.$absoluteNetTotal()
+    // If the updated invoice isn't deminimis, add its value to the appropriate bill run field and adjust the count
+    if (!updatedInvoice.$deminimisInvoice()) {
+      if (currentTransactionType === 'C') {
+        billRun.creditNoteCount += 1
+        billRun.creditNoteValue += updatedInvoice.$absoluteNetTotal()
+      }
+      if (currentTransactionType === 'I') {
+        billRun.invoiceCount += 1
+        billRun.invoiceValue += updatedInvoice.$absoluteNetTotal()
+      }
     }
   }
 
