@@ -82,7 +82,7 @@ class DeleteLicenceService {
       await this._handleInvoice(billRun, invoice, licence, trx)
       await this._handleBillRun(billRun, invoice, licence, previousInvoice, initialStatus, trx)
     } else {
-      await DeleteInvoiceService.go(invoice, billRun, notifier, trx)
+      await DeleteInvoiceService.go(invoice, billRun, notifier, initialStatus, trx)
     }
   }
 
@@ -220,25 +220,25 @@ class DeleteLicenceService {
 
     // If the old invoice isn't deminimis, remove its value from the appropriate bill run field and adjust the count
     if (!previousInvoice.$deminimisInvoice()) {
-    if (previousTransactionType === 'C') {
-      billRun.creditNoteCount -= 1
-      billRun.creditNoteValue -= previousInvoice.$absoluteNetTotal()
-    }
-    if (previousTransactionType === 'I') {
-      billRun.invoiceCount -= 1
-      billRun.invoiceValue -= previousInvoice.$absoluteNetTotal()
-    }
+      if (previousTransactionType === 'C') {
+        billRun.creditNoteCount -= 1
+        billRun.creditNoteValue -= previousInvoice.$absoluteNetTotal()
+      }
+      if (previousTransactionType === 'I') {
+        billRun.invoiceCount -= 1
+        billRun.invoiceValue -= previousInvoice.$absoluteNetTotal()
+      }
     }
 
     // If the updated invoice isn't deminimis, add its value to the appropriate bill run field and adjust the count
     if (!updatedInvoice.$deminimisInvoice()) {
-    if (currentTransactionType === 'C') {
-      billRun.creditNoteCount += 1
-      billRun.creditNoteValue += updatedInvoice.$absoluteNetTotal()
-    }
-    if (currentTransactionType === 'I') {
-      billRun.invoiceCount += 1
-      billRun.invoiceValue += updatedInvoice.$absoluteNetTotal()
+      if (currentTransactionType === 'C') {
+        billRun.creditNoteCount += 1
+        billRun.creditNoteValue += updatedInvoice.$absoluteNetTotal()
+      }
+      if (currentTransactionType === 'I') {
+        billRun.invoiceCount += 1
+        billRun.invoiceValue += updatedInvoice.$absoluteNetTotal()
       }
     }
   }

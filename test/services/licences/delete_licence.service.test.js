@@ -680,6 +680,27 @@ describe('Delete Licence service', () => {
 
         expect(result.status).to.equal('initialised')
       })
+
+      describe('and there are other invoices on the bill run', () => {
+        beforeEach(async () => {
+          // Create a second invoice
+          const secondInvoice = await NewInvoiceHelper.create(billRun)
+          const secondLicence = await NewLicenceHelper.create(secondInvoice, { licenceNumber: 'SECOND' })
+          await NewTransactionHelper.create(secondLicence)
+
+          // Generate and refresh the bill run
+          await GenerateBillRunService.go(billRun)
+          billRun = await billRun.$query()
+        })
+
+        it('updates the bill run level figures', async () => {
+          await DeleteLicenceService.go(licence, billRun, notifierFake)
+
+          const result = await BillRunModel.query().findById(transaction.billRunId)
+          expect(result.invoiceCount).to.equal(1)
+          expect(result.invoiceValue).to.equal(772)
+        })
+      })
     })
   })
 
