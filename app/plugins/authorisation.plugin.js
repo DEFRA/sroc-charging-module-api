@@ -9,7 +9,7 @@ const { AuthorisationService } = require('../services')
  * Paths under the `/admin` root are only accessible to requests made with bearer tokens generated using the admin
  * client ID.
  *
- * Paths which have a regime, for example, `/v1/{regimeId}/billruns` are accessible to the admin user plus any request
+ * Paths which have a regime, for example, `/v1/{regimeSlug}/billruns` are accessible to the admin user plus any request
  * made with a bearer token generated using a recognised client ID. However, the client ID must also be linked to the
  * matching regime.
  *
@@ -25,16 +25,16 @@ const AuthorisationPlugin = {
   register: (server, _options) => {
     server.ext('onCredentials', async (request, h) => {
       const { user } = request.auth.credentials
-      const { regimeId } = request.params
+      const { regimeSlug } = request.params
 
-      const authorisationResult = await AuthorisationService.go(user, regimeId)
+      const authorisationResult = await AuthorisationService.go(user, regimeSlug)
 
       if (authorisationResult.authorised) {
         request.app.regime = authorisationResult.regime
         return h.continue
       }
 
-      throw Boom.forbidden(`Unauthorised for regime '${regimeId}'`)
+      throw Boom.forbidden(`Unauthorised for regime '${regimeSlug}'`)
     })
   }
 }

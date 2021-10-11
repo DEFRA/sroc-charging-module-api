@@ -9,47 +9,47 @@ const {
 const routes = [
   {
     method: 'POST',
-    path: '/v1/{regimeId}/billruns',
+    path: '/v1/{regimeSlug}/billruns',
     handler: NotSupportedController.index
   },
   {
     method: 'POST',
-    path: '/v2/{regimeId}/bill-runs',
+    path: '/v2/{regimeSlug}/bill-runs',
     handler: BillRunsController.create
   },
   {
     method: 'PATCH',
-    path: '/v2/{regimeId}/bill-runs/{billRunId}/generate',
+    path: '/v2/{regimeSlug}/bill-runs/{billRunId}/generate',
     handler: BillRunsController.generate
   },
   {
     method: 'PATCH',
-    path: '/v2/{regimeId}/bill-runs/{billRunId}/approve',
+    path: '/v2/{regimeSlug}/bill-runs/{billRunId}/approve',
     handler: BillRunsController.approve
   },
   {
     method: 'PATCH',
-    path: '/v2/{regimeId}/bill-runs/{billRunId}/send',
+    path: '/v2/{regimeSlug}/bill-runs/{billRunId}/send',
     handler: BillRunsController.send
   },
   {
     method: 'GET',
-    path: '/v2/{regimeId}/bill-runs/{billRunId}/status',
+    path: '/v2/{regimeSlug}/bill-runs/{billRunId}/status',
     handler: BillRunsController.status
   },
   {
     method: 'GET',
-    path: '/v2/{regimeId}/bill-runs/{billRunId}',
+    path: '/v2/{regimeSlug}/bill-runs/{billRunId}',
     handler: BillRunsController.view
   },
   {
     method: 'DELETE',
-    path: '/v2/{regimeId}/bill-runs/{billRunId}',
+    path: '/v2/{regimeSlug}/bill-runs/{billRunId}',
     handler: BillRunsController.delete
   },
   {
     method: 'PATCH',
-    path: '/admin/{regimeId}/bill-runs/{billRunId}/send',
+    path: '/admin/{regimeSlug}/bill-runs/{billRunId}/send',
     handler: AdminBillRunsController.send,
     options: {
       auth: {

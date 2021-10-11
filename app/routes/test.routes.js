@@ -10,7 +10,7 @@ const {
 const routes = [
   {
     method: 'POST',
-    path: '/admin/test/{regimeId}/bill-runs',
+    path: '/admin/test/{regimeSlug}/bill-runs',
     handler: TestBillRunsController.create,
     options: {
       description: 'Used by the delivery team to automatically generate bill runs for testing.',
@@ -32,7 +32,7 @@ const routes = [
   },
   {
     method: 'GET',
-    path: '/admin/test/{regimeId}/customer-files',
+    path: '/admin/test/{regimeSlug}/customer-files',
     handler: TestCustomerFilesController.index,
     options: {
       description: 'Used by the delivery team to list all customer files for a regime.',

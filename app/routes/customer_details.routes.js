@@ -8,12 +8,12 @@ const {
 const routes = [
   {
     method: 'POST',
-    path: '/v1/{regimeId}/customer-changes',
+    path: '/v1/{regimeSlug}/customer-changes',
     handler: NotSupportedController.index
   },
   {
     method: 'POST',
-    path: '/v2/{regimeId}/customer-changes',
+    path: '/v2/{regimeSlug}/customer-changes',
     handler: CustomerDetailsController.create
   }
 ]

@@ -5,7 +5,7 @@ const { CustomersController } = require('../controllers')
 const routes = [
   {
     method: 'PATCH',
-    path: '/admin/{regimeId}/customers',
+    path: '/admin/{regimeSlug}/customers',
     handler: CustomersController.send,
     options: {
       auth: {

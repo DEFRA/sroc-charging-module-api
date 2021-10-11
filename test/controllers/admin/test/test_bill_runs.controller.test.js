@@ -52,7 +52,7 @@ describe('Test Bill Run Controller', () => {
     Sinon.restore()
   })
 
-  describe('Generating a test bill run: POST /admin/test/{regimeId}/bill-runs', () => {
+  describe('Generating a test bill run: POST /admin/test/{regimeSlug}/bill-runs', () => {
     const options = (token, payload) => {
       return {
         method: 'POST',

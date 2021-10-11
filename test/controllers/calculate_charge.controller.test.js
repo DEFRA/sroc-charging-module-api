@@ -60,7 +60,7 @@ describe('Calculate charge controller', () => {
     Nock.cleanAll()
   })
 
-  describe('Calculating a charge: POST /v2/{regimeId}/calculate-charge', () => {
+  describe('Calculating a charge: POST /v2/{regimeSlug}/calculate-charge', () => {
     const options = (token, payload) => {
       return {
         method: 'POST',

@@ -55,7 +55,7 @@ describe('Invoices controller', () => {
     Sinon.restore()
   })
 
-  describe('Delete an invoice: DELETE /v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}', () => {
+  describe('Delete an invoice: DELETE /v2/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}', () => {
     const options = (token, billRunId, invoiceId) => {
       return {
         method: 'DELETE',
@@ -132,7 +132,7 @@ describe('Invoices controller', () => {
     })
   })
 
-  describe('View bill run invoice: GET /v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}', () => {
+  describe('View bill run invoice: GET /v2/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}', () => {
     const options = (token, billRunId, invoiceId) => {
       return {
         method: 'GET',
@@ -192,7 +192,7 @@ describe('Invoices controller', () => {
     })
   })
 
-  describe('Rebill bill run invoice: PATCH /v2/{regimeId}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill', () => {
+  describe('Rebill bill run invoice: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill', () => {
     let cancelInvoice
     let rebillInvoice
     let validationStub

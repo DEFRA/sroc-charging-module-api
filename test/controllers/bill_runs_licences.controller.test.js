@@ -52,7 +52,7 @@ describe('Licences controller', () => {
     Sinon.restore()
   })
 
-  describe('Delete a licence: DELETE /v2/{regimeId}/bill-runs/{billRunId}/licences/{licenceId}', () => {
+  describe('Delete a licence: DELETE /v2/{regimeSlug}/bill-runs/{billRunId}/licences/{licenceId}', () => {
     let validationStub
     let deletionStub
 

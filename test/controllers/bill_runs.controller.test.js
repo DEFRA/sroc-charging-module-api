@@ -75,7 +75,7 @@ describe('Bill Runs controller', () => {
     Nock.cleanAll()
   })
 
-  describe('Adding a bill run: POST /v2/{regimeId}/bill-runs', () => {
+  describe('Adding a bill run: POST /v2/{regimeSlug}/bill-runs', () => {
     const options = (token, payload) => {
       return {
         method: 'POST',
@@ -115,7 +115,7 @@ describe('Bill Runs controller', () => {
     })
   })
 
-  describe('Generate a bill run summary: PATCH /v2/{regimeId}/bill-runs/{billRunId}/generate', () => {
+  describe('Generate a bill run summary: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/generate', () => {
     let payload
 
     const options = (token, billRunId) => {
@@ -162,7 +162,7 @@ describe('Bill Runs controller', () => {
     })
   })
 
-  describe('Get bill run status: GET /v2/{regimeId}/bill-runs/{billRunId}/status', () => {
+  describe('Get bill run status: GET /v2/{regimeSlug}/bill-runs/{billRunId}/status', () => {
     const options = (token, billRunId) => {
       return {
         method: 'GET',
@@ -197,7 +197,7 @@ describe('Bill Runs controller', () => {
     })
   })
 
-  describe('View bill run: GET /v2/{regimeId}/bill-runs/{billRunId}', () => {
+  describe('View bill run: GET /v2/{regimeSlug}/bill-runs/{billRunId}', () => {
     const options = (token, billRunId) => {
       return {
         method: 'GET',
@@ -232,7 +232,7 @@ describe('Bill Runs controller', () => {
     })
   })
 
-  describe('Approve bill run: PATCH /v2/{regimeId}/bill-runs/{billRunId}/approve', () => {
+  describe('Approve bill run: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/approve', () => {
     const options = (token, billRunId) => {
       return {
         method: 'PATCH',
@@ -271,7 +271,7 @@ describe('Bill Runs controller', () => {
     })
   })
 
-  describe('Send bill run: PATCH /v2/{regimeId}/bill-runs/{billRunId}/send', () => {
+  describe('Send bill run: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/send', () => {
     let sendCustomerFileStub
     let sendTransactionFileStub
 
@@ -340,7 +340,7 @@ describe('Bill Runs controller', () => {
     })
   })
 
-  describe('Delete bill run: DELETE /v2/{regimeId}/bill-runs/{billRunId}', () => {
+  describe('Delete bill run: DELETE /v2/{regimeSlug}/bill-runs/{billRunId}', () => {
     const options = (token, billRunId) => {
       return {
         method: 'DELETE',

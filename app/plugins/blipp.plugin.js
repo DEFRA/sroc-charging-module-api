@@ -9,14 +9,14 @@
  * An example of the output
  *
  * ```
- *   method  path                     auth          scope  description
- *   ------  -----------------------  ------------  -----  -----------
- *   GET     /                        none          none
- *   GET     /regimes                 jwt-strategy  admin
- *   GET     /regimes/{id}            jwt-strategy  admin
- *   GET     /status                  none          none
- *   GET     /v1/{regimeId}/billruns  jwt-strategy  none
- *   GET     /v2/{regimeId}/billruns  jwt-strategy  none
+ *   method  path                       auth          scope  description
+ *   ------  -------------------------  ------------  -----  -----------
+ *   GET     /                          none          none
+ *   GET     /regimes                   jwt-strategy  admin
+ *   GET     /regimes/{id}              jwt-strategy  admin
+ *   GET     /status                    none          none
+ *   GET     /v1/{regimeSlug}/billruns  jwt-strategy  none
+ *   GET     /v2/{regimeSlug}/billruns  jwt-strategy  none
  * ```
  *
  * {@link https://github.com/danielb2/blipp}
