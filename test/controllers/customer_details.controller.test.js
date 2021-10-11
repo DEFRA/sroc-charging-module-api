@@ -50,7 +50,7 @@ describe('Customer Details controller', () => {
     Sinon.restore()
   })
 
-  describe('Creating a details change: POST /v2/{regimeId}/customer-changes', () => {
+  describe('Creating a details change: POST /v2/{regimeSlug}/customer-changes', () => {
     const options = (token, payload) => {
       return {
         method: 'POST',

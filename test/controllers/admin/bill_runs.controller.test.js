@@ -58,7 +58,7 @@ describe('Admin Bill Runs controller', () => {
     sendStub.restore()
   })
 
-  describe('Send bill run: PATCH /admin/{regimeId}/bill-runs/{billRunId}/send', () => {
+  describe('Send bill run: PATCH /admin/{regimeSlug}/bill-runs/{billRunId}/send', () => {
     const options = (token, billRunId) => {
       return {
         method: 'PATCH',

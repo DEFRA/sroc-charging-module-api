@@ -9,6 +9,6 @@ Generators allow us to create this volume of data quickly and avoid
 - the overhead of sending thousands of transaction requests across the network
 - 'spamming' the rules service just for testing purposes
 
-They follow the convention of [services](/app/services) being `static` and with a single `go()` method to initate the action. But unlike the main application code, we are comfortable with these not having specific unit tests. Integration tests through the `/admin/test/{regimeId}/bill-runs/generate` is sufficient.
+They follow the convention of [services](/app/services) being `static` and with a single `go()` method to initate the action. But unlike the main application code, we are comfortable with these not having specific unit tests. Integration tests through the `/admin/test/{regimeSlug}/bill-runs/generate` is sufficient.
 
 They also rely heavily on test helpers and libraries. It's for these reasons they sit here in `/test/support/generators'.

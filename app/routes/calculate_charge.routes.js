@@ -5,12 +5,12 @@ const { NotSupportedController, CalculateChargeController } = require('../contro
 const routes = [
   {
     method: 'POST',
-    path: '/v1/{regimeId}/calculate-charge',
+    path: '/v1/{regimeSlug}/calculate-charge',
     handler: NotSupportedController.index
   },
   {
     method: 'POST',
-    path: '/v2/{regimeId}/calculate-charge',
+    path: '/v2/{regimeSlug}/calculate-charge',
     handler: CalculateChargeController.calculate
   }
 ]

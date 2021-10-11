@@ -86,14 +86,14 @@ class RouteHelper {
   /**
    * Adds a route to a Hapi server instance which can only accessed by authorised systems and the admin.
    *
-   * Intended to mimic routes such as `/v1/{regimeId}/billruns`.
+   * Intended to mimic routes such as `/v1/{regimeSlug}/billruns`.
    *
    * @param {Object} server A Hapi server instance
    */
   static addSystemGetRoute (server) {
     server.route({
       method: 'GET',
-      path: '/test/{regimeId}/system',
+      path: '/test/{regimeSlug}/system',
       handler: (request, _h) => {
         return { type: request.app.regime.slug }
       },
@@ -125,14 +125,14 @@ class RouteHelper {
   /**
    * Adds a route to a Hapi server instance which mocks a bill run `GET`.
    *
-   * Intended to mimic routes such as `/v1/{regimeId}/bill-runs/{billRunId}`.
+   * Intended to mimic routes such as `/v1/{regimeSlug}/bill-runs/{billRunId}`.
    *
    * @param {Object} server A Hapi server instance
    */
   static addBillRunGetRoute (server) {
     server.route({
       method: 'GET',
-      path: '/test/{regimeId}/bill-runs/{billRunId}',
+      path: '/test/{regimeSlug}/bill-runs/{billRunId}',
       handler: (request, _h) => {
         return { id: request.app.billRun.id }
       },
@@ -146,8 +146,8 @@ class RouteHelper {
 
   static addRequestAppCheckRoute (server, type) {
     const paths = {
-      billRun: '/test/{regimeId}/bill-runs/{billRunId}',
-      invoice: '/test/{regimeId}/invoices/{invoiceId}'
+      billRun: '/test/{regimeSlug}/bill-runs/{billRunId}',
+      invoice: '/test/{regimeSlug}/invoices/{invoiceId}'
     }
 
     server.route({

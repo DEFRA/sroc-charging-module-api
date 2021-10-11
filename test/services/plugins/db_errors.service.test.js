@@ -63,7 +63,7 @@ describe('Db Errors service', () => {
               clientId: 'DOUBLEIMPACT'
             },
             params: {
-              regimeId: 'wrls'
+              regimeSlug: 'wrls'
             }
           }
 

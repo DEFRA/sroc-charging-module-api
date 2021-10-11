@@ -49,7 +49,7 @@ describe('List Customer Files controller', () => {
     await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
   })
 
-  describe('List customer files: GET /v2/{regimeId}/customer-files/{days?}', () => {
+  describe('List customer files: GET /v2/{regimeSlug}/customer-files/{days?}', () => {
     let listStub
 
     const options = (token, pathParam = '') => {

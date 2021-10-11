@@ -5,12 +5,12 @@ const { NotSupportedController } = require('../controllers')
 const routes = [
   {
     method: 'GET',
-    path: '/v1/{regimeId}/transactions',
+    path: '/v1/{regimeSlug}/transactions',
     handler: NotSupportedController.index
   },
   {
     method: 'GET',
-    path: '/v1/{regimeId}/transactions/{transactionId}',
+    path: '/v1/{regimeSlug}/transactions/{transactionId}',
     handler: NotSupportedController.index
   }
 ]

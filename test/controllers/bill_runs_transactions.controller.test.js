@@ -60,7 +60,7 @@ describe('Bill runs transactions controller', () => {
     Nock.cleanAll()
   })
 
-  describe('Create a bill run transaction: POST /v2/{regimeId}/bill-runs/{billRunId}/transactions', () => {
+  describe('Create a bill run transaction: POST /v2/{regimeSlug}/bill-runs/{billRunId}/transactions', () => {
     let payload
 
     const options = (token, payload, billRunId) => {
@@ -135,7 +135,7 @@ describe('Bill runs transactions controller', () => {
     })
   })
 
-  describe('View bill run transaction: GET /v2/{regimeId}/bill-runs/{billRunId}/transactions/{transactionId}', () => {
+  describe('View bill run transaction: GET /v2/{regimeSlug}/bill-runs/{billRunId}/transactions/{transactionId}', () => {
     const options = (token, billRunId, transactionId) => {
       return {
         method: 'GET',

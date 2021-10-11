@@ -54,7 +54,7 @@ class DbErrorsService {
 
     if (error.constraint === 'transactions_regime_id_client_id_unique') {
       boomError = new Boom.Boom(
-        `A transaction with Client ID '${data.payload.clientId}' for Regime '${data.params.regimeId}' already exists.`,
+        `A transaction with Client ID '${data.payload.clientId}' for Regime '${data.params.regimeSlug}' already exists.`,
         { statusCode: 409 }
       )
       boomError.output.payload.clientId = data.payload.clientId

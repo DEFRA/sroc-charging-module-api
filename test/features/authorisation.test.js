@@ -118,7 +118,7 @@ describe('Authorisation with the API', () => {
     })
   })
 
-  describe('When accessing a /{regimeId}/action (system) route', () => {
+  describe('When accessing a /{regimeSlug}/action (system) route', () => {
     afterEach(async () => {
       Sinon.restore()
     })
