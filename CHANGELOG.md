@@ -1,5 +1,34 @@
 # Changelog
 
+## [v0.14.1](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.14.1) (2021-10-12)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.14.0...v0.14.1)
+
+**Implemented enhancements:**
+
+- Replace existing proxy config with `global-agent` [\#572](https://github.com/DEFRA/sroc-charging-module-api/pull/572) ([StuAA78](https://github.com/StuAA78))
+
+**Fixed bugs:**
+
+- Delete Licence additional summary fixes [\#581](https://github.com/DEFRA/sroc-charging-module-api/pull/581) ([StuAA78](https://github.com/StuAA78))
+- Fix pending status in delete licence [\#575](https://github.com/DEFRA/sroc-charging-module-api/pull/575) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix postcode should not be a required property [\#574](https://github.com/DEFRA/sroc-charging-module-api/pull/574) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix Delete Licence not correctly updating bill run summary [\#573](https://github.com/DEFRA/sroc-charging-module-api/pull/573) ([StuAA78](https://github.com/StuAA78))
+
+**Housekeeping updates:**
+
+- Rename `regimeId` to `regimeSlug` [\#585](https://github.com/DEFRA/sroc-charging-module-api/pull/585) ([StuAA78](https://github.com/StuAA78))
+
+**Dependency updates:**
+
+- Bump @hapi/hapi from 20.2.0 to 20.2.1 [\#584](https://github.com/DEFRA/sroc-charging-module-api/pull/584) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump hapi-pino from 8.4.0 to 8.5.0 [\#583](https://github.com/DEFRA/sroc-charging-module-api/pull/583) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.35.0 to 3.36.0 [\#582](https://github.com/DEFRA/sroc-charging-module-api/pull/582) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.34.0 to 3.35.0 [\#580](https://github.com/DEFRA/sroc-charging-module-api/pull/580) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @airbrake/node from 2.1.5 to 2.1.7 [\#579](https://github.com/DEFRA/sroc-charging-module-api/pull/579) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump standard from 16.0.3 to 16.0.4 [\#578](https://github.com/DEFRA/sroc-charging-module-api/pull/578) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump objection from 2.2.16 to 2.2.17 [\#576](https://github.com/DEFRA/sroc-charging-module-api/pull/576) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.14.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.14.0) (2021-09-30)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.13.3...v0.14.0)
