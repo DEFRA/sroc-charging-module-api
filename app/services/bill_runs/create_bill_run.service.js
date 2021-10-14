@@ -32,7 +32,7 @@ class CreateBillRunService {
     return this._response(billRun)
   }
 
-  static _translateRequest (payload, authorisedSystem, regime, ruleset) {
+  static _translateRequest (payload, authorisedSystem, regime) {
     return new BillRunTranslator({
       ...payload,
       regimeId: regime.id,
