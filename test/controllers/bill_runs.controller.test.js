@@ -133,7 +133,7 @@ describe('Bill Runs controller', () => {
 
         await server.inject(options(authToken, requestPayload))
 
-        expect(createStub.getCall(0).args[3]).to.equal('presroc')
+        expect(createStub.getCall(0).args[0]).to.contain({ ruleset: 'presroc' })
       })
     })
   })

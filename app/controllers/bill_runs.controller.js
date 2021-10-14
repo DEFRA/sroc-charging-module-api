@@ -16,15 +16,15 @@ const {
 class BillRunsController {
   static async createV2 (req, h) {
     // Set V2 default
-    const ruleset = 'presroc'
+    req.payload.ruleset = 'presroc'
 
-    const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime, ruleset)
+    const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
 
     return h.response(result).code(201)
   }
 
   static async createV3 (req, h) {
-    const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime, req.payload.ruleset)
+    const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
 
     return h.response(result).code(201)
   }
