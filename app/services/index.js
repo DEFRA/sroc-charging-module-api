@@ -11,6 +11,7 @@ const CognitoJwtToPemService = require('./plugins/cognito_jwt_to_pem.service')
 const ConvertToCSVService = require('./convert_to_csv.service')
 const CreateAuthorisedSystemService = require('./authorised_systems/create_authorised_system.service')
 const CreateBillRunService = require('./bill_runs/create_bill_run.service')
+const CreateBillRunV2GuardService = require('./guards/create_bill_run_v2_guard.service')
 const CreateCustomerDetailsService = require('./create_customer_details.service')
 const CreateMinimumChargeAdjustmentTransactionService = require('./transactions/create_minimum_charge_adjustment_transaction.service')
 const CreateTransactionService = require('./transactions/create_transaction.service')
@@ -84,6 +85,7 @@ module.exports = {
   ConvertToCSVService,
   CreateAuthorisedSystemService,
   CreateBillRunService,
+  CreateBillRunV2GuardService,
   CreateCustomerDetailsService,
   CreateMinimumChargeAdjustmentTransactionService,
   CreateTransactionService,

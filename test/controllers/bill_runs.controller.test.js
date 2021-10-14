@@ -28,6 +28,7 @@ const {
 
 const {
   CreateBillRunService,
+  CreateBillRunV2GuardService,
   CreateTransactionService,
   GenerateBillRunService,
   SendCustomerFileService,
@@ -117,13 +118,16 @@ describe('Bill Runs controller', () => {
 
     describe('when the v2 endpoint is accessed', () => {
       let createStub
+      let guardStub
 
-      before(async () => {
+      beforeEach(async () => {
         createStub = Sinon.stub(CreateBillRunService, 'go')
+        guardStub = Sinon.stub(CreateBillRunV2GuardService, 'go')
       })
 
-      after(async () => {
+      afterEach(async () => {
         createStub.restore()
+        guardStub.restore()
       })
 
       it('defaults the ruleset to `presroc`', async () => {
@@ -134,6 +138,16 @@ describe('Bill Runs controller', () => {
         await server.inject(options(authToken, requestPayload))
 
         expect(createStub.getCall(0).args[0]).to.contain({ ruleset: 'presroc' })
+      })
+
+      it('calls CreateBillRunV2GuardService', async () => {
+        const requestPayload = {
+          region: 'A'
+        }
+
+        await server.inject(options(authToken, requestPayload))
+
+        expect(guardStub.calledOnce).to.be.true()
       })
     })
   })
