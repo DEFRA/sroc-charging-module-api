@@ -14,7 +14,13 @@ const {
 } = require('../services')
 
 class BillRunsController {
-  static async create (req, h) {
+  static async createV2 (req, h) {
+    const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
+
+    return h.response(result).code(201)
+  }
+
+  static async createV3 (req, h) {
     const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
 
     return h.response(result).code(201)

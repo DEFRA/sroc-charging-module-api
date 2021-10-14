@@ -15,12 +15,12 @@ const routes = [
   {
     method: 'POST',
     path: '/v2/{regimeSlug}/bill-runs',
-    handler: BillRunsController.create
+    handler: BillRunsController.createV2
   },
   {
     method: 'POST',
     path: '/v3/{regimeSlug}/bill-runs',
-    handler: BillRunsController.create
+    handler: BillRunsController.createV3
   },
   {
     method: 'PATCH',
