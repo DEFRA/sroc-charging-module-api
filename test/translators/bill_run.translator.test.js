@@ -37,6 +37,12 @@ describe('Bill Run translator', () => {
 
       expect(testTranslator.status).to.be.a.string().and.equal('initialised')
     })
+
+    it("defaults 'ruleset' to 'sroc'", async () => {
+      const testTranslator = new BillRunTranslator(data(payload))
+
+      expect(testTranslator.ruleset).to.be.a.string().and.equal('sroc')
+    })
   })
 
   describe('Validation', () => {
