@@ -18,6 +18,11 @@ const routes = [
     handler: BillRunsController.create
   },
   {
+    method: 'POST',
+    path: '/v3/{regimeSlug}/bill-runs',
+    handler: BillRunsController.create
+  },
+  {
     method: 'PATCH',
     path: '/v2/{regimeSlug}/bill-runs/{billRunId}/generate',
     handler: BillRunsController.generate
