@@ -27,6 +27,7 @@ const {
 } = require('../support/helpers')
 
 const {
+  CreateBillRunService,
   CreateTransactionService,
   GenerateBillRunService,
   SendCustomerFileService,
@@ -112,6 +113,28 @@ describe('Bill Runs controller', () => {
       const response = await server.inject(options(authToken, requestPayload))
 
       expect(response.statusCode).to.equal(422)
+    })
+
+    describe('when the v2 endpoint is accessed', () => {
+      let createStub
+
+      before(async () => {
+        createStub = Sinon.stub(CreateBillRunService, 'go')
+      })
+
+      after(async () => {
+        createStub.restore()
+      })
+
+      it('defaults the ruleset to `presroc`', async () => {
+        const requestPayload = {
+          region: 'A'
+        }
+
+        await server.inject(options(authToken, requestPayload))
+
+        expect(createStub.getCall(0).args[3]).to.equal('presroc')
+      })
     })
   })
 

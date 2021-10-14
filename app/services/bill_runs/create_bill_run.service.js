@@ -21,11 +21,12 @@ const NextBillRunNumberService = require('../next_references/next_bill_run_numbe
  * @param {module:AuthorisedSystemModel} authorisedSystem Instance of `AuthorisedSystemModel' representing the
  *  authenticated user
  * @param {module:RegimeModel} regime Instance of `RegimeModel` representing the regime we are creating the bill run for
+ * @param {string} ruleset The ruleset that applies to the bill run
  *
  * @returns {Object} Details of the newly created bill run record
  */
 class CreateBillRunService {
-  static async go (payload, authorisedSystem, regime) {
+  static async go (payload, authorisedSystem, regime, ruleset) {
     const translator = this._translateRequest(payload, authorisedSystem, regime)
     const billRun = await this._create(translator)
 
