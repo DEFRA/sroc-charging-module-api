@@ -14,7 +14,7 @@ const { GeneralHelper } = require('../support/helpers')
 // Thing under test
 const { BillRunTranslator } = require('../../app/translators')
 
-describe.only('Bill Run translator', () => {
+describe('Bill Run translator', () => {
   const payload = {
     region: 'A'
   }

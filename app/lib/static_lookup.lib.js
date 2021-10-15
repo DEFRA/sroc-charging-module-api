@@ -11,6 +11,10 @@ class StaticLookupLib {
   static get regions () {
     return ['A', 'B', 'E', 'N', 'S', 'T', 'W', 'Y']
   }
+
+  static get rulesets () {
+    return ['presroc', 'sroc']
+  }
 }
 
 module.exports = StaticLookupLib
