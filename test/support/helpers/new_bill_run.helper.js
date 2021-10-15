@@ -44,7 +44,8 @@ class NewBillRunHelper {
   static _defaultBillRun () {
     return {
       region: 'A',
-      status: 'initialised'
+      status: 'initialised',
+      ruleset: 'sroc'
     }
   }
 
