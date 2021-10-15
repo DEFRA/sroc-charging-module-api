@@ -15,7 +15,14 @@ const routes = [
   {
     method: 'POST',
     path: '/v2/{regimeSlug}/bill-runs',
-    handler: BillRunsController.createV2
+    handler: BillRunsController.createV2,
+    options: {
+      app: {
+        deprecation: {
+          successor: '/v3/{regimeSlug}/bill-runs'
+        }
+      }
+    }
   },
   {
     method: 'POST',

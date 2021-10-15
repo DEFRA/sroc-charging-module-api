@@ -149,6 +149,17 @@ describe('Bill Runs controller', () => {
 
         expect(guardStub.calledOnce).to.be.true()
       })
+
+      it('returns deprecation info', async () => {
+        const requestPayload = {
+          region: 'A'
+        }
+
+        const { headers } = await server.inject(options(authToken, requestPayload))
+
+        expect(headers.deprecation).to.be.true()
+        expect(headers.link).to.contain('/v3/{regimeSlug}/bill-runs')
+      })
     })
   })
 
