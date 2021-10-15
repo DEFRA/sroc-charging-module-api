@@ -17,7 +17,8 @@ const { CreateBillRunService } = require('../../../app/services')
 
 describe('Create Bill Run service', () => {
   const payload = {
-    region: 'A'
+    region: 'A',
+    ruleset: 'sroc'
   }
 
   let authorisedSystem
@@ -44,6 +45,10 @@ describe('Create Bill Run service', () => {
 
     it("records the 'regime' it's for", async () => {
       expect(result.regimeId).to.equal(regime.id)
+    })
+
+    it("records the 'ruleset' it's for", async () => {
+      expect(result.ruleset).to.equal(payload.ruleset)
     })
 
     it("records who it was 'created_by'", async () => {
