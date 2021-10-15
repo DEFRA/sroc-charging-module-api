@@ -23,7 +23,8 @@ const {
   RegimeHelper,
   RulesServiceHelper,
   SequenceCounterHelper,
-  TransactionHelper
+  TransactionHelper,
+  NewBillRunHelper
 } = require('../support/helpers')
 
 const {
@@ -41,7 +42,7 @@ const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charg
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 
-describe('Bill Runs controller', () => {
+describe.only('Bill Runs controller', () => {
   const clientID = '1234546789'
   let server
   let authToken
@@ -77,7 +78,28 @@ describe('Bill Runs controller', () => {
     Nock.cleanAll()
   })
 
-  describe('Adding a bill run: POST /v2/{regimeSlug}/bill-runs', () => {
+  describe('Creating a bill run: POST /v2/{regimeSlug}/bill-runs', () => {
+    let requestPayload
+    let createdBillRun
+    let createStub
+    let guardStub
+    let response
+
+    beforeEach(async () => {
+      createdBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { ruleset: 'presroc' })
+      createStub = Sinon.stub(CreateBillRunService, 'go').returns({ billRun: createdBillRun })
+      guardStub = Sinon.stub(CreateBillRunV2GuardService, 'go')
+
+      requestPayload = { region: 'A' }
+
+      response = await server.inject(options(authToken, requestPayload))
+    })
+
+    afterEach(async () => {
+      createStub.restore()
+      guardStub.restore()
+    })
+
     const options = (token, payload) => {
       return {
         method: 'POST',
@@ -87,79 +109,66 @@ describe('Bill Runs controller', () => {
       }
     }
 
-    it("adds a new bill run and returns it's details including the 'id'", async () => {
-      const requestPayload = {
-        region: 'A'
-      }
-
-      await SequenceCounterHelper.addSequenceCounter(regime.id, requestPayload.region)
-
-      const response = await server.inject(options(authToken, requestPayload))
+    it('calls CreateBillRunService and returns the created bill run', async () => {
       const responsePayload = JSON.parse(response.payload)
       const { billRun } = responsePayload
 
       expect(response.statusCode).to.equal(201)
-      expect(billRun.id).to.exist()
-      expect(billRun.billRunNumber).to.exist()
-      expect(billRun).to.have.length(2)
+      expect(createStub.calledOnce).to.be.true()
+      expect(billRun.id).to.equal(createdBillRun.id)
     })
 
-    it('will not add a bill run with invalid data', async () => {
-      const requestPayload = {
-        region: 'Z'
+    it('defaults the ruleset to `presroc`', async () => {
+      expect(createStub.firstCall.firstArg).to.contain({ ruleset: 'presroc' })
+    })
+
+    it('calls CreateBillRunV2GuardService', async () => {
+      expect(guardStub.calledOnce).to.be.true()
+    })
+
+    it('returns deprecation info', async () => {
+      const { headers } = response
+
+      expect(headers.deprecation).to.be.true()
+      expect(headers.link).to.contain('/v3/{regimeSlug}/bill-runs')
+    })
+  })
+
+  describe('Creating a bill run: POST /v3/{regimeSlug}/bill-runs', () => {
+    let requestPayload
+    let createdBillRun
+    let createStub
+    let response
+
+    beforeEach(async () => {
+      createdBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { ruleset: 'sroc' })
+      createStub = Sinon.stub(CreateBillRunService, 'go').returns({ billRun: createdBillRun })
+
+      requestPayload = { region: 'A' }
+
+      response = await server.inject(options(authToken, requestPayload))
+    })
+
+    afterEach(async () => {
+      createStub.restore()
+    })
+
+    const options = (token, payload) => {
+      return {
+        method: 'POST',
+        url: '/v3/wrls/bill-runs',
+        headers: { authorization: `Bearer ${token}` },
+        payload: payload
       }
+    }
 
-      await SequenceCounterHelper.addSequenceCounter(regime.id, requestPayload.region)
+    it('calls CreateBillRunService and returns the created bill run', async () => {
+      const responsePayload = JSON.parse(response.payload)
+      const { billRun } = responsePayload
 
-      const response = await server.inject(options(authToken, requestPayload))
-
-      expect(response.statusCode).to.equal(422)
-    })
-
-    describe('when the v2 endpoint is accessed', () => {
-      let createStub
-      let guardStub
-
-      beforeEach(async () => {
-        createStub = Sinon.stub(CreateBillRunService, 'go')
-        guardStub = Sinon.stub(CreateBillRunV2GuardService, 'go')
-      })
-
-      afterEach(async () => {
-        createStub.restore()
-        guardStub.restore()
-      })
-
-      it('defaults the ruleset to `presroc`', async () => {
-        const requestPayload = {
-          region: 'A'
-        }
-
-        await server.inject(options(authToken, requestPayload))
-
-        expect(createStub.getCall(0).args[0]).to.contain({ ruleset: 'presroc' })
-      })
-
-      it('calls CreateBillRunV2GuardService', async () => {
-        const requestPayload = {
-          region: 'A'
-        }
-
-        await server.inject(options(authToken, requestPayload))
-
-        expect(guardStub.calledOnce).to.be.true()
-      })
-
-      it('returns deprecation info', async () => {
-        const requestPayload = {
-          region: 'A'
-        }
-
-        const { headers } = await server.inject(options(authToken, requestPayload))
-
-        expect(headers.deprecation).to.be.true()
-        expect(headers.link).to.contain('/v3/{regimeSlug}/bill-runs')
-      })
+      expect(response.statusCode).to.equal(201)
+      expect(createStub.calledOnce).to.be.true()
+      expect(billRun.id).to.equal(createdBillRun.id)
     })
   })
 
