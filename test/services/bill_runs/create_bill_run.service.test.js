@@ -90,6 +90,19 @@ describe('Create Bill Run service', () => {
           expect(err).to.be.an.error()
         })
       })
+
+      describe('contains an invalid ruleset', () => {
+        const invalidPayload = {
+          region: 'A',
+          ruleset: 'INVALID'
+        }
+
+        it('throws an error', async () => {
+          const err = await expect(CreateBillRunService.go(invalidPayload, authorisedSystem, regime)).to.reject(ValidationError)
+
+          expect(err).to.be.an.error()
+        })
+      })
     })
 
     describe("because 'authorisedSystem' is not specified", () => {
