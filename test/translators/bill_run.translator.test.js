@@ -14,7 +14,7 @@ const { GeneralHelper } = require('../support/helpers')
 // Thing under test
 const { BillRunTranslator } = require('../../app/translators')
 
-describe('Bill Run translator', () => {
+describe.only('Bill Run translator', () => {
   const payload = {
     region: 'A'
   }
@@ -77,6 +77,17 @@ describe('Bill Run translator', () => {
         it('throws an error', async () => {
           const invalidPayload = {
             region: 'Z'
+          }
+
+          expect(() => new BillRunTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
+      describe("because the 'ruleset' is unrecognised", () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            region: 'A',
+            ruleset: 'INVALID'
           }
 
           expect(() => new BillRunTranslator(data(invalidPayload))).to.throw(ValidationError)

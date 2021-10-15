@@ -2,6 +2,7 @@
 
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
+const StaticLookupLib = require('../lib/static_lookup.lib')
 
 class BillRunTranslator extends BaseTranslator {
   _translations () {
@@ -18,14 +19,10 @@ class BillRunTranslator extends BaseTranslator {
     return Joi.object({
       authorisedSystemId: Joi.string().required(),
       regimeId: Joi.string().required(),
-      region: Joi.string().uppercase().valid(...this._validRegions()).required(),
+      region: Joi.string().uppercase().valid(...StaticLookupLib.regions).required(),
       status: Joi.string().default('initialised'),
-      ruleset: Joi.string().default('sroc')
+      ruleset: Joi.string().valid(...StaticLookupLib.rulesets).default('sroc')
     })
-  }
-
-  _validRegions () {
-    return ['A', 'B', 'E', 'N', 'S', 'T', 'W', 'Y']
   }
 }
 
