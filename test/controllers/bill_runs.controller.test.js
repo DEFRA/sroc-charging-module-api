@@ -134,7 +134,7 @@ describe('Bill Runs controller', () => {
     })
   })
 
-  describe.only('Creating a bill run: POST /v3/{regimeSlug}/bill-runs', () => {
+  describe('Creating a bill run: POST /v3/{regimeSlug}/bill-runs', () => {
     let requestPayload
     let dummyBillRun
     let createStub
