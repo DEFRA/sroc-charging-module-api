@@ -27,7 +27,7 @@ const routes = [
   {
     method: 'POST',
     path: '/v3/{regimeSlug}/bill-runs',
-    handler: BillRunsController.createV3
+    handler: BillRunsController.create
   },
   {
     method: 'PATCH',
