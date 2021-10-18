@@ -19,10 +19,18 @@ class BillRunTranslator extends BaseTranslator {
     return Joi.object({
       authorisedSystemId: Joi.string().required(),
       regimeId: Joi.string().required(),
-      region: Joi.string().uppercase().valid(...StaticLookupLib.regions).required(),
+      region: Joi.string().uppercase().valid(...this._validRegions()).required(),
       status: Joi.string().default('initialised'),
-      ruleset: Joi.string().valid(...StaticLookupLib.rulesets).default('sroc')
+      ruleset: Joi.string().valid(...this._validRulesets()).default('sroc')
     })
+  }
+
+  _validRegions () {
+    return StaticLookupLib.regions
+  }
+
+  _validRulesets () {
+    return StaticLookupLib.rulesets
   }
 }
 
