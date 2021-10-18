@@ -16,15 +16,14 @@ const { init } = require('../../app/server')
 const {
   AuthorisationHelper,
   AuthorisedSystemHelper,
-  BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
-  InvoiceHelper,
+  NewBillRunHelper,
+  NewInvoiceHelper,
+  NewTransactionHelper,
   RegimeHelper,
   RulesServiceHelper,
-  SequenceCounterHelper,
-  TransactionHelper,
-  NewBillRunHelper
+  SequenceCounterHelper
 } = require('../support/helpers')
 
 const {
@@ -41,6 +40,7 @@ const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charg
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
+const { BillRunModel } = require('../../app/models')
 
 describe('Bill Runs controller', () => {
   const clientID = '1234546789'
@@ -184,7 +184,7 @@ describe('Bill Runs controller', () => {
     }
 
     beforeEach(async () => {
-      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
 
       // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
       // the valid tests we can use it straight as
@@ -207,7 +207,7 @@ describe('Bill Runs controller', () => {
     describe('When the request is invalid', () => {
       describe('because the summary has already been generated', () => {
         it('returns error status 409', async () => {
-          const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, payload.region, 'generating')
+          const generatingBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { region: payload.region, status: 'generating' })
 
           const response = await server.inject(options(authToken, generatingBillRun.id))
           const responsePayload = JSON.parse(response.payload)
@@ -230,7 +230,7 @@ describe('Bill Runs controller', () => {
 
     describe('When the request is valid', () => {
       it('returns success status 200', async () => {
-        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+        billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
 
         const response = await server.inject(options(authToken, billRun.id))
         const responsePayload = JSON.parse(response.payload)
@@ -265,7 +265,7 @@ describe('Bill Runs controller', () => {
 
     describe('When the request is valid', () => {
       it('returns success status 200', async () => {
-        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+        billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
 
         const response = await server.inject(options(authToken, billRun.id))
         const responsePayload = JSON.parse(response.payload)
@@ -299,14 +299,13 @@ describe('Bill Runs controller', () => {
     }
 
     beforeEach(async () => {
-      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      // We need the bill run to contain a transaction so it can be generated before it's approved
+      const transaction = await NewTransactionHelper.create()
+      billRun = await BillRunModel.query().findById(transaction.billRunId)
     })
 
     describe('When the request is valid', () => {
       it('returns success status 204', async () => {
-        // We need a bill run with at least one transaction to allow it to be generated. Once 'generated', the bill run
-        // can be approved
-        await TransactionHelper.addTransaction(billRun.id)
         await GenerateBillRunService.go(billRun)
 
         const response = await server.inject(options(authToken, billRun.id))
@@ -345,10 +344,10 @@ describe('Bill Runs controller', () => {
       sendCustomerFileStub = Sinon.stub(SendCustomerFileService, 'go')
       sendTransactionFileStub = Sinon.stub(SendTransactionFileService, 'go')
 
-      billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
       await SequenceCounterHelper.addSequenceCounter(regime.id, billRun.region)
       // A bill run needs at least one billable invoice for a file reference to be generated
-      await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 501, 0) // standard debit
+      await NewInvoiceHelper.create(billRun)
     })
 
     afterEach(async () => {
@@ -408,7 +407,7 @@ describe('Bill Runs controller', () => {
 
     describe('When the request is valid', () => {
       beforeEach(async () => {
-        billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+        billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
       })
 
       it('returns success status 204', async () => {
@@ -432,7 +431,7 @@ describe('Bill Runs controller', () => {
 
       describe('because the bill run has been billed', () => {
         beforeEach(async () => {
-          billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'billed')
+          billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { region: 'A', status: 'billed' })
         })
 
         it('returns error status 409', async () => {
