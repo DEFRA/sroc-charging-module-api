@@ -37,6 +37,12 @@ describe('Bill Run translator', () => {
 
       expect(testTranslator.status).to.be.a.string().and.equal('initialised')
     })
+
+    it("defaults 'ruleset' to 'sroc'", async () => {
+      const testTranslator = new BillRunTranslator(data(payload))
+
+      expect(testTranslator.ruleset).to.be.a.string().and.equal('sroc')
+    })
   })
 
   describe('Validation', () => {
@@ -71,6 +77,17 @@ describe('Bill Run translator', () => {
         it('throws an error', async () => {
           const invalidPayload = {
             region: 'Z'
+          }
+
+          expect(() => new BillRunTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
+      describe("because the 'ruleset' is unrecognised", () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            region: 'A',
+            ruleset: 'INVALID'
           }
 
           expect(() => new BillRunTranslator(data(invalidPayload))).to.throw(ValidationError)

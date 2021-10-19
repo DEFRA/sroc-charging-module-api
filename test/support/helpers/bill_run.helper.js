@@ -10,16 +10,18 @@ class BillRunHelper {
    * @param {string} regimeId Id to use for the `regime_id` field
    * @param {string} [region] Region to use. Defaults to 'A'
    * @param {string} [status] Status to use. Defaults to 'initialised'
+   * @param {string} [ruleset] Ruleset to use. Defaults to 'sroc'
    *
    * @returns {module:BillRunModel} The newly created instance of `BillRunModel`.
    */
-  static addBillRun (authorisedSystemId, regimeId, region = 'A', status = 'initialised') {
+  static addBillRun (authorisedSystemId, regimeId, region = 'A', status = 'initialised', ruleset = 'sroc') {
     return BillRunModel.query()
       .insert({
         createdBy: authorisedSystemId,
-        regimeId: regimeId,
-        region: region,
-        status: status
+        regimeId,
+        region,
+        status,
+        ruleset
       })
       .returning('*')
   }

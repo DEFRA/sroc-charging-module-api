@@ -4,6 +4,7 @@ const {
   ApproveBillRunService,
   BillRunStatusService,
   CreateBillRunService,
+  CreateBillRunV2GuardService,
   DeleteBillRunService,
   GenerateBillRunService,
   GenerateBillRunValidationService,
@@ -14,6 +15,16 @@ const {
 } = require('../services')
 
 class BillRunsController {
+  static async createV2 (req, h) {
+    // Validate the v2 request and set v2 default
+    await CreateBillRunV2GuardService.go(req.payload)
+    req.payload.ruleset = 'presroc'
+
+    const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
+
+    return h.response(result).code(201)
+  }
+
   static async create (req, h) {
     const result = await CreateBillRunService.go(req.payload, req.auth.credentials.user, req.app.regime)
 

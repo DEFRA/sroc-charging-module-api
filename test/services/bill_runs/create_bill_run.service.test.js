@@ -17,7 +17,8 @@ const { CreateBillRunService } = require('../../../app/services')
 
 describe('Create Bill Run service', () => {
   const payload = {
-    region: 'A'
+    region: 'A',
+    ruleset: 'sroc'
   }
 
   let authorisedSystem
@@ -44,6 +45,10 @@ describe('Create Bill Run service', () => {
 
     it("records the 'regime' it's for", async () => {
       expect(result.regimeId).to.equal(regime.id)
+    })
+
+    it("records the 'ruleset' it's for", async () => {
+      expect(result.ruleset).to.equal(payload.ruleset)
     })
 
     it("records who it was 'created_by'", async () => {
@@ -77,6 +82,19 @@ describe('Create Bill Run service', () => {
       describe('contains an empty region', () => {
         const invalidPayload = {
           region: ''
+        }
+
+        it('throws an error', async () => {
+          const err = await expect(CreateBillRunService.go(invalidPayload, authorisedSystem, regime)).to.reject(ValidationError)
+
+          expect(err).to.be.an.error()
+        })
+      })
+
+      describe('contains an invalid ruleset', () => {
+        const invalidPayload = {
+          region: 'A',
+          ruleset: 'INVALID'
         }
 
         it('throws an error', async () => {
