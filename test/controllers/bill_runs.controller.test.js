@@ -80,14 +80,14 @@ describe('Bill Runs controller', () => {
 
   describe('Creating a bill run: POST /v2/{regimeSlug}/bill-runs', () => {
     let requestPayload
-    let createdBillRun
+    let dummyBillRun
     let createStub
     let guardStub
     let response
 
     beforeEach(async () => {
-      createdBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { ruleset: 'presroc' })
-      createStub = Sinon.stub(CreateBillRunService, 'go').returns({ billRun: createdBillRun })
+      dummyBillRun = { billRun: { id: GeneralHelper.uuid4() } }
+      createStub = Sinon.stub(CreateBillRunService, 'go').returns({ billRun: dummyBillRun })
       guardStub = Sinon.stub(CreateBillRunV2GuardService, 'go')
 
       requestPayload = { region: 'A' }
@@ -115,7 +115,7 @@ describe('Bill Runs controller', () => {
 
       expect(response.statusCode).to.equal(201)
       expect(createStub.calledOnce).to.be.true()
-      expect(billRun.id).to.equal(createdBillRun.id)
+      expect(billRun.id).to.equal(dummyBillRun.id)
     })
 
     it('defaults the ruleset to `presroc`', async () => {
