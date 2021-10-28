@@ -99,33 +99,74 @@ class CalculateChargeTranslator extends BaseTranslator {
   }
 
   _schema () {
-    const validDateFormats = ['DD-MMM-YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD', 'DD/MM/YYYY', 'YYYY/MM/DD']
+    const rules = this._rules()
 
     return Joi.object({
+      authorisedDays: rules.authorisedDays,
+      billableDays: rules.billableDays,
+      compensationCharge: rules.compensationCharge,
+      credit: rules.credit,
+      eiucSource: rules.eiucSource,
+      loss: rules.loss,
+      periodStart: rules.periodStart,
+      periodEnd: rules.periodEnd,
+      regionalChargingArea: rules.regionalChargingArea,
+      ruleset: rules.ruleset,
+      season: rules.season,
+      section126Factor: rules.section126Factor,
+      section127Agreement: rules.section127Agreement,
+      section130Agreement: rules.section130Agreement,
+      source: rules.source,
+      twoPartTariff: rules.twoPartTariff,
+      volume: rules.volume,
+      waterUndertaker: rules.waterUndertaker,
+      regime: rules.regime
+    })
+  }
+
+  _rules () {
+    const validDateFormats = ['DD-MMM-YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD', 'DD/MM/YYYY', 'YYYY/MM/DD']
+
+    return {
       authorisedDays: Joi.number().integer().min(0).max(366).required(),
       billableDays: Joi.number().integer().min(0).max(366).required(),
       compensationCharge: Joi.boolean().required(),
       credit: Joi.boolean().required(),
+
       // validated in the rules service
       eiucSource: Joi.when('compensationCharge', { is: true, then: Joi.string().required() }),
-      loss: Joi.string().required(), // validated in rules service
+
+      // validated in the rules service
+      loss: Joi.string().required(),
+
       periodStart: Joi.date().format(validDateFormats).max(Joi.ref('periodEnd')).min('01-APR-2014').required(),
       periodEnd: Joi.date().format(validDateFormats).required(),
-      regionalChargingArea: Joi.string().required(), // validated in the rules service
+
+      // validated in the rules service
+      regionalChargingArea: Joi.string().required(),
+
       // Set a new field called ruleset. This will be used to determine which ruleset to query in the rules service. If
       // the data comes from a calculate charge request we deafult it. If the data comes from a create transaction
       // request it will already be populated
       ruleset: Joi.string().default('presroc'),
-      season: Joi.string().required(), // validated in rules service
+
+      // validated in rules service
+      season: Joi.string().required(),
+
       section126Factor: Joi.number().allow(null).empty(null).default(1.0),
       section127Agreement: Joi.boolean().required(),
       section130Agreement: Joi.boolean().required(),
-      source: Joi.string().required(), // validated in rules service
+
+      // validated in rules service
+      source: Joi.string().required(),
+
       twoPartTariff: Joi.boolean().required(),
       volume: Joi.number().min(0).required(),
       waterUndertaker: Joi.boolean().when('compensationCharge', { is: true, then: Joi.required() }),
-      regime: Joi.string().required() // needed to determine which endpoints to call in the rules service
-    })
+
+      // needed to determine which endpoints to call in the rules service
+      regime: Joi.string().required()
+    }
   }
 
   _translations () {
