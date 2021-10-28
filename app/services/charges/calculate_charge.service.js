@@ -4,7 +4,7 @@
  * @module CalculateChargeService
  */
 
-const { CalculateChargeTranslator, RulesServiceTranslator } = require('../../translators')
+const { CalculatePresrocChargeTranslator, RulesServiceTranslator } = require('../../translators')
 const { CalculateChargePresenter, RulesServicePresenter } = require('../../presenters')
 
 const RequestRulesServiceCharge = require('./request_rules_service_charge.service')
@@ -39,7 +39,7 @@ class CalculateChargeService {
   }
 
   static _translateRequest (payload, regime) {
-    return new CalculateChargeTranslator({
+    return new CalculatePresrocChargeTranslator({
       ...payload,
       regime: regime.slug
     })
