@@ -1,5 +1,21 @@
 # Changelog
 
+## [v0.14.2](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.14.2) (2021-10-28)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.14.1...v0.14.2)
+
+**Implemented enhancements:**
+
+- Add SRoC support to Create Bill Run [\#587](https://github.com/DEFRA/sroc-charging-module-api/pull/587) ([StuAA78](https://github.com/StuAA78))
+
+**Dependency updates:**
+
+- Bump @aws-sdk/client-s3 from 3.37.0 to 3.38.0 [\#591](https://github.com/DEFRA/sroc-charging-module-api/pull/591) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nock from 13.1.3 to 13.1.4 [\#590](https://github.com/DEFRA/sroc-charging-module-api/pull/590) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nodemon from 2.0.13 to 2.0.14 [\#589](https://github.com/DEFRA/sroc-charging-module-api/pull/589) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.36.1 to 3.37.0 [\#588](https://github.com/DEFRA/sroc-charging-module-api/pull/588) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.36.0 to 3.36.1 [\#586](https://github.com/DEFRA/sroc-charging-module-api/pull/586) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.14.1](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.14.1) (2021-10-12)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.14.0...v0.14.1)
