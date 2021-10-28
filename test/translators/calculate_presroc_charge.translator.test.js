@@ -29,7 +29,8 @@ describe('Calculate Presroc Charge translator', () => {
     regionalChargingArea: 'Midlands',
     section126Factor: 1,
     section127Agreement: false,
-    section130Agreement: false
+    section130Agreement: false,
+    ruleset: 'presroc'
   }
 
   const data = (payload, regime = 'wrls') => {
@@ -48,12 +49,6 @@ describe('Calculate Presroc Charge translator', () => {
       const testTranslator = new CalculatePresrocChargeTranslator(data(empty126FactorPayload))
 
       expect(testTranslator.regimeValue11).to.be.a.number().and.equal(1.0)
-    })
-
-    it("defaults 'ruleset' to 'presroc'", async () => {
-      const testTranslator = new CalculatePresrocChargeTranslator(data(payload))
-
-      expect(testTranslator.ruleset).to.be.a.string().and.equal('presroc')
     })
   })
 
