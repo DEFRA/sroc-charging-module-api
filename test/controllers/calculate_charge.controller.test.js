@@ -26,6 +26,7 @@ const { presroc: fixtures } = require('../support/fixtures/calculate_charge')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
+const { ValidateChargeService } = require('../../app/services')
 
 describe('Calculate charge controller', () => {
   const clientID = '1234546789'
@@ -91,6 +92,35 @@ describe('Calculate charge controller', () => {
 
         expect(response.statusCode).to.equal(422)
       })
+    })
+  })
+
+  describe('Calculating a charge: POST /v3/{regimeSlug}/calculate-charge', () => {
+    let validateStub
+
+    beforeEach(async () => {
+      validateStub = Sinon.stub(ValidateChargeService, 'go').returns({ response: true })
+    })
+
+    const options = (token, payload) => {
+      return {
+        method: 'POST',
+        url: '/v3/wrls/calculate-charge',
+        headers: { authorization: `Bearer ${token}` },
+        payload: payload
+      }
+    }
+
+    it('calls ValidateChargeService with the payload and returns its response', async () => {
+      const requestPayload = { request: true }
+      const response = await server.inject(options(authToken, requestPayload))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(validateStub.calledOnce).to.be.true()
+      expect(validateStub.firstCall.firstArg).to.equal(requestPayload)
+      expect(response.statusCode).to.equal(200)
+      expect(responsePayload.response).to.exist()
+      expect(responsePayload.response).to.be.true()
     })
   })
 })

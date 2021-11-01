@@ -66,6 +66,7 @@ const TransformTableToFileService = require('./files/transform_table_to_file.ser
 const UpdateAuthorisedSystemService = require('./authorised_systems/update_authorised_system.service')
 const ValidateBillRunLicenceService = require('./licences/validate_bill_run_licence.service')
 const ValidateBillRunRegion = require('./bill_runs/validate_bill_run_region.service')
+const ValidateChargeService = require('./charges/validate_charge.service')
 const ViewAuthorisedSystemService = require('./authorised_systems/view_authorised_system.service')
 const ViewBillRunService = require('./bill_runs/view_bill_run.service')
 const ViewCustomerFileService = require('./files/customers/view_customer_file.service')
@@ -140,6 +141,7 @@ module.exports = {
   UpdateAuthorisedSystemService,
   ValidateBillRunLicenceService,
   ValidateBillRunRegion,
+  ValidateChargeService,
   ViewAuthorisedSystemService,
   ViewBillRunService,
   ViewCustomerFileService,
