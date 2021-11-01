@@ -356,6 +356,17 @@ describe('Calculate Presroc Charge translator', () => {
           expect(() => new CalculatePresrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
+
+      describe('because ruleset is not `presroc`', () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            ruleset: 'INVALID'
+          }
+
+          expect(() => new CalculatePresrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
     })
   })
 })

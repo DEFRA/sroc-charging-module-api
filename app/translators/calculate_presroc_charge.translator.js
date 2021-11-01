@@ -128,6 +128,8 @@ class CalculatePresrocChargeTranslator extends BaseTranslator {
     const validDateFormats = ['DD-MMM-YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD', 'DD/MM/YYYY', 'YYYY/MM/DD']
 
     return {
+      ruleset: Joi.string().valid('presroc').required(),
+
       authorisedDays: Joi.number().integer().min(0).max(366).required(),
       billableDays: Joi.number().integer().min(0).max(366).required(),
       compensationCharge: Joi.boolean().required(),
@@ -144,10 +146,6 @@ class CalculatePresrocChargeTranslator extends BaseTranslator {
 
       // validated in the rules service
       regionalChargingArea: Joi.string().required(),
-
-      // Set a new field called ruleset. This will be used to determine which ruleset to query in the rules service. It
-      // will already have been validated in order to determine which ruleset charge translator to use.
-      ruleset: Joi.string().required(),
 
       // validated in rules service
       season: Joi.string().required(),
