@@ -11,6 +11,11 @@ const routes = [
   {
     method: 'POST',
     path: '/v2/{regimeSlug}/calculate-charge',
+    handler: CalculateChargeController.calculateV2
+  },
+  {
+    method: 'POST',
+    path: '/v3/{regimeSlug}/calculate-charge',
     handler: CalculateChargeController.calculate
   }
 ]
