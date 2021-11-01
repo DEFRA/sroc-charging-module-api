@@ -15,5 +15,6 @@
   "regionalChargingArea": "Midlands",
   "section126Factor": 1,
   "section127Agreement": true,
-  "section130Agreement": true
+  "section130Agreement": true,
+  "ruleset": "presroc"
 }
