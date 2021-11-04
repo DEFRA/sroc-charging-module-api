@@ -9,7 +9,7 @@ const Boom = require('@hapi/boom')
 const { CalculatePresrocChargeTranslator, RulesServiceTranslator: RulesServicePresrocTranslator } = require('../../translators')
 const { CalculateChargePresenter: CalculateChargePresrocPresenter, RulesServicePresenter: RulesServicePresrocPresenter } = require('../../presenters')
 
-const RequestRulesServiceCharge = require('./request_rules_service_charge.service')
+const RequestRulesServiceChargeService = require('./request_rules_service_charge.service')
 
 /**
  * Handles calling the rules service and returning a response when calculating a charge
@@ -65,7 +65,7 @@ class CalculateChargeService {
 
   static async _calculateCharge (translator, RulesServicePresenter, RulesServiceTranslator) {
     const presenter = new RulesServicePresenter(translator)
-    const result = await RequestRulesServiceCharge.go(presenter.go())
+    const result = await RequestRulesServiceChargeService.go(presenter.go())
 
     return new RulesServiceTranslator(result)
   }
