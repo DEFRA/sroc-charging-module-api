@@ -4,8 +4,10 @@
  * @module CalculateChargeService
  */
 
-const { CalculatePresrocChargeTranslator, RulesServiceTranslator } = require('../../translators')
-const { CalculateChargePresenter, RulesServicePresenter } = require('../../presenters')
+const Boom = require('@hapi/boom')
+
+const { CalculatePresrocChargeTranslator, RulesServiceTranslator: RulesServicePresrocTranslator } = require('../../translators')
+const { CalculateChargePresenter: CalculateChargePresrocPresenter, RulesServicePresenter: RulesServicePresrocPresenter } = require('../../presenters')
 
 const RequestRulesServiceCharge = require('./request_rules_service_charge.service')
 
@@ -29,23 +31,39 @@ class CalculateChargeService {
    * the rules service response
    */
   static async go (payload, regime, presenterResponse = true) {
-    const translator = this._translateRequest(payload, regime)
-    const calculatedCharge = await this._calculateCharge(translator)
+    let chargeTranslator
+    let rulesServicePresenter
+    let rulesServiceTranslator
+    let calculateChargePresenter
+
+    switch (payload.ruleset) {
+      case 'presroc':
+        chargeTranslator = CalculatePresrocChargeTranslator
+        rulesServicePresenter = RulesServicePresrocPresenter
+        rulesServiceTranslator = RulesServicePresrocTranslator
+        calculateChargePresenter = CalculateChargePresrocPresenter
+        break
+      default:
+        throw Boom.badData('Invalid ruleset')
+    }
+
+    const translator = this._translateRequest(payload, regime, chargeTranslator)
+    const calculatedCharge = await this._calculateCharge(translator, rulesServicePresenter, rulesServiceTranslator)
 
     // We merge the translator and the rules service result and in preparation for generating the response.
     this._applyCalculatedCharge(translator, calculatedCharge)
 
-    return this._response(translator, presenterResponse)
+    return this._response(translator, presenterResponse, calculateChargePresenter)
   }
 
-  static _translateRequest (payload, regime) {
-    return new CalculatePresrocChargeTranslator({
+  static _translateRequest (payload, regime, ChargeTranslator) {
+    return new ChargeTranslator({
       ...payload,
       regime: regime.slug
     })
   }
 
-  static async _calculateCharge (translator) {
+  static async _calculateCharge (translator, RulesServicePresenter, RulesServiceTranslator) {
     const presenter = new RulesServicePresenter(translator)
     const result = await RequestRulesServiceCharge.go(presenter.go())
 
@@ -93,7 +111,7 @@ class CalculateChargeService {
    * or a response parsed and formatted by `CalculateChargePresenter` and intended as the response for the calculate
    * charge endpoint.
    */
-  static _response (charge, presenterResponse) {
+  static _response (charge, presenterResponse, CalculateChargePresenter) {
     if (presenterResponse) {
       return new CalculateChargePresenter(charge).go()
     }
