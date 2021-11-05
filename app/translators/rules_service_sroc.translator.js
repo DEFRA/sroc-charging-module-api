@@ -84,7 +84,7 @@ class RulesServicePresrocTranslator extends BaseTranslator {
   /**
    * Converts a string percentage into a value.
    *
-   * The Rules Service returns a percentage as a string in the form `50%`. We convert this to a number `0.5`.
+   * The Rules Service returns a percentage as a string in the form `50%`. We convert this to a number `50`.
    */
   _convertPercentage (percentageString) {
     // parseFloat() will parse the passed-in string up to the first non-number character so this will give us the number
@@ -96,9 +96,7 @@ class RulesServicePresrocTranslator extends BaseTranslator {
     // use Joi to confirm that the value we've ended up with is actually a number.
     Joi.assert(percentageFloat, Joi.number())
 
-    // If we received `50%` then percentageFloat will currently be `50`. We divide by 100 to give the correct decimal
-    // value then return it.
-    return percentageFloat / 100
+    return percentageFloat
   }
 }
 

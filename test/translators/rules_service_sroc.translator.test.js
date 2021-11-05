@@ -14,7 +14,7 @@ const rulesServiceFixture = require('../support/fixtures/calculate_charge/sroc/s
 // Thing under test
 const { RulesServiceSrocTranslator } = require('../../app/translators')
 
-describe.only('Rules Service Sroc translator', () => {
+describe('Rules Service Sroc translator', () => {
   let data
 
   beforeEach(async () => {
@@ -121,7 +121,7 @@ describe.only('Rules Service Sroc translator', () => {
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
-      expect(testTranslator.compensationChargePercent).to.equal(0.5)
+      expect(testTranslator.compensationChargePercent).to.equal(50)
     })
   })
 })
