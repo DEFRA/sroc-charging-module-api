@@ -6,7 +6,7 @@
 
 const Boom = require('@hapi/boom')
 
-const { CalculatePresrocChargeTranslator, RulesServicePresrocTranslator } = require('../../translators')
+const { CalculateChargePresrocTranslator, RulesServicePresrocTranslator } = require('../../translators')
 const { CalculateChargePresrocPresenter, RulesServicePresrocPresenter } = require('../../presenters')
 
 const RequestRulesServiceChargeService = require('./request_rules_service_charge.service')
@@ -38,7 +38,7 @@ class CalculateChargeService {
 
     switch (payload.ruleset) {
       case 'presroc':
-        calculateChargeTranslator = CalculatePresrocChargeTranslator
+        calculateChargeTranslator = CalculateChargePresrocTranslator
         rulesServicePresenter = RulesServicePresrocPresenter
         rulesServiceTranslator = RulesServicePresrocTranslator
         calculateChargePresenter = CalculateChargePresrocPresenter

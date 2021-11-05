@@ -1,14 +1,14 @@
 'use strict'
 
 /**
- * @module CalculatePresrocChargeTranslator
+ * @module CalculateChargeSrocTranslator
  */
 
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi').extend(require('@joi/date'))
 const Boom = require('@hapi/boom')
 
-class CalculatePresrocChargeTranslator extends BaseTranslator {
+class CalculateChargePresrocTranslator extends BaseTranslator {
   constructor (data) {
     super(data)
 
@@ -155,4 +155,4 @@ class CalculatePresrocChargeTranslator extends BaseTranslator {
   }
 }
 
-module.exports = CalculatePresrocChargeTranslator
+module.exports = CalculateChargePresrocTranslator

@@ -6,7 +6,7 @@
 
 const Boom = require('@hapi/boom')
 
-const { CalculatePresrocChargeTranslator, CalculateSrocChargeTranslator } = require('../../translators')
+const { CalculateChargePresrocTranslator, CalculateChargeSrocTranslator } = require('../../translators')
 const { JsonPresenter } = require('../../presenters')
 
 class ValidateChargeService {
@@ -26,10 +26,10 @@ class ValidateChargeService {
 
     switch (payload.ruleset) {
       case 'sroc':
-        TranslatorToUse = CalculateSrocChargeTranslator
+        TranslatorToUse = CalculateChargeSrocTranslator
         break
       case 'presroc':
-        TranslatorToUse = CalculatePresrocChargeTranslator
+        TranslatorToUse = CalculateChargePresrocTranslator
         break
       default:
         throw Boom.badData('Invalid ruleset')

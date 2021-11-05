@@ -8,7 +8,7 @@ const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Things we need to stub
-const { CalculatePresrocChargeTranslator, CalculateSrocChargeTranslator } = require('../../../app/translators')
+const { CalculateChargePresrocTranslator, CalculateChargeSrocTranslator } = require('../../../app/translators')
 
 // Thing under test
 const { ValidateChargeService } = require('../../../app/services')
@@ -25,18 +25,18 @@ describe('Validate Charge service', () => {
   })
 
   describe('When the request is for sroc', () => {
-    it('calls CalculateSrocChargeTranslator', async () => {
+    it('calls CalculateChargeSrocTranslator', async () => {
       await ValidateChargeService.go({ ruleset: 'sroc' })
 
-      expect(translateStub.calledWith(CalculateSrocChargeTranslator)).to.be.true()
+      expect(translateStub.calledWith(CalculateChargeSrocTranslator)).to.be.true()
     })
   })
 
   describe('When the request is for presroc', () => {
-    it('calls CalculatePresrocChargeTranslator', async () => {
+    it('calls CalculateChargePresrocTranslator', async () => {
       await ValidateChargeService.go({ ruleset: 'presroc' })
 
-      expect(translateStub.calledWith(CalculatePresrocChargeTranslator)).to.be.true()
+      expect(translateStub.calledWith(CalculateChargePresrocTranslator)).to.be.true()
     })
   })
 
