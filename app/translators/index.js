@@ -7,6 +7,7 @@ const CalculateChargePresrocTranslator = require('./calculate_charge_presroc.tra
 const CalculateChargeSrocTranslator = require('./calculate_charge_sroc.translator')
 const CustomerTranslator = require('./customer.translator')
 const RulesServicePresrocTranslator = require('./rules_service_presroc.translator')
+const RulesServiceSrocTranslator = require('./rules_service_sroc.translator')
 const TransactionTranslator = require('./transaction.translator')
 
 module.exports = {
@@ -17,5 +18,6 @@ module.exports = {
   CustomerTranslator,
   BillRunTranslator,
   RulesServicePresrocTranslator,
+  RulesServiceSrocTranslator,
   TransactionTranslator
 }
