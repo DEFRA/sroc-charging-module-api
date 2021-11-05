@@ -6,8 +6,8 @@
 
 const Boom = require('@hapi/boom')
 
-const { CalculatePresrocChargeTranslator, RulesServiceTranslator: RulesServicePresrocTranslator } = require('../../translators')
-const { CalculateChargePresenter: CalculateChargePresrocPresenter, RulesServicePresenter: RulesServicePresrocPresenter } = require('../../presenters')
+const { CalculatePresrocChargeTranslator, RulesServicePresrocTranslator } = require('../../translators')
+const { CalculateChargePresrocPresenter, RulesServicePresrocPresenter } = require('../../presenters')
 
 const RequestRulesServiceChargeService = require('./request_rules_service_charge.service')
 
@@ -31,14 +31,14 @@ class CalculateChargeService {
    * the rules service response
    */
   static async go (payload, regime, presenterResponse = true) {
-    let chargeTranslator
+    let calculateChargeTranslator
     let rulesServicePresenter
     let rulesServiceTranslator
     let calculateChargePresenter
 
     switch (payload.ruleset) {
       case 'presroc':
-        chargeTranslator = CalculatePresrocChargeTranslator
+        calculateChargeTranslator = CalculatePresrocChargeTranslator
         rulesServicePresenter = RulesServicePresrocPresenter
         rulesServiceTranslator = RulesServicePresrocTranslator
         calculateChargePresenter = CalculateChargePresrocPresenter
@@ -47,7 +47,7 @@ class CalculateChargeService {
         throw Boom.badData('Invalid ruleset')
     }
 
-    const translator = this._translateRequest(payload, regime, chargeTranslator)
+    const translator = this._translateRequest(payload, regime, calculateChargeTranslator)
     const calculatedCharge = await this._calculateCharge(translator, rulesServicePresenter, rulesServiceTranslator)
 
     // We merge the translator and the rules service result and in preparation for generating the response.

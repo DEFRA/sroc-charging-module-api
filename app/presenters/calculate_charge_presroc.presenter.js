@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module RulesServicePresenter
+ * @module CalculateChargePresrocPresenter
  */
 
 const BasePresenter = require('./base.presenter')
@@ -9,7 +9,7 @@ const BasePresenter = require('./base.presenter')
 /**
  * Handles formatting the data into the response we send to clients after a calculate charge request.
  */
-class CalculateChargePresenter extends BasePresenter {
+class CalculateChargePresrocPresenter extends BasePresenter {
   _presentation (data) {
     return {
       calculation: {
@@ -32,4 +32,4 @@ class CalculateChargePresenter extends BasePresenter {
   }
 }
 
-module.exports = CalculateChargePresenter
+module.exports = CalculateChargePresrocPresenter

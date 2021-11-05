@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module RulesServicePresenter
+ * @module RulesServicePresrocPresenter
  */
 
 const BasePresenter = require('./base.presenter')
@@ -9,7 +9,7 @@ const BasePresenter = require('./base.presenter')
 /**
  * Handles formatting the data into the payload sent to the Rules Service when requesting a charge calculation.
  */
-class RulesServicePresenter extends BasePresenter {
+class RulesServicePresrocPresenter extends BasePresenter {
   _presentation (data) {
     return {
       ruleset: data.ruleset,
@@ -37,4 +37,4 @@ class RulesServicePresenter extends BasePresenter {
   }
 }
 
-module.exports = RulesServicePresenter
+module.exports = RulesServicePresrocPresenter
