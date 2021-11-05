@@ -8,9 +8,9 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { CalculateChargePresrocPresenter } = require('../../app/presenters')
+const { CalculateChargeSrocPresenter } = require('../../app/presenters')
 
-describe('Calculate Charge Presroc presenter', () => {
+describe('Calculate Charge Sroc presenter', () => {
   describe("when the request was marked as a 'credit'", () => {
     const data = {
       chargeValue: 100,
@@ -18,7 +18,7 @@ describe('Calculate Charge Presroc presenter', () => {
     }
 
     it("returns a negative 'chargeValue'", async () => {
-      const testPresenter = new CalculateChargePresrocPresenter(data)
+      const testPresenter = new CalculateChargeSrocPresenter(data)
       const result = testPresenter.go()
 
       expect(result.calculation.chargeValue).to.equal(-100)
@@ -32,7 +32,7 @@ describe('Calculate Charge Presroc presenter', () => {
     }
 
     it("returns a postive 'chargeValue'", async () => {
-      const testPresenter = new CalculateChargePresrocPresenter(data)
+      const testPresenter = new CalculateChargeSrocPresenter(data)
       const result = testPresenter.go()
 
       expect(result.calculation.chargeValue).to.equal(100)
