@@ -6,6 +6,7 @@ const AuthorisationService = require('./plugins/authorisation.service')
 const BaseNextFileReferenceService = require('./next_references/base_next_file_reference.service')
 const BillRunStatusService = require('./bill_runs/bill_run_status.service')
 const CalculateChargeService = require('./charges/calculate_charge.service')
+const CalculateChargeV2GuardService = require('./guards/calculate_charge_v2_guard.service')
 const CalculateMinimumChargeForBillRunService = require('./bill_runs/calculate_minimum_charge_for_bill_run.service')
 const CognitoJwtToPemService = require('./plugins/cognito_jwt_to_pem.service')
 const ConvertToCSVService = require('./convert_to_csv.service')
@@ -81,6 +82,7 @@ module.exports = {
   BaseNextFileReferenceService,
   BillRunStatusService,
   CalculateChargeService,
+  CalculateChargeV2GuardService,
   CalculateMinimumChargeForBillRunService,
   CognitoJwtToPemService,
   ConvertToCSVService,
