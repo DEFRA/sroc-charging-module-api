@@ -21,7 +21,7 @@ class RulesServiceSrocPresenter extends BasePresenter {
           abstractableDays: data.authorisedDays,
           actualVolume: data.actualVolume,
           aggregateProportion: data.aggregateProportion,
-          authorisedVolume: data.volume,
+          authorisedVolume: data.authorisedVolume,
           billableDays: data.billableDays,
           chargeCategory: data.chargeCategoryCode,
           compensationCharge: data.compensationCharge,

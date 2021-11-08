@@ -18,7 +18,7 @@
   "supportedSource": false,
   "supportedSourceName": "SOURCE",
   "twoPartTariff": false,
-  "volume": 2.0,
+  "authorisedVolume": 2.0,
   "waterCompanyCharge": false,
   "waterUndertaker": false,
   "winterOnly": false

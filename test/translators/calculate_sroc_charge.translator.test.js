@@ -29,7 +29,7 @@ describe('Calculate Charge Sroc translator', () => {
     waterCompanyCharge: false,
     supportedSource: false,
     loss: 'Low',
-    volume: 1,
+    authorisedVolume: 1,
     credit: false
   }
 
@@ -211,18 +211,18 @@ describe('Calculate Charge Sroc translator', () => {
         })
       })
 
-      describe('when volume is provided', () => {
+      describe('when authorisedVolume is provided', () => {
         before(async () => {
           validPayload = {
             ...payload,
-            volume: 1.75
+            authorisedVolume: 1.75
           }
         })
 
         it('accepts a decimal value', async () => {
           const testTranslator = new CalculateChargeSrocTranslator(data(validPayload))
 
-          expect(testTranslator.volume).to.be.a.number().and.equal(1.75)
+          expect(testTranslator.authorisedVolume).to.be.a.number().and.equal(1.75)
         })
       })
 
@@ -707,11 +707,11 @@ describe('Calculate Charge Sroc translator', () => {
           })
         })
 
-        describe('because volume', () => {
+        describe('because authorisedVolume', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
               const invalidPayload = payload
-              delete invalidPayload.volume
+              delete invalidPayload.authorisedVolume
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
@@ -721,7 +721,7 @@ describe('Calculate Charge Sroc translator', () => {
             it('throws an error', async () => {
               const invalidPayload = {
                 ...payload,
-                volume: 0
+                authorisedVolume: 0
               }
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -732,7 +732,7 @@ describe('Calculate Charge Sroc translator', () => {
             it('throws an error', async () => {
               const invalidPayload = {
                 ...payload,
-                volume: -100
+                authorisedVolume: -100
               }
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)

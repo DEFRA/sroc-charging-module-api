@@ -58,7 +58,7 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
       supportedSource: rules.supportedSource,
       supportedSourceName: rules.supportedSourceName,
       twoPartTariff: rules.twoPartTariff,
-      volume: rules.volume,
+      authorisedVolume: rules.authorisedVolume,
       waterCompanyCharge: rules.waterCompanyCharge,
       waterUndertaker: rules.waterUndertaker,
       winterOnly: rules.winterOnly
@@ -81,7 +81,7 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
       section127Agreement: Joi.boolean().required(),
       section130Agreement: Joi.boolean().required(),
       supportedSource: Joi.boolean().required(),
-      volume: Joi.number().min(0).required(),
+      authorisedVolume: Joi.number().min(0).required(),
       waterCompanyCharge: Joi.boolean().required(),
       winterOnly: Joi.boolean().required(),
 
@@ -126,7 +126,7 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
       supportedSource: 'supportedSource',
       supportedSourceName: 'supportedSourceName',
       twoPartTariff: 'twoPartTariff',
-      volume: 'volume',
+      authorisedVolume: 'authorisedVolume',
       waterCompanyCharge: 'waterCompanyCharge',
       waterUndertaker: 'waterUndertaker',
       winterOnly: 'winterOnly'
