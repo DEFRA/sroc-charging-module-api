@@ -1,6 +1,6 @@
 'use strict'
 
-const { CalculateChargeService, CalculateChargeV2GuardService, ValidateChargeService } = require('../services')
+const { CalculateChargeService, CalculateChargeV2GuardService } = require('../services')
 
 class CalculateChargeController {
   static async calculateV2 (req, h) {
@@ -14,7 +14,7 @@ class CalculateChargeController {
   }
 
   static async calculate (req, h) {
-    const result = await ValidateChargeService.go(req.payload, req.app.regime)
+    const result = await CalculateChargeService.go(req.payload, req.app.regime)
 
     return h.response(result).code(200)
   }

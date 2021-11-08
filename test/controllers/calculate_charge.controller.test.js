@@ -21,7 +21,7 @@ const {
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { CalculateChargeService, CalculateChargeV2GuardService, ValidateChargeService } = require('../../app/services')
+const { CalculateChargeService, CalculateChargeV2GuardService } = require('../../app/services')
 
 describe('Calculate charge controller', () => {
   const clientID = '1234546789'
@@ -78,12 +78,9 @@ describe('Calculate charge controller', () => {
       }
     }
 
-    beforeEach(async () => {
-    })
-
     it('calls CalculateChargeService with the payload and returns its response', async () => {
       expect(calculateStub.calledOnce).to.be.true()
-      // Note that we expect the argument to _contain_ the request payload as it should also include the default ruleset
+      // We expect the argument to _contain_ the request payload as it should also include the default ruleset
       expect(calculateStub.firstCall.firstArg).to.contain(requestPayload)
       expect(response.statusCode).to.equal(200)
       expect(responsePayload.response).to.exist()
@@ -100,10 +97,17 @@ describe('Calculate charge controller', () => {
   })
 
   describe('Calculating a charge: POST /v3/{regimeSlug}/calculate-charge', () => {
-    let validateStub
+    let calculateStub
+    let requestPayload
+    let response
+    let responsePayload
 
     beforeEach(async () => {
-      validateStub = Sinon.stub(ValidateChargeService, 'go').returns({ response: true })
+      calculateStub = Sinon.stub(CalculateChargeService, 'go').returns({ response: true })
+
+      requestPayload = { request: true }
+      response = await server.inject(options(authToken, requestPayload))
+      responsePayload = JSON.parse(response.payload)
     })
 
     const options = (token, payload) => {
@@ -115,13 +119,10 @@ describe('Calculate charge controller', () => {
       }
     }
 
-    it('calls ValidateChargeService with the payload and returns its response', async () => {
-      const requestPayload = { request: true }
-      const response = await server.inject(options(authToken, requestPayload))
-      const responsePayload = JSON.parse(response.payload)
-
-      expect(validateStub.calledOnce).to.be.true()
-      expect(validateStub.firstCall.firstArg).to.equal(requestPayload)
+    it('calls CalculateChargeService with the payload and returns its response', async () => {
+      expect(calculateStub.calledOnce).to.be.true()
+      // We expect the argument to _equal_ the request payload as it should not include a default ruleset
+      expect(calculateStub.firstCall.firstArg).to.equal(requestPayload)
       expect(response.statusCode).to.equal(200)
       expect(responsePayload.response).to.exist()
       expect(responsePayload.response).to.be.true()
