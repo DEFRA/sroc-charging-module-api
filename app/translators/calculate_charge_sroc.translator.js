@@ -8,7 +8,7 @@ const BaseTranslator = require('./base.translator')
 const Joi = require('joi').extend(require('@joi/date'))
 const Boom = require('@hapi/boom')
 
-class CalculateChargePresrocTranslator extends BaseTranslator {
+class CalculateChargeSrocTranslator extends BaseTranslator {
   constructor (data) {
     super(data)
 
@@ -155,4 +155,4 @@ class CalculateChargePresrocTranslator extends BaseTranslator {
   }
 }
 
-module.exports = CalculateChargePresrocTranslator
+module.exports = CalculateChargeSrocTranslator
