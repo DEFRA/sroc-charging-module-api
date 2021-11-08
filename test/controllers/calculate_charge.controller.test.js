@@ -23,7 +23,7 @@ const {
 const JsonWebToken = require('jsonwebtoken')
 const { CalculateChargeService, CalculateChargeV2GuardService, ValidateChargeService } = require('../../app/services')
 
-describe.only('Calculate charge controller', () => {
+describe('Calculate charge controller', () => {
   const clientID = '1234546789'
   let server
   let authToken
@@ -48,7 +48,7 @@ describe.only('Calculate charge controller', () => {
     Sinon.restore()
   })
 
-  describe.only('Calculating a charge: POST /v2/{regimeSlug}/calculate-charge', () => {
+  describe('Calculating a charge: POST /v2/{regimeSlug}/calculate-charge', () => {
     let calculateStub
     let guardStub
     let requestPayload
