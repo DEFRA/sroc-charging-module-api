@@ -17,5 +17,13 @@ module.exports = {
       rulesService: require('./presroc/section_agreements_true_rules_service.json'),
       response: require('./presroc/section_agreements_true_response.json')
     }
+  },
+  sroc: {
+    simple: {
+      request: require('./sroc/simple_request.json'),
+      rulesService: require('./sroc/simple_rules_service.json'),
+      response: require('./sroc/simple_response.json')
+    }
   }
+
 }

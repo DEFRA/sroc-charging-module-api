@@ -1,0 +1,12 @@
+{
+  "calculation": {
+    "chargeValue": 3395,
+    "baseCharge": 0,
+    "waterCompanyChargeValue": 800,
+    "supportedSourceValue": 0,
+    "winterOnlyFactor": null,
+    "section130Factor": 0.5,
+    "section127Factor": 0.5,
+    "compensationChargePercent": 70
+  }
+}

@@ -6,8 +6,19 @@
 
 const Boom = require('@hapi/boom')
 
-const { CalculateChargePresrocTranslator, RulesServicePresrocTranslator } = require('../../translators')
-const { CalculateChargePresrocPresenter, RulesServicePresrocPresenter } = require('../../presenters')
+const {
+  CalculateChargePresrocTranslator,
+  CalculateChargeSrocTranslator,
+  RulesServicePresrocTranslator,
+  RulesServiceSrocTranslator
+} = require('../../translators')
+
+const {
+  CalculateChargePresrocPresenter,
+  CalculateChargeSrocPresenter,
+  RulesServicePresrocPresenter,
+  RulesServiceSrocPresenter
+} = require('../../presenters')
 
 const RequestRulesServiceChargeService = require('./request_rules_service_charge.service')
 
@@ -31,21 +42,12 @@ class CalculateChargeService {
    * the rules service response
    */
   static async go (payload, regime, presenterResponse = true) {
-    let calculateChargeTranslator
-    let rulesServicePresenter
-    let rulesServiceTranslator
-    let calculateChargePresenter
-
-    switch (payload.ruleset) {
-      case 'presroc':
-        calculateChargeTranslator = CalculateChargePresrocTranslator
-        rulesServicePresenter = RulesServicePresrocPresenter
-        rulesServiceTranslator = RulesServicePresrocTranslator
-        calculateChargePresenter = CalculateChargePresrocPresenter
-        break
-      default:
-        throw Boom.badData('Invalid ruleset')
-    }
+    const {
+      calculateChargeTranslator,
+      rulesServicePresenter,
+      rulesServiceTranslator,
+      calculateChargePresenter
+    } = this._determineConvertors(payload.ruleset)
 
     const translator = this._translateRequest(payload, regime, calculateChargeTranslator)
     const calculatedCharge = await this._calculateCharge(translator, rulesServicePresenter, rulesServiceTranslator)
@@ -54,6 +56,31 @@ class CalculateChargeService {
     this._applyCalculatedCharge(translator, calculatedCharge)
 
     return this._response(translator, presenterResponse, calculateChargePresenter)
+  }
+
+  /**
+   * Takes the request ruleset and returns the appropriate translators and presenters. Throws a `Boom.badData()` error
+   * if the ruleset is invalid.
+   */
+  static _determineConvertors (ruleset) {
+    switch (ruleset) {
+      case 'presroc':
+        return {
+          calculateChargeTranslator: CalculateChargePresrocTranslator,
+          rulesServicePresenter: RulesServicePresrocPresenter,
+          rulesServiceTranslator: RulesServicePresrocTranslator,
+          calculateChargePresenter: CalculateChargePresrocPresenter
+        }
+      case 'sroc':
+        return {
+          calculateChargeTranslator: CalculateChargeSrocTranslator,
+          rulesServicePresenter: RulesServiceSrocPresenter,
+          rulesServiceTranslator: RulesServiceSrocTranslator,
+          calculateChargePresenter: CalculateChargeSrocPresenter
+        }
+      default:
+        throw Boom.badData('Invalid ruleset')
+    }
   }
 
   static _translateRequest (payload, regime, ChargeTranslator) {

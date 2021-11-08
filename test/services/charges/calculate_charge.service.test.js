@@ -9,7 +9,7 @@ const { expect } = Code
 
 // Test helpers
 const { GeneralHelper } = require('../../support/helpers')
-const { presroc: fixtures } = require('../../support/fixtures/calculate_charge')
+const { presroc: presrocFixtures, sroc: srocFixtures } = require('../../support/fixtures/calculate_charge')
 const { ValidationError } = require('joi')
 
 // Things we need to stub
@@ -30,49 +30,66 @@ describe('Calculate Charge service', () => {
   })
 
   describe('When the data is valid', () => {
-    describe("and is a 'simple' request", () => {
-      beforeEach(async () => {
-        Sinon.stub(RequestRulesServiceCharge, 'go').returns(fixtures.simple.rulesService)
+    describe('and is a presroc request', () => {
+      describe('and is a simple request', () => {
+        beforeEach(async () => {
+          Sinon.stub(RequestRulesServiceCharge, 'go').returns(presrocFixtures.simple.rulesService)
+        })
+
+        it('returns a calculated charge', async () => {
+          const result = await CalculateChargeService.go(presrocFixtures.simple.request, regime)
+
+          expect(result.calculation).to.exist()
+          expect(result).to.equal(presrocFixtures.simple.response)
+        })
       })
 
-      it('returns a calculated charge', async () => {
-        const result = await CalculateChargeService.go(fixtures.simple.request, regime)
+      describe('and is a Section 126 Prorata Credit request', () => {
+        beforeEach(async () => {
+          Sinon.stub(RequestRulesServiceCharge, 'go').returns(presrocFixtures.s126ProrataCredit.rulesService)
+        })
 
-        expect(result.calculation).to.exist()
-        expect(result).to.equal(fixtures.simple.response)
+        it('returns a calculated charge', async () => {
+          const result = await CalculateChargeService.go(presrocFixtures.s126ProrataCredit.request, regime)
+
+          expect(result.calculation).to.exist()
+          expect(result).to.equal(presrocFixtures.s126ProrataCredit.response)
+        })
+      })
+
+      describe('and is a Section Agreements True request', () => {
+        beforeEach(async () => {
+          Sinon.stub(RequestRulesServiceCharge, 'go').returns(presrocFixtures.sectionAgreementsTrue.rulesService)
+        })
+
+        it('returns a calculated charge', async () => {
+          const result = await CalculateChargeService.go(presrocFixtures.sectionAgreementsTrue.request, regime)
+
+          expect(result.calculation).to.exist()
+          expect(result).to.equal(presrocFixtures.sectionAgreementsTrue.response)
+        })
       })
     })
 
-    describe("and is a 'Section 126 prorata credit' request", () => {
-      beforeEach(async () => {
-        Sinon.stub(RequestRulesServiceCharge, 'go').returns(fixtures.s126ProrataCredit.rulesService)
-      })
+    describe('and is an sroc request', () => {
+      describe('and is a simple request', () => {
+        beforeEach(async () => {
+          Sinon.stub(RequestRulesServiceCharge, 'go').returns(srocFixtures.simple.rulesService)
+        })
 
-      it('returns a calculated charge', async () => {
-        const result = await CalculateChargeService.go(fixtures.s126ProrataCredit.request, regime)
+        it('returns a calculated charge', async () => {
+          const result = await CalculateChargeService.go(srocFixtures.simple.request, regime)
 
-        expect(result.calculation).to.exist()
-        expect(result).to.equal(fixtures.s126ProrataCredit.response)
-      })
-    })
-
-    describe("and is a 'Section agreements true' request", () => {
-      beforeEach(async () => {
-        Sinon.stub(RequestRulesServiceCharge, 'go').returns(fixtures.sectionAgreementsTrue.rulesService)
-      })
-
-      it('returns a calculated charge', async () => {
-        const result = await CalculateChargeService.go(fixtures.sectionAgreementsTrue.request, regime)
-
-        expect(result.calculation).to.exist()
-        expect(result).to.equal(fixtures.sectionAgreementsTrue.response)
+          expect(result.calculation).to.exist()
+          expect(result).to.equal(srocFixtures.simple.response)
+        })
       })
     })
   })
 
   describe('when the data is invalid', () => {
     it('throws an error', async () => {
-      const invalidPaylod = GeneralHelper.cloneObject(fixtures.simple.request)
+      const invalidPaylod = GeneralHelper.cloneObject(presrocFixtures.simple.request)
       invalidPaylod.periodStart = '01-APR-2021'
 
       const err = await expect(CalculateChargeService.go(invalidPaylod, regime)).to.reject(ValidationError)
@@ -83,11 +100,11 @@ describe('Calculate Charge service', () => {
 
   describe("When I don't want a 'presenter response'", () => {
     beforeEach(async () => {
-      Sinon.stub(RequestRulesServiceCharge, 'go').returns(fixtures.simple.rulesService)
+      Sinon.stub(RequestRulesServiceCharge, 'go').returns(presrocFixtures.simple.rulesService)
     })
 
     it("returns the 'rule service response'", async () => {
-      const result = await CalculateChargeService.go(fixtures.simple.request, regime, false)
+      const result = await CalculateChargeService.go(presrocFixtures.simple.request, regime, false)
 
       expect(result.calculation).to.not.exist()
       expect(result.chargeCalculation).to.exist()
