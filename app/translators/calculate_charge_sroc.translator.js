@@ -12,7 +12,7 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
   constructor (data) {
     super(data)
 
-    this.financialYear = this._financialYear(this.periodStart)
+    this.chargeFinancialYear = this._financialYear(this.periodStart)
 
     // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year
     this._validateFinancialYear()
@@ -20,7 +20,7 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
 
   _validateFinancialYear () {
     const schema = Joi.object({
-      periodEndFinancialYear: Joi.number().equal(this.financialYear)
+      periodEndFinancialYear: Joi.number().equal(this.chargeFinancialYear)
     })
 
     const data = {
@@ -113,7 +113,6 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
       authorisedDays: 'authorisedDays',
       billableDays: 'billableDays',
       chargeCategoryCode: 'chargeCategoryCode',
-      financialYear: 'financialYear', // this field is added in `constructor()`
       compensationCharge: 'compensationCharge',
       credit: 'credit',
       loss: 'loss',

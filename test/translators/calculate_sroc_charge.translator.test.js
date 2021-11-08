@@ -71,7 +71,7 @@ describe('Calculate Charge Sroc translator', () => {
       }
       const testTranslator = new CalculateChargeSrocTranslator(data(financialYearPayload))
 
-      expect(testTranslator.financialYear).to.equal(2021)
+      expect(testTranslator.chargeFinancialYear).to.equal(2021)
     })
 
     it("correctly determines the current year for 'period' dates in April onwards", async () => {
@@ -82,7 +82,7 @@ describe('Calculate Charge Sroc translator', () => {
       }
       const testTranslator = new CalculateChargeSrocTranslator(data(financialYearPayload))
 
-      expect(testTranslator.financialYear).to.equal(2022)
+      expect(testTranslator.chargeFinancialYear).to.equal(2022)
     })
   })
 
