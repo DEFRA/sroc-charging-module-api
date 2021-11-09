@@ -30,6 +30,7 @@ describe('Calculate Charge Sroc translator', () => {
     supportedSource: false,
     loss: 'Low',
     authorisedVolume: 1,
+    actualVolume: 1,
     credit: false
   }
 
