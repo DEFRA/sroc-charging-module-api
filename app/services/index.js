@@ -6,6 +6,7 @@ const AuthorisationService = require('./plugins/authorisation.service')
 const BaseNextFileReferenceService = require('./next_references/base_next_file_reference.service')
 const BillRunStatusService = require('./bill_runs/bill_run_status.service')
 const CalculateChargeService = require('./charges/calculate_charge.service')
+const CalculateChargeV2GuardService = require('./guards/calculate_charge_v2_guard.service')
 const CalculateMinimumChargeForBillRunService = require('./bill_runs/calculate_minimum_charge_for_bill_run.service')
 const CognitoJwtToPemService = require('./plugins/cognito_jwt_to_pem.service')
 const ConvertToCSVService = require('./convert_to_csv.service')
@@ -66,7 +67,6 @@ const TransformTableToFileService = require('./files/transform_table_to_file.ser
 const UpdateAuthorisedSystemService = require('./authorised_systems/update_authorised_system.service')
 const ValidateBillRunLicenceService = require('./licences/validate_bill_run_licence.service')
 const ValidateBillRunRegion = require('./bill_runs/validate_bill_run_region.service')
-const ValidateChargeService = require('./charges/validate_charge.service')
 const ViewAuthorisedSystemService = require('./authorised_systems/view_authorised_system.service')
 const ViewBillRunService = require('./bill_runs/view_bill_run.service')
 const ViewCustomerFileService = require('./files/customers/view_customer_file.service')
@@ -81,6 +81,7 @@ module.exports = {
   BaseNextFileReferenceService,
   BillRunStatusService,
   CalculateChargeService,
+  CalculateChargeV2GuardService,
   CalculateMinimumChargeForBillRunService,
   CognitoJwtToPemService,
   ConvertToCSVService,
@@ -141,7 +142,6 @@ module.exports = {
   UpdateAuthorisedSystemService,
   ValidateBillRunLicenceService,
   ValidateBillRunRegion,
-  ValidateChargeService,
   ViewAuthorisedSystemService,
   ViewBillRunService,
   ViewCustomerFileService,

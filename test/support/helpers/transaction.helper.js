@@ -1,7 +1,7 @@
 'use strict'
 
 const { TransactionModel } = require('../../../app/models')
-const { RulesServiceTranslator, TransactionTranslator } = require('../../../app/translators')
+const { RulesServicePresrocTranslator, TransactionTranslator } = require('../../../app/translators')
 
 const GeneralHelper = require('./general.helper')
 const LicenceHelper = require('./licence.helper')
@@ -43,7 +43,7 @@ class TransactionHelper {
   }
 
   static _defaultSimpleCharge () {
-    return new RulesServiceTranslator({
+    return new RulesServicePresrocTranslator({
       ...chargeFixtures.simple.rulesService
     })
   }

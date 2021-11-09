@@ -9,9 +9,9 @@ const { expect } = Code
 const { ValidationError } = require('joi')
 
 // Thing under test
-const { CalculateSrocChargeTranslator } = require('../../app/translators')
+const { CalculateChargeSrocTranslator } = require('../../app/translators')
 
-describe('Calculate Sroc Charge translator', () => {
+describe('Calculate Charge Sroc translator', () => {
   let validPayload
 
   const payload = {
@@ -29,7 +29,7 @@ describe('Calculate Sroc Charge translator', () => {
     waterCompanyCharge: false,
     supportedSource: false,
     loss: 'Low',
-    volume: 1,
+    authorisedVolume: 1,
     credit: false
   }
 
@@ -46,7 +46,7 @@ describe('Calculate Sroc Charge translator', () => {
         ...payload,
         abatementFactor: null
       }
-      const testTranslator = new CalculateSrocChargeTranslator(data(abatementFactorPayload))
+      const testTranslator = new CalculateChargeSrocTranslator(data(abatementFactorPayload))
 
       expect(testTranslator.abatementFactor).to.be.a.number().and.equal(1.0)
     })
@@ -56,7 +56,7 @@ describe('Calculate Sroc Charge translator', () => {
         ...payload,
         abatementFactor: null
       }
-      const testTranslator = new CalculateSrocChargeTranslator(data(aggregateProportionPayload))
+      const testTranslator = new CalculateChargeSrocTranslator(data(aggregateProportionPayload))
 
       expect(testTranslator.aggregateProportion).to.be.a.number().and.equal(1.0)
     })
@@ -69,9 +69,9 @@ describe('Calculate Sroc Charge translator', () => {
         periodStart: '01-MAR-2022',
         periodEnd: '30-MAR-2022'
       }
-      const testTranslator = new CalculateSrocChargeTranslator(data(financialYearPayload))
+      const testTranslator = new CalculateChargeSrocTranslator(data(financialYearPayload))
 
-      expect(testTranslator.financialYear).to.equal(2021)
+      expect(testTranslator.chargeFinancialYear).to.equal(2021)
     })
 
     it("correctly determines the current year for 'period' dates in April onwards", async () => {
@@ -80,16 +80,16 @@ describe('Calculate Sroc Charge translator', () => {
         periodStart: '01-APR-2022',
         periodEnd: '01-MAY-2022'
       }
-      const testTranslator = new CalculateSrocChargeTranslator(data(financialYearPayload))
+      const testTranslator = new CalculateChargeSrocTranslator(data(financialYearPayload))
 
-      expect(testTranslator.financialYear).to.equal(2022)
+      expect(testTranslator.chargeFinancialYear).to.equal(2022)
     })
   })
 
   describe('handling of date formats', () => {
     describe("when period start and end are formatted as 'DD-MMM-YYYY'", () => {
       it('parses them correctly', async () => {
-        const result = new CalculateSrocChargeTranslator(data(payload))
+        const result = new CalculateChargeSrocTranslator(data(payload))
 
         expect(result.periodStart).to.be.a.date()
 
@@ -107,7 +107,7 @@ describe('Calculate Sroc Charge translator', () => {
           periodStart: '01-04-2022',
           periodEnd: '31-03-2023'
         }
-        const result = new CalculateSrocChargeTranslator(data(dateFormatPayload))
+        const result = new CalculateChargeSrocTranslator(data(dateFormatPayload))
 
         expect(result.periodStart).to.be.a.date()
 
@@ -125,7 +125,7 @@ describe('Calculate Sroc Charge translator', () => {
           periodStart: '2022-04-01',
           periodEnd: '2023-03-31'
         }
-        const result = new CalculateSrocChargeTranslator(data(dateFormatPayload))
+        const result = new CalculateChargeSrocTranslator(data(dateFormatPayload))
 
         expect(result.periodStart).to.be.a.date()
 
@@ -143,7 +143,7 @@ describe('Calculate Sroc Charge translator', () => {
           periodStart: '01/04/2022',
           periodEnd: '31/03/2023'
         }
-        const result = new CalculateSrocChargeTranslator(data(dateFormatPayload))
+        const result = new CalculateChargeSrocTranslator(data(dateFormatPayload))
 
         expect(result.periodStart).to.be.a.date()
 
@@ -161,7 +161,7 @@ describe('Calculate Sroc Charge translator', () => {
           periodStart: '2022/04/01',
           periodEnd: '2023/03/31'
         }
-        const result = new CalculateSrocChargeTranslator(data(dateFormatPayload))
+        const result = new CalculateChargeSrocTranslator(data(dateFormatPayload))
 
         expect(result.periodStart).to.be.a.date()
 
@@ -176,7 +176,7 @@ describe('Calculate Sroc Charge translator', () => {
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
-        const result = new CalculateSrocChargeTranslator(data(payload))
+        const result = new CalculateChargeSrocTranslator(data(payload))
 
         expect(result).to.not.be.an.error()
       })
@@ -190,7 +190,7 @@ describe('Calculate Sroc Charge translator', () => {
         })
 
         it('accepts a decimal value', async () => {
-          const testTranslator = new CalculateSrocChargeTranslator(data(validPayload))
+          const testTranslator = new CalculateChargeSrocTranslator(data(validPayload))
 
           expect(testTranslator.abatementFactor).to.be.a.number().and.equal(0.75)
         })
@@ -205,24 +205,24 @@ describe('Calculate Sroc Charge translator', () => {
         })
 
         it('accepts a decimal value', async () => {
-          const testTranslator = new CalculateSrocChargeTranslator(data(validPayload))
+          const testTranslator = new CalculateChargeSrocTranslator(data(validPayload))
 
           expect(testTranslator.aggregateProportion).to.be.a.number().and.equal(0.75)
         })
       })
 
-      describe('when volume is provided', () => {
+      describe('when authorisedVolume is provided', () => {
         before(async () => {
           validPayload = {
             ...payload,
-            volume: 1.75
+            authorisedVolume: 1.75
           }
         })
 
         it('accepts a decimal value', async () => {
-          const testTranslator = new CalculateSrocChargeTranslator(data(validPayload))
+          const testTranslator = new CalculateChargeSrocTranslator(data(validPayload))
 
-          expect(testTranslator.volume).to.be.a.number().and.equal(1.75)
+          expect(testTranslator.authorisedVolume).to.be.a.number().and.equal(1.75)
         })
       })
 
@@ -235,7 +235,7 @@ describe('Calculate Sroc Charge translator', () => {
         })
 
         it('accepts a decimal value', async () => {
-          const testTranslator = new CalculateSrocChargeTranslator(data(validPayload))
+          const testTranslator = new CalculateChargeSrocTranslator(data(validPayload))
 
           expect(testTranslator.actualVolume).to.be.a.number().and.equal(1.75)
         })
@@ -250,7 +250,7 @@ describe('Calculate Sroc Charge translator', () => {
               regionalChargingArea: 'AREA'
             }
 
-            const result = new CalculateSrocChargeTranslator(data(validPayload))
+            const result = new CalculateChargeSrocTranslator(data(validPayload))
 
             expect(result).to.not.be.an.error()
           })
@@ -263,7 +263,7 @@ describe('Calculate Sroc Charge translator', () => {
                 waterUndertaker: true
               }
 
-              const result = new CalculateSrocChargeTranslator(data(validPayload))
+              const result = new CalculateChargeSrocTranslator(data(validPayload))
 
               expect(result).to.not.be.an.error()
             })
@@ -279,7 +279,7 @@ describe('Calculate Sroc Charge translator', () => {
             periodEnd: '01-APR-2022'
           }
 
-          const result = new CalculateSrocChargeTranslator(data(validPayload))
+          const result = new CalculateChargeSrocTranslator(data(validPayload))
 
           expect(result).to.not.be.an.error()
         })
@@ -292,7 +292,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.ruleset
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -303,7 +303,7 @@ describe('Calculate Sroc Charge translator', () => {
                 ruleset: 'INVALID'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -314,7 +314,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.chargeCategoryCode
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -325,7 +325,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.periodStart
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -336,7 +336,7 @@ describe('Calculate Sroc Charge translator', () => {
                 periodStart: '31-MAR-2022'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -347,7 +347,7 @@ describe('Calculate Sroc Charge translator', () => {
                 periodStart: '01-APR-2031'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -358,7 +358,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.periodEnd
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -370,7 +370,7 @@ describe('Calculate Sroc Charge translator', () => {
                 periodEnd: '01-MAR-2022'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -382,7 +382,7 @@ describe('Calculate Sroc Charge translator', () => {
                 periodEnd: '01-JUN-2024'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -393,7 +393,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.authorisedDays
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -404,7 +404,7 @@ describe('Calculate Sroc Charge translator', () => {
                 authorisedDays: 123.45
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -415,7 +415,7 @@ describe('Calculate Sroc Charge translator', () => {
                 authorisedDays: -100
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -426,7 +426,7 @@ describe('Calculate Sroc Charge translator', () => {
                 authorisedDays: 367
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -437,7 +437,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.billableDays
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -448,7 +448,7 @@ describe('Calculate Sroc Charge translator', () => {
                 billableDays: -100
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -459,7 +459,7 @@ describe('Calculate Sroc Charge translator', () => {
                 billableDays: 367
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -470,7 +470,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.winterOnly
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -481,7 +481,7 @@ describe('Calculate Sroc Charge translator', () => {
                 winterOnly: 'INVALID'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -492,7 +492,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.section130Agreement
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -503,7 +503,7 @@ describe('Calculate Sroc Charge translator', () => {
                 section130Agreement: 'INVALID'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -514,7 +514,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.section127Agreement
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -525,7 +525,7 @@ describe('Calculate Sroc Charge translator', () => {
                 section127Agreement: 'INVALID'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -536,7 +536,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.twoPartTariff
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -547,7 +547,7 @@ describe('Calculate Sroc Charge translator', () => {
                 twoPartTariff: 'INVALID'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -565,7 +565,7 @@ describe('Calculate Sroc Charge translator', () => {
               it('throws an error', async () => {
                 delete invalidPayload.actualVolume
 
-                expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
               })
             })
           })
@@ -577,7 +577,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.compensationCharge
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -588,7 +588,7 @@ describe('Calculate Sroc Charge translator', () => {
                 compensationCharge: 'INVALID'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -606,7 +606,7 @@ describe('Calculate Sroc Charge translator', () => {
               it('throws an error', async () => {
                 delete invalidPayload.regionalChargingArea
 
-                expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
               })
             })
 
@@ -614,7 +614,7 @@ describe('Calculate Sroc Charge translator', () => {
               it('throws an error', async () => {
                 delete invalidPayload.waterUndertaker
 
-                expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
               })
             })
           })
@@ -628,7 +628,7 @@ describe('Calculate Sroc Charge translator', () => {
                 waterUndertaker: 'INVALID'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -639,7 +639,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.waterCompanyCharge
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -650,7 +650,7 @@ describe('Calculate Sroc Charge translator', () => {
                 waterCompanyCharge: 'INVALID'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -661,7 +661,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.supportedSource
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
 
             describe('is not a boolean', () => {
@@ -671,7 +671,7 @@ describe('Calculate Sroc Charge translator', () => {
                   supportedSource: 'INVALID'
                 }
 
-                expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
               })
             })
           })
@@ -690,7 +690,7 @@ describe('Calculate Sroc Charge translator', () => {
               it('throws an error', async () => {
                 delete invalidPayload.supportedSourceName
 
-                expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
               })
             })
           })
@@ -702,18 +702,18 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.loss
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
 
-        describe('because volume', () => {
+        describe('because authorisedVolume', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
               const invalidPayload = payload
-              delete invalidPayload.volume
+              delete invalidPayload.authorisedVolume
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -721,10 +721,10 @@ describe('Calculate Sroc Charge translator', () => {
             it('throws an error', async () => {
               const invalidPayload = {
                 ...payload,
-                volume: 0
+                authorisedVolume: 0
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -732,10 +732,10 @@ describe('Calculate Sroc Charge translator', () => {
             it('throws an error', async () => {
               const invalidPayload = {
                 ...payload,
-                volume: -100
+                authorisedVolume: -100
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
@@ -746,7 +746,7 @@ describe('Calculate Sroc Charge translator', () => {
               const invalidPayload = payload
               delete invalidPayload.credit
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
@@ -757,7 +757,7 @@ describe('Calculate Sroc Charge translator', () => {
                 credit: 'INVALID'
               }
 
-              expect(() => new CalculateSrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })

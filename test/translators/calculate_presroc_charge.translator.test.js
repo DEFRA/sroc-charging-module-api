@@ -9,9 +9,9 @@ const { expect } = Code
 const { ValidationError } = require('joi')
 
 // Thing under test
-const { CalculatePresrocChargeTranslator } = require('../../app/translators')
+const { CalculateChargePresrocTranslator } = require('../../app/translators')
 
-describe('Calculate Presroc Charge translator', () => {
+describe('Calculate Charge Presroc translator', () => {
   const payload = {
     periodStart: '01-APR-2020',
     periodEnd: '31-MAR-2021',
@@ -46,7 +46,7 @@ describe('Calculate Presroc Charge translator', () => {
         ...payload,
         section126Factor: null
       }
-      const testTranslator = new CalculatePresrocChargeTranslator(data(empty126FactorPayload))
+      const testTranslator = new CalculateChargePresrocTranslator(data(empty126FactorPayload))
 
       expect(testTranslator.regimeValue11).to.be.a.number().and.equal(1.0)
     })
@@ -59,7 +59,7 @@ describe('Calculate Presroc Charge translator', () => {
         billableDays: 128,
         authorisedDays: 256
       }
-      const testTranslator = new CalculatePresrocChargeTranslator(data(proraratPayload))
+      const testTranslator = new CalculateChargePresrocTranslator(data(proraratPayload))
 
       expect(testTranslator.lineAttr3).to.equal('128/256')
     })
@@ -70,7 +70,7 @@ describe('Calculate Presroc Charge translator', () => {
         billableDays: 8,
         authorisedDays: 16
       }
-      const testTranslator = new CalculatePresrocChargeTranslator(data(proraratPayload))
+      const testTranslator = new CalculateChargePresrocTranslator(data(proraratPayload))
 
       expect(testTranslator.lineAttr3).to.equal('008/016')
     })
@@ -83,7 +83,7 @@ describe('Calculate Presroc Charge translator', () => {
         twoPartTariff: true
       }
 
-      const testTranslator = new CalculatePresrocChargeTranslator(data(proraratPayload))
+      const testTranslator = new CalculateChargePresrocTranslator(data(proraratPayload))
 
       expect(testTranslator.lineAttr3).to.equal('000/000')
     })
@@ -96,7 +96,7 @@ describe('Calculate Presroc Charge translator', () => {
         periodStart: '01-MAR-2022',
         periodEnd: '30-MAR-2022'
       }
-      const testTranslator = new CalculatePresrocChargeTranslator(data(financialYearPayload))
+      const testTranslator = new CalculateChargePresrocTranslator(data(financialYearPayload))
 
       expect(testTranslator.chargeFinancialYear).to.equal(2021)
     })
@@ -107,7 +107,7 @@ describe('Calculate Presroc Charge translator', () => {
         periodStart: '01-APR-2021',
         periodEnd: '01-MAY-2021'
       }
-      const testTranslator = new CalculatePresrocChargeTranslator(data(financialYearPayload))
+      const testTranslator = new CalculateChargePresrocTranslator(data(financialYearPayload))
 
       expect(testTranslator.chargeFinancialYear).to.equal(2021)
     })
@@ -116,7 +116,7 @@ describe('Calculate Presroc Charge translator', () => {
   describe('handling of date formats', () => {
     describe("when period start and end are formatted as 'DD-MMM-YYYY'", () => {
       it('parses them correctly', async () => {
-        const result = new CalculatePresrocChargeTranslator(data(payload))
+        const result = new CalculateChargePresrocTranslator(data(payload))
 
         expect(result.chargePeriodStart).to.be.a.date()
 
@@ -134,7 +134,7 @@ describe('Calculate Presroc Charge translator', () => {
           periodStart: '01-04-2020',
           periodEnd: '31-03-2021'
         }
-        const result = new CalculatePresrocChargeTranslator(data(dateFormatPayload))
+        const result = new CalculateChargePresrocTranslator(data(dateFormatPayload))
 
         expect(result.chargePeriodStart).to.be.a.date()
 
@@ -152,7 +152,7 @@ describe('Calculate Presroc Charge translator', () => {
           periodStart: '2020-04-01',
           periodEnd: '2021-03-31'
         }
-        const result = new CalculatePresrocChargeTranslator(data(dateFormatPayload))
+        const result = new CalculateChargePresrocTranslator(data(dateFormatPayload))
 
         expect(result.chargePeriodStart).to.be.a.date()
 
@@ -170,7 +170,7 @@ describe('Calculate Presroc Charge translator', () => {
           periodStart: '01/04/2020',
           periodEnd: '31/03/2021'
         }
-        const result = new CalculatePresrocChargeTranslator(data(dateFormatPayload))
+        const result = new CalculateChargePresrocTranslator(data(dateFormatPayload))
 
         expect(result.chargePeriodStart).to.be.a.date()
 
@@ -188,7 +188,7 @@ describe('Calculate Presroc Charge translator', () => {
           periodStart: '2020/04/01',
           periodEnd: '2021/03/31'
         }
-        const result = new CalculatePresrocChargeTranslator(data(dateFormatPayload))
+        const result = new CalculateChargePresrocTranslator(data(dateFormatPayload))
 
         expect(result.chargePeriodStart).to.be.a.date()
 
@@ -210,7 +210,7 @@ describe('Calculate Presroc Charge translator', () => {
           source: 'supPorTed'
         }
 
-        const result = new CalculatePresrocChargeTranslator(data(lowercasePayload))
+        const result = new CalculateChargePresrocTranslator(data(lowercasePayload))
 
         expect(result.regimeValue8).to.equal('Low')
         expect(result.regimeValue7).to.equal('All Year')
@@ -222,7 +222,7 @@ describe('Calculate Presroc Charge translator', () => {
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
-        const result = new CalculatePresrocChargeTranslator(data(payload))
+        const result = new CalculateChargePresrocTranslator(data(payload))
 
         expect(result).to.not.be.an.error()
       })
@@ -236,7 +236,7 @@ describe('Calculate Presroc Charge translator', () => {
             }
             delete validPayload.eiucSource
 
-            const result = new CalculatePresrocChargeTranslator(data(validPayload))
+            const result = new CalculateChargePresrocTranslator(data(validPayload))
 
             expect(result).to.not.be.an.error()
           })
@@ -250,7 +250,7 @@ describe('Calculate Presroc Charge translator', () => {
             }
             delete validPayload.waterUndertaker
 
-            const result = new CalculatePresrocChargeTranslator(data(validPayload))
+            const result = new CalculateChargePresrocTranslator(data(validPayload))
 
             expect(result).to.not.be.an.error()
           })
@@ -265,7 +265,7 @@ describe('Calculate Presroc Charge translator', () => {
             periodEnd: '01-APR-2020'
           }
 
-          const result = new CalculatePresrocChargeTranslator(data(validPayload))
+          const result = new CalculateChargePresrocTranslator(data(validPayload))
 
           expect(result).to.not.be.an.error()
         })
@@ -280,7 +280,7 @@ describe('Calculate Presroc Charge translator', () => {
             periodStart: '01-APR-2021'
           }
 
-          expect(() => new CalculatePresrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
 
@@ -292,7 +292,7 @@ describe('Calculate Presroc Charge translator', () => {
             periodEnd: '01-MAR-2014'
           }
 
-          expect(() => new CalculatePresrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
 
@@ -304,7 +304,7 @@ describe('Calculate Presroc Charge translator', () => {
             periodEnd: '01-APR-2022'
           }
 
-          expect(() => new CalculatePresrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
 
@@ -317,7 +317,7 @@ describe('Calculate Presroc Charge translator', () => {
             }
             delete invalidPayload.eiucSource
 
-            expect(() => new CalculatePresrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
@@ -329,7 +329,7 @@ describe('Calculate Presroc Charge translator', () => {
             }
             delete invalidPayload.waterUndertaker
 
-            expect(() => new CalculatePresrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
       })
@@ -342,7 +342,7 @@ describe('Calculate Presroc Charge translator', () => {
             waterUndertaker: 'boom'
           }
 
-          expect(() => new CalculatePresrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
 
@@ -353,7 +353,7 @@ describe('Calculate Presroc Charge translator', () => {
             section126Factor: 1.1239
           }
 
-          expect(() => new CalculatePresrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
 
@@ -364,7 +364,7 @@ describe('Calculate Presroc Charge translator', () => {
             ruleset: 'INVALID'
           }
 
-          expect(() => new CalculatePresrocChargeTranslator(data(invalidPayload))).to.throw(ValidationError)
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
     })

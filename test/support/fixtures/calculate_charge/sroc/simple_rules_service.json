@@ -1,0 +1,33 @@
+{
+  "__DecisionID__": "f8858810-726c-499d-8022-a6020cde8bbc0",
+  "WRLSChargingResponse": {
+      "chargeValue": 33.95,
+      "abatementAdjustment": null,
+      "s127Agreement": "Two-Part tariff 0.5",
+      "s130Agreement": "CRT 0.5",
+      "decisionPoints": {
+          "baselineCharge": 97.0,
+          "secondPartCharge": false,
+          "compensationCharge": false,
+          "abatementAdjustment": 33.949999999999996,
+          "s127Agreement": 33.949999999999996,
+          "s130Agreement": 33.949999999999996,
+          "waterCompanyCharge": 97.0,
+          "winterOnlyCharge": 67.89999999999999,
+          "supportedSourceCharge": 0.0,
+          "secondPartProRata": 33.949999999999996,
+          "waterCompanyChargeFlag": false,
+          "compensationChargeValue": 67.89999999999999,
+          "aggregatedCharge": 97.0,
+          "winterOnly": false,
+          "supportedSourceChargeFlag": false
+      },
+      "messages": [],
+      "baselineCharge": 0.0,
+      "supportedSourceCharge": 0.0,
+      "waterCompanyCharge": 8.0,
+      "compensationChargePercentage": "70%",
+      "aggregateAdjustment": null,
+      "winterOnlyAdjustment": null
+  }
+}

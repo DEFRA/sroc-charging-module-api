@@ -1,18 +1,18 @@
 'use strict'
 
 /**
- * @module CalculatePresrocChargeTranslator
+ * @module CalculateChargeSrocTranslator
  */
 
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi').extend(require('@joi/date'))
 const Boom = require('@hapi/boom')
 
-class CalculatePresrocChargeTranslator extends BaseTranslator {
+class CalculateChargeSrocTranslator extends BaseTranslator {
   constructor (data) {
     super(data)
 
-    this.financialYear = this._financialYear(this.periodStart)
+    this.chargeFinancialYear = this._financialYear(this.periodStart)
 
     // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year
     this._validateFinancialYear()
@@ -20,7 +20,7 @@ class CalculatePresrocChargeTranslator extends BaseTranslator {
 
   _validateFinancialYear () {
     const schema = Joi.object({
-      periodEndFinancialYear: Joi.number().equal(this.financialYear)
+      periodEndFinancialYear: Joi.number().equal(this.chargeFinancialYear)
     })
 
     const data = {
@@ -58,7 +58,7 @@ class CalculatePresrocChargeTranslator extends BaseTranslator {
       supportedSource: rules.supportedSource,
       supportedSourceName: rules.supportedSourceName,
       twoPartTariff: rules.twoPartTariff,
-      volume: rules.volume,
+      authorisedVolume: rules.authorisedVolume,
       waterCompanyCharge: rules.waterCompanyCharge,
       waterUndertaker: rules.waterUndertaker,
       winterOnly: rules.winterOnly
@@ -81,7 +81,7 @@ class CalculatePresrocChargeTranslator extends BaseTranslator {
       section127Agreement: Joi.boolean().required(),
       section130Agreement: Joi.boolean().required(),
       supportedSource: Joi.boolean().required(),
-      volume: Joi.number().min(0).required(),
+      authorisedVolume: Joi.number().min(0).required(),
       waterCompanyCharge: Joi.boolean().required(),
       winterOnly: Joi.boolean().required(),
 
@@ -113,7 +113,6 @@ class CalculatePresrocChargeTranslator extends BaseTranslator {
       authorisedDays: 'authorisedDays',
       billableDays: 'billableDays',
       chargeCategoryCode: 'chargeCategoryCode',
-      financialYear: 'financialYear', // this field is added in `constructor()`
       compensationCharge: 'compensationCharge',
       credit: 'credit',
       loss: 'loss',
@@ -127,7 +126,7 @@ class CalculatePresrocChargeTranslator extends BaseTranslator {
       supportedSource: 'supportedSource',
       supportedSourceName: 'supportedSourceName',
       twoPartTariff: 'twoPartTariff',
-      volume: 'volume',
+      authorisedVolume: 'authorisedVolume',
       waterCompanyCharge: 'waterCompanyCharge',
       waterUndertaker: 'waterUndertaker',
       winterOnly: 'winterOnly'
@@ -155,4 +154,4 @@ class CalculatePresrocChargeTranslator extends BaseTranslator {
   }
 }
 
-module.exports = CalculatePresrocChargeTranslator
+module.exports = CalculateChargeSrocTranslator
