@@ -92,12 +92,12 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
 
       // Dependent on `twoPartTariff`
       twoPartTariff: Joi.boolean().required(),
-      actualVolume: Joi.when('twoPartTariff', { is: true, then: Joi.number().greater(0).required() }),
+      actualVolume: Joi.number().greater(0).when('twoPartTariff', { is: true, then: Joi.required() }),
 
       // strings validated by the rules service
       chargeCategoryCode: Joi.string().required(),
       loss: Joi.string().required(),
-      supportedSourceName: Joi.when('supportedSource', { is: true, then: Joi.string().required() }),
+      supportedSourceName: Joi.string().when('supportedSource', { is: true, then: Joi.required() }),
 
       // needed to determine which endpoints to call in the rules service
       regime: Joi.string().required()
