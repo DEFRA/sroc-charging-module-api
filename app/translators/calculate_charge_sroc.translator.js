@@ -40,6 +40,7 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
     return Joi.object({
       abatementFactor: rules.abatementFactor,
       actualVolume: rules.actualVolume,
+      authorisedVolume: rules.authorisedVolume,
       aggregateProportion: rules.aggregateProportion,
       authorisedDays: rules.authorisedDays,
       billableDays: rules.billableDays,
@@ -58,7 +59,6 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
       supportedSource: rules.supportedSource,
       supportedSourceName: rules.supportedSourceName,
       twoPartTariff: rules.twoPartTariff,
-      authorisedVolume: rules.authorisedVolume,
       waterCompanyCharge: rules.waterCompanyCharge,
       waterUndertaker: rules.waterUndertaker,
       winterOnly: rules.winterOnly
@@ -77,18 +77,18 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
       billableDays: Joi.number().integer().min(0).max(366).required(),
       credit: Joi.boolean().required(),
       periodEnd: Joi.date().format(validDateFormats).required(),
-      periodStart: Joi.date().format(validDateFormats).min('01-APR-2021').max(Joi.ref('periodEnd')).required(),
+      periodStart: Joi.date().format(validDateFormats).min('01-APR-2022').max(Joi.ref('periodEnd')).required(),
       section127Agreement: Joi.boolean().required(),
       section130Agreement: Joi.boolean().required(),
       supportedSource: Joi.boolean().required(),
-      authorisedVolume: Joi.number().min(0).required(),
+      authorisedVolume: Joi.number().greater(0).required(),
       waterCompanyCharge: Joi.boolean().required(),
       winterOnly: Joi.boolean().required(),
 
       // Dependent on `compensationCharge`
       compensationCharge: Joi.boolean().required(),
-      regionalChargingArea: Joi.when('compensationCharge', { is: true, then: Joi.string().required() }),
-      waterUndertaker: Joi.when('compensationCharge', { is: true, then: Joi.boolean().required() }),
+      regionalChargingArea: Joi.string().when('compensationCharge', { is: true, then: Joi.required() }),
+      waterUndertaker: Joi.boolean().when('compensationCharge', { is: true, then: Joi.required() }),
 
       // Dependent on `twoPartTariff`
       twoPartTariff: Joi.boolean().required(),

@@ -66,12 +66,12 @@ describe('Calculate Charge Sroc translator', () => {
     it("correctly determines the previous year for 'period' dates in March or earlier", async () => {
       const financialYearPayload = {
         ...payload,
-        periodStart: '01-MAR-2022',
-        periodEnd: '30-MAR-2022'
+        periodStart: '01-MAR-2023',
+        periodEnd: '30-MAR-2023'
       }
       const testTranslator = new CalculateChargeSrocTranslator(data(financialYearPayload))
 
-      expect(testTranslator.chargeFinancialYear).to.equal(2021)
+      expect(testTranslator.chargeFinancialYear).to.equal(2022)
     })
 
     it("correctly determines the current year for 'period' dates in April onwards", async () => {
@@ -289,7 +289,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because ruleset', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.ruleset
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -311,7 +311,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because chargeCategoryCode', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.chargeCategoryCode
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -322,7 +322,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because periodStart', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.periodStart
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -333,7 +333,8 @@ describe('Calculate Charge Sroc translator', () => {
             it('throws an error', async () => {
               const invalidPayload = {
                 ...payload,
-                periodStart: '31-MAR-2022'
+                periodStart: '30-MAR-2022',
+                periodEnd: '31-MAR-2022'
               }
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -355,20 +356,8 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because periodEnd', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.periodEnd
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is earlier than 01-APR-2022', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                periodStart: '01-FEB-2022',
-                periodEnd: '01-MAR-2022'
-              }
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
@@ -390,7 +379,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because authorisedDays', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.authorisedDays
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -434,7 +423,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because billableDays', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.billableDays
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -467,7 +456,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because winterOnly', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.winterOnly
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -489,7 +478,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because section130Agreement', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.section130Agreement
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -511,7 +500,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because section127Agreement', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.section127Agreement
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -533,7 +522,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because twoPartTariff', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.twoPartTariff
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -557,7 +546,8 @@ describe('Calculate Charge Sroc translator', () => {
             beforeEach(async () => {
               invalidPayload = {
                 ...payload,
-                twoPartTariff: true
+                twoPartTariff: true,
+                section127Agreement: true
               }
             })
 
@@ -574,7 +564,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because compensationCharge', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.compensationCharge
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -636,7 +626,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because waterCompanyCharge', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.waterCompanyCharge
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -658,7 +648,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because supportedSource', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.supportedSource
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -699,7 +689,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because loss', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.loss
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -710,7 +700,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because authorisedVolume', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.authorisedVolume
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -743,7 +733,7 @@ describe('Calculate Charge Sroc translator', () => {
         describe('because credit', () => {
           describe('is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = payload
+              const invalidPayload = { ...payload }
               delete invalidPayload.credit
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)

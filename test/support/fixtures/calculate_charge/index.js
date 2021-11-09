@@ -25,5 +25,4 @@ module.exports = {
       response: require('./sroc/simple_response.json')
     }
   }
-
 }
