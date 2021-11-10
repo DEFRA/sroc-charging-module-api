@@ -79,7 +79,7 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
       // Case-insensitive validation matches and returns the correctly-capitalised string
       loss: Joi.string().valid(...this._validLosses()).insensitive().required(),
       periodEnd: Joi.date().format(validDateFormats).required(),
-      periodStart: Joi.date().format(validDateFormats).min('01-APR-2022').max(Joi.ref('periodEnd')).required(),
+      periodStart: Joi.date().format(validDateFormats).min('01-APR-2021').max(Joi.ref('periodEnd')).required(),
       section130Agreement: Joi.boolean().required(),
       authorisedVolume: Joi.number().greater(0).required(),
       waterCompanyCharge: Joi.boolean().required(),
