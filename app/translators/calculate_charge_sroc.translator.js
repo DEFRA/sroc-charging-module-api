@@ -76,30 +76,44 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
       authorisedDays: Joi.number().integer().min(0).max(366).required(),
       billableDays: Joi.number().integer().min(0).max(366).required(),
       credit: Joi.boolean().required(),
+      // Case-insensitive validation matches and returns the correctly-capitalised string
+      loss: Joi.string().valid(...this._validLosses()).insensitive().required(),
       periodEnd: Joi.date().format(validDateFormats).required(),
       periodStart: Joi.date().format(validDateFormats).min('01-APR-2022').max(Joi.ref('periodEnd')).required(),
-      section127Agreement: Joi.boolean().required(),
       section130Agreement: Joi.boolean().required(),
-      supportedSource: Joi.boolean().required(),
       authorisedVolume: Joi.number().greater(0).required(),
       waterCompanyCharge: Joi.boolean().required(),
       winterOnly: Joi.boolean().required(),
 
       // Dependent on `compensationCharge`
       compensationCharge: Joi.boolean().required(),
-      regionalChargingArea: Joi.string().when('compensationCharge', { is: true, then: Joi.required() }),
-      waterUndertaker: Joi.boolean().when('compensationCharge', { is: true, then: Joi.required() }),
+      // Case-insensitive validation matches and returns the correctly-capitalised string
+      regionalChargingArea: Joi.string().valid(...this._validRegionalChargingAreas()).insensitive()
+        .when('compensationCharge', { is: true, then: Joi.required() }),
+      waterUndertaker: Joi.boolean()
+        .when('compensationCharge', { is: true, then: Joi.required() }),
 
       // Dependent on `twoPartTariff`
-      twoPartTariff: Joi.boolean().required(),
-      actualVolume: Joi.number().greater(0).when('twoPartTariff', { is: true, then: Joi.required() }),
+      twoPartTariff: Joi.boolean().required()
+        .when('compensationCharge', { is: true, then: Joi.equal(false) }),
+      actualVolume: Joi.number().greater(0)
+        .when('twoPartTariff', { is: true, then: Joi.required() }),
 
-      // strings validated by the rules service
+      // Dependent on both `compensationCharge` and `twoPartTariff`
+      section127Agreement: Joi.boolean().required()
+        .when('compensationCharge', { is: true, then: Joi.equal(false) })
+        .when('twoPartTariff', { is: true, then: Joi.equal(true) }),
+
+      // Dependent on `supportedSource`
+      supportedSource: Joi.boolean().required(),
+      // Case-insensitive validation matches and returns the correctly-capitalised string
+      supportedSourceName: Joi.string().valid(...this._validSupportedSourceNames()).insensitive()
+        .when('supportedSource', { is: true, then: Joi.required() }),
+
+      // Validated by the rules service
       chargeCategoryCode: Joi.string().required(),
-      loss: Joi.string().required(),
-      supportedSourceName: Joi.string().when('supportedSource', { is: true, then: Joi.required() }),
 
-      // needed to determine which endpoints to call in the rules service
+      // Needed to determine which endpoints to call in the rules service
       regime: Joi.string().required()
     }
   }
@@ -151,6 +165,57 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
     const year = periodDate.getFullYear()
 
     return (month <= 2 ? year - 1 : year)
+  }
+
+  _validLosses () {
+    return ['Low', 'Medium', 'High']
+  }
+
+  _validRegionalChargingAreas () {
+    return [
+      'Anglian',
+      'Midlands',
+      'Northumbria',
+      'North West',
+      'Southern',
+      'South West (incl Wessex)',
+      'Devon and Cornwall (South West)',
+      'North and South Wessex',
+      'Thames',
+      'Yorkshire',
+      'Dee',
+      'Wye',
+      'Wales'
+    ]
+  }
+
+  _validSupportedSourceNames () {
+    return [
+      'Candover',
+      'Dee',
+      'Earl Soham - Deben',
+      'Glen Groundwater',
+      'Great East Anglian Groundwater',
+      'Great East Anglian Surface Water',
+      'Kielder',
+      'Lodes Granta Groundwater',
+      'Lower Yorkshire Derwent',
+      'Medway - Allington',
+      'Nene – Northampton',
+      'Nene – Water Newton',
+      'Ouse - Offord',
+      'Ouse – Eaton Socon',
+      'Ouse – Hermitage',
+      'Rhee Groundwater',
+      'Severn',
+      'Thames',
+      'Thet and Little Ouse Surface Water',
+      'Waveney Groundwater',
+      'Waveney Surface Water',
+      'Welland – Tinwell Sluices',
+      'Witham and Ancholme',
+      'Wye'
+    ]
   }
 }
 
