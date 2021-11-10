@@ -15,7 +15,7 @@
   "ruleset": "sroc",
   "section127Agreement": false,
   "section130Agreement": true,
-  "supportedSource": false,
+  "supportedSource": true,
   "supportedSourceName": "Candover",
   "twoPartTariff": false,
   "authorisedVolume": 2.0,

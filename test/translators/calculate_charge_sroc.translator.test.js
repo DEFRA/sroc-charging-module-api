@@ -31,8 +31,7 @@ describe('Calculate Charge Sroc translator', () => {
     loss: 'Low',
     authorisedVolume: 1,
     actualVolume: 1,
-    credit: false,
-    supportedSourceName: 'Candover'
+    credit: false
   }
 
   const data = (payload, regime = 'wrls') => {
@@ -46,7 +45,7 @@ describe('Calculate Charge Sroc translator', () => {
     it('defaults abatementFactor to `1.0`', async () => {
       const abatementFactorPayload = {
         ...payload,
-        abatementFactor: null
+        abatementFactor: undefined
       }
       const testTranslator = new CalculateChargeSrocTranslator(data(abatementFactorPayload))
 
@@ -56,11 +55,22 @@ describe('Calculate Charge Sroc translator', () => {
     it('defaults aggregateProportion to `1.0`', async () => {
       const aggregateProportionPayload = {
         ...payload,
-        abatementFactor: null
+        abatementFactor: undefined
       }
       const testTranslator = new CalculateChargeSrocTranslator(data(aggregateProportionPayload))
 
       expect(testTranslator.aggregateProportion).to.be.a.number().and.equal(1.0)
+    })
+
+    it('defaults supportedSourceName to `Not Applicable` when `undefined` and supportedSource is `false`', async () => {
+      const supportedSourcePayload = {
+        ...payload,
+        supportedSource: false,
+        supportedSourceName: undefined
+      }
+      const testTranslator = new CalculateChargeSrocTranslator(data(supportedSourcePayload))
+
+      expect(testTranslator.supportedSourceName).to.be.a.string().and.equal('Not Applicable')
     })
   })
 
@@ -293,7 +303,6 @@ describe('Calculate Charge Sroc translator', () => {
             ...payload,
             loss: 'low'
           }
-          console.log('🚀 ~ file: calculate_charge_sroc.translator.test.js ~ line 293 ~ it ~ lossPayload', lossPayload)
 
           const testTranslator = new CalculateChargeSrocTranslator(data(lossPayload))
 
@@ -318,6 +327,7 @@ describe('Calculate Charge Sroc translator', () => {
         it('ensures the correct casing', async () => {
           const supportedSourceNamePayload = {
             ...payload,
+            supportedSource: true,
             supportedSourceName: 'ouse – hermitage'
           }
 
@@ -760,8 +770,6 @@ describe('Calculate Charge Sroc translator', () => {
 
           describe('and supportedSourceName is missing', () => {
             it('throws an error', async () => {
-              delete invalidPayload.supportedSourceName
-
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
@@ -769,6 +777,28 @@ describe('Calculate Charge Sroc translator', () => {
           describe('and supportedSourceName is not valid', () => {
             it('throws an error', async () => {
               invalidPayload.supportedSourceName = 'INVALID'
+
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+            })
+          })
+        })
+
+        describe('is `false`', () => {
+          let invalidPayload
+
+          beforeEach(async () => {
+            invalidPayload = {
+              ...payload,
+              supportedSource: false
+            }
+          })
+
+          describe('and supportedSourceName is present', () => {
+            it('throws an error', async () => {
+              invalidPayload = {
+                ...invalidPayload,
+                supportedSourceName: 'Ouse – Hermitage'
+              }
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })

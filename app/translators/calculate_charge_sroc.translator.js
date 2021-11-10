@@ -106,9 +106,11 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
 
       // Dependent on `supportedSource`
       supportedSource: Joi.boolean().required(),
-      // Case-insensitive validation matches and returns the correctly-capitalised string
-      supportedSourceName: Joi.string().valid(...this._validSupportedSourceNames()).insensitive()
-        .when('supportedSource', { is: true, then: Joi.required() }),
+      supportedSourceName: Joi
+        // If `true` then we match and return the correctly-capitalised string
+        .when('supportedSource', { is: true, then: Joi.string().valid(...this._validSupportedSourceNames()).insensitive().required() })
+        // If `false` then this should be undefined (ie. not present) and we set the value as `Not Applicable`
+        .when('supportedSource', { is: false, then: Joi.forbidden().default('Not Applicable') }),
 
       // Validated by the rules service
       chargeCategoryCode: Joi.string().required(),
