@@ -3,62 +3,92 @@
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
 
-class TransactionPresrocTranslator extends BaseTranslator {
+class TransactionSrocTranslator extends BaseTranslator {
   _schema () {
+    const rules = this._rules()
+
     return Joi.object({
+      ruleset: rules.ruleset,
+
+      billRunId: rules.billRunId,
+      regimeId: rules.regimeId,
+      authorisedSystemId: rules.authorisedSystemId,
+      region: rules.region,
+      customerReference: rules.customerReference,
+      batchNumber: rules.batchNumber,
+      licenceNumber: rules.licenceNumber,
+      chargePeriod: rules.chargePeriod,
+      chargeElementId: rules.chargeElementId,
+      areaCode: rules.areaCode,
+      lineDescription: rules.lineDescription,
+      clientId: rules.clientId,
+      chargeCategoryDescription: rules.chargeCategoryDescription
+    })
+  }
+
+  _rules () {
+    return {
+      ruleset: Joi.string().valid('sroc').required(),
+
       billRunId: Joi.string().required(),
       regimeId: Joi.string().required(),
       authorisedSystemId: Joi.string().required(),
-      region: Joi.string().uppercase().valid(...this._validRegions()).required(),
+      region: Joi.string().uppercase().valid(...this._validRegions()).required(), // DOUBLE CHECK IF uppercase() IS NEEDED
       customerReference: Joi.string().uppercase().max(12).required(),
       batchNumber: Joi.string().allow('', null),
       licenceNumber: Joi.string().max(150).required(),
       chargePeriod: Joi.string().required(),
       chargeElementId: Joi.string().allow('', null),
-      areaCode: Joi.string().uppercase().valid(...this._validAreas()).required(),
+      areaCode: Joi.string().uppercase().valid(...this._validAreas()).required(), // DOUBLE CHECK IF uppercase() IS NEEDED
       lineDescription: Joi.string().max(240).required(),
-      subjectToMinimumCharge: Joi.boolean().default(false),
       clientId: Joi.string().allow('', null),
-      // Set a new field called ruleset. This will identify which ruleset the transaction and it's charge relates to
-      ruleset: Joi.string().default('presroc')
-    })
+      chargeCategoryDescription: Joi.string().max(150).required()
+    }
   }
 
+  // TODO: Translations need to be sorted correctly to use db fields as required eg. `regimeValue5` etc. For now we simply translate to the same string as the input
   _translations () {
     return {
+      ruleset: 'ruleset',
+
+      // Transaction-related, validated here
       billRunId: 'billRunId',
       regimeId: 'regimeId',
-      authorisedSystemId: 'createdBy',
-      ruleset: 'ruleset',
+      authorisedSystemId: 'authorisedSystemId',
       region: 'region',
       customerReference: 'customerReference',
-      periodStart: 'chargePeriodStart',
-      periodEnd: 'chargePeriodEnd',
-      subjectToMinimumCharge: 'subjectToMinimumCharge',
-      clientId: 'clientId',
-      credit: 'chargeCredit',
-      areaCode: 'lineAreaCode',
+      batchNumber: 'batchNumber',
+      licenceNumber: 'licenceNumber',
+      chargePeriod: 'chargePeriod',
+      chargeElementId: 'chargeElementId',
+      areaCode: 'areaCode',
       lineDescription: 'lineDescription',
-      licenceNumber: 'lineAttr1',
-      chargePeriod: 'lineAttr2',
-      prorataDays: 'lineAttr3',
-      volume: 'lineAttr5',
-      batchNumber: 'regimeValue1',
-      chargeElementId: 'regimeValue3',
-      billableDays: 'regimeValue4',
-      authorisedDays: 'regimeValue5',
-      source: 'regimeValue6',
-      season: 'regimeValue7',
-      loss: 'regimeValue8',
-      section130Agreement: 'regimeValue9',
-      section126Agreement: 'regimeValue10',
-      section126Factor: 'regimeValue11',
-      section127Agreement: 'regimeValue12',
-      eiucSource: 'regimeValue13',
-      waterUndertaker: 'regimeValue14',
-      regionalChargingArea: 'regimeValue15',
-      twoPartTariff: 'regimeValue16',
-      compensationCharge: 'regimeValue17'
+      clientId: 'clientId',
+      chargeCategoryDescription: 'chargeCategoryDescription',
+
+      // Charge-related, validated in CalculateChargeSrocTranslator
+      abatementFactor: 'abatementFactor',
+      actualVolume: 'actualVolume',
+      aggregateProportion: 'aggregateProportion',
+      authorisedDays: 'authorisedDays',
+      billableDays: 'billableDays',
+      chargeCategoryCode: 'chargeCategoryCode',
+      compensationCharge: 'compensationCharge',
+      credit: 'credit',
+      loss: 'loss',
+      periodEnd: 'chargePeriodEnd',
+      periodStart: 'chargePeriodStart',
+      regime: 'regime',
+      regionalChargingArea: 'regionalChargingArea',
+      section127Agreement: 'section127Agreement',
+      section130Agreement: 'section130Agreement',
+      supportedSource: 'supportedSource',
+      supportedSourceName: 'supportedSourceName',
+      twoPartTariff: 'twoPartTariff',
+      authorisedVolume: 'authorisedVolume',
+      waterCompanyCharge: 'waterCompanyCharge',
+      waterUndertaker: 'waterUndertaker',
+      winterOnly: 'winterOnly'
     }
   }
 
@@ -108,4 +138,4 @@ class TransactionPresrocTranslator extends BaseTranslator {
   }
 }
 
-module.exports = TransactionPresrocTranslator
+module.exports = TransactionSrocTranslator

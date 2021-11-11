@@ -12,34 +12,18 @@ const { ValidationError } = require('joi')
 const { GeneralHelper } = require('../support/helpers')
 
 // Thing under test
-const { TransactionPresrocTranslator } = require('../../app/translators')
+const { TransactionSrocTranslator } = require('../../app/translators')
 
 describe('Transaction Sroc translator', () => {
   const payload = {
-    periodStart: '01-APR-2019',
-    periodEnd: '31-MAR-2020',
-    credit: false,
-    billableDays: 310,
-    authorisedDays: 365,
-    volume: '6.22',
-    source: 'Supported',
-    season: 'Summer',
-    loss: 'Low',
-    twoPartTariff: false,
-    compensationCharge: false,
-    eiucSource: 'Tidal',
-    waterUndertaker: false,
-    regionalChargingArea: 'Anglian',
-    section127Agreement: false,
-    section130Agreement: false,
-    customerReference: 'TH230000222',
-    lineDescription: 'Well at Chigley Town Hall',
-    licenceNumber: 'TONY/TF9222/37',
-    chargePeriod: '01-APR-2018 - 31-MAR-2019',
-    chargeElementId: '',
-    batchNumber: 'TONY10',
-    region: 'W',
-    areaCode: 'ARCA'
+    ruleset: 'sroc',
+    region: 'A',
+    customerReference: 'CUSTOMER_REF',
+    licenceNumber: 'LICENCE_NUMBER',
+    chargePeriod: 'CHARGE_PERIOD',
+    areaCode: 'ARCA',
+    lineDescription: 'LINE_DESCRIPTION',
+    chargeCategoryDescription: 'CHARGE_CATEGORY_DESCRIPTION'
   }
 
   const data = (
@@ -55,31 +39,67 @@ describe('Transaction Sroc translator', () => {
     }
   }
 
-  describe('Default values', () => {
-    it("defaults 'subjectToMinimumCharge' to 'false'", async () => {
-      const testTranslator = new TransactionPresrocTranslator(data(payload))
-
-      expect(testTranslator.subjectToMinimumCharge).to.be.a.boolean().and.equal(false)
-    })
-
-    it("defaults 'ruleset' to 'presroc'", async () => {
-      const testTranslator = new TransactionPresrocTranslator(data(payload))
-
-      expect(testTranslator.ruleset).to.be.a.string().and.equal('presroc')
-    })
-  })
-
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
-        const result = new TransactionPresrocTranslator(data(payload))
+        const result = new TransactionSrocTranslator(data(payload))
 
         expect(result).to.not.be.an.error()
+      })
+
+      describe('because region is lower case', () => {
+        it('does not throw an error', async () => {
+          const validPayload = {
+            ...payload,
+            region: 'a'
+          }
+
+          const result = new TransactionSrocTranslator(data(validPayload))
+
+          expect(result).to.not.be.an.error()
+        })
+      })
+
+      describe('because areaCode is lower case', () => {
+        it('does not throw an error', async () => {
+          const validPayload = {
+            ...payload,
+            areaCode: 'arca'
+          }
+
+          const result = new TransactionSrocTranslator(data(validPayload))
+
+          expect(result).to.not.be.an.error()
+        })
       })
     })
 
     describe('when the data is not valid', () => {
-      describe("because 'region'", () => {
+      describe('because ruleset', () => {
+        describe('is not `sroc`', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              ruleset: 'presroc'
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              ruleset: undefined
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because region', () => {
         describe('is not a valid region', () => {
           it('throws an error', async () => {
             const invalidPayload = {
@@ -87,7 +107,7 @@ describe('Transaction Sroc translator', () => {
               region: 'INVALID_REGION'
             }
 
-            expect(() => new TransactionPresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
@@ -98,12 +118,73 @@ describe('Transaction Sroc translator', () => {
             }
             delete invalidPayload.region
 
-            expect(() => new TransactionPresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
       })
 
-      describe("because 'areaCode'", () => {
+      describe('because customerReference', () => {
+        describe('is too long', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              customerReference: 'X'.repeat(13)
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              customerReference: undefined
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because licenceNumber', () => {
+        describe('is too long', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              licenceNumber: 'X'.repeat(151)
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              licenceNumber: undefined
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because licenceNumber', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              chargePeriod: undefined
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because areaCode', () => {
         describe('is not a valid area', () => {
           it('throws an error', async () => {
             const invalidPayload = {
@@ -111,18 +192,66 @@ describe('Transaction Sroc translator', () => {
               areaCode: 'INVALID_AREA'
             }
 
-            expect(() => new TransactionPresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
         describe('is missing', () => {
           it('throws an error', async () => {
             const invalidPayload = {
-              ...payload
+              ...payload,
+              areaCode: undefined
             }
-            delete invalidPayload.areaCode
 
-            expect(() => new TransactionPresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because lineDescription', () => {
+        describe('is too long', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              lineDescription: 'X'.repeat(241)
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              lineDescription: undefined
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because chargeCategoryDescription', () => {
+        describe('is too long', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              chargeCategoryDescription: 'X'.repeat(151)
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              chargeCategoryDescription: undefined
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
       })
