@@ -256,6 +256,36 @@ describe('Calculate Charge Sroc translator', () => {
         })
       })
 
+      describe('if twoPartTariff is `false`', () => {
+        describe('and actualVolume is present', () => {
+          it('does not throw an error', async () => {
+            const validPayload = {
+              ...payload,
+              twoPartTariff: false,
+              actualVolume: 1.75
+            }
+
+            const result = new CalculateChargeSrocTranslator(data(validPayload))
+
+            expect(result).to.not.be.an.error()
+          })
+        })
+
+        describe('and actualVolume is not present', () => {
+          it('does not throw an error', async () => {
+            const validPayload = {
+              ...payload,
+              twoPartTariff: false,
+              actualVolume: undefined
+            }
+
+            const result = new CalculateChargeSrocTranslator(data(validPayload))
+
+            expect(result).to.not.be.an.error()
+          })
+        })
+      })
+
       describe('if compensationCharge is `false`', () => {
         describe('and regionalChargingArea is present', () => {
           it('does not throw an error', async () => {
@@ -269,19 +299,47 @@ describe('Calculate Charge Sroc translator', () => {
 
             expect(result).to.not.be.an.error()
           })
+        })
 
-          describe('and waterUndertaker is present', () => {
-            it('does not throw an error', async () => {
-              const validPayload = {
-                ...payload,
-                compensationCharge: false,
-                waterUndertaker: true
-              }
+        describe('and regionalChargingArea is not present', () => {
+          it('does not throw an error', async () => {
+            const validPayload = {
+              ...payload,
+              compensationCharge: false,
+              regionalChargingArea: undefined
+            }
 
-              const result = new CalculateChargeSrocTranslator(data(validPayload))
+            const result = new CalculateChargeSrocTranslator(data(validPayload))
 
-              expect(result).to.not.be.an.error()
-            })
+            expect(result).to.not.be.an.error()
+          })
+        })
+
+        describe('and waterUndertaker is present', () => {
+          it('does not throw an error', async () => {
+            const validPayload = {
+              ...payload,
+              compensationCharge: false,
+              waterUndertaker: true
+            }
+
+            const result = new CalculateChargeSrocTranslator(data(validPayload))
+
+            expect(result).to.not.be.an.error()
+          })
+        })
+
+        describe('and waterUndertaker is not present', () => {
+          it('does not throw an error', async () => {
+            const validPayload = {
+              ...payload,
+              compensationCharge: false,
+              waterUndertaker: undefined
+            }
+
+            const result = new CalculateChargeSrocTranslator(data(validPayload))
+
+            expect(result).to.not.be.an.error()
           })
         })
       })
