@@ -12,9 +12,9 @@ const { ValidationError } = require('joi')
 const { GeneralHelper } = require('../support/helpers')
 
 // Thing under test
-const { TransactionTranslator } = require('../../app/translators')
+const { TransactionPresrocTranslator } = require('../../app/translators')
 
-describe('Transaction translator', () => {
+describe('Transaction Presroc translator', () => {
   const payload = {
     periodStart: '01-APR-2019',
     periodEnd: '31-MAR-2020',
@@ -57,13 +57,13 @@ describe('Transaction translator', () => {
 
   describe('Default values', () => {
     it("defaults 'subjectToMinimumCharge' to 'false'", async () => {
-      const testTranslator = new TransactionTranslator(data(payload))
+      const testTranslator = new TransactionPresrocTranslator(data(payload))
 
       expect(testTranslator.subjectToMinimumCharge).to.be.a.boolean().and.equal(false)
     })
 
     it("defaults 'ruleset' to 'presroc'", async () => {
-      const testTranslator = new TransactionTranslator(data(payload))
+      const testTranslator = new TransactionPresrocTranslator(data(payload))
 
       expect(testTranslator.ruleset).to.be.a.string().and.equal('presroc')
     })
@@ -72,7 +72,7 @@ describe('Transaction translator', () => {
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
-        const result = new TransactionTranslator(data(payload))
+        const result = new TransactionPresrocTranslator(data(payload))
 
         expect(result).to.not.be.an.error()
       })
@@ -87,7 +87,7 @@ describe('Transaction translator', () => {
               region: 'INVALID_REGION'
             }
 
-            expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new TransactionPresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
@@ -98,7 +98,7 @@ describe('Transaction translator', () => {
             }
             delete invalidPayload.region
 
-            expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new TransactionPresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
       })
@@ -111,7 +111,7 @@ describe('Transaction translator', () => {
               areaCode: 'INVALID_AREA'
             }
 
-            expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new TransactionPresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
@@ -122,7 +122,7 @@ describe('Transaction translator', () => {
             }
             delete invalidPayload.areaCode
 
-            expect(() => new TransactionTranslator(data(invalidPayload))).to.throw(ValidationError)
+            expect(() => new TransactionPresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
       })
