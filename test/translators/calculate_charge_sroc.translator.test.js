@@ -397,549 +397,549 @@ describe('Calculate Charge Sroc translator', () => {
           expect(testTranslator.supportedSourceName).to.equal('Ouse – Hermitage')
         })
       })
+    })
 
-      describe('when the data is not valid', () => {
-        describe('because ruleset', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.ruleset
+    describe('when the data is not valid', () => {
+      describe('because ruleset', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.ruleset
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is not `sroc`', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                ruleset: 'INVALID'
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because chargeCategoryCode', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.chargeCategoryCode
+        describe('is not `sroc`', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              ruleset: 'INVALID'
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because chargeCategoryCode', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.chargeCategoryCode
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because periodStart', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.periodStart
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because periodStart', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.periodStart
+        describe('is earlier than 1 April 2021', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              periodStart: '30-MAR-2021',
+              periodEnd: '31-MAR-2021'
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is earlier than 1 April 2021', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                periodStart: '30-MAR-2021',
-                periodEnd: '31-MAR-2021'
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe("is greater than periodEnd'", () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                periodStart: '01-APR-2031'
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because periodEnd', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.periodEnd
+        describe("is greater than periodEnd'", () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              periodStart: '01-APR-2031'
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
+        })
+      })
 
-          describe('is not in the same finanal year as periodStart', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                periodStart: '01-FEB-2022',
-                periodEnd: '01-JUN-2024'
-              }
+      describe('because periodEnd', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.periodEnd
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because authorisedDays', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.authorisedDays
+        describe('is not in the same finanal year as periodStart', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              periodStart: '01-FEB-2022',
+              periodEnd: '01-JUN-2024'
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
+        })
+      })
 
-          describe('is a decimal', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                authorisedDays: 123.45
-              }
+      describe('because authorisedDays', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.authorisedDays
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is below 0', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                authorisedDays: -100
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is over 366', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                authorisedDays: 367
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because billableDays', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.billableDays
+        describe('is a decimal', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              authorisedDays: 123.45
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is below 0', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                billableDays: -100
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is over 366', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                billableDays: 367
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because winterOnly', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.winterOnly
+        describe('is below 0', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              authorisedDays: -100
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is not a boolean', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                winterOnly: 'INVALID'
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because section130Agreement', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.section130Agreement
+        describe('is over 366', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              authorisedDays: 367
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
+        })
+      })
 
-          describe('is not a boolean', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                section130Agreement: 'INVALID'
-              }
+      describe('because billableDays', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.billableDays
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because section127Agreement', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.section127Agreement
+        describe('is below 0', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              billableDays: -100
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is not a boolean', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                section127Agreement: 'INVALID'
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because twoPartTariff', () => {
-          describe('is missing', () => {
+        describe('is over 366', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              billableDays: 367
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because winterOnly', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.winterOnly
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is not a boolean', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              winterOnly: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because section130Agreement', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.section130Agreement
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is not a boolean', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              section130Agreement: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because section127Agreement', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.section127Agreement
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is not a boolean', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              section127Agreement: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because twoPartTariff', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.twoPartTariff
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is not a boolean', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              twoPartTariff: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is `true`', () => {
+          let invalidPayload
+
+          beforeEach(async () => {
+            invalidPayload = {
+              ...payload,
+              twoPartTariff: true,
+              section127Agreement: true
+            }
+          })
+
+          describe('and actualVolume is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.twoPartTariff
+              delete invalidPayload.actualVolume
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
-          describe('is not a boolean', () => {
+          describe('and section127Agreement is `false`', () => {
             it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                twoPartTariff: 'INVALID'
-              }
+              invalidPayload.section127Agreement = false
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
 
-          describe('is `true`', () => {
-            let invalidPayload
-
-            beforeEach(async () => {
+          describe('and compensationCharge is `true`', () => {
+            it('throws an error', async () => {
               invalidPayload = {
-                ...payload,
-                twoPartTariff: true,
-                section127Agreement: true
+                ...invalidPayload,
+                compensationCharge: true,
+                regionalChargingArea: 'Anglian',
+                waterUndertaker: false
               }
-            })
 
-            describe('and actualVolume is missing', () => {
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+            })
+          })
+        })
+      })
+
+      describe('because compensationCharge', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.compensationCharge
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is not a boolean', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              compensationCharge: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is `true`', () => {
+          let invalidPayload
+
+          beforeEach(async () => {
+            invalidPayload = {
+              ...payload,
+              compensationCharge: true
+            }
+          })
+
+          describe('and regionalChargingArea', () => {
+            describe('is missing', () => {
               it('throws an error', async () => {
-                delete invalidPayload.actualVolume
+                delete invalidPayload.regionalChargingArea
 
                 expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
               })
             })
 
-            describe('and section127Agreement is `false`', () => {
+            describe('is invalid', () => {
               it('throws an error', async () => {
-                invalidPayload.section127Agreement = false
-
-                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-              })
-            })
-
-            describe('and compensationCharge is `true`', () => {
-              it('throws an error', async () => {
-                invalidPayload = {
-                  ...invalidPayload,
-                  compensationCharge: true,
-                  regionalChargingArea: 'Anglian',
-                  waterUndertaker: false
-                }
+                invalidPayload.regionalChargingArea = 'INVALID'
 
                 expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
               })
             })
           })
-        })
 
-        describe('because compensationCharge', () => {
-          describe('is missing', () => {
+          describe('and waterUndertaker is missing', () => {
             it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.compensationCharge
+              delete invalidPayload.waterUndertaker
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
+          })
+
+          describe('and section127Agreement is `true`', () => {
+            it('throws an error', async () => {
+              invalidPayload.section127Agreement = true
+
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+            })
+          })
+        })
+      })
+
+      describe('because waterUndertaker', () => {
+        describe('is not a boolean', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              waterUndertaker: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because waterCompanyCharge', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.waterCompanyCharge
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is not a boolean', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              waterCompanyCharge: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because supportedSource', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.supportedSource
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
 
           describe('is not a boolean', () => {
             it('throws an error', async () => {
               const invalidPayload = {
                 ...payload,
-                compensationCharge: 'INVALID'
+                supportedSource: 'INVALID'
               }
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
+        })
 
-          describe('is `true`', () => {
-            let invalidPayload
+        describe('is `true`', () => {
+          let invalidPayload
 
-            beforeEach(async () => {
+          beforeEach(async () => {
+            invalidPayload = {
+              ...payload,
+              supportedSource: true
+            }
+          })
+
+          describe('and supportedSourceName is missing', () => {
+            it('throws an error', async () => {
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+            })
+          })
+
+          describe('and supportedSourceName is not valid', () => {
+            it('throws an error', async () => {
+              invalidPayload.supportedSourceName = 'INVALID'
+
+              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+            })
+          })
+        })
+
+        describe('is `false`', () => {
+          let invalidPayload
+
+          beforeEach(async () => {
+            invalidPayload = {
+              ...payload,
+              supportedSource: false
+            }
+          })
+
+          describe('and supportedSourceName is present', () => {
+            it('throws an error', async () => {
               invalidPayload = {
-                ...payload,
-                compensationCharge: true
-              }
-            })
-
-            describe('and regionalChargingArea', () => {
-              describe('is missing', () => {
-                it('throws an error', async () => {
-                  delete invalidPayload.regionalChargingArea
-
-                  expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-                })
-              })
-
-              describe('is invalid', () => {
-                it('throws an error', async () => {
-                  invalidPayload.regionalChargingArea = 'INVALID'
-
-                  expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-                })
-              })
-            })
-
-            describe('and waterUndertaker is missing', () => {
-              it('throws an error', async () => {
-                delete invalidPayload.waterUndertaker
-
-                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-              })
-            })
-
-            describe('and section127Agreement is `true`', () => {
-              it('throws an error', async () => {
-                invalidPayload.section127Agreement = true
-
-                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-              })
-            })
-          })
-        })
-
-        describe('because waterUndertaker', () => {
-          describe('is not a boolean', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                waterUndertaker: 'INVALID'
+                ...invalidPayload,
+                supportedSourceName: 'Ouse – Hermitage'
               }
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
         })
+      })
 
-        describe('because waterCompanyCharge', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.waterCompanyCharge
+      describe('because loss', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.loss
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is not a boolean', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                waterCompanyCharge: 'INVALID'
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because supportedSource', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.supportedSource
+        describe('is not valid', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              loss: 'INVALID'
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-
-            describe('is not a boolean', () => {
-              it('throws an error', async () => {
-                const invalidPayload = {
-                  ...payload,
-                  supportedSource: 'INVALID'
-                }
-
-                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-              })
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
+        })
+      })
 
-          describe('is `true`', () => {
-            let invalidPayload
+      describe('because authorisedVolume', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.authorisedVolume
 
-            beforeEach(async () => {
-              invalidPayload = {
-                ...payload,
-                supportedSource: true
-              }
-            })
-
-            describe('and supportedSourceName is missing', () => {
-              it('throws an error', async () => {
-                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-              })
-            })
-
-            describe('and supportedSourceName is not valid', () => {
-              it('throws an error', async () => {
-                invalidPayload.supportedSourceName = 'INVALID'
-
-                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-              })
-            })
-          })
-
-          describe('is `false`', () => {
-            let invalidPayload
-
-            beforeEach(async () => {
-              invalidPayload = {
-                ...payload,
-                supportedSource: false
-              }
-            })
-
-            describe('and supportedSourceName is present', () => {
-              it('throws an error', async () => {
-                invalidPayload = {
-                  ...invalidPayload,
-                  supportedSourceName: 'Ouse – Hermitage'
-                }
-
-                expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-              })
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because loss', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.loss
+        describe('is 0', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              authorisedVolume: 0
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is not valid', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                loss: 'INVALID'
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because authorisedVolume', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.authorisedVolume
+        describe('is less than 0', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              authorisedVolume: -100
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
+        })
+      })
 
-          describe('is 0', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                authorisedVolume: 0
-              }
+      describe('because credit', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.credit
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is less than 0', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                authorisedVolume: -100
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
 
-        describe('because credit', () => {
-          describe('is missing', () => {
-            it('throws an error', async () => {
-              const invalidPayload = { ...payload }
-              delete invalidPayload.credit
+        describe('is not a boolean', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              credit: 'INVALID'
+            }
 
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
-
-          describe('is not a boolean', () => {
-            it('throws an error', async () => {
-              const invalidPayload = {
-                ...payload,
-                credit: 'INVALID'
-              }
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })
         })
       })
