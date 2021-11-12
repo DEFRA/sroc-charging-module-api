@@ -171,7 +171,18 @@ describe('Transaction Sroc translator', () => {
         })
       })
 
-      describe('because licenceNumber', () => {
+      describe('because chargePeriod', () => {
+        describe('is too long', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              chargePeriod: 'X'.repeat(151)
+            }
+
+            expect(() => new TransactionSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
         describe('is missing', () => {
           it('throws an error', async () => {
             const invalidPayload = {

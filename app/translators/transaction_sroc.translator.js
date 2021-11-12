@@ -33,13 +33,13 @@ class TransactionSrocTranslator extends BaseTranslator {
       billRunId: Joi.string().required(),
       regimeId: Joi.string().required(),
       authorisedSystemId: Joi.string().required(),
-      region: Joi.string().uppercase().valid(...this._validRegions()).required(), // DOUBLE CHECK IF uppercase() IS NEEDED
+      region: Joi.string().uppercase().valid(...this._validRegions()).required(),
       customerReference: Joi.string().uppercase().max(12).required(),
       batchNumber: Joi.string().allow('', null),
       licenceNumber: Joi.string().max(150).required(),
-      chargePeriod: Joi.string().required(),
+      chargePeriod: Joi.string().max(150).required(),
       chargeElementId: Joi.string().allow('', null),
-      areaCode: Joi.string().uppercase().valid(...this._validAreas()).required(), // DOUBLE CHECK IF uppercase() IS NEEDED
+      areaCode: Joi.string().uppercase().valid(...this._validAreas()).required(),
       lineDescription: Joi.string().max(240).required(),
       clientId: Joi.string().allow('', null),
       chargeCategoryDescription: Joi.string().max(150).required()
