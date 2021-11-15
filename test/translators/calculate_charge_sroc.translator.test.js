@@ -52,7 +52,7 @@ describe('Calculate Charge Sroc translator', () => {
       }
       const testTranslator = new CalculateChargeSrocTranslator(data(abatementFactorPayload))
 
-      expect(testTranslator.abatementFactor).to.be.a.number().and.equal(1.0)
+      expect(testTranslator.regimeValue19).to.be.a.number().and.equal(1.0)
     })
 
     it('defaults aggregateProportion to `1.0`', async () => {
@@ -62,7 +62,7 @@ describe('Calculate Charge Sroc translator', () => {
       }
       const testTranslator = new CalculateChargeSrocTranslator(data(aggregateProportionPayload))
 
-      expect(testTranslator.aggregateProportion).to.be.a.number().and.equal(1.0)
+      expect(testTranslator.headerAttr2).to.be.a.number().and.equal(1.0)
     })
 
     it('defaults supportedSourceName to `Not Applicable` when `undefined` and supportedSource is `false`', async () => {
@@ -73,7 +73,7 @@ describe('Calculate Charge Sroc translator', () => {
       }
       const testTranslator = new CalculateChargeSrocTranslator(data(supportedSourcePayload))
 
-      expect(testTranslator.supportedSourceName).to.be.a.string().and.equal('Not Applicable')
+      expect(testTranslator.headerAttr6).to.be.a.string().and.equal('Not Applicable')
     })
   })
 
@@ -106,12 +106,12 @@ describe('Calculate Charge Sroc translator', () => {
       it('parses them correctly', async () => {
         const result = new CalculateChargeSrocTranslator(data(payload))
 
-        expect(result.periodStart).to.be.a.date()
+        expect(result.chargePeriodStart).to.be.a.date()
 
-        expect(result.periodStart.getDate()).to.equal(1)
+        expect(result.chargePeriodStart.getDate()).to.equal(1)
         // Months are zero based, for example, January is 0 and December is 11
-        expect(result.periodStart.getMonth()).to.equal(3)
-        expect(result.periodStart.getFullYear()).to.equal(2021)
+        expect(result.chargePeriodStart.getMonth()).to.equal(3)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2021)
       })
     })
 
@@ -124,12 +124,12 @@ describe('Calculate Charge Sroc translator', () => {
         }
         const result = new CalculateChargeSrocTranslator(data(dateFormatPayload))
 
-        expect(result.periodStart).to.be.a.date()
+        expect(result.chargePeriodStart).to.be.a.date()
 
-        expect(result.periodStart.getDate()).to.equal(1)
+        expect(result.chargePeriodStart.getDate()).to.equal(1)
         // Months are zero based, for example, January is 0 and December is 11
-        expect(result.periodStart.getMonth()).to.equal(3)
-        expect(result.periodStart.getFullYear()).to.equal(2022)
+        expect(result.chargePeriodStart.getMonth()).to.equal(3)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2022)
       })
     })
 
@@ -142,12 +142,12 @@ describe('Calculate Charge Sroc translator', () => {
         }
         const result = new CalculateChargeSrocTranslator(data(dateFormatPayload))
 
-        expect(result.periodStart).to.be.a.date()
+        expect(result.chargePeriodStart).to.be.a.date()
 
-        expect(result.periodStart.getDate()).to.equal(1)
+        expect(result.chargePeriodStart.getDate()).to.equal(1)
         // Months are zero based, for example, January is 0 and December is 11
-        expect(result.periodStart.getMonth()).to.equal(3)
-        expect(result.periodStart.getFullYear()).to.equal(2022)
+        expect(result.chargePeriodStart.getMonth()).to.equal(3)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2022)
       })
     })
 
@@ -160,12 +160,12 @@ describe('Calculate Charge Sroc translator', () => {
         }
         const result = new CalculateChargeSrocTranslator(data(dateFormatPayload))
 
-        expect(result.periodStart).to.be.a.date()
+        expect(result.chargePeriodStart).to.be.a.date()
 
-        expect(result.periodStart.getDate()).to.equal(1)
+        expect(result.chargePeriodStart.getDate()).to.equal(1)
         // Months are zero based, for example, January is 0 and December is 11
-        expect(result.periodStart.getMonth()).to.equal(3)
-        expect(result.periodStart.getFullYear()).to.equal(2022)
+        expect(result.chargePeriodStart.getMonth()).to.equal(3)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2022)
       })
     })
 
@@ -178,12 +178,12 @@ describe('Calculate Charge Sroc translator', () => {
         }
         const result = new CalculateChargeSrocTranslator(data(dateFormatPayload))
 
-        expect(result.periodStart).to.be.a.date()
+        expect(result.chargePeriodStart).to.be.a.date()
 
-        expect(result.periodStart.getDate()).to.equal(1)
+        expect(result.chargePeriodStart.getDate()).to.equal(1)
         // Months are zero based, for example, January is 0 and December is 11
-        expect(result.periodStart.getMonth()).to.equal(3)
-        expect(result.periodStart.getFullYear()).to.equal(2022)
+        expect(result.chargePeriodStart.getMonth()).to.equal(3)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2022)
       })
     })
   })
@@ -207,7 +207,7 @@ describe('Calculate Charge Sroc translator', () => {
         it('accepts a decimal value', async () => {
           const testTranslator = new CalculateChargeSrocTranslator(data(validPayload))
 
-          expect(testTranslator.abatementFactor).to.be.a.number().and.equal(0.75)
+          expect(testTranslator.regimeValue19).to.be.a.number().and.equal(0.75)
         })
       })
 
@@ -222,7 +222,7 @@ describe('Calculate Charge Sroc translator', () => {
         it('accepts a decimal value', async () => {
           const testTranslator = new CalculateChargeSrocTranslator(data(validPayload))
 
-          expect(testTranslator.aggregateProportion).to.be.a.number().and.equal(0.75)
+          expect(testTranslator.headerAttr2).to.be.a.number().and.equal(0.75)
         })
       })
 
@@ -237,7 +237,7 @@ describe('Calculate Charge Sroc translator', () => {
         it('accepts a decimal value', async () => {
           const testTranslator = new CalculateChargeSrocTranslator(data(validPayload))
 
-          expect(testTranslator.authorisedVolume).to.be.a.number().and.equal(1.75)
+          expect(testTranslator.headerAttr3).to.be.a.number().and.equal(1.75)
         })
       })
 
@@ -252,7 +252,7 @@ describe('Calculate Charge Sroc translator', () => {
         it('accepts a decimal value', async () => {
           const testTranslator = new CalculateChargeSrocTranslator(data(validPayload))
 
-          expect(testTranslator.actualVolume).to.be.a.number().and.equal(1.75)
+          expect(testTranslator.regimeValue20).to.be.a.number().and.equal(1.75)
         })
       })
 
@@ -367,7 +367,7 @@ describe('Calculate Charge Sroc translator', () => {
 
           const testTranslator = new CalculateChargeSrocTranslator(data(lossPayload))
 
-          expect(testTranslator.loss).to.equal('Low')
+          expect(testTranslator.regimeValue8).to.equal('Low')
         })
       })
 
@@ -380,7 +380,7 @@ describe('Calculate Charge Sroc translator', () => {
 
           const testTranslator = new CalculateChargeSrocTranslator(data(regionalChargingAreaPayload))
 
-          expect(testTranslator.regionalChargingArea).to.equal('Devon and Cornwall (South West)')
+          expect(testTranslator.regimeValue15).to.equal('Devon and Cornwall (South West)')
         })
       })
 
@@ -394,7 +394,7 @@ describe('Calculate Charge Sroc translator', () => {
 
           const testTranslator = new CalculateChargeSrocTranslator(data(supportedSourceNamePayload))
 
-          expect(testTranslator.supportedSourceName).to.equal('Ouse – Hermitage')
+          expect(testTranslator.headerAttr6).to.equal('Ouse – Hermitage')
         })
       })
     })

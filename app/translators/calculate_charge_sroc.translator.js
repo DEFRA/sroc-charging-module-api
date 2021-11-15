@@ -12,7 +12,7 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
   constructor (data) {
     super(data)
 
-    this.chargeFinancialYear = this._financialYear(this.periodStart)
+    this.chargeFinancialYear = this._financialYear(this.chargePeriodStart)
 
     // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year
     this._validateFinancialYear()
@@ -24,7 +24,7 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
     })
 
     const data = {
-      periodEndFinancialYear: this._financialYear(this.periodEnd)
+      periodEndFinancialYear: this._financialYear(this.chargePeriodEnd)
     }
 
     const { error } = schema.validate(data)
@@ -120,32 +120,31 @@ class CalculateChargeSrocTranslator extends BaseTranslator {
     }
   }
 
-  // TODO: Translations need to be sorted correctly to use db fields as required eg. `regimeValue5` etc. For now we simply translate to the same string as the input
   _translations () {
     return {
-      abatementFactor: 'abatementFactor',
-      actualVolume: 'actualVolume',
-      aggregateProportion: 'aggregateProportion',
-      authorisedDays: 'authorisedDays',
-      billableDays: 'billableDays',
-      chargeCategoryCode: 'chargeCategoryCode',
-      compensationCharge: 'compensationCharge',
-      credit: 'credit',
-      loss: 'loss',
-      periodEnd: 'periodEnd',
-      periodStart: 'periodStart',
+      abatementFactor: 'regimeValue19',
+      actualVolume: 'regimeValue20',
+      aggregateProportion: 'headerAttr2',
+      authorisedDays: 'regimeValue5',
+      authorisedVolume: 'headerAttr3',
+      billableDays: 'regimeValue4',
+      chargeCategoryCode: 'headerAttr4',
+      compensationCharge: 'regimeValue17',
+      credit: 'chargeCredit',
+      loss: 'regimeValue8',
+      periodEnd: 'chargePeriodEnd',
+      periodStart: 'chargePeriodStart',
       regime: 'regime',
-      regionalChargingArea: 'regionalChargingArea',
+      regionalChargingArea: 'regimeValue15',
       ruleset: 'ruleset',
-      section127Agreement: 'section127Agreement',
-      section130Agreement: 'section130Agreement',
-      supportedSource: 'supportedSource',
-      supportedSourceName: 'supportedSourceName',
-      twoPartTariff: 'twoPartTariff',
-      authorisedVolume: 'authorisedVolume',
-      waterCompanyCharge: 'waterCompanyCharge',
-      waterUndertaker: 'waterUndertaker',
-      winterOnly: 'winterOnly'
+      section127Agreement: 'regimeValue12',
+      section130Agreement: 'regimeValue9',
+      supportedSource: 'headerAttr5',
+      supportedSourceName: 'headerAttr6',
+      twoPartTariff: 'regimeValue16',
+      waterCompanyCharge: 'headerAttr7',
+      waterUndertaker: 'regimeValue14',
+      winterOnly: 'headerAttr8'
     }
   }
 
