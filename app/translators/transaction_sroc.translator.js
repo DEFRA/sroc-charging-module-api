@@ -46,7 +46,6 @@ class TransactionSrocTranslator extends BaseTranslator {
     }
   }
 
-  // TODO: Translations need to be sorted correctly to use db fields as required eg. `regimeValue5` etc. For now we simply translate to the same string as the input
   _translations () {
     return {
       ruleset: 'ruleset',
