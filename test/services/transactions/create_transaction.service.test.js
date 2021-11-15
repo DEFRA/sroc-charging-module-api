@@ -91,8 +91,8 @@ describe('Create Transaction service', () => {
   })
 
   describe('When the data is invalid', () => {
-    describe("because the 'payload' is invalid", () => {
-      describe("due to an item validated by the 'transaction'", () => {
+    describe('because the payload is invalid', () => {
+      describe('due to an item validated by the transaction', () => {
         it('throws an error', async () => {
           payload.customerReference = ''
 
@@ -104,13 +104,25 @@ describe('Create Transaction service', () => {
         })
       })
 
-      describe("due to an item validated by the 'charge'", () => {
+      describe('due to an item validated by the charge', () => {
         it('throws an error', async () => {
           payload.periodStart = '01-APR-2021'
 
           const err = await expect(
             CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
           ).to.reject(ValidationError)
+
+          expect(err).to.be.an.error()
+        })
+      })
+
+      describe('due to an invalid ruleset', () => {
+        it('throws an error', async () => {
+          payload.ruleset = 'INVALID'
+
+          const err = await expect(
+            CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+          ).to.reject()
 
           expect(err).to.be.an.error()
         })

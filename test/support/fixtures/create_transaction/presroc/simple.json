@@ -22,5 +22,6 @@
   "chargeElementId": "",
   "batchNumber": "TONY10",
   "region": "A",
-  "areaCode": "ARCA"
+  "areaCode": "ARCA",
+  "ruleset": "presroc"
 }

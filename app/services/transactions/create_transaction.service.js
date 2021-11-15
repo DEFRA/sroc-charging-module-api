@@ -4,6 +4,8 @@
  * @module CreateTransactionService
  */
 
+const Boom = require('@hapi/boom')
+
 const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../../models')
 const { TransactionPresrocTranslator } = require('../../translators')
 const CalculateChargeService = require('../charges/calculate_charge.service')
@@ -11,7 +13,9 @@ const { CreateTransactionPresenter } = require('../../presenters')
 
 class CreateTransactionService {
   static async go (payload, billRun, authorisedSystem, regime) {
-    const translator = this._translateRequest(payload, billRun.id, authorisedSystem, regime)
+    const transactionTranslator = this._determineTranslator(payload.ruleset)
+
+    const translator = this._translateRequest(payload, billRun.id, authorisedSystem, regime, transactionTranslator)
 
     const calculatedCharge = await this._calculateCharge(translator, regime)
 
@@ -22,8 +26,17 @@ class CreateTransactionService {
     return this._response(transaction)
   }
 
-  static _translateRequest (payload, billRunId, authorisedSystem, regime) {
-    return new TransactionPresrocTranslator({
+  static _determineTranslator (ruleset) {
+    switch (ruleset) {
+      case 'presroc':
+        return TransactionPresrocTranslator
+      default:
+        throw Boom.badData('Invalid ruleset')
+    }
+  }
+
+  static _translateRequest (payload, billRunId, authorisedSystem, regime, TransactionTranslator) {
+    return new TransactionTranslator({
       ...payload,
       billRunId,
       regimeId: regime.id,
