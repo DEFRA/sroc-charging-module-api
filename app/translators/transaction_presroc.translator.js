@@ -3,7 +3,7 @@
 const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
 
-class TransactionTranslator extends BaseTranslator {
+class TransactionPresrocTranslator extends BaseTranslator {
   _schema () {
     return Joi.object({
       billRunId: Joi.string().required(),
@@ -108,4 +108,4 @@ class TransactionTranslator extends BaseTranslator {
   }
 }
 
-module.exports = TransactionTranslator
+module.exports = TransactionPresrocTranslator

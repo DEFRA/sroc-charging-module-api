@@ -1,7 +1,7 @@
 'use strict'
 
 const { TransactionModel } = require('../../../app/models')
-const { RulesServicePresrocTranslator, TransactionTranslator } = require('../../../app/translators')
+const { RulesServicePresrocTranslator, TransactionPresrocTranslator } = require('../../../app/translators')
 
 const { CreateTransactionTallyService } = require('../../../app/services')
 
@@ -49,7 +49,7 @@ class NewTransactionHelper {
   }
 
   static _defaultSimpleTransaction (billRunId) {
-    return new TransactionTranslator({
+    return new TransactionPresrocTranslator({
       billRunId,
       ...requestFixtures.simple,
       regimeId: GeneralHelper.uuid4(),
