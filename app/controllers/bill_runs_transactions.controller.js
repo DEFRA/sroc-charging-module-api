@@ -7,9 +7,6 @@ const {
 
 class BillRunsTransactionsController {
   static async create (req, h) {
-    // Set default ruleset -- this controller will become the v2 controller in a future PR
-    req.payload.ruleset = 'presroc'
-
     await ValidateBillRunRegion.go(req.app.billRun, req.payload.region)
 
     const result = await CreateTransactionService.go(req.payload, req.app.billRun, req.auth.credentials.user, req.app.regime)
