@@ -7,7 +7,10 @@ const { BillRunGenerator } = require('../../../../test/support/generators')
 class TestBillRunController {
   static async create (req, h) {
     const result = await CreateBillRunService.go(
-      { region: req.payload.region },
+      {
+        region: req.payload.region,
+        ruleset: 'presroc'
+      },
       req.auth.credentials.user,
       req.app.regime
     )

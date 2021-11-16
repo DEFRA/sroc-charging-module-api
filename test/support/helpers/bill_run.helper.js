@@ -14,7 +14,7 @@ class BillRunHelper {
    *
    * @returns {module:BillRunModel} The newly created instance of `BillRunModel`.
    */
-  static addBillRun (authorisedSystemId, regimeId, region = 'A', status = 'initialised', ruleset = 'sroc') {
+  static addBillRun (authorisedSystemId, regimeId, region = 'A', status = 'initialised', ruleset = 'presroc') {
     return BillRunModel.query()
       .insert({
         createdBy: authorisedSystemId,
