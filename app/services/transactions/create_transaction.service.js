@@ -13,7 +13,7 @@ const { CreateTransactionPresenter } = require('../../presenters')
 
 class CreateTransactionService {
   static async go (payload, billRun, authorisedSystem, regime) {
-    const transactionTranslator = this._determineTranslator(payload.ruleset)
+    const transactionTranslator = this._determineTranslator(billRun.ruleset)
 
     const translator = this._translateRequest(payload, billRun.id, authorisedSystem, regime, transactionTranslator)
 

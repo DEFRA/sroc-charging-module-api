@@ -14,6 +14,7 @@ const {
   BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
+  NewBillRunHelper,
   RegimeHelper,
   TransactionHelper
 } = require('../../support/helpers')
@@ -39,7 +40,7 @@ describe('Create Transaction service', () => {
     await DatabaseHelper.clean()
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
-    billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    billRun = await NewBillRunHelper.create(regime.id, authorisedSystem.id)
 
     // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
     // the valid tests we can use it straight as
