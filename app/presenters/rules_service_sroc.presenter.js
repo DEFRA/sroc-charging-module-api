@@ -17,24 +17,26 @@ class RulesServiceSrocPresenter extends BasePresenter {
       financialYear: data.chargeFinancialYear,
       chargeParams: {
         WRLSChargingRequest: {
-          abatementAdjustment: data.abatementFactor,
-          abstractableDays: data.authorisedDays,
-          actualVolume: data.actualVolume,
-          aggregateProportion: data.aggregateProportion,
-          authorisedVolume: data.authorisedVolume,
-          billableDays: data.billableDays,
-          chargeCategory: data.chargeCategoryCode,
-          compensationCharge: data.compensationCharge,
-          loss: data.loss,
-          regionalChargingArea: data.regionalChargingArea,
-          s127Agreement: data.section127Agreement,
-          s130Agreement: data.section130Agreement,
-          secondPartCharge: data.twoPartTariff,
-          supportedSourceName: data.supportedSourceName,
-          supportedSourceChargeFlag: data.supportedSource,
-          waterCompanyChargeFlag: data.waterCompany,
-          waterUndertaker: data.waterUndertaker,
-          winterOnly: data.winterOnly
+          // Some field names differ from their use elsewhere, eg. CalculateChargeSrocTranslator. Their alternate names
+          // are commented below.
+          abatementAdjustment: data.regimeValue19,
+          abstractableDays: data.regimeValue5, // authorisedDays
+          actualVolume: data.regimeValue20,
+          aggregateProportion: data.headerAttr2,
+          authorisedVolume: data.headerAttr3,
+          billableDays: data.regimeValue4,
+          chargeCategory: data.headerAttr4,
+          compensationCharge: data.regimeValue17,
+          loss: data.regimeValue8,
+          regionalChargingArea: data.regimeValue15,
+          s127Agreement: data.regimeValue12, // section127Agreement
+          s130Agreement: data.regimeValue9, // section130Agreement
+          secondPartCharge: data.regimeValue16, // twoPartTariff
+          supportedSourceName: data.headerAttr6,
+          supportedSourceChargeFlag: data.headerAttr5, // supportedSource
+          waterCompanyChargeFlag: data.headerAttr7, // waterCompanyCharge
+          waterUndertaker: data.regimeValue14,
+          winterOnly: data.headerAttr8
         }
       }
     }

@@ -15,13 +15,13 @@ class CalculateChargeSrocPresenter extends BasePresenter {
     return {
       calculation: {
         chargeValue: this._calculateChargeValue(data),
-        baseCharge: data.baseCharge,
-        waterCompanyChargeValue: data.waterCompanyChargeValue,
-        supportedSourceValue: data.supportedSourceValue,
-        winterOnlyFactor: data.winterOnlyFactor,
-        section130Factor: data.section130Factor,
-        section127Factor: data.section127Factor,
-        compensationChargePercent: data.compensationChargePercent
+        baseCharge: data.headerAttr9,
+        waterCompanyChargeValue: data.headerAttr10,
+        supportedSourceValue: data.lineAttr11,
+        winterOnlyFactor: data.lineAttr12,
+        section130Factor: data.lineAttr9,
+        section127Factor: data.lineAttr15,
+        compensationChargePercent: data.regimeValue2
       }
     }
   }
