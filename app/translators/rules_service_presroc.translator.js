@@ -39,7 +39,6 @@ class RulesServicePresrocTranslator extends BaseTranslator {
 
   _translations () {
     return {
-      chargeValue: 'chargeValue',
       sourceFactor: 'lineAttr6',
       seasonFactor: 'lineAttr7',
       lossFactor: 'lineAttr8',

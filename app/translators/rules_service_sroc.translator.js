@@ -16,17 +16,17 @@ class RulesServiceSrocTranslator extends BaseTranslator {
     this.chargeCalculation = JSON.stringify(data)
 
     this.chargeValue = this._convertToPence(this._data.chargeValue)
-    this.baseCharge = this._convertToPence(this._data.baselineCharge)
-    this.waterCompanyChargeValue = this._convertToPence(this._data.waterCompanyCharge)
-    this.supportedSourceValue = this._convertToPence(this._data.supportedSourceCharge)
+    this.headerAttr9 = this._convertToPence(this._data.baselineCharge)
+    this.headerAttr10 = this._convertToPence(this._data.waterCompanyCharge)
+    this.lineAttr11 = this._convertToPence(this._data.supportedSourceCharge)
 
     // Extract factor value from strings
-    this.winterOnlyFactor = this._extractFactor(this._data.winterOnlyAdjustment)
-    this.section130Factor = this._extractFactor(this._data.s130Agreement)
-    this.section127Factor = this._extractFactor(this._data.s127Agreement)
+    this.lineAttr12 = this._extractFactor(this._data.winterOnlyAdjustment)
+    this.lineAttr9 = this._extractFactor(this._data.s130Agreement)
+    this.lineAttr15 = this._extractFactor(this._data.s127Agreement)
 
     // Convert percentage string to value
-    this.compensationChargePercent = this._convertPercentage(this._data.compensationChargePercentage)
+    this.regimeValue2 = this._convertPercentage(this._data.compensationChargePercentage)
   }
 
   _schema () {
@@ -42,17 +42,9 @@ class RulesServiceSrocTranslator extends BaseTranslator {
     }).options({ stripUnknown: true })
   }
 
+  // All items in the response require conversion, which is done in constructor(). Therefore no translations are needed.
   _translations () {
-    return {
-      chargeValue: 'chargeValue',
-      baselineCharge: 'baseCharge',
-      waterCompanyCharge: 'waterCompanyChargeValue',
-      supportedSourceCharge: 'supportedSourceValue',
-      winterOnlyAdjustment: 'winterOnlyFactor',
-      s130Agreement: 'section130Factor',
-      s127Agreement: 'section127Factor',
-      compensationChargePercentage: 'compensationChargePercent'
-    }
+    return { }
   }
 
   _convertToPence (value) {

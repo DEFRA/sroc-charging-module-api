@@ -31,43 +31,43 @@ describe('Rules Service Sroc translator', () => {
     })
   })
 
-  describe('the baseCharge property', () => {
+  describe('the headerAttr9 property', () => {
     it('is translated to pence instead of pounds and pence', async () => {
       data.WRLSChargingResponse.baselineCharge = 123.45
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
-      expect(testTranslator.baseCharge).to.equal(12345)
+      expect(testTranslator.headerAttr9).to.equal(12345)
     })
   })
 
-  describe('the waterCompanyChargeValue property', () => {
+  describe('the headerAttr10 property', () => {
     it('is translated to pence instead of pounds and pence', async () => {
       data.WRLSChargingResponse.waterCompanyCharge = 123.45
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
-      expect(testTranslator.waterCompanyChargeValue).to.equal(12345)
+      expect(testTranslator.headerAttr10).to.equal(12345)
     })
   })
 
-  describe('the supportedSourceValue property', () => {
+  describe('the lineAttr11 property', () => {
     it('is translated to pence instead of pounds and pence', async () => {
       data.WRLSChargingResponse.supportedSourceCharge = 123.45
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
-      expect(testTranslator.supportedSourceValue).to.equal(12345)
+      expect(testTranslator.lineAttr11).to.equal(12345)
     })
   })
 
-  describe('the winterOnlyFactor property', () => {
+  describe('the lineAttr12 property', () => {
     it('returns the factor value when specified', async () => {
       data.WRLSChargingResponse.winterOnlyAdjustment = 'Winter Only Discount 0.5'
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
-      expect(testTranslator.winterOnlyFactor).to.equal(0.5)
+      expect(testTranslator.lineAttr12).to.equal(0.5)
     })
 
     it('returns `null` if the Rules Service returned `null`', async () => {
@@ -75,17 +75,17 @@ describe('Rules Service Sroc translator', () => {
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
-      expect(testTranslator.winterOnlyFactor).to.equal(null)
+      expect(testTranslator.lineAttr12).to.equal(null)
     })
   })
 
-  describe('the section130Factor property', () => {
+  describe('the lineAttr9 property', () => {
     it('returns the factor value when specified', async () => {
       data.WRLSChargingResponse.s130Agreement = 'CRT 0.5'
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
-      expect(testTranslator.section130Factor).to.equal(0.5)
+      expect(testTranslator.lineAttr9).to.equal(0.5)
     })
 
     it('returns `null` if the Rules Service returned `null`', async () => {
@@ -93,17 +93,17 @@ describe('Rules Service Sroc translator', () => {
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
-      expect(testTranslator.section130Factor).to.equal(null)
+      expect(testTranslator.lineAttr9).to.equal(null)
     })
   })
 
-  describe('the section127Factor property', () => {
+  describe('the lineAttr15 property', () => {
     it('returns the factor value when specified', async () => {
       data.WRLSChargingResponse.s127Agreement = 'Two-Part tariff 0.5'
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
-      expect(testTranslator.section127Factor).to.equal(0.5)
+      expect(testTranslator.lineAttr15).to.equal(0.5)
     })
 
     it('returns `null` if the Rules Service returned `null`', async () => {
@@ -111,17 +111,17 @@ describe('Rules Service Sroc translator', () => {
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
-      expect(testTranslator.section127Factor).to.equal(null)
+      expect(testTranslator.lineAttr15).to.equal(null)
     })
   })
 
-  describe('the compensationChargePercent property', () => {
+  describe('the regimeValue2 property', () => {
     it('returns the percentage as a number', async () => {
       data.WRLSChargingResponse.compensationChargePercentage = '50%'
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
-      expect(testTranslator.compensationChargePercent).to.equal(50)
+      expect(testTranslator.regimeValue2).to.equal(50)
     })
   })
 })
