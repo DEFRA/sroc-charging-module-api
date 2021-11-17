@@ -16,12 +16,12 @@ const { init } = require('../../app/server')
 const {
   AuthorisationHelper,
   AuthorisedSystemHelper,
-  BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
+  NewBillRunHelper,
+  NewTransactionHelper,
   RegimeHelper,
-  RulesServiceHelper,
-  TransactionHelper
+  RulesServiceHelper
 } = require('../support/helpers')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
@@ -52,7 +52,7 @@ describe('Bill runs transactions controller', () => {
 
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
-    billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
   })
 
   after(async () => {
@@ -118,18 +118,28 @@ describe('Bill runs transactions controller', () => {
 
       describe("because the request is for a duplicate transaction (matching clientId's)", () => {
         it('returns an error', async () => {
-          // Add the first transaction
-          await TransactionHelper.addTransaction(
-            billRun.id,
-            { createdBy: authorisedSystem.id, regimeId: regime.id, clientId: 'DOUBLEIMPACT' }
-          )
+          // Create a transaction. We don't specify a licence for it so the helper will create a whole new licence,
+          // invoice and bill run. This is fine as we're going to attempt to create our second transaction on this
+          // transaction's bill run, ignoring the existing bill run, but injecting the second transaction will use the regime id of the existing bill run. So we
+          // override the regime id of the transaction we create now with the existing bill run's regime id.
+          const firstTransaction = await NewTransactionHelper.create(null, { clientId: 'DOUBLEIMPACT', regimeId: billRun.regimeId })
 
           payload.clientId = 'DOUBLEIMPACT'
 
           // Attempt to add the second
-          const response = await server.inject(options(authToken, payload, billRun.id))
+          const response = await server.inject(options(authToken, payload, firstTransaction.billRunId))
 
           expect(response.statusCode).to.equal(409)
+        })
+      })
+
+      describe('because the request is for sroc', () => {
+        it('returns an error', async () => {
+          const srocBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { ruleset: 'sroc' })
+
+          const response = await server.inject(options(authToken, payload, srocBillRun.id))
+
+          expect(response.statusCode).to.equal(422)
         })
       })
     })
@@ -146,12 +156,9 @@ describe('Bill runs transactions controller', () => {
 
     describe('When the request is valid', () => {
       it('returns success status 200', async () => {
-        const transaction = await TransactionHelper.addTransaction(
-          billRun.id,
-          { createdBy: authorisedSystem.id, regimeId: regime.id }
-        )
+        const transaction = await NewTransactionHelper.create()
 
-        const response = await server.inject(options(authToken, billRun.id, transaction.id))
+        const response = await server.inject(options(authToken, transaction.billRunId, transaction.id))
         const responsePayload = JSON.parse(response.payload)
 
         expect(response.statusCode).to.equal(200)
