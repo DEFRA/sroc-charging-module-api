@@ -45,7 +45,7 @@ class NewBillRunHelper {
     return {
       region: 'A',
       status: 'initialised',
-      ruleset: 'sroc'
+      ruleset: 'presroc'
     }
   }
 

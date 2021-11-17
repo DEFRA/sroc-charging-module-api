@@ -4,14 +4,29 @@
  * @module CreateTransactionService
  */
 
+const Boom = require('@hapi/boom')
+
 const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../../models')
 const { TransactionPresrocTranslator } = require('../../translators')
 const CalculateChargeService = require('../charges/calculate_charge.service')
 const { CreateTransactionPresenter } = require('../../presenters')
 
 class CreateTransactionService {
+  /**
+   * Creates a new transaction on the specified bill run.
+   *
+   * @param {Object} payload The payload from the API request.
+   * @param {module:BillRunModel} billRun Instance of `BillRunModel` that the transaction is to be created on.
+   * @param {module:AuthorisedSystemModel} authorisedSystem Instance of `AuthorisedSystemModel' representing the
+   *  authenticated user.
+   * @param {module:RegimeModel} regime Instance of `RegimeModel` representing the regime we are creating the
+   *  transaction for.
+   * @returns {Object} Details of the newly-created transaction.
+   */
   static async go (payload, billRun, authorisedSystem, regime) {
-    const translator = this._translateRequest(payload, billRun.id, authorisedSystem, regime)
+    const transactionTranslator = this._determineTranslator(billRun.ruleset)
+
+    const translator = this._translateRequest(payload, billRun.id, authorisedSystem, regime, transactionTranslator)
 
     const calculatedCharge = await this._calculateCharge(translator, regime)
 
@@ -22,8 +37,17 @@ class CreateTransactionService {
     return this._response(transaction)
   }
 
-  static _translateRequest (payload, billRunId, authorisedSystem, regime) {
-    return new TransactionPresrocTranslator({
+  static _determineTranslator (ruleset) {
+    switch (ruleset) {
+      case 'presroc':
+        return TransactionPresrocTranslator
+      default:
+        throw Boom.badData('Invalid ruleset')
+    }
+  }
+
+  static _translateRequest (payload, billRunId, authorisedSystem, regime, TransactionTranslator) {
+    return new TransactionTranslator({
       ...payload,
       billRunId,
       regimeId: regime.id,

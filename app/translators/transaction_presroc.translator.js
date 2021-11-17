@@ -20,7 +20,7 @@ class TransactionPresrocTranslator extends BaseTranslator {
       subjectToMinimumCharge: Joi.boolean().default(false),
       clientId: Joi.string().allow('', null),
       // Set a new field called ruleset. This will identify which ruleset the transaction and it's charge relates to
-      ruleset: Joi.string().default('presroc')
+      ruleset: Joi.string().allow('presroc').default('presroc')
     })
   }
 

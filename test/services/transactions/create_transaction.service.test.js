@@ -14,6 +14,7 @@ const {
   BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
+  NewBillRunHelper,
   RegimeHelper,
   TransactionHelper
 } = require('../../support/helpers')
@@ -39,7 +40,7 @@ describe('Create Transaction service', () => {
     await DatabaseHelper.clean()
     regime = await RegimeHelper.addRegime('wrls', 'WRLS')
     authorisedSystem = await AuthorisedSystemHelper.addSystem('1234546789', 'system1', [regime])
-    billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+    billRun = await NewBillRunHelper.create(regime.id, authorisedSystem.id)
 
     // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
     // the valid tests we can use it straight as
@@ -91,8 +92,8 @@ describe('Create Transaction service', () => {
   })
 
   describe('When the data is invalid', () => {
-    describe("because the 'payload' is invalid", () => {
-      describe("due to an item validated by the 'transaction'", () => {
+    describe('because the payload is invalid', () => {
+      describe('due to an item validated by the transaction', () => {
         it('throws an error', async () => {
           payload.customerReference = ''
 
@@ -104,13 +105,25 @@ describe('Create Transaction service', () => {
         })
       })
 
-      describe("due to an item validated by the 'charge'", () => {
+      describe('due to an item validated by the charge', () => {
         it('throws an error', async () => {
           payload.periodStart = '01-APR-2021'
 
           const err = await expect(
             CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
           ).to.reject(ValidationError)
+
+          expect(err).to.be.an.error()
+        })
+      })
+
+      describe('due to an invalid ruleset', () => {
+        it('throws an error', async () => {
+          payload.ruleset = 'INVALID'
+
+          const err = await expect(
+            CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+          ).to.reject()
 
           expect(err).to.be.an.error()
         })
