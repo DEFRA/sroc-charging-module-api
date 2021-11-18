@@ -15,14 +15,20 @@ const {
   DatabaseHelper,
   GeneralHelper,
   NewBillRunHelper,
-  RegimeHelper,
-  TransactionHelper
+  NewTransactionHelper,
+  RegimeHelper
 } = require('../../support/helpers')
-const { TransactionModel } = require('../../../app/models')
+const { BillRunModel, TransactionModel } = require('../../../app/models')
 const { ValidationError } = require('joi')
 
-const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
-const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
+const {
+  presroc: presrocTransactionFixtures,
+  sroc: srocTransactionFixtures
+} = require('../../support/fixtures/create_transaction')
+const {
+  presroc: presrocChargeFixtures,
+  sroc: srocChargeFixtures
+} = require('../../support/fixtures/calculate_charge')
 
 // Things we need to stub
 const { RequestRulesServiceCharge } = require('../../../app/services')
@@ -44,7 +50,7 @@ describe('Create Transaction service', () => {
 
     // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
     // the valid tests we can use it straight as
-    payload = GeneralHelper.cloneObject(requestFixtures.simple)
+    payload = GeneralHelper.cloneObject(presrocTransactionFixtures.simple)
   })
 
   afterEach(async () => {
@@ -52,41 +58,79 @@ describe('Create Transaction service', () => {
   })
 
   describe('When the data is valid', () => {
+    beforeEach(async () => {
+      Sinon.stub(RequestRulesServiceCharge, 'go').returns(presrocChargeFixtures.simple.rulesService)
+    })
+
     describe('and the bill run has not been generated', () => {
-      let result
-
-      beforeEach(async () => {
-        Sinon.stub(RequestRulesServiceCharge, 'go').returns(chargeFixtures.simple.rulesService)
-        const transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
-        result = await TransactionModel.query().findById(transaction.transaction.id)
-      })
-
       it('creates a transaction', async () => {
+        const transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+        const result = await TransactionModel.query().findById(transaction.transaction.id)
+
         expect(result.id).to.exist()
       })
     })
 
     describe('and the bill run has been generated', () => {
-      let result
-
       beforeEach(async () => {
-        Sinon.stub(RequestRulesServiceCharge, 'go').returns(chargeFixtures.simple.rulesService)
-        const transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
-        result = await TransactionModel.query().findById(transaction.transaction.id)
+        await BillRunHelper.generateBillRun(billRun.id)
       })
 
       it('creates a transaction', async () => {
+        const transaction = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+        const result = await TransactionModel.query().findById(transaction.transaction.id)
+
         expect(result.id).to.exist()
       })
 
       it("resets the bill run to 'initialised'", async () => {
-        await BillRunHelper.generateBillRun(billRun.id)
         await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
 
         const refreshedBillRun = await billRun.$query()
 
         expect(refreshedBillRun.status).to.equal('initialised')
         expect(refreshedBillRun.invoiceCount).to.equal(0)
+      })
+    })
+
+    describe('and the bill run is presroc', () => {
+      let presrocBillRun
+      let presrocPayload
+
+      beforeEach(async () => {
+        // We've already stubbed this service to return the presroc fixture but we stub again to make the intent clear
+        Sinon.restore()
+        Sinon.stub(RequestRulesServiceCharge, 'go').returns(presrocChargeFixtures.simple.rulesService)
+
+        presrocBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'presroc' })
+        presrocPayload = GeneralHelper.cloneObject(presrocTransactionFixtures.simple)
+      })
+
+      it('creates a transaction', async () => {
+        const transaction = await CreateTransactionService.go(presrocPayload, presrocBillRun, authorisedSystem, regime)
+        const result = await TransactionModel.query().findById(transaction.transaction.id)
+
+        expect(result.id).to.exist()
+      })
+    })
+
+    describe('and the bill run is sroc', () => {
+      let srocBillRun
+      let srocPayload
+
+      beforeEach(async () => {
+        Sinon.restore()
+        Sinon.stub(RequestRulesServiceCharge, 'go').returns(srocChargeFixtures.simple.rulesService)
+
+        srocBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'presroc' })
+        srocPayload = GeneralHelper.cloneObject(srocTransactionFixtures.simple)
+      })
+
+      it('creates a transaction', async () => {
+        const transaction = await CreateTransactionService.go(srocPayload, srocBillRun, authorisedSystem, regime)
+        const result = await TransactionModel.query().findById(transaction.transaction.id)
+
+        expect(result.id).to.exist()
       })
     })
   })
@@ -132,18 +176,19 @@ describe('Create Transaction service', () => {
 
     describe("because the request is for a duplicate transaction (matching clientId's)", () => {
       beforeEach(async () => {
-        Sinon.stub(RequestRulesServiceCharge, 'go').returns(chargeFixtures.simple.rulesService)
+        Sinon.stub(RequestRulesServiceCharge, 'go').returns(presrocChargeFixtures.simple.rulesService)
       })
 
       it('throws an error', async () => {
         payload.clientId = 'DOUBLEIMPACT'
 
         // Add the first transaction
-        await TransactionHelper.addTransaction(billRun.id, { regimeId: regime.id, clientId: 'DOUBLEIMPACT' })
+        const firstTransaction = await NewTransactionHelper.create(null, { regimeId: regime.id, clientId: 'DOUBLEIMPACT' })
+        const firstTransactionBillRun = await BillRunModel.query().findById(firstTransaction.billRunId)
 
         // Attempt to add a transaction with a duplicate clientId
         const err = await expect(
-          CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+          CreateTransactionService.go(payload, firstTransactionBillRun, authorisedSystem, regime)
         ).to.reject()
 
         expect(err).to.be.an.error()
