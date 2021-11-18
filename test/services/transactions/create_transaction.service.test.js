@@ -76,20 +76,20 @@ describe('Create Transaction service', () => {
     })
 
     describe('and the bill run has been generated', () => {
+      let transaction
+
       beforeEach(async () => {
         await BillRunHelper.generateBillRun(billRun.id)
+        transaction = await CreateTransactionService.go(presrocPayload, billRun, authorisedSystem, regime)
       })
 
       it('creates a transaction', async () => {
-        const transaction = await CreateTransactionService.go(presrocPayload, billRun, authorisedSystem, regime)
         const result = await TransactionModel.query().findById(transaction.transaction.id)
 
         expect(result.id).to.exist()
       })
 
       it("resets the bill run to 'initialised'", async () => {
-        await CreateTransactionService.go(presrocPayload, billRun, authorisedSystem, regime)
-
         const refreshedBillRun = await billRun.$query()
 
         expect(refreshedBillRun.status).to.equal('initialised')
@@ -99,11 +99,9 @@ describe('Create Transaction service', () => {
 
     describe('and the bill run is presroc', () => {
       let presrocBillRun
-      let presrocPayload
 
       beforeEach(async () => {
         presrocBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'presroc' })
-        presrocPayload = GeneralHelper.cloneObject(presrocTransactionFixtures.simple)
       })
 
       it('creates a transaction', async () => {
@@ -118,7 +116,7 @@ describe('Create Transaction service', () => {
       let srocBillRun
 
       beforeEach(async () => {
-        srocBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'presroc' })
+        srocBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'sroc' })
       })
 
       it('creates a transaction', async () => {
