@@ -6,7 +6,7 @@ const Code = require('@hapi/code')
 const Sinon = require('sinon')
 const Nock = require('nock')
 
-const { describe, it, before, beforeEach, after } = exports.lab = Lab.script()
+const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // For running our service
@@ -29,6 +29,11 @@ const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charg
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
+const {
+  CreateTransactionService,
+  CreateTransactionV2GuardService,
+  ValidateBillRunRegion
+} = require('../../app/services')
 
 describe('Bill runs transactions controller', () => {
   const clientID = '1234546789'
@@ -62,6 +67,9 @@ describe('Bill runs transactions controller', () => {
 
   describe('Create a bill run transaction: POST /v2/{regimeSlug}/bill-runs/{billRunId}/transactions', () => {
     let payload
+    let guardStub
+    let validateStub
+    let createStub
 
     const options = (token, payload, billRunId) => {
       return {
@@ -73,75 +81,60 @@ describe('Bill runs transactions controller', () => {
     }
 
     beforeEach(async () => {
-      // Intercept all requests in this group as we don't actually want to call the service. Tell Nock to persist()
-      // the interception rather than remove it after the first request
-      Nock(RulesServiceHelper.url)
-        .post(() => true)
-        .reply(200, chargeFixtures.simple.rulesService)
-        .persist()
+      createStub = Sinon.stub(CreateTransactionService, 'go').returns({
+        transaction: {
+          id: GeneralHelper.uuid4(),
+          clientId: null
+        }
+      })
+      guardStub = Sinon.stub(CreateTransactionV2GuardService, 'go')
+      validateStub = Sinon.stub(ValidateBillRunRegion, 'go')
 
       // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
       // the valid tests we can use it straight as
       payload = GeneralHelper.cloneObject(requestFixtures.simple)
     })
 
-    describe('When the request is valid', () => {
-      it("returns the 'id' of the new transaction", async () => {
-        const response = await server.inject(options(authToken, payload, billRun.id))
-        const responsePayload = JSON.parse(response.payload)
-
-        expect(response.statusCode).to.equal(201)
-        expect(responsePayload.transaction.id).to.exist()
-      })
+    afterEach(async () => {
+      createStub.restore()
+      guardStub.restore()
+      validateStub.restore()
     })
 
-    describe('When the request is invalid', () => {
-      describe('because it contains invalid data', () => {
-        it('returns an error', async () => {
-          payload.periodStart = '01-APR-2021'
+    it('passes the bill run to CreateTransactionV2GuardService', async () => {
+      await server.inject(options(authToken, payload, billRun.id))
 
-          const response = await server.inject(options(authToken, payload, billRun.id))
+      expect(guardStub.calledOnceWith(billRun)).to.be.true()
+    })
 
-          expect(response.statusCode).to.equal(422)
-        })
-      })
+    it('validates the request bill run and region', async () => {
+      await server.inject(options(authToken, payload, billRun.id))
 
-      describe("it's for a different region", () => {
-        it('returns an error', async () => {
-          payload.region = 'W'
+      expect(validateStub.calledOnceWith(billRun, payload.region)).to.be.true()
+    })
 
-          const response = await server.inject(options(authToken, payload, billRun.id))
+    it('calls CreateTransactionService with the appropriate arguments', async () => {
+      await server.inject(options(authToken, payload, billRun.id))
 
-          expect(response.statusCode).to.equal(422)
-        })
-      })
+      // createStub.calledOnceWith() doesn't work here for some reason! So we check the args individually
+      expect(createStub.calledOnce).to.be.true()
+      expect(createStub.firstCall.args).to.include(regime)
+      expect(createStub.firstCall.args).to.include(billRun)
 
-      describe("because the request is for a duplicate transaction (matching clientId's)", () => {
-        it('returns an error', async () => {
-          // Create a transaction. We don't specify a licence for it so the helper will create a whole new licence,
-          // invoice and bill run. This is fine as we're going to attempt to create our second transaction on this
-          // transaction's bill run, ignoring the existing bill run, but injecting the second transaction will use the regime id of the existing bill run. So we
-          // override the regime id of the transaction we create now with the existing bill run's regime id.
-          const firstTransaction = await NewTransactionHelper.create(null, { clientId: 'DOUBLEIMPACT', regimeId: billRun.regimeId })
+      // We can't directly check that args includes payload as its empty fields were stripped when we made the request
+      expect(createStub.firstCall.firstArg.customerReference).to.equal(payload.customerReference)
 
-          payload.clientId = 'DOUBLEIMPACT'
+      // We can't directly check that args includes authorisedSystem as the instance we have includes the `regimes`
+      // array that isn't present in req.auth.credentials.user
+      expect(createStub.firstCall.args[2].id).to.equal(authorisedSystem.id)
+    })
 
-          // Attempt to add the second
-          const response = await server.inject(options(authToken, payload, firstTransaction.billRunId))
+    it('returns the id of the new transaction', async () => {
+      const response = await server.inject(options(authToken, payload, billRun.id))
+      const responsePayload = JSON.parse(response.payload)
 
-          expect(response.statusCode).to.equal(409)
-        })
-      })
-
-      describe('because the request is for sroc', () => {
-        it('returns an error', async () => {
-          const srocBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { ruleset: 'sroc' })
-
-          const response = await server.inject(options(authToken, payload, srocBillRun.id))
-
-          expect(response.statusCode).to.equal(422)
-        })
-      })
+      expect(response.statusCode).to.equal(201)
+      expect(responsePayload.transaction.id).to.exist()
     })
   })
 
