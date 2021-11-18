@@ -7,7 +7,7 @@
 const Boom = require('@hapi/boom')
 
 const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../../models')
-const { TransactionPresrocTranslator } = require('../../translators')
+const { TransactionPresrocTranslator, TransactionSrocTranslator } = require('../../translators')
 const CalculateChargeService = require('../charges/calculate_charge.service')
 const { CreateTransactionPresenter } = require('../../presenters')
 
@@ -41,6 +41,8 @@ class CreateTransactionService {
     switch (ruleset) {
       case 'presroc':
         return TransactionPresrocTranslator
+      case 'sroc':
+        return TransactionSrocTranslator
       default:
         throw Boom.badData('Invalid ruleset')
     }
