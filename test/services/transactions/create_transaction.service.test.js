@@ -116,7 +116,7 @@ describe('Create Transaction service', () => {
       let srocBillRun
 
       beforeEach(async () => {
-        srocBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'presroc' })
+        srocBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'sroc' })
       })
 
       it('creates a transaction', async () => {
