@@ -33,7 +33,7 @@ class RegimeHelper {
       .insert({
         slug: slug,
         name: name,
-        pre_sroc_cutoff_date: '2018-04-01'
+        preSrocCutoffDate: '2018-04-01'
       })
       .returning('*')
   }
