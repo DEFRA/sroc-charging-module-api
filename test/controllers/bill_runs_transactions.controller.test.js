@@ -20,12 +20,10 @@ const {
   GeneralHelper,
   NewBillRunHelper,
   NewTransactionHelper,
-  RegimeHelper,
-  RulesServiceHelper
+  RegimeHelper
 } = require('../support/helpers')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
-const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -105,6 +103,70 @@ describe('Bill runs transactions controller', () => {
       await server.inject(options(authToken, payload, billRun.id))
 
       expect(guardStub.calledOnceWith(billRun)).to.be.true()
+    })
+
+    it('validates the request bill run and region', async () => {
+      await server.inject(options(authToken, payload, billRun.id))
+
+      expect(validateStub.calledOnceWith(billRun, payload.region)).to.be.true()
+    })
+
+    it('calls CreateTransactionService with the appropriate arguments', async () => {
+      await server.inject(options(authToken, payload, billRun.id))
+
+      // createStub.calledOnceWith() doesn't work here for some reason! So we check the args individually
+      expect(createStub.calledOnce).to.be.true()
+      expect(createStub.firstCall.args).to.include(regime)
+      expect(createStub.firstCall.args).to.include(billRun)
+
+      // We can't directly check that args includes payload as its empty fields were stripped when we made the request
+      expect(createStub.firstCall.firstArg.customerReference).to.equal(payload.customerReference)
+
+      // We can't directly check that args includes authorisedSystem as the instance we have includes the `regimes`
+      // array that isn't present in req.auth.credentials.user
+      expect(createStub.firstCall.args[2].id).to.equal(authorisedSystem.id)
+    })
+
+    it('returns the id of the new transaction', async () => {
+      const response = await server.inject(options(authToken, payload, billRun.id))
+      const responsePayload = JSON.parse(response.payload)
+
+      expect(response.statusCode).to.equal(201)
+      expect(responsePayload.transaction.id).to.exist()
+    })
+  })
+
+  describe('Create a bill run transaction: POST /v3/{regimeSlug}/bill-runs/{billRunId}/transactions', () => {
+    let payload
+    let validateStub
+    let createStub
+
+    const options = (token, payload, billRunId) => {
+      return {
+        method: 'POST',
+        url: `/v3/wrls/bill-runs/${billRunId}/transactions`,
+        headers: { authorization: `Bearer ${token}` },
+        payload: payload
+      }
+    }
+
+    beforeEach(async () => {
+      createStub = Sinon.stub(CreateTransactionService, 'go').returns({
+        transaction: {
+          id: GeneralHelper.uuid4(),
+          clientId: null
+        }
+      })
+      validateStub = Sinon.stub(ValidateBillRunRegion, 'go')
+
+      // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
+      // the valid tests we can use it straight as
+      payload = GeneralHelper.cloneObject(requestFixtures.simple)
+    })
+
+    afterEach(async () => {
+      createStub.restore()
+      validateStub.restore()
     })
 
     it('validates the request bill run and region', async () => {
