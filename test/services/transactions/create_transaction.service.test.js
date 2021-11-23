@@ -156,7 +156,8 @@ describe('Create Transaction service', () => {
 
       describe('due to an invalid ruleset', () => {
         it('throws an error', async () => {
-          presrocPayload.ruleset = 'INVALID'
+          // CreateTransactionService takes the ruleset from the bill run, not the payload
+          billRun.ruleset = 'INVALID'
 
           const err = await expect(
             CreateTransactionService.go(presrocPayload, billRun, authorisedSystem, regime)

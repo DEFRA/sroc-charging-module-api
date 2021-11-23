@@ -17,6 +17,7 @@ const CreateCustomerDetailsService = require('./create_customer_details.service'
 const CreateMinimumChargeAdjustmentTransactionService = require('./transactions/create_minimum_charge_adjustment_transaction.service')
 const CreateTransactionService = require('./transactions/create_transaction.service')
 const CreateTransactionTallyService = require('./transactions/create_transaction_tally.service')
+const CreateTransactionV2GuardService = require('./guards/create_transaction_v2_guard.service')
 const DatabaseHealthCheckService = require('./database_health_check.service')
 const DbErrorsService = require('./plugins/db_errors.service')
 const DeleteBillRunService = require('./bill_runs/delete_bill_run.service')
@@ -92,6 +93,7 @@ module.exports = {
   CreateMinimumChargeAdjustmentTransactionService,
   CreateTransactionService,
   CreateTransactionTallyService,
+  CreateTransactionV2GuardService,
   DatabaseHealthCheckService,
   DbErrorsService,
   DeleteBillRunService,
