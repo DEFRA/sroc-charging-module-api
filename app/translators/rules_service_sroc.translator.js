@@ -25,7 +25,7 @@ class RulesServiceSrocTranslator extends BaseTranslator {
     this.lineAttr9 = this._extractFactor(this._data.s130Agreement)
     this.lineAttr15 = this._extractFactor(this._data.s127Agreement)
 
-    // Convert percentage string to value
+    // Convert percentage string to value. Note that this will be `null` if the Rules Service did not return a value
     this.regimeValue2 = this._convertPercentage(this._data.compensationChargePercentage)
   }
 
@@ -38,7 +38,9 @@ class RulesServiceSrocTranslator extends BaseTranslator {
       winterOnlyAdjustment: Joi.required(),
       s130Agreement: Joi.required(),
       s127Agreement: Joi.required(),
-      compensationChargePercentage: Joi.string().required()
+      // compensationChargePercentage is only returned if this was a compensation charge. If it isn't returned then we
+      // default it to `null`
+      compensationChargePercentage: Joi.string().default(null)
     }).options({ stripUnknown: true })
   }
 
@@ -76,9 +78,15 @@ class RulesServiceSrocTranslator extends BaseTranslator {
   /**
    * Converts a string percentage into a value.
    *
-   * The Rules Service returns a percentage as a string in the form `50%`. We convert this to a number `50`.
+   * The Rules Service returns a percentage as a string in the form `50%`. We convert this to a number `50`. In some
+   * situations the Rules Service does not return any value. In this situation we will have previously defaulted it to
+   * `null` during validation, and we therefore return `null` from here.
    */
   _convertPercentage (percentageString) {
+    if (!percentageString) {
+      return null
+    }
+
     // parseFloat() will parse the passed-in string up to the first non-number character so this will give us the number
     // part of the percentage string.
     const percentageFloat = parseFloat(percentageString)

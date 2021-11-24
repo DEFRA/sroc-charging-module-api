@@ -123,5 +123,13 @@ describe('Rules Service Sroc translator', () => {
 
       expect(testTranslator.regimeValue2).to.equal(50)
     })
+
+    it('returns `null` if the Rules Service did not include it in the response', async () => {
+      data.WRLSChargingResponse.compensationChargePercentage = undefined
+
+      const testTranslator = new RulesServiceSrocTranslator(data)
+
+      expect(testTranslator.regimeValue2).to.equal(null)
+    })
   })
 })
