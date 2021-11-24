@@ -40,7 +40,7 @@ class RulesServiceSrocTranslator extends BaseTranslator {
       s127Agreement: Joi.required(),
       // compensationChargePercentage is only returned if this was a compensation charge. If it isn't returned then we
       // default it to `null`
-      compensationChargePercentage: Joi.string().default(null)
+      compensationChargePercentage: Joi.string().allow(null)
     }).options({ stripUnknown: true })
   }
 
