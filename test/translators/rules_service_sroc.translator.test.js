@@ -124,8 +124,8 @@ describe('Rules Service Sroc translator', () => {
       expect(testTranslator.regimeValue2).to.equal(50)
     })
 
-    it('returns `null` if the Rules Service did not include it in the response', async () => {
-      data.WRLSChargingResponse.compensationChargePercentage = undefined
+    it('returns `null` if the Rules Service returned `null`', async () => {
+      data.WRLSChargingResponse.compensationChargePercentage = null
 
       const testTranslator = new RulesServiceSrocTranslator(data)
 
