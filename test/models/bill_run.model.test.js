@@ -159,11 +159,11 @@ describe('Bill Run Model', () => {
     })
   })
 
-  describe('the $deminimisValue() method', () => {
-    it("returns the deminimis value for the bill run's ruleset", async () => {
+  describe('the $deminimisLimit() method', () => {
+    it("returns the deminimis limit for the bill run's ruleset", async () => {
       const instance = BillRunModel.fromJson({ ruleset: 'presroc' })
 
-      expect(instance.$deminimisValue()).to.equal(500)
+      expect(instance.$deminimisLimit()).to.equal(500)
     })
   })
 

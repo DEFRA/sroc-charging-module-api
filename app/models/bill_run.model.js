@@ -228,10 +228,10 @@ class BillRunModel extends BaseModel {
   }
 
   /**
-   * Returns the deminimis value of the bill run's ruleset
+   * Returns the deminimis limit of the bill run's ruleset
    */
-  $deminimisValue () {
-    return StaticLookupLib.deminimisValues[this.ruleset]
+  $deminimisLimit () {
+    return StaticLookupLib.deminimisLimits[this.ruleset]
   }
 
   /**
@@ -240,7 +240,7 @@ class BillRunModel extends BaseModel {
   $deminimisInvoices (trx = null) {
     return this.$relatedQuery('invoices', trx)
       .whereRaw('debit_line_value - credit_line_value > 0')
-      .whereRaw('debit_line_value - credit_line_value < ?', this.$deminimisValue())
+      .whereRaw('debit_line_value - credit_line_value < ?', this.$deminimisLimit())
   }
 }
 

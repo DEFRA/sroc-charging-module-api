@@ -16,7 +16,7 @@ class StaticLookupLib {
     return ['presroc', 'sroc']
   }
 
-  static get deminimisValues () {
+  static get deminimisLimits () {
     return {
       presroc: 500,
       sroc: 1000

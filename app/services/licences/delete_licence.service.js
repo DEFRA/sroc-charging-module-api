@@ -93,7 +93,7 @@ class DeleteLicenceService {
   static async _handleInvoice (billRun, invoice, licence, trx) {
     this._updateInstance(invoice, licence)
     const minimumChargeInvoice = await this._determineMinimumChargeInvoice(billRun, invoice, trx)
-    const invoicePatch = this._invoicePatch(invoice, minimumChargeInvoice, billRun.$deminimisValue())
+    const invoicePatch = this._invoicePatch(invoice, minimumChargeInvoice, billRun.$deminimisLimit())
     await invoice.$query(trx).patch(invoicePatch)
   }
 
@@ -117,12 +117,12 @@ class DeleteLicenceService {
    * Creates a patch for the invoice using the fields in _entityPatch (which are common to both invoice and bill run),
    * and then adds in additional fields based on the invoice's static methods.
    */
-  static _invoicePatch (invoice, minimumChargeInvoice, deminimisValue) {
-    console.log(invoice.$deminimisInvoice(deminimisValue))
+  static _invoicePatch (invoice, minimumChargeInvoice, deminimisLimit) {
+    console.log(invoice.$deminimisInvoice(deminimisLimit))
     return {
       ...this._entityPatch(invoice),
       zeroValueInvoice: invoice.$zeroValueInvoice(),
-      deminimisInvoice: invoice.$deminimisInvoice(deminimisValue),
+      deminimisInvoice: invoice.$deminimisInvoice(deminimisLimit),
       minimumChargeInvoice
     }
   }
@@ -219,10 +219,10 @@ class DeleteLicenceService {
     const previousTransactionType = this._transactionType(previousInvoice)
     const currentTransactionType = this._transactionType(updatedInvoice)
 
-    const deminimisValue = billRun.$deminimisValue()
+    const deminimisLimit = billRun.$deminimisLimit()
 
     // If the old invoice isn't deminimis, remove its value from the appropriate bill run field and adjust the count
-    if (!previousInvoice.$deminimisInvoice(deminimisValue)) {
+    if (!previousInvoice.$deminimisInvoice(deminimisLimit)) {
       if (previousTransactionType === 'C') {
         billRun.creditNoteCount -= 1
         billRun.creditNoteValue -= previousInvoice.$absoluteNetTotal()
@@ -234,7 +234,7 @@ class DeleteLicenceService {
     }
 
     // If the updated invoice isn't deminimis, add its value to the appropriate bill run field and adjust the count
-    if (!updatedInvoice.$deminimisInvoice(deminimisValue)) {
+    if (!updatedInvoice.$deminimisInvoice(deminimisLimit)) {
       if (currentTransactionType === 'C') {
         billRun.creditNoteCount += 1
         billRun.creditNoteValue += updatedInvoice.$absoluteNetTotal()
