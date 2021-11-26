@@ -235,7 +235,7 @@ class BillRunModel extends BaseModel {
   }
 
   /**
-   * Returns all invoices on the bill run which are deminimis
+   * Returns a query which will fetch all deminimis invoices on the bill run
    */
   $deminimisInvoices (trx = null) {
     return this.$relatedQuery('invoices', trx)

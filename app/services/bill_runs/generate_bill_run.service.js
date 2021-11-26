@@ -145,8 +145,7 @@ class GenerateBillRunService {
   }
 
   static async _setDeminimisInvoiceFlags (billRun, trx) {
-    return billRun.$relatedQuery('invoices', trx)
-      .modify('deminimis')
+    return billRun.$deminimisInvoices(trx)
       .patch({ deminimisInvoice: true })
   }
 
