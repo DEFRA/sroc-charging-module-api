@@ -237,7 +237,7 @@ class BillRunModel extends BaseModel {
   /**
    * Returns all invoices on the bill run which are deminimis
    */
-  async $deminimisInvoices (trx = null) {
+  $deminimisInvoices (trx = null) {
     return this.$relatedQuery('invoices', trx)
       .whereRaw('debit_line_value - credit_line_value > 0')
       .whereRaw('debit_line_value - credit_line_value < ?', this.$deminimisValue())
