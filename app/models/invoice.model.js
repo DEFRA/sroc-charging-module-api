@@ -66,16 +66,6 @@ class InvoiceModel extends BaseUpsertModel {
       },
 
       /**
-       * deminimis modifier selects all invoices which are deminimis.
-       */
-      deminimis (query) {
-        query
-          .whereRaw('debit_line_value - credit_line_value > 0')
-          .whereRaw('debit_line_value - credit_line_value < ?', DEMINIMIS_LIMIT)
-          .modify('originalInvoice')
-      },
-
-      /**
        * minimum charge modifier selects all invoices where minimum charge applies.
        */
       minimumCharge (query) {
