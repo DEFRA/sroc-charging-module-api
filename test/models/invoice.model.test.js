@@ -214,7 +214,7 @@ describe('Invoice Model', () => {
     it('returns `true` if this is a deminimis invoice', async () => {
       const invoice = await InvoiceHelper.addInvoice(billRun.id, 'DEM0000001', 2021, 1, 750, 1, 1000)
 
-      const result = invoice.$deminimisInvoice()
+      const result = invoice.$deminimisInvoice(500)
 
       expect(result).to.be.true()
     })
@@ -223,7 +223,7 @@ describe('Invoice Model', () => {
       it('because the value is above the deminimis limit', async () => {
         const invoice = await InvoiceHelper.addInvoice(billRun.id, 'NDM0000001', 2021, 1, 750, 1, 10000)
 
-        const result = invoice.$deminimisInvoice()
+        const result = invoice.$deminimisInvoice(500)
 
         expect(result).to.be.false()
       })
@@ -233,7 +233,7 @@ describe('Invoice Model', () => {
           billRun.id, 'DEM0000001', 2021, 1, 750, 1, 1000, 0, 0, 0, 0, GeneralHelper.uuid4(), 'R'
         )
 
-        const result = invoice.$deminimisInvoice()
+        const result = invoice.$deminimisInvoice(500)
 
         expect(result).to.be.false()
       })
