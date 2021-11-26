@@ -118,7 +118,6 @@ class DeleteLicenceService {
    * and then adds in additional fields based on the invoice's static methods.
    */
   static _invoicePatch (invoice, minimumChargeInvoice, deminimisLimit) {
-    console.log(invoice.$deminimisInvoice(deminimisLimit))
     return {
       ...this._entityPatch(invoice),
       zeroValueInvoice: invoice.$zeroValueInvoice(),

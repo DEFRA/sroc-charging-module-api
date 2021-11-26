@@ -241,6 +241,7 @@ class BillRunModel extends BaseModel {
     return this.$relatedQuery('invoices', trx)
       .whereRaw('debit_line_value - credit_line_value > 0')
       .whereRaw('debit_line_value - credit_line_value < ?', this.$deminimisLimit())
+      .modify('originalInvoice')
   }
 }
 

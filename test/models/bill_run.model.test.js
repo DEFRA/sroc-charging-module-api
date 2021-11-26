@@ -174,10 +174,11 @@ describe('Bill Run Model', () => {
       beforeEach(async () => {
         deminimisBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'presroc' })
 
-        // Add one presroc deminimis and two non-deminimis invoices to the bill run
+        // Add one presroc deminimis and three non-deminimis invoices to the bill run
         await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'DEM', debitLineValue: 500, creditLineValue: 100 })
         await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'NOT_DEM_1', debitLineValue: 1000, creditLineValue: 100 })
         await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'NOT_DEM_2', debitLineValue: 1500 })
+        await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'NOT_DEM_3', debitLineValue: 500, creditLineValue: 100, rebilledType: 'R' })
       })
 
       it('returns all invoices which are deminimis', async () => {
@@ -191,10 +192,11 @@ describe('Bill Run Model', () => {
       beforeEach(async () => {
         deminimisBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'sroc' })
 
-        // Add two sroc deminimis and one non-deminimis invoices to the bill run
+        // Add two sroc deminimis and two non-deminimis invoices to the bill run
         await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'DEM_1', debitLineValue: 500, creditLineValue: 100 })
         await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'DEM_2', debitLineValue: 1000, creditLineValue: 100 })
         await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'NOT_DEM', debitLineValue: 1500 })
+        await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'NOT_DEM_2', debitLineValue: 500, creditLineValue: 100, rebilledType: 'R' })
       })
 
       it('returns all invoices which are deminimis', async () => {
