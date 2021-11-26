@@ -154,4 +154,12 @@ describe('Bill Run Model', () => {
       expect(instance.$approved()).to.be.false()
     })
   })
+
+  describe('the $deminimisValue() method', () => {
+    it("returns the deminimis value for the bill run's ruleset", async () => {
+      const instance = BillRunModel.fromJson({ ruleset: 'presroc' })
+
+      expect(instance.$deminimisValue()).to.equal(5000)
+    })
+  })
 })

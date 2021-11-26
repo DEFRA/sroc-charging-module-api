@@ -7,6 +7,8 @@
 const { Model } = require('objection')
 const BaseModel = require('./base.model')
 
+const StaticLookupLib = require('../lib/static_lookup.lib')
+
 class BillRunModel extends BaseModel {
   static get tableName () {
     return 'billRuns'
@@ -223,6 +225,13 @@ class BillRunModel extends BaseModel {
    */
   $billable () {
     return Boolean(this.fileReference)
+  }
+
+  /**
+   * Returns the deminimis value of the bill run's ruleset
+   */
+  $deminimisValue (ruleset) {
+    return StaticLookupLib.deminimisValues[this.ruleset]
   }
 }
 
