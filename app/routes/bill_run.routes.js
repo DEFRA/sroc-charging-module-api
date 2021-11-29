@@ -32,6 +32,11 @@ const routes = [
   {
     method: 'PATCH',
     path: '/v2/{regimeSlug}/bill-runs/{billRunId}/generate',
+    handler: BillRunsController.generateV2
+  },
+  {
+    method: 'PATCH',
+    path: '/v3/{regimeSlug}/bill-runs/{billRunId}/generate',
     handler: BillRunsController.generate
   },
   {

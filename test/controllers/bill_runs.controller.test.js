@@ -4,7 +4,6 @@
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
 const Sinon = require('sinon')
-const Nock = require('nock')
 
 const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
@@ -22,21 +21,18 @@ const {
   NewInvoiceHelper,
   NewTransactionHelper,
   RegimeHelper,
-  RulesServiceHelper,
   SequenceCounterHelper
 } = require('../support/helpers')
 
 const {
   CreateBillRunService,
   CreateBillRunV2GuardService,
-  CreateTransactionService,
   GenerateBillRunService,
+  GenerateBillRunV2GuardService,
+  GenerateBillRunValidationService,
   SendCustomerFileService,
   SendTransactionFileService
 } = require('../../app/services')
-
-const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
-const { presroc: chargeFixtures } = require('../support/fixtures/calculate_charge')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
@@ -56,13 +52,6 @@ describe('Bill Runs controller', () => {
     Sinon
       .stub(JsonWebToken, 'verify')
       .returns(AuthorisationHelper.decodeToken(authToken))
-
-    // Intercept all requests in this test suite as we don't actually want to call the service. Tell Nock to persist()
-    // the interception rather than remove it after the first request
-    Nock(RulesServiceHelper.url)
-      .post(() => true)
-      .reply(200, chargeFixtures.simple.rulesService)
-      .persist()
   })
 
   beforeEach(async () => {
@@ -75,7 +64,6 @@ describe('Bill Runs controller', () => {
 
   after(async () => {
     Sinon.restore()
-    Nock.cleanAll()
   })
 
   describe('Creating a bill run: POST /v2/{regimeSlug}/bill-runs', () => {
@@ -173,7 +161,10 @@ describe('Bill Runs controller', () => {
   })
 
   describe('Generate a bill run summary: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/generate', () => {
-    let payload
+    let guardStub
+    let validateStub
+    let generateStub
+    let response
 
     const options = (token, billRunId) => {
       return {
@@ -186,36 +177,73 @@ describe('Bill Runs controller', () => {
     beforeEach(async () => {
       billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
 
-      // We clone the request fixture as our payload so we have it available for modification in the invalid tests. For
-      // the valid tests we can use it straight as
-      payload = GeneralHelper.cloneObject(requestFixtures.simple)
+      guardStub = Sinon.stub(GenerateBillRunV2GuardService, 'go')
+      validateStub = Sinon.stub(GenerateBillRunValidationService, 'go')
+      generateStub = Sinon.stub(GenerateBillRunService, 'go')
+
+      response = await server.inject(options(authToken, billRun.id))
     })
 
-    describe('When the request is valid', () => {
-      describe('because the summary has not yet been generated', () => {
-        it('returns success status 204 (IMPORTANT! Does not mean generation completed successfully)', async () => {
-          const requestPayload = GeneralHelper.cloneObject(requestFixtures.simple)
-          await CreateTransactionService.go(requestPayload, billRun, authorisedSystem, regime)
-
-          const response = await server.inject(options(authToken, billRun.id))
-
-          expect(response.statusCode).to.equal(204)
-        })
-      })
+    afterEach(async () => {
+      guardStub.restore()
+      validateStub.restore()
+      generateStub.restore()
     })
 
-    describe('When the request is invalid', () => {
-      describe('because the summary has already been generated', () => {
-        it('returns error status 409', async () => {
-          const generatingBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { region: payload.region, status: 'generating' })
+    it('passes the bill run to GenerateBillRunV2GuardService', async () => {
+      expect(guardStub.calledOnceWith(billRun)).to.be.true()
+    })
 
-          const response = await server.inject(options(authToken, generatingBillRun.id))
-          const responsePayload = JSON.parse(response.payload)
+    it('passes the bill run to GenerateBillRunValidationService', async () => {
+      expect(validateStub.calledOnceWith(billRun)).to.be.true()
+    })
 
-          expect(response.statusCode).to.equal(409)
-          expect(responsePayload.message).to.equal(`Bill run ${generatingBillRun.id} cannot be patched because its status is generating.`)
-        })
-      })
+    it('passes the bill run to GenerateBillRunService', async () => {
+      expect(generateStub.calledOnceWith(billRun)).to.be.true()
+    })
+
+    it('returns a 204 response', async () => {
+      expect(response.statusCode).to.equal(204)
+    })
+  })
+
+  describe('Generate a bill run summary: PATCH /v3/{regimeSlug}/bill-runs/{billRunId}/generate', () => {
+    let validateStub
+    let generateStub
+    let response
+
+    const options = (token, billRunId) => {
+      return {
+        method: 'PATCH',
+        url: `/v3/wrls/bill-runs/${billRunId}/generate`,
+        headers: { authorization: `Bearer ${token}` }
+      }
+    }
+
+    beforeEach(async () => {
+      billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
+
+      validateStub = Sinon.stub(GenerateBillRunValidationService, 'go')
+      generateStub = Sinon.stub(GenerateBillRunService, 'go')
+
+      response = await server.inject(options(authToken, billRun.id))
+    })
+
+    afterEach(async () => {
+      validateStub.restore()
+      generateStub.restore()
+    })
+
+    it('passes the bill run to GenerateBillRunValidationService', async () => {
+      expect(validateStub.calledOnceWith(billRun)).to.be.true()
+    })
+
+    it('passes the bill run to GenerateBillRunService', async () => {
+      expect(generateStub.calledOnceWith(billRun)).to.be.true()
+    })
+
+    it('returns a 204 response', async () => {
+      expect(response.statusCode).to.equal(204)
     })
   })
 
