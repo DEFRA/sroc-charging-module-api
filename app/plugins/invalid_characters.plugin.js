@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom')
  *
  * - {@link https://unicode-table.com/en/00A3| £ Pound Sign}
  * - {@link https://unicode-table.com/en/003F| ? Question Mark}
+ * - {@link https://unicode-table.com/en/005E| ^ Circumflex (aka caret)}
  * - {@link https://unicode-table.com/en/2014| — Em dash}
  * - {@link https://unicode-table.com/en/2264| ≤ Less-Than or Equal To}
  * - {@link https://unicode-table.com/en/2265| ≥ Greater-Than or Equal To}
@@ -20,7 +21,7 @@ const Boom = require('@hapi/boom')
 const invalidCharacters = obj => {
   const jsonObj = JSON.stringify(obj)
 
-  if (jsonObj.match(/[?£\u2014\u2264\u2265\u201C\u201D]/)) {
+  if (jsonObj.match(/[?£^\u2014\u2264\u2265\u201C\u201D]/)) {
     return true
   }
 
@@ -36,7 +37,7 @@ const InvalidCharactersPlugin = {
       }
 
       if (invalidCharacters(request.payload)) {
-        throw Boom.badData('We cannot accept any request that contains the following characters: ? £ — ≤ ≥ “ ”')
+        throw Boom.badData('We cannot accept any request that contains the following characters: ? £ ^ — ≤ ≥ “ ”')
       }
 
       return h.continue
