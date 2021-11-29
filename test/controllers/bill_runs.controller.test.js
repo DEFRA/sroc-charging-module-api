@@ -34,6 +34,8 @@ const {
   SendTransactionFileService
 } = require('../../app/services')
 
+const { RequestNotifierLib } = require('../../app/lib')
+
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 const { BillRunModel } = require('../../app/models')
@@ -198,8 +200,9 @@ describe('Bill Runs controller', () => {
       expect(validateStub.calledOnceWith(billRun)).to.be.true()
     })
 
-    it('passes the bill run to GenerateBillRunService', async () => {
-      expect(generateStub.calledOnceWith(billRun)).to.be.true()
+    it('passes the bill run and notifier to GenerateBillRunService', async () => {
+      const notifierMatcher = Sinon.match.instanceOf(RequestNotifierLib)
+      expect(generateStub.calledOnceWith(billRun, notifierMatcher)).to.be.true()
     })
 
     it('returns a 204 response', async () => {
@@ -238,8 +241,9 @@ describe('Bill Runs controller', () => {
       expect(validateStub.calledOnceWith(billRun)).to.be.true()
     })
 
-    it('passes the bill run to GenerateBillRunService', async () => {
-      expect(generateStub.calledOnceWith(billRun)).to.be.true()
+    it('passes the bill run and notifier to GenerateBillRunService', async () => {
+      const notifierMatcher = Sinon.match.instanceOf(RequestNotifierLib)
+      expect(generateStub.calledOnceWith(billRun, notifierMatcher)).to.be.true()
     })
 
     it('returns a 204 response', async () => {
