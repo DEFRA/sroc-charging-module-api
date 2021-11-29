@@ -7,6 +7,8 @@
 const { Model } = require('objection')
 const BaseModel = require('./base.model')
 
+const StaticLookupLib = require('../lib/static_lookup.lib')
+
 class BillRunModel extends BaseModel {
   static get tableName () {
     return 'billRuns'
@@ -223,6 +225,23 @@ class BillRunModel extends BaseModel {
    */
   $billable () {
     return Boolean(this.fileReference)
+  }
+
+  /**
+   * Returns the deminimis limit of the bill run's ruleset
+   */
+  $deminimisLimit () {
+    return StaticLookupLib.deminimisLimits[this.ruleset]
+  }
+
+  /**
+   * Returns a query which will fetch all deminimis invoices on the bill run
+   */
+  $deminimisInvoices (trx = null) {
+    return this.$relatedQuery('invoices', trx)
+      .whereRaw('debit_line_value - credit_line_value > 0')
+      .whereRaw('debit_line_value - credit_line_value < ?', this.$deminimisLimit())
+      .modify('originalInvoice')
   }
 }
 

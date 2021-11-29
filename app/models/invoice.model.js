@@ -7,7 +7,6 @@
 const { Model } = require('objection')
 const BaseUpsertModel = require('./base_upsert.model')
 
-const DEMINIMIS_LIMIT = 500
 // This is the value used for new invoices. Reason? To allow us to accept multiple rebill invoices with the same
 // customer reference and financial year in the same bill run. It ensures the invoices table constraint works for new
 // invoices, but when we rebill and actually have a rebill ID, the constraint doesn't trigger.
@@ -63,16 +62,6 @@ class InvoiceModel extends BaseUpsertModel {
       zeroValue (query) {
         query
           .whereRaw('debit_line_value - credit_line_value = 0')
-      },
-
-      /**
-       * deminimis modifier selects all invoices which are deminimis.
-       */
-      deminimis (query) {
-        query
-          .whereRaw('debit_line_value - credit_line_value > 0')
-          .whereRaw('debit_line_value - credit_line_value < ?', DEMINIMIS_LIMIT)
-          .modify('originalInvoice')
       },
 
       /**
@@ -199,12 +188,12 @@ class InvoiceModel extends BaseUpsertModel {
   }
 
   /**
-   * deminimisInvoice method returns true if this is a deminimis invoice
+   * deminimisInvoice method receives the deminimis limit for this invoice and returns true if it is a deminimis invoice
    */
-  $deminimisInvoice () {
+  $deminimisInvoice (deminimisLimit) {
     return (
       this.debitLineValue - this.creditLineValue > 0 &&
-      this.debitLineValue - this.creditLineValue < DEMINIMIS_LIMIT &&
+      this.debitLineValue - this.creditLineValue < deminimisLimit &&
       this.$originalInvoice()
     )
   }

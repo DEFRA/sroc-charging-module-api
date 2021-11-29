@@ -15,6 +15,13 @@ class StaticLookupLib {
   static get rulesets () {
     return ['presroc', 'sroc']
   }
+
+  static get deminimisLimits () {
+    return {
+      presroc: 500,
+      sroc: 1000
+    }
+  }
 }
 
 module.exports = StaticLookupLib

@@ -8,7 +8,11 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { BillRunHelper, DatabaseHelper, GeneralHelper } = require('../support/helpers')
+const {
+  DatabaseHelper,
+  NewBillRunHelper,
+  NewInvoiceHelper
+} = require('../support/helpers')
 
 // Thing under test
 const { BillRunModel } = require('../../app/models')
@@ -20,7 +24,7 @@ describe('Bill Run Model', () => {
     beforeEach(async () => {
       await DatabaseHelper.clean()
 
-      billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
+      billRun = await NewBillRunHelper.create()
     })
 
     it("updates the 'tally' fields for the matching bill run", async () => {
@@ -152,6 +156,67 @@ describe('Bill Run Model', () => {
       const instance = BillRunModel.fromJson({ status: 'initialised' })
 
       expect(instance.$approved()).to.be.false()
+    })
+  })
+
+  describe('the $deminimisLimit() method', () => {
+    it("returns the deminimis limit for the bill run's ruleset", async () => {
+      const instance = BillRunModel.fromJson({ ruleset: 'presroc' })
+
+      expect(instance.$deminimisLimit()).to.equal(500)
+    })
+  })
+
+  describe('the $deminimisInvoices() method', () => {
+    let deminimisBillRun
+
+    describe('for a presroc bill run', () => {
+      let deminimisInvoice
+
+      beforeEach(async () => {
+        deminimisBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'presroc' })
+
+        // Add a deminimis invoice to the bill run (value of 400 is within the deminimis limit)
+        deminimisInvoice = await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'DEM', debitLineValue: 500, creditLineValue: 100 })
+        // Add a non-deminimis invoice (value of 900 is over the presroc deminimis limit)
+        await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'NOT_DEM_1', debitLineValue: 1000, creditLineValue: 100 })
+        // Add a non-deminimis invoice (value of 1500 is over both presroc and sroc deminimis limits)
+        await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'NOT_DEM_2', debitLineValue: 1500 })
+        // Add a non-deminimis invoice (value is within deminimis limit but rebill invoices are not subject to deminimis)
+        await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'NOT_DEM_3', debitLineValue: 500, creditLineValue: 100, rebilledType: 'R' })
+      })
+
+      it('returns all invoices which are deminimis', async () => {
+        const result = await deminimisBillRun.$deminimisInvoices()
+
+        expect(result.length).to.equal(1)
+        expect(result).to.only.contain(deminimisInvoice)
+      })
+    })
+
+    describe('for an sroc bill run', () => {
+      let firstDeminimisInvoice
+      let secondDeminimisInvoice
+
+      beforeEach(async () => {
+        deminimisBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'sroc' })
+
+        // Add a deminimis invoice to the bill run (value of 400 is within the deminimis limit)
+        firstDeminimisInvoice = await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'DEM_1', debitLineValue: 500, creditLineValue: 100 })
+        // Add a deminimis invoice to the bill run (value of 900 is within the sroc deminimis limit)
+        secondDeminimisInvoice = await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'DEM_2', debitLineValue: 1000, creditLineValue: 100 })
+        // Add a non-deminimis invoice (value of 1500 is over both presroc and sroc deminimis limits)
+        await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'NOT_DEM_1', debitLineValue: 1500 })
+        // Add a non-deminimis invoice (value is within deminimis limit but rebill invoices are not subject to deminimis)
+        await NewInvoiceHelper.create(deminimisBillRun, { customerReference: 'NOT_DEM_2', debitLineValue: 500, creditLineValue: 100, rebilledType: 'R' })
+      })
+
+      it('returns all invoices which are deminimis', async () => {
+        const result = await deminimisBillRun.$deminimisInvoices()
+
+        expect(result.length).to.equal(2)
+        expect(result).to.only.contain([firstDeminimisInvoice, secondDeminimisInvoice])
+      })
     })
   })
 })
