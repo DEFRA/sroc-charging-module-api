@@ -161,87 +161,48 @@ describe('Bill Runs controller', () => {
     })
   })
 
-  describe('Generate a bill run summary: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/generate', () => {
-    let validateStub
-    let generateStub
-    let response
+  for (const version of ['v2', 'v3']) {
+    describe(`Generate a bill run summary: PATCH /${version}/{regimeSlug}/bill-runs/{billRunId}/generate`, () => {
+      let validateStub
+      let generateStub
+      let response
 
-    const options = (token, billRunId) => {
-      return {
-        method: 'PATCH',
-        url: `/v2/wrls/bill-runs/${billRunId}/generate`,
-        headers: { authorization: `Bearer ${token}` }
+      const options = (token, billRunId) => {
+        return {
+          method: 'PATCH',
+          url: `/${version}/wrls/bill-runs/${billRunId}/generate`,
+          headers: { authorization: `Bearer ${token}` }
+        }
       }
-    }
 
-    beforeEach(async () => {
-      billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
+      beforeEach(async () => {
+        billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
 
-      validateStub = Sinon.stub(GenerateBillRunValidationService, 'go')
-      generateStub = Sinon.stub(GenerateBillRunService, 'go')
+        validateStub = Sinon.stub(GenerateBillRunValidationService, 'go')
+        generateStub = Sinon.stub(GenerateBillRunService, 'go')
 
-      response = await server.inject(options(authToken, billRun.id))
+        response = await server.inject(options(authToken, billRun.id))
+      })
+
+      afterEach(async () => {
+        validateStub.restore()
+        generateStub.restore()
+      })
+
+      it('passes the bill run to GenerateBillRunValidationService', async () => {
+        expect(validateStub.calledOnceWith(billRun)).to.be.true()
+      })
+
+      it('passes the bill run and notifier to GenerateBillRunService', async () => {
+        const notifierMatcher = Sinon.match.instanceOf(RequestNotifierLib)
+        expect(generateStub.calledOnceWith(billRun, notifierMatcher)).to.be.true()
+      })
+
+      it('returns a 204 response', async () => {
+        expect(response.statusCode).to.equal(204)
+      })
     })
-
-    afterEach(async () => {
-      validateStub.restore()
-      generateStub.restore()
-    })
-
-    it('passes the bill run to GenerateBillRunValidationService', async () => {
-      expect(validateStub.calledOnceWith(billRun)).to.be.true()
-    })
-
-    it('passes the bill run and notifier to GenerateBillRunService', async () => {
-      const notifierMatcher = Sinon.match.instanceOf(RequestNotifierLib)
-      expect(generateStub.calledOnceWith(billRun, notifierMatcher)).to.be.true()
-    })
-
-    it('returns a 204 response', async () => {
-      expect(response.statusCode).to.equal(204)
-    })
-  })
-
-  describe('Generate a bill run summary: PATCH /v3/{regimeSlug}/bill-runs/{billRunId}/generate', () => {
-    let validateStub
-    let generateStub
-    let response
-
-    const options = (token, billRunId) => {
-      return {
-        method: 'PATCH',
-        url: `/v3/wrls/bill-runs/${billRunId}/generate`,
-        headers: { authorization: `Bearer ${token}` }
-      }
-    }
-
-    beforeEach(async () => {
-      billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
-
-      validateStub = Sinon.stub(GenerateBillRunValidationService, 'go')
-      generateStub = Sinon.stub(GenerateBillRunService, 'go')
-
-      response = await server.inject(options(authToken, billRun.id))
-    })
-
-    afterEach(async () => {
-      validateStub.restore()
-      generateStub.restore()
-    })
-
-    it('passes the bill run to GenerateBillRunValidationService', async () => {
-      expect(validateStub.calledOnceWith(billRun)).to.be.true()
-    })
-
-    it('passes the bill run and notifier to GenerateBillRunService', async () => {
-      const notifierMatcher = Sinon.match.instanceOf(RequestNotifierLib)
-      expect(generateStub.calledOnceWith(billRun, notifierMatcher)).to.be.true()
-    })
-
-    it('returns a 204 response', async () => {
-      expect(response.statusCode).to.equal(204)
-    })
-  })
+  }
 
   describe('Get bill run status: GET /v2/{regimeSlug}/bill-runs/{billRunId}/status', () => {
     const options = (token, billRunId) => {
