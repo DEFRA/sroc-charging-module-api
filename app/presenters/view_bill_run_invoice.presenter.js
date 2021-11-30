@@ -12,7 +12,7 @@ const BasePresenter = require('./base.presenter')
  */
 class ViewBillRunInvoicePresenter extends BasePresenter {
   _presentation (data) {
-    return {
+    const response = {
       id: data.id,
       customerReference: data.customerReference,
       financialYear: data.financialYear,
@@ -27,6 +27,13 @@ class ViewBillRunInvoicePresenter extends BasePresenter {
       rebilledInvoiceId: data.rebilledInvoiceId,
       licences: data.licences
     }
+
+    // minimumChargeInvoice is only to be included in presroc requests
+    if (data.ruleset !== 'presroc') {
+      delete response.minimumChargeInvoice
+    }
+
+    return response
   }
 }
 
