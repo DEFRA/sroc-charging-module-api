@@ -7,7 +7,6 @@ const {
   CreateBillRunV2GuardService,
   DeleteBillRunService,
   GenerateBillRunService,
-  GenerateBillRunV2GuardService,
   GenerateBillRunValidationService,
   SendBillRunReferenceService,
   SendCustomerFileService,
@@ -36,16 +35,6 @@ class BillRunsController {
     const result = await ViewBillRunService.go(req.params.billRunId)
 
     return h.response(result).code(200)
-  }
-
-  static async generateV2 (req, h) {
-    // Guard service checks that the v2 request is for presroc and throws an error if not
-    await GenerateBillRunV2GuardService.go(req.app.billRun)
-
-    await GenerateBillRunValidationService.go(req.app.billRun)
-    GenerateBillRunService.go(req.app.billRun, req.app.notifier)
-
-    return h.response().code(204)
   }
 
   static async generate (req, h) {

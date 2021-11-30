@@ -29,7 +29,6 @@ const ExportTableToFileService = require('./files/exports/export_table_to_file.s
 const FetchAndValidateInvoiceService = require('./invoices/fetch_and_validate_invoice.service')
 const FilterRoutesService = require('./plugins/filter_routes.service')
 const GenerateBillRunService = require('./bill_runs/generate_bill_run.service')
-const GenerateBillRunV2GuardService = require('./guards/generate_bill_run_v2_guard.service')
 const GenerateBillRunValidationService = require('./bill_runs/generate_bill_run_validation.service')
 const GenerateCustomerFileService = require('./files/customers/generate_customer_file.service')
 const GenerateTransactionFileService = require('./files/transactions/generate_transaction_file.service')
@@ -106,7 +105,6 @@ module.exports = {
   FetchAndValidateInvoiceService,
   FilterRoutesService,
   GenerateBillRunService,
-  GenerateBillRunV2GuardService,
   GenerateBillRunValidationService,
   GenerateCustomerFileService,
   GenerateTransactionFileService,

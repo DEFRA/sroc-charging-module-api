@@ -28,7 +28,6 @@ const {
   CreateBillRunService,
   CreateBillRunV2GuardService,
   GenerateBillRunService,
-  GenerateBillRunV2GuardService,
   GenerateBillRunValidationService,
   SendCustomerFileService,
   SendTransactionFileService
@@ -163,7 +162,6 @@ describe('Bill Runs controller', () => {
   })
 
   describe('Generate a bill run summary: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/generate', () => {
-    let guardStub
     let validateStub
     let generateStub
     let response
@@ -179,7 +177,6 @@ describe('Bill Runs controller', () => {
     beforeEach(async () => {
       billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
 
-      guardStub = Sinon.stub(GenerateBillRunV2GuardService, 'go')
       validateStub = Sinon.stub(GenerateBillRunValidationService, 'go')
       generateStub = Sinon.stub(GenerateBillRunService, 'go')
 
@@ -187,13 +184,8 @@ describe('Bill Runs controller', () => {
     })
 
     afterEach(async () => {
-      guardStub.restore()
       validateStub.restore()
       generateStub.restore()
-    })
-
-    it('passes the bill run to GenerateBillRunV2GuardService', async () => {
-      expect(guardStub.calledOnceWith(billRun)).to.be.true()
     })
 
     it('passes the bill run to GenerateBillRunValidationService', async () => {
