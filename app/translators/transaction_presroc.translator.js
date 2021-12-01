@@ -1,47 +1,15 @@
 'use strict'
 
-const BaseTranslator = require('./base.translator')
+const TransactionBaseTranslator = require('./transaction_base.translator')
 const Joi = require('joi')
 
-class TransactionPresrocTranslator extends BaseTranslator {
-  _schema () {
-    const rules = this._rules()
-
-    return Joi.object({
-      ruleset: rules.ruleset,
-      billRunId: rules.billRunId,
-      regimeId: rules.regimeId,
-      authorisedSystemId: rules.authorisedSystemId,
-      region: rules.region,
-      customerReference: rules.customerReference,
-      batchNumber: rules.batchNumber,
-      licenceNumber: rules.licenceNumber,
-      chargePeriod: rules.chargePeriod,
-      chargeElementId: rules.chargeElementId,
-      areaCode: rules.areaCode,
-      lineDescription: rules.lineDescription,
-      subjectToMinimumCharge: rules.subjectToMinimumCharge,
-      clientId: rules.clientId
-    })
-  }
-
+class TransactionPresrocTranslator extends TransactionBaseTranslator {
   _rules () {
     return {
+      ...this._baseRules(),
       ruleset: Joi.string().allow('presroc').default('presroc'),
-
-      billRunId: Joi.string().required(),
-      regimeId: Joi.string().required(),
-      authorisedSystemId: Joi.string().required(),
-      region: Joi.string().uppercase().valid(...this._validRegions()).required(),
-      customerReference: Joi.string().uppercase().max(12).required(),
-      batchNumber: Joi.string().allow('', null),
-      licenceNumber: Joi.string().max(150).required(),
       chargePeriod: Joi.string().required(),
-      chargeElementId: Joi.string().allow('', null),
-      areaCode: Joi.string().uppercase().valid(...this._validAreas()).required(),
-      lineDescription: Joi.string().max(240).required(),
-      subjectToMinimumCharge: Joi.boolean().default(false),
-      clientId: Joi.string().allow('', null)
+      subjectToMinimumCharge: Joi.boolean().default(false)
     }
   }
 
@@ -81,51 +49,6 @@ class TransactionPresrocTranslator extends BaseTranslator {
       twoPartTariff: 'regimeValue16',
       compensationCharge: 'regimeValue17'
     }
-  }
-
-  _validRegions () {
-    return ['A', 'B', 'E', 'N', 'S', 'T', 'W', 'Y']
-  }
-
-  _validAreas () {
-    return [
-      'ARCA',
-      'AREA',
-      'ARNA',
-      'CASC',
-      'MIDLS',
-      'MIDLT',
-      'MIDUS',
-      'MIDUT',
-      'AACOR',
-      'AADEV',
-      'AANWX',
-      'AASWX',
-      'NWCEN',
-      'NWNTH',
-      'NWSTH',
-      'HAAR',
-      'KAEA',
-      'SAAR',
-      'AGY2N',
-      'AGY2S',
-      'AGY3',
-      'AGY3N',
-      'AGY3S',
-      'AGY4N',
-      'AGY4S',
-      'N',
-      'SE',
-      'SE1',
-      'SE2',
-      'SW',
-      'ABNRTH',
-      'DALES',
-      'NAREA',
-      'RIDIN',
-      'DEFAULT',
-      'MULTI'
-    ]
   }
 }
 
