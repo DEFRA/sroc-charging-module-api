@@ -60,6 +60,11 @@ const routes = [
     handler: BillRunsController.view
   },
   {
+    method: 'GET',
+    path: '/v3/{regimeSlug}/bill-runs/{billRunId}',
+    handler: BillRunsController.view
+  },
+  {
     method: 'DELETE',
     path: '/v2/{regimeSlug}/bill-runs/{billRunId}',
     handler: BillRunsController.delete

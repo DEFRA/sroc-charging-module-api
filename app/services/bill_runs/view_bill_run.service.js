@@ -45,7 +45,8 @@ class ViewBillRunService {
         'creditNoteValue',
         'invoiceCount',
         'invoiceValue',
-        'fileReference'
+        'fileReference',
+        'ruleset'
       )
       .withGraphFetched('invoices.licences')
       .modifyGraph('invoices', builder => {

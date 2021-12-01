@@ -25,6 +25,7 @@ describe('View Bill Run Presenter', () => {
     invoiceValue: 2093,
     netTotal: 2093,
     transactionFileReference: null,
+    ruleset: 'presroc',
     invoices: [
       {
         id: GeneralHelper.uuid4(),
@@ -66,7 +67,8 @@ describe('View Bill Run Presenter', () => {
       'invoiceCount',
       'invoiceValue',
       'netTotal',
-      'transactionFileReference'
+      'transactionFileReference',
+      'ruleset'
     ])
   })
 
@@ -81,7 +83,6 @@ describe('View Bill Run Presenter', () => {
       'financialYear',
       'deminimisInvoice',
       'zeroValueInvoice',
-      'minimumChargeInvoice',
       'transactionReference',
       'creditLineValue',
       'debitLineValue',
@@ -89,6 +90,22 @@ describe('View Bill Run Presenter', () => {
       'rebilledType',
       'rebilledInvoiceId'
     ])
+  })
+
+  describe('for a presroc bill run', () => {
+    it('returns the minimumChargeInvoice flag in the invoice', () => {
+      const presenter = new ViewBillRunPresenter(data)
+      const result = presenter.go()
+      expect(result.billRun.invoices[0]).to.include('minimumChargeInvoice')
+    })
+  })
+
+  describe('for an sroc bill run', () => {
+    it('does not return the minimumChargeInvoice flag in the invoice', () => {
+      const presenter = new ViewBillRunPresenter({ ...data, ruleset: 'sroc' })
+      const result = presenter.go()
+      expect(result.billRun.invoices[0]).to.not.include('minimumChargeInvoice')
+    })
   })
 
   it("returns the 'licences' linked to the 'invoices' linked to the 'bill run", () => {
