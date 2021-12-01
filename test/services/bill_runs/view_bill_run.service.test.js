@@ -68,6 +68,7 @@ describe('View Bill Run service', () => {
       expect(result.billRun.id).to.equal(billRun.id)
       expect(result.billRun.region).to.equal(billRun.region)
       expect(result.billRun.status).to.equal(billRun.status)
+      expect(result.billRun.ruleset).to.equal(billRun.ruleset)
     })
 
     describe('when transactions are added to the bill run', () => {
