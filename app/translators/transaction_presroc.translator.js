@@ -5,7 +5,30 @@ const Joi = require('joi')
 
 class TransactionPresrocTranslator extends BaseTranslator {
   _schema () {
+    const rules = this._rules()
+
     return Joi.object({
+      ruleset: rules.ruleset,
+      billRunId: rules.billRunId,
+      regimeId: rules.regimeId,
+      authorisedSystemId: rules.authorisedSystemId,
+      region: rules.region,
+      customerReference: rules.customerReference,
+      batchNumber: rules.batchNumber,
+      licenceNumber: rules.licenceNumber,
+      chargePeriod: rules.chargePeriod,
+      chargeElementId: rules.chargeElementId,
+      areaCode: rules.areaCode,
+      lineDescription: rules.lineDescription,
+      subjectToMinimumCharge: rules.subjectToMinimumCharge,
+      clientId: rules.clientId
+    })
+  }
+
+  _rules () {
+    return {
+      ruleset: Joi.string().allow('presroc').default('presroc'),
+
       billRunId: Joi.string().required(),
       regimeId: Joi.string().required(),
       authorisedSystemId: Joi.string().required(),
@@ -18,10 +41,8 @@ class TransactionPresrocTranslator extends BaseTranslator {
       areaCode: Joi.string().uppercase().valid(...this._validAreas()).required(),
       lineDescription: Joi.string().max(240).required(),
       subjectToMinimumCharge: Joi.boolean().default(false),
-      clientId: Joi.string().allow('', null),
-      // Set a new field called ruleset. This will identify which ruleset the transaction and it's charge relates to
-      ruleset: Joi.string().allow('presroc').default('presroc')
-    })
+      clientId: Joi.string().allow('', null)
+    }
   }
 
   _translations () {
