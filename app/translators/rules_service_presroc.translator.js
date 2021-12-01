@@ -4,10 +4,10 @@
  * @module RulesServicePresrocTranslator
  */
 
-const BaseTranslator = require('./base.translator')
+const RulesServiceBaseTranslator = require('./rules_service_base.translator')
 const Joi = require('joi')
 
-class RulesServicePresrocTranslator extends BaseTranslator {
+class RulesServicePresrocTranslator extends RulesServiceBaseTranslator {
   constructor (data) {
     // The rules service returns the data we need in a WRLSChargingResponse object within the response object
     super(data.WRLSChargingResponse)
@@ -22,19 +22,17 @@ class RulesServicePresrocTranslator extends BaseTranslator {
     this.lineAttr10 = this._determineChargeElementAgreement()
   }
 
-  _schema () {
-    return Joi.object({
-      chargeValue: Joi.number().required(),
+  _rules () {
+    return {
+      ...this._baseRules(),
       sucFactor: Joi.number(),
       sourceFactor: Joi.number(),
       seasonFactor: Joi.number(),
       lossFactor: Joi.number(),
       abatementAdjustment: Joi.string().required(),
-      s127Agreement: Joi.string().allow(null),
-      s130Agreement: Joi.string().allow(null),
       eiucSourceFactor: Joi.number(),
       eiucFactor: Joi.number()
-    }).options({ stripUnknown: true })
+    }
   }
 
   _translations () {
@@ -62,12 +60,6 @@ class RulesServicePresrocTranslator extends BaseTranslator {
 
     // Otherwise, return null
     return null
-  }
-
-  _convertToPence (value) {
-    const floatValue = parseFloat(value)
-
-    return Math.round(floatValue * 100)
   }
 }
 
