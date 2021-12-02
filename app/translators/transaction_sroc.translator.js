@@ -1,5 +1,9 @@
 'use strict'
 
+/**
+ * @module TransactionSrocTranslator
+ */
+
 const TransactionBaseTranslator = require('./transaction_base.translator')
 const Joi = require('joi')
 

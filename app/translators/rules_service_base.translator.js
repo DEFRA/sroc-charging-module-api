@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module RulesServicePresrocTranslator
+ * @module RulesServiceBaseTranslator
  */
 
 const BaseTranslator = require('./base.translator')

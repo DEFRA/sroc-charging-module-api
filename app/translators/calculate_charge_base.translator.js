@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module CalculateChargePresrocTranslator
+ * @module CalculateChargeBaseTranslator
  */
 
 const BaseTranslator = require('./base.translator')
