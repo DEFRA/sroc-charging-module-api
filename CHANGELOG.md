@@ -1,5 +1,51 @@
 # Changelog
 
+## [v0.15.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.15.0) (2021-12-02)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.14.2...v0.15.0)
+
+**Implemented enhancements:**
+
+- Align sroc translator and presenter fields [\#611](https://github.com/DEFRA/sroc-charging-module-api/pull/611) ([StuAA78](https://github.com/StuAA78))
+- Create Transaction v3 route [\#610](https://github.com/DEFRA/sroc-charging-module-api/pull/610) ([StuAA78](https://github.com/StuAA78))
+- Update `CreateTransactionService` to accept `ruleset` [\#609](https://github.com/DEFRA/sroc-charging-module-api/pull/609) ([StuAA78](https://github.com/StuAA78))
+- Update translators for sroc charges and transactions [\#608](https://github.com/DEFRA/sroc-charging-module-api/pull/608) ([StuAA78](https://github.com/StuAA78))
+- Create transaction validation for sroc [\#605](https://github.com/DEFRA/sroc-charging-module-api/pull/605) ([StuAA78](https://github.com/StuAA78))
+- Update sroc charge validation [\#602](https://github.com/DEFRA/sroc-charging-module-api/pull/602) ([StuAA78](https://github.com/StuAA78))
+- Calculate standalone SRoC charge [\#595](https://github.com/DEFRA/sroc-charging-module-api/pull/595) ([StuAA78](https://github.com/StuAA78))
+- Create `ValidateChargeService` and v3 route [\#594](https://github.com/DEFRA/sroc-charging-module-api/pull/594) ([StuAA78](https://github.com/StuAA78))
+- Create `CalculateSrocChargeTranslator` [\#592](https://github.com/DEFRA/sroc-charging-module-api/pull/592) ([StuAA78](https://github.com/StuAA78))
+
+**Fixed bugs:**
+
+- Add caret/circumflex to `InvalidCharactersPlugin` [\#621](https://github.com/DEFRA/sroc-charging-module-api/pull/621) ([StuAA78](https://github.com/StuAA78))
+- Handle null `compensationChargePercentage` in Rules Service response [\#618](https://github.com/DEFRA/sroc-charging-module-api/pull/618) ([StuAA78](https://github.com/StuAA78))
+- Handle undefined `compensationChargePercentage` in Rules Service response [\#617](https://github.com/DEFRA/sroc-charging-module-api/pull/617) ([StuAA78](https://github.com/StuAA78))
+
+**Housekeeping updates:**
+
+- Update deminimis to support SRoC [\#619](https://github.com/DEFRA/sroc-charging-module-api/pull/619) ([StuAA78](https://github.com/StuAA78))
+- Update to Node 16 [\#616](https://github.com/DEFRA/sroc-charging-module-api/pull/616) ([StuAA78](https://github.com/StuAA78))
+- Update `CreateTransactionService` for sroc [\#613](https://github.com/DEFRA/sroc-charging-module-api/pull/613) ([StuAA78](https://github.com/StuAA78))
+- Amend sroc charge validation tests [\#604](https://github.com/DEFRA/sroc-charging-module-api/pull/604) ([StuAA78](https://github.com/StuAA78))
+
+**Dependency updates:**
+
+- Bump actions/setup-node from 2.4.1 to 2.5.0 [\#620](https://github.com/DEFRA/sroc-charging-module-api/pull/620) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.41.0 to 3.42.0 [\#615](https://github.com/DEFRA/sroc-charging-module-api/pull/615) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @hapi/code from 8.0.4 to 8.0.5 [\#614](https://github.com/DEFRA/sroc-charging-module-api/pull/614) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump got from 11.8.2 to 11.8.3 [\#612](https://github.com/DEFRA/sroc-charging-module-api/pull/612) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nock from 13.2.0 to 13.2.1 [\#607](https://github.com/DEFRA/sroc-charging-module-api/pull/607) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.40.1 to 3.41.0 [\#606](https://github.com/DEFRA/sroc-charging-module-api/pull/606) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nodemon from 2.0.14 to 2.0.15 [\#603](https://github.com/DEFRA/sroc-charging-module-api/pull/603) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.40.0 to 3.40.1 [\#601](https://github.com/DEFRA/sroc-charging-module-api/pull/601) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @hapi/lab from 24.3.2 to 24.4.0 [\#600](https://github.com/DEFRA/sroc-charging-module-api/pull/600) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump objection from 2.2.17 to 2.2.18 [\#599](https://github.com/DEFRA/sroc-charging-module-api/pull/599) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nock from 13.1.4 to 13.2.0 [\#598](https://github.com/DEFRA/sroc-charging-module-api/pull/598) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @hapi/code from 8.0.3 to 8.0.4 [\#597](https://github.com/DEFRA/sroc-charging-module-api/pull/597) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.39.0 to 3.40.0 [\#596](https://github.com/DEFRA/sroc-charging-module-api/pull/596) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.38.0 to 3.39.0 [\#593](https://github.com/DEFRA/sroc-charging-module-api/pull/593) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.14.2](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.14.2) (2021-10-28)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.14.1...v0.14.2)
