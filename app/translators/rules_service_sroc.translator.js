@@ -4,10 +4,10 @@
  * @module RulesServicePresrocTranslator
  */
 
-const BaseTranslator = require('./base.translator')
+const RulesServiceBaseTranslator = require('./rules_service_base.translator')
 const Joi = require('joi')
 
-class RulesServiceSrocTranslator extends BaseTranslator {
+class RulesServiceSrocTranslator extends RulesServiceBaseTranslator {
   constructor (data) {
     // The rules service returns the data we need in a WRLSChargingResponse object within the response object
     super(data.WRLSChargingResponse)
@@ -29,30 +29,22 @@ class RulesServiceSrocTranslator extends BaseTranslator {
     this.regimeValue2 = this._convertPercentage(this._data.compensationChargePercentage)
   }
 
-  _schema () {
-    return Joi.object({
-      chargeValue: Joi.number().required(),
+  _rules () {
+    return {
+      ...this._baseRules(),
       baselineCharge: Joi.number().required(),
       waterCompanyCharge: Joi.number().required(),
       supportedSourceCharge: Joi.number().required(),
       winterOnlyAdjustment: Joi.required(),
-      s130Agreement: Joi.required(),
-      s127Agreement: Joi.required(),
       // compensationChargePercentage is only returned if this was a compensation charge. If it isn't returned then we
       // default it to `null`
       compensationChargePercentage: Joi.string().allow(null)
-    }).options({ stripUnknown: true })
+    }
   }
 
   // All items in the response require conversion, which is done in constructor(). Therefore no translations are needed.
   _translations () {
     return { }
-  }
-
-  _convertToPence (value) {
-    const floatValue = parseFloat(value)
-
-    return Math.round(floatValue * 100)
   }
 
   /**

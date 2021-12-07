@@ -4,11 +4,11 @@
  * @module CalculateChargePresrocTranslator
  */
 
-const BaseTranslator = require('./base.translator')
+const CalculateChargeBaseTranslator = require('./calculate_charge_base.translator')
 const Joi = require('joi').extend(require('@joi/date'))
 const Boom = require('@hapi/boom')
 
-class CalculateChargePresrocTranslator extends BaseTranslator {
+class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
   constructor (data) {
     super(data)
 
@@ -27,19 +27,50 @@ class CalculateChargePresrocTranslator extends BaseTranslator {
     this.regimeValue8 = this._titleCaseStringValue(this.regimeValue8)
   }
 
-  _validateFinancialYear () {
-    const schema = Joi.object({
-      periodEndFinancialYear: Joi.number().equal(this.chargeFinancialYear)
-    })
+  _rules () {
+    return {
+      ...this._baseRules(),
+      ruleset: Joi.string().valid('presroc').required(),
 
-    const data = {
-      periodEndFinancialYear: this._financialYear(this.chargePeriodEnd)
+      periodStart: Joi.date().format(this._validDateFormats()).max(Joi.ref('periodEnd')).min('01-APR-2014').required(),
+      section126Factor: Joi.number().allow(null).empty(null).default(1.0),
+      section127Agreement: Joi.boolean().required(),
+      twoPartTariff: Joi.boolean().required(),
+      volume: Joi.number().min(0).required(),
+
+      // Dependent on `compensationCharge` and validated in the rules service
+      eiucSource: Joi
+        .when('compensationCharge', { is: true, then: Joi.string().required() }),
+
+      // validated in the rules service
+      loss: Joi.string().required(),
+      regionalChargingArea: Joi.string().required(),
+      season: Joi.string().required(),
+      source: Joi.string().required()
     }
+  }
 
-    const { error } = schema.validate(data)
-
-    if (error) {
-      throw Boom.badData(error)
+  _translations () {
+    return {
+      authorisedDays: 'regimeValue5',
+      billableDays: 'regimeValue4',
+      compensationCharge: 'regimeValue17',
+      credit: 'chargeCredit',
+      eiucSource: 'regimeValue13',
+      loss: 'regimeValue8',
+      periodEnd: 'chargePeriodEnd',
+      periodStart: 'chargePeriodStart',
+      regionalChargingArea: 'regimeValue15',
+      ruleset: 'ruleset',
+      season: 'regimeValue7',
+      section126Factor: 'regimeValue11',
+      section127Agreement: 'regimeValue12',
+      section130Agreement: 'regimeValue9',
+      source: 'regimeValue6',
+      twoPartTariff: 'regimeValue16',
+      volume: 'lineAttr5',
+      waterUndertaker: 'regimeValue14',
+      regime: 'regime'
     }
   }
 
@@ -96,118 +127,6 @@ class CalculateChargePresrocTranslator extends BaseTranslator {
       .split(' ')
       .map(word => word[0].toUpperCase() + word.substring(1))
       .join(' ')
-  }
-
-  _schema () {
-    const rules = this._rules()
-
-    return Joi.object({
-      authorisedDays: rules.authorisedDays,
-      billableDays: rules.billableDays,
-      compensationCharge: rules.compensationCharge,
-      credit: rules.credit,
-      eiucSource: rules.eiucSource,
-      loss: rules.loss,
-      periodStart: rules.periodStart,
-      periodEnd: rules.periodEnd,
-      regionalChargingArea: rules.regionalChargingArea,
-      ruleset: rules.ruleset,
-      season: rules.season,
-      section126Factor: rules.section126Factor,
-      section127Agreement: rules.section127Agreement,
-      section130Agreement: rules.section130Agreement,
-      source: rules.source,
-      twoPartTariff: rules.twoPartTariff,
-      volume: rules.volume,
-      waterUndertaker: rules.waterUndertaker,
-      regime: rules.regime
-    })
-  }
-
-  _rules () {
-    const validDateFormats = ['DD-MMM-YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD', 'DD/MM/YYYY', 'YYYY/MM/DD']
-
-    return {
-      ruleset: Joi.string().valid('presroc').required(),
-
-      authorisedDays: Joi.number().integer().min(0).max(366).required(),
-      billableDays: Joi.number().integer().min(0).max(366).required(),
-      compensationCharge: Joi.boolean().required(),
-      credit: Joi.boolean().required(),
-
-      // validated in the rules service
-      eiucSource: Joi.when('compensationCharge', { is: true, then: Joi.string().required() }),
-
-      // validated in the rules service
-      loss: Joi.string().required(),
-
-      periodStart: Joi.date().format(validDateFormats).max(Joi.ref('periodEnd')).min('01-APR-2014').required(),
-      periodEnd: Joi.date().format(validDateFormats).required(),
-
-      // validated in the rules service
-      regionalChargingArea: Joi.string().required(),
-
-      // validated in rules service
-      season: Joi.string().required(),
-
-      section126Factor: Joi.number().allow(null).empty(null).default(1.0),
-      section127Agreement: Joi.boolean().required(),
-      section130Agreement: Joi.boolean().required(),
-
-      // validated in rules service
-      source: Joi.string().required(),
-
-      twoPartTariff: Joi.boolean().required(),
-      volume: Joi.number().min(0).required(),
-      waterUndertaker: Joi.boolean().when('compensationCharge', { is: true, then: Joi.required() }),
-
-      // needed to determine which endpoints to call in the rules service
-      regime: Joi.string().required()
-    }
-  }
-
-  _translations () {
-    return {
-      authorisedDays: 'regimeValue5',
-      billableDays: 'regimeValue4',
-      compensationCharge: 'regimeValue17',
-      credit: 'chargeCredit',
-      eiucSource: 'regimeValue13',
-      loss: 'regimeValue8',
-      periodEnd: 'chargePeriodEnd',
-      periodStart: 'chargePeriodStart',
-      regionalChargingArea: 'regimeValue15',
-      ruleset: 'ruleset',
-      season: 'regimeValue7',
-      section126Factor: 'regimeValue11',
-      section127Agreement: 'regimeValue12',
-      section130Agreement: 'regimeValue9',
-      source: 'regimeValue6',
-      twoPartTariff: 'regimeValue16',
-      volume: 'lineAttr5',
-      waterUndertaker: 'regimeValue14',
-      regime: 'regime'
-    }
-  }
-
-  /**
-   * Returns the calculated financial year for a given date
-   *
-   * If the date is January to March then the financial year is the previous year. Otherwise, the financial year is the
-   * current year.
-   *
-   * For example, if the date is 01-MAR-2022 then the financial year will be 2021. If the it's 01-MAY-2022 then the
-   * financial year will be 2022.
-   *
-   * @param {String} date
-   * @returns {Number} The calculated financial year
-  */
-  _financialYear (date) {
-    const periodDate = new Date(date)
-    const month = periodDate.getMonth()
-    const year = periodDate.getFullYear()
-
-    return (month <= 2 ? year - 1 : year)
   }
 
   /**
