@@ -113,4 +113,20 @@ describe('View Invoice Presenter', () => {
       'calculation'
     ])
   })
+
+  it('returns `minimumChargeInvoice` if the bill run ruleset is `presroc`', () => {
+    const presenter = new ViewInvoicePresenter(data)
+    const result = presenter.go()
+
+    expect(result.invoice).to.include('minimumChargeInvoice')
+  })
+
+  it("doesn't return `minimumChargeInvoice` if the bill run ruleset is `sroc`", () => {
+    const srocData = { ...Object.assign(data), billRun: { ruleset: 'sroc' } }
+
+    const presenter = new ViewInvoicePresenter(srocData)
+    const result = presenter.go()
+
+    expect(result.invoice).to.not.include('minimumChargeInvoice')
+  })
 })

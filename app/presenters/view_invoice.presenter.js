@@ -21,7 +21,8 @@ class ViewInvoicePresenter extends BasePresenter {
         financialYear: data.financialYear,
         deminimisInvoice: data.deminimisInvoice,
         zeroValueInvoice: data.zeroValueInvoice,
-        minimumChargeInvoice: data.minimumChargeInvoice,
+        // We only include minimumChargeInvoice if the ruleset is `presroc`
+        ...(data.billRun.ruleset === 'presroc') && { minimumChargeInvoice: data.minimumChargeInvoice },
         transactionReference: data.transactionReference,
         creditLineValue: data.creditLineValue,
         debitLineValue: data.debitLineValue,
