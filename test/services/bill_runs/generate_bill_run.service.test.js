@@ -178,6 +178,29 @@ describe('Generate Bill Run service', () => {
       })
     })
 
+    describe('When there are no zero value invoices', () => {
+      describe('and the invoice was previously zero value', () => {
+        it("sets the 'zeroValueInvoice' flag to false", async () => {
+          // Create a zero value invoice and generate the bill run
+          rulesServiceStub.restore()
+          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 0)
+          let result = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+          await GenerateBillRunService.go(billRun)
+
+          // Add a non-zero value transaction to the invoice and generate again
+          rulesServiceStub.restore()
+          RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 500)
+          await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+          await GenerateBillRunService.go(billRun)
+
+          result = await TransactionModel.query().select('invoiceId').findById(result.transaction.id)
+          const invoice = await InvoiceModel.query().findById(result.invoiceId)
+
+          expect(invoice.zeroValueInvoice).to.equal(false)
+        })
+      })
+    })
+
     // These tests are for net zero value invoices, ie. where the net total of the invoice is zero
     describe('When there are net zero value invoices', () => {
       it("sets the 'zeroValueInvoice' flag to true", async () => {
@@ -258,6 +281,25 @@ describe('Generate Bill Run service', () => {
           const invoice = await InvoiceModel.query().findById(result.invoiceId)
 
           expect(invoice.deminimisInvoice).to.equal(false)
+        })
+
+        describe('and the invoice was previously deminimis', () => {
+          it("sets the 'deminimisInvoice' flag to false", async () => {
+            // Create a deminimis invoice and generate the bill run
+            rulesServiceStub.restore()
+            RulesServiceHelper.mockValue(Sinon, RequestRulesServiceCharge, rulesServiceResponse, 499)
+            let result = await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+            await GenerateBillRunService.go(billRun)
+
+            // Add another transaction to take the invoice out of deminimis and generate again
+            await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
+            await GenerateBillRunService.go(billRun)
+
+            result = await TransactionModel.query().select('invoiceId').findById(result.transaction.id)
+            const invoice = await InvoiceModel.query().findById(result.invoiceId)
+
+            expect(invoice.deminimisInvoice).to.equal(false)
+          })
         })
       })
 
