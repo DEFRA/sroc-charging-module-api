@@ -132,65 +132,67 @@ describe('Invoices controller', () => {
     })
   })
 
-  describe('View bill run invoice: GET /v2/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}', () => {
-    const options = (token, billRunId, invoiceId) => {
-      return {
-        method: 'GET',
-        url: `/v2/wrls/bill-runs/${billRunId}/invoices/${invoiceId}`,
-        headers: { authorization: `Bearer ${token}` }
+  for (const version of ['v2', 'v3']) {
+    describe(`View bill run invoice: GET /${version}/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}`, () => {
+      const options = (token, billRunId, invoiceId) => {
+        return {
+          method: 'GET',
+          url: `/${version}/wrls/bill-runs/${billRunId}/invoices/${invoiceId}`,
+          headers: { authorization: `Bearer ${token}` }
+        }
       }
-    }
 
-    beforeEach(async () => {
-      authToken = AuthorisationHelper.nonAdminToken('clientId')
+      beforeEach(async () => {
+        authToken = AuthorisationHelper.nonAdminToken('clientId')
 
-      Sinon
-        .stub(JsonWebToken, 'verify')
-        .returns(AuthorisationHelper.decodeToken(authToken))
-    })
-
-    describe('When the request is valid', () => {
-      it('returns success status 200', async () => {
-        const transaction = await NewTransactionHelper.create()
-
-        const response = await server.inject(options(authToken, transaction.billRunId, transaction.invoiceId))
-        const responsePayload = JSON.parse(response.payload)
-
-        expect(response.statusCode).to.equal(200)
-        expect(responsePayload.invoice.id).to.equal(transaction.invoiceId)
-        expect(responsePayload.invoice.licences).to.be.an.array()
-        expect(responsePayload.invoice.licences[0].transactions).to.be.an.array()
+        Sinon
+          .stub(JsonWebToken, 'verify')
+          .returns(AuthorisationHelper.decodeToken(authToken))
       })
-    })
 
-    describe('When the request is invalid', () => {
-      describe('because it is unknown', () => {
-        it('returns error status 404', async () => {
-          const unknownInvoiceId = GeneralHelper.uuid4()
+      describe('When the request is valid', () => {
+        it('returns success status 200', async () => {
+          const transaction = await NewTransactionHelper.create()
 
-          const response = await server.inject(options(authToken, invoice.billRunId, unknownInvoiceId))
+          const response = await server.inject(options(authToken, transaction.billRunId, transaction.invoiceId))
           const responsePayload = JSON.parse(response.payload)
 
-          expect(response.statusCode).to.equal(404)
-          expect(responsePayload.message).to.equal(`Invoice ${unknownInvoiceId} is unknown.`)
+          expect(response.statusCode).to.equal(200)
+          expect(responsePayload.invoice.id).to.equal(transaction.invoiceId)
+          expect(responsePayload.invoice.licences).to.be.an.array()
+          expect(responsePayload.invoice.licences[0].transactions).to.be.an.array()
         })
       })
 
-      describe('because it is not linked to the bill run', () => {
-        it('throws an error', async () => {
-          const newTransaction = await NewTransactionHelper.create()
+      describe('When the request is invalid', () => {
+        describe('because it is unknown', () => {
+          it('returns error status 404', async () => {
+            const unknownInvoiceId = GeneralHelper.uuid4()
 
-          const response = await server.inject(options(authToken, invoice.billRunId, newTransaction.invoiceId))
-          const responsePayload = JSON.parse(response.payload)
+            const response = await server.inject(options(authToken, invoice.billRunId, unknownInvoiceId))
+            const responsePayload = JSON.parse(response.payload)
 
-          expect(response.statusCode).to.equal(409)
-          expect(responsePayload.message).to.equal(
+            expect(response.statusCode).to.equal(404)
+            expect(responsePayload.message).to.equal(`Invoice ${unknownInvoiceId} is unknown.`)
+          })
+        })
+
+        describe('because it is not linked to the bill run', () => {
+          it('throws an error', async () => {
+            const newTransaction = await NewTransactionHelper.create()
+
+            const response = await server.inject(options(authToken, invoice.billRunId, newTransaction.invoiceId))
+            const responsePayload = JSON.parse(response.payload)
+
+            expect(response.statusCode).to.equal(409)
+            expect(responsePayload.message).to.equal(
             `Invoice ${newTransaction.invoiceId} is not linked to bill run ${invoice.billRunId}.`
-          )
+            )
+          })
         })
       })
     })
-  })
+  }
 
   describe('Rebill bill run invoice: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill', () => {
     let cancelInvoice
