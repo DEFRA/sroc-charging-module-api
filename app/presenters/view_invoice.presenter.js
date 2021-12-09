@@ -16,6 +16,7 @@ class ViewInvoicePresenter extends BasePresenter {
       invoice: {
         id: data.id,
         billRunId: data.billRunId,
+        ruleset: data.billRun.ruleset,
         customerReference: data.customerReference,
         financialYear: data.financialYear,
         deminimisInvoice: data.deminimisInvoice,

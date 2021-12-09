@@ -41,6 +41,7 @@ describe('View Invoice service', () => {
 
         expect(result.invoice.id).to.equal(invoiceId)
         expect(result.invoice.netTotal).to.equal(0)
+        expect(result.invoice.ruleset).to.equal('presroc')
 
         expect(result.invoice.licences).to.be.an.array()
         expect(result.invoice.licences[0].transactions).to.be.an.array()

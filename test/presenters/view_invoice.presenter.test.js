@@ -31,6 +31,7 @@ describe('View Invoice Presenter', () => {
     netTotal: 2093,
     rebilledType: 'R',
     rebilledInvoiceId: GeneralHelper.uuid4(),
+    billRun: { ruleset: 'presroc' },
     licences: [
       {
         id: GeneralHelper.uuid4(),
@@ -79,7 +80,8 @@ describe('View Invoice Presenter', () => {
       'debitLineValue',
       'netTotal',
       'rebilledType',
-      'rebilledInvoiceId'
+      'rebilledInvoiceId',
+      'ruleset'
     ])
   })
 

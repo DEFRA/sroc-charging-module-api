@@ -66,6 +66,12 @@ class ViewInvoiceService {
           'chargeCalculation'
         )
       })
+      .withGraphFetched('billRun')
+      .modifyGraph('billRun', builder => {
+        builder.select(
+          'ruleset'
+        )
+      })
 
     return {
       ...responseData,
