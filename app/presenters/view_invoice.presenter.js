@@ -8,7 +8,8 @@ const BasePresenter = require('./base.presenter')
 const ViewLicencePresenter = require('./view_licence.presenter')
 
 /**
- * Handles formatting the data into the response we send to clients after a request to view an invoice
+ * Handles formatting the data into the response we send to clients after a request to view an invoice. Note that we
+ * expect billRun.ruleset to be passed in on top of the regular invoice data.
  */
 class ViewInvoicePresenter extends BasePresenter {
   _presentation (data) {
@@ -30,7 +31,7 @@ class ViewInvoicePresenter extends BasePresenter {
         rebilledType: data.rebilledType,
         rebilledInvoiceId: data.rebilledInvoiceId,
         licences: data.licences.map(licence => {
-          const presenter = new ViewLicencePresenter(licence)
+          const presenter = new ViewLicencePresenter({ ...licence, ruleset: data.billRun.ruleset })
           return presenter.go()
         })
       }

@@ -122,8 +122,7 @@ describe('View Invoice Presenter', () => {
   })
 
   it("doesn't return `minimumChargeInvoice` if the bill run ruleset is `sroc`", () => {
-    const srocData = { ...Object.assign(data), billRun: { ruleset: 'sroc' } }
-
+    const srocData = Object.assign({ ...data, billRun: { ruleset: 'sroc' } })
     const presenter = new ViewInvoicePresenter(srocData)
     const result = presenter.go()
 
