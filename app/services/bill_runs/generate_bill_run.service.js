@@ -139,12 +139,20 @@ class GenerateBillRunService {
   }
 
   static async _setZeroValueInvoiceFlags (billRun, trx) {
+    // We reset all zero value flags to false, then set the flag to true where it now applies
+    await billRun.$relatedQuery('invoices', trx)
+      .patch({ zeroValueInvoice: false })
+
     return billRun.$relatedQuery('invoices', trx)
       .modify('zeroValue')
       .patch({ zeroValueInvoice: true })
   }
 
   static async _setDeminimisInvoiceFlags (billRun, trx) {
+    // We reset all deminimis flags to false, then set the flag to true where it now applies
+    await billRun.$relatedQuery('invoices', trx)
+      .patch({ deminimisInvoice: false })
+
     return billRun.$deminimisInvoices(trx)
       .patch({ deminimisInvoice: true })
   }
