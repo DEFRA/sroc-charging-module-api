@@ -40,7 +40,6 @@ describe('View Transaction Presenter', () => {
       'clientId',
       'chargeValue',
       'credit',
-      'subjectToMinimumCharge',
       'lineDescription',
       'periodStart',
       'periodEnd',
@@ -63,6 +62,21 @@ describe('View Transaction Presenter', () => {
     const result = presenter.go()
 
     expect(result).to.not.include('subjectToMinimumCharge')
+  })
+
+  it('returns `minimumChargeAdjustment` if the ruleset is `presroc`', () => {
+    const presenter = new ViewTransactionPresenter(data)
+    const result = presenter.go()
+
+    expect(result).to.include('minimumChargeAdjustment')
+  })
+
+  it('does not return `minimumChargeAdjustment` if the ruleset is `sroc`', () => {
+    const srocData = Object.assign({ ...data, ruleset: 'sroc' })
+    const presenter = new ViewTransactionPresenter(srocData)
+    const result = presenter.go()
+
+    expect(result).to.not.include('minimumChargeAdjustment')
   })
 
   it('correctly presents the data', () => {

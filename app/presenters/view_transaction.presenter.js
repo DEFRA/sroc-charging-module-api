@@ -19,7 +19,8 @@ class ViewTransactionPresenter extends BasePresenter {
       credit: data.chargeCredit,
       // We only include subjectToMinimumCharge if the ruleset is `presroc`
       ...(data.ruleset === 'presroc') && { subjectToMinimumCharge: data.subjectToMinimumCharge },
-      minimumChargeAdjustment: data.minimumChargeAdjustment,
+      // We only include minimumChargeAdjustment if the ruleset is `presroc`
+      ...(data.ruleset === 'presroc') && { minimumChargeAdjustment: data.minimumChargeAdjustment },
       lineDescription: data.lineDescription,
       periodStart: data.chargePeriodStart,
       periodEnd: data.chargePeriodEnd,
