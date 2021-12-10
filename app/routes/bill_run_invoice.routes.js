@@ -14,6 +14,11 @@ const routes = [
     handler: BillRunsInvoicesController.view
   },
   {
+    method: 'GET',
+    path: '/v3/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}',
+    handler: BillRunsInvoicesController.view
+  },
+  {
     method: 'PATCH',
     path: '/v2/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill',
     handler: BillRunsInvoicesController.rebill

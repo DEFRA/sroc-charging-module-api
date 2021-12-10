@@ -26,7 +26,9 @@ describe('View Transaction Presenter', () => {
     chargePeriodEnd: '2020-03-31',
     regimeValue17: 'true',
     rebilledTransactionId: GeneralHelper.uuid4(),
-    chargeCalculation: '{"__DecisionID__":"91a711c1-2dbb-47fe-ae8e-505da38432d70","WRLSChargingResponse":{"chargeValue":7.72,"decisionPoints":{"sourceFactor":10.7595,"seasonFactor":17.2152,"lossFactor":0.5164559999999999,"volumeFactor":3.5865,"abatementAdjustment":7.721017199999999,"s127Agreement":7.721017199999999,"s130Agreement":7.721017199999999,"secondPartCharge":false,"waterUndertaker":false,"eiucFactor":0,"compensationCharge":false,"eiucSourceFactor":0,"sucFactor":7.721017199999999},"messages":[],"sucFactor":14.95,"volumeFactor":3.5865,"sourceFactor":3,"seasonFactor":1.6,"lossFactor":0.03,"abatementAdjustment":"S126 x 1.0","s127Agreement":null,"s130Agreement":null,"eiucSourceFactor":0,"eiucFactor":0}}'
+    chargeCalculation: '{"__DecisionID__":"91a711c1-2dbb-47fe-ae8e-505da38432d70","WRLSChargingResponse":{"chargeValue":7.72,"decisionPoints":{"sourceFactor":10.7595,"seasonFactor":17.2152,"lossFactor":0.5164559999999999,"volumeFactor":3.5865,"abatementAdjustment":7.721017199999999,"s127Agreement":7.721017199999999,"s130Agreement":7.721017199999999,"secondPartCharge":false,"waterUndertaker":false,"eiucFactor":0,"compensationCharge":false,"eiucSourceFactor":0,"sucFactor":7.721017199999999},"messages":[],"sucFactor":14.95,"volumeFactor":3.5865,"sourceFactor":3,"seasonFactor":1.6,"lossFactor":0.03,"abatementAdjustment":"S126 x 1.0","s127Agreement":null,"s130Agreement":null,"eiucSourceFactor":0,"eiucFactor":0}}',
+    // Ruleset is not normally part of the transaction record but we expect it to be passed in to the presenter
+    ruleset: 'presroc'
   }
 
   it('returns the required columns', () => {
@@ -38,8 +40,6 @@ describe('View Transaction Presenter', () => {
       'clientId',
       'chargeValue',
       'credit',
-      'subjectToMinimumCharge',
-      'minimumChargeAdjustment',
       'lineDescription',
       'periodStart',
       'periodEnd',
@@ -47,6 +47,36 @@ describe('View Transaction Presenter', () => {
       'rebilledTransactionId',
       'calculation'
     ])
+  })
+
+  it('returns `subjectToMinimumCharge` if the ruleset is `presroc`', () => {
+    const presenter = new ViewTransactionPresenter(data)
+    const result = presenter.go()
+
+    expect(result).to.include('subjectToMinimumCharge')
+  })
+
+  it('does not return `subjectToMinimumCharge` if the ruleset is `sroc`', () => {
+    const srocData = Object.assign({ ...data, ruleset: 'sroc' })
+    const presenter = new ViewTransactionPresenter(srocData)
+    const result = presenter.go()
+
+    expect(result).to.not.include('subjectToMinimumCharge')
+  })
+
+  it('returns `minimumChargeAdjustment` if the ruleset is `presroc`', () => {
+    const presenter = new ViewTransactionPresenter(data)
+    const result = presenter.go()
+
+    expect(result).to.include('minimumChargeAdjustment')
+  })
+
+  it('does not return `minimumChargeAdjustment` if the ruleset is `sroc`', () => {
+    const srocData = Object.assign({ ...data, ruleset: 'sroc' })
+    const presenter = new ViewTransactionPresenter(srocData)
+    const result = presenter.go()
+
+    expect(result).to.not.include('minimumChargeAdjustment')
   })
 
   it('correctly presents the data', () => {
