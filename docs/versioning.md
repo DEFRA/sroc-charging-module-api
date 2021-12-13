@@ -144,3 +144,40 @@ And finally, as before we ensure we have our `POST /v2/something` route added to
 ## Deprecating a version
 
 Once `v2` is complete and all endpoints are ready, we consider `v1` to be deprecated. We will give sufficient notice to users that they should migrate to `v2` as soon as possible; after that time, we remove all `v1`-specific code from the API. Having the version number in the names of files, services etc. allows us to easily identify which these are, and treating `v2` as "the new normal" means we can simply delete `v1` assets knowing that `v2` will be entirely unaffected.
+
+## Documenting a version
+
+It is entirely possible that an endpoint can have multiple sets of parameters; for example, an endpoint could have one set of parameters for an `sroc` request and another for `presroc`. The syntax when updating the [OpenAPI docs](https://github.com/DEFRA/sroc-service-team/tree/main/openapi) to show the schema and provide examples is as follows:
+
+```yaml
+responses:
+  "200":
+    description: Success
+    content:
+      application/json:
+        schema:
+          oneOf:
+            - title: presroc schema
+              type: object
+              properties:
+                presrocParameter:
+                  description: This only apples to presroc
+                  type: number
+                  example: 1234
+            - title: sroc schema
+              type: object
+              properties:
+                srocParameter:
+                  description: This only applies to sroc
+                  type: string
+                  example: ABCD
+        examples:
+          presroc:
+            value:
+              presrocParameter: 1234
+          sroc:
+            value:
+              srocParameter: ABCD
+```
+
+Note that the OpenAPI Designer extension doesn't support multiple examples; the drop-down box to select them is missing when previewing the docs. We recommend pasting the compiled schema into the [online Swagger editor](https://editor.swagger.io/) to confirm that the examples display correctly.
