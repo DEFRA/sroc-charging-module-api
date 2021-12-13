@@ -44,6 +44,12 @@ class SendBillRunReferenceService {
   }
 
   static async _send (regime, billRun) {
+    // We set the bill run status to `pending` to signify that the bill run info is being updated
+    await billRun.$query()
+      .patch({
+        status: 'pending'
+      })
+
     return BillRunModel.transaction(async trx => {
       const billableCount = await this._updateBillableInvoices(regime, billRun, trx)
 
@@ -51,10 +57,11 @@ class SendBillRunReferenceService {
       // in the file references and concern about whether something got lost in transit
       const fileReference = billableCount ? await NextTransactionFileReferenceService.go(regime, billRun.region, trx) : null
 
+      // We set the status to `sending` to show that we've finished updating the bill run info and it's now being sent
       return BillRunModel.query(trx)
         .findById(billRun.id)
         .patch({
-          status: 'pending',
+          status: 'sending',
           fileReference
         })
         .returning('*')

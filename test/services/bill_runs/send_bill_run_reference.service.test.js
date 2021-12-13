@@ -3,6 +3,7 @@
 // Test framework dependencies
 const Lab = require('@hapi/lab')
 const Code = require('@hapi/code')
+const Sinon = require('sinon')
 
 const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
@@ -16,6 +17,8 @@ const {
   RegimeHelper,
   SequenceCounterHelper
 } = require('../../support/helpers')
+
+const { BillRunModel } = require('../../../app/models')
 
 // Thing under test
 const { SendBillRunReferenceService } = require('../../../app/services')
@@ -32,18 +35,43 @@ describe('Send Bill Run Reference service', () => {
     await SequenceCounterHelper.addSequenceCounter(regime.id, billRun.region)
   })
 
-  describe("When the 'bill run' can be sent", () => {
+  describe('When the bill run can be sent', () => {
     beforeEach(async () => {
       billRun.status = 'approved'
     })
 
-    it("sets the 'bill run' status to 'pending'", async () => {
-      const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
+    it('initially sets the bill run status to `pending`', async () => {
+      const spy = Sinon.spy(BillRunModel, 'query')
 
-      expect(sentBillRun.status).to.equal('pending')
+      await SendBillRunReferenceService.go(regime, billRun)
+
+      /**
+       * Iterate over each query call to get the underlying SQL query:
+       *   .getCall gives us the given call
+       *   The Objection function we spy on returns a query object so we get the returnValue
+       *   .toKnexQuery() gives us the underlying Knex query
+       *   .toString() gives us the SQL query as a string
+       *
+       * Finally, we push query strings to the queries array if they set the status to 'pending'.
+       */
+      const queries = []
+      for (let call = 0; call < spy.callCount; call++) {
+        const queryString = spy.getCall(call).returnValue.toKnexQuery().toString()
+        if (queryString.includes('set "status" = \'pending\'')) {
+          queries.push(queryString)
+        }
+      }
+
+      expect(queries.length).to.equal(1)
     })
 
-    it("generates a file reference for the 'bill run'", async () => {
+    it('sets the bill run status to `sending`', async () => {
+      const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
+
+      expect(sentBillRun.status).to.equal('sending')
+    })
+
+    it('generates a file reference for the bill run', async () => {
       // A bill run needs at least one billable invoice for a file reference to be generated
       await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 501, 0) // standard debit
       const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
@@ -51,7 +79,7 @@ describe('Send Bill Run Reference service', () => {
       expect(sentBillRun.fileReference).to.equal('nalai50001')
     })
 
-    describe("for each 'invoice' linked to the bill run", () => {
+    describe('for each invoice linked to the bill run', () => {
       beforeEach(async () => {
         await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 350, 0) // deminimis debit
         await InvoiceHelper.addInvoice(billRun.id, 'CMA0000002', 2020, 0, 0, 1, 501, 0) // standard debit
@@ -61,7 +89,7 @@ describe('Send Bill Run Reference service', () => {
         await InvoiceHelper.addInvoice(billRun.id, 'CMA0000006', 2020, 0, 0, 1, 501, 0, 1, 0, 501) // std minimum charge
       })
 
-      it("generates and assigns a 'transaction reference' to only the billable invoices", async () => {
+      it('generates and assigns a transaction reference to only the billable invoices', async () => {
         await SendBillRunReferenceService.go(regime, billRun)
 
         const invoices = await billRun.$relatedQuery('invoices')
@@ -74,19 +102,19 @@ describe('Send Bill Run Reference service', () => {
       })
     })
 
-    describe("but none of its invoices are 'billable'", () => {
+    describe('but none of its invoices are billable', () => {
       beforeEach(async () => {
         await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 350, 0) // deminimis debit
         await InvoiceHelper.addInvoice(billRun.id, 'CMA0000002', 2020, 0, 0, 0, 0, 1) // zero value
       })
 
-      it("still updates the status to 'pending'", async () => {
+      it('still updates the status to sending', async () => {
         const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
 
-        expect(sentBillRun.status).to.equal('pending')
+        expect(sentBillRun.status).to.equal('sending')
       })
 
-      it("it does not assign a 'file reference'", async () => {
+      it('it does not assign a file reference', async () => {
         const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
 
         expect(sentBillRun.fileReference).to.be.null()
@@ -94,8 +122,8 @@ describe('Send Bill Run Reference service', () => {
     })
   })
 
-  describe("When the 'bill run' cannot be sent", () => {
-    describe("because the status is not 'approved'", () => {
+  describe('When the bill run cannot be sent', () => {
+    describe('because the status is not `approved`', () => {
       it('throws an error', async () => {
         const err = await expect(SendBillRunReferenceService.go(regime, billRun)).to.reject()
 
