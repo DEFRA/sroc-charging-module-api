@@ -19,8 +19,8 @@ class GenerateBillRunValidationService {
   }
 
   static _validateBillRun (billRun) {
-    if (billRun.$generating()) {
-      throw Boom.conflict(`Summary for bill run ${billRun.id} is already being generated`)
+    if (billRun.$pending()) {
+      throw Boom.conflict(`Summary for bill run ${billRun.id} is being updated`)
     }
 
     if (billRun.$generated()) {

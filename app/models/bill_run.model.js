@@ -153,7 +153,7 @@ class BillRunModel extends BaseModel {
    * a transaction to be added.
    *
    * This also protects against trying to make changes when the bill run is being processed. So interim states like
-   * `generating`, `pending`, and `deleting` are also not classed as 'editable'.
+   * `pending` and `deleting` are also not classed as 'editable'.
    */
   $editable () {
     return ['initialised', 'generated'].includes(this.status)
@@ -176,13 +176,6 @@ class BillRunModel extends BaseModel {
    */
   $patchable () {
     return ['initialised', 'generated', 'approved'].includes(this.status)
-  }
-
-  /**
-   * Returns true if the bill run summary is being generated
-   */
-  $generating () {
-    return this.status === 'generating'
   }
 
   /**
