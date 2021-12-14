@@ -49,8 +49,8 @@ class SendTransactionFileService {
   }
 
   static _validate (billRun) {
-    if (!billRun.$pending()) {
-      throw new Error(`Bill run ${billRun.id} does not have a status of 'pending'.`)
+    if (!billRun.$sending()) {
+      throw new Error(`Bill run ${billRun.id} does not have a status of 'sending'.`)
     }
   }
 

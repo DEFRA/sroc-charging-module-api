@@ -221,6 +221,13 @@ class BillRunModel extends BaseModel {
   }
 
   /**
+   * Returns true if the bill run status is 'sending'
+   */
+  $sending () {
+    return this.status === 'sending'
+  }
+
+  /**
    * Returns true if the bill run has a file reference
    */
   $billable () {

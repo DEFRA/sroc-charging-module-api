@@ -13,7 +13,9 @@ const NextTransactionReferenceService = require('../next_references/next_transac
 class SendBillRunReferenceService {
   /**
    * Prepare a 'bill run' to be ready for billing by generating transaction references for its billable invoices and
-   * generating an export file reference for it
+   * generating an export file reference for it.
+   *
+   * We start by setting the bill run status to `pending` to flag that the bill run is being updated.
    *
    * Before we export the invoices for a bill run to SSCL for billing we are required to generate a transaction
    * reference for each one.
@@ -22,7 +24,7 @@ class SendBillRunReferenceService {
    * billed. We don't want the files we send to SSCL to appear to have a gap in their reference so no one gets worried
    * something has gotten lost or missed.
    *
-   * Either way, the bill run status is updated to 'pending' to flag it ready to be exported.
+   * Either way, the bill run status is updated to `sending` to flag it ready to be exported.
    *
    * @param {@module RegimeModel} regime An instance of `RegimeModel` which matches the requested regime
    * @param {@module:BillRunModel} billRun The 'bill run' to send for billing
@@ -44,6 +46,12 @@ class SendBillRunReferenceService {
   }
 
   static async _send (regime, billRun) {
+    // We set the bill run status to `pending` to signify that the bill run info is being updated
+    await billRun.$query()
+      .patch({
+        status: 'pending'
+      })
+
     return BillRunModel.transaction(async trx => {
       const billableCount = await this._updateBillableInvoices(regime, billRun, trx)
 
@@ -51,10 +59,11 @@ class SendBillRunReferenceService {
       // in the file references and concern about whether something got lost in transit
       const fileReference = billableCount ? await NextTransactionFileReferenceService.go(regime, billRun.region, trx) : null
 
+      // We set the status to `sending` to show that we've finished updating the bill run info and it's now being sent
       return BillRunModel.query(trx)
         .findById(billRun.id)
         .patch({
-          status: 'pending',
+          status: 'sending',
           fileReference
         })
         .returning('*')

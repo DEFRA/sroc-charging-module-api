@@ -50,7 +50,7 @@ describe('Send Transaction File service', () => {
 
   describe('When a valid bill run is specified', () => {
     beforeEach(async () => {
-      billRun.status = 'pending'
+      billRun.status = 'sending'
     })
 
     describe('and a transaction file is required', () => {
@@ -112,7 +112,7 @@ describe('Send Transaction File service', () => {
   })
 
   describe('When an invalid bill run is specified', () => {
-    describe("because the status is not 'pending'", () => {
+    describe("because the status is not 'sending'", () => {
       it('throws an error', async () => {
         await SendTransactionFileService.go(regime, billRun, notifierFake)
 
@@ -120,7 +120,7 @@ describe('Send Transaction File service', () => {
 
         expect(notifierFake.omfg.firstArg).to.equal('Error sending transaction file')
         expect(notifierFake.omfg.lastArg.filename).to.be.undefined()
-        expect(notifierFake.omfg.lastArg.error.message).to.equal(`Bill run ${billRun.id} does not have a status of 'pending'.`)
+        expect(notifierFake.omfg.lastArg.error.message).to.equal(`Bill run ${billRun.id} does not have a status of 'sending'.`)
       })
     })
   })
