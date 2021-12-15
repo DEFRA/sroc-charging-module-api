@@ -175,7 +175,7 @@ class BillRunModel extends BaseModel {
   }
 
   /**
-   * Returns true if the bill run status is being 'generated'
+   * Returns true if the bill run status is 'generated'
    */
   $generated () {
     return this.status === 'generated'
