@@ -152,8 +152,8 @@ class BillRunModel extends BaseModel {
    * with processing the bill run. Once `approved` we want to be able to `/send` a bill run but we don't want to allow
    * a transaction to be added.
    *
-   * This also protects against trying to make changes when the bill run is being processed. So interim states like
-   * `generating`, `pending`, and `deleting` are also not classed as 'editable'.
+   * This also protects against trying to make changes when the bill run is being processed. So the interim `pending`
+   * state is also not classed as 'editable'.
    */
   $editable () {
     return ['initialised', 'generated'].includes(this.status)
@@ -167,26 +167,15 @@ class BillRunModel extends BaseModel {
    *
    * Once a bill run has been 'sent', which means the transaction file is generated, it cannot be further 'patched'.
    *
-   * A bill run is also unpatchable if it's in the middle of something, for example, generating its summary or sending
-   * the transaction file.
-   *
-   * Finally, a bill run is unpatchable if the status is `deleting`. This gets set when a `DELETE` request is received.
-   * We don't expect client systems to ever see this but large bill runs can take some seconds to finish deleting. So,
-   * we set the `deleting` status just in case someone tries to interact with the bill run during this time.
+   * A bill run is also unpatchable if its status is `pending` which signifies that it's in the middle of something, for
+   * example, generating its summary or sending the transaction file.
    */
   $patchable () {
     return ['initialised', 'generated', 'approved'].includes(this.status)
   }
 
   /**
-   * Returns true if the bill run summary is being generated
-   */
-  $generating () {
-    return this.status === 'generating'
-  }
-
-  /**
-   * Returns true if the bill run status is being 'generated'
+   * Returns true if the bill run status is 'generated'
    */
   $generated () {
     return this.status === 'generated'

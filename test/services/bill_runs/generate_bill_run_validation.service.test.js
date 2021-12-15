@@ -46,17 +46,17 @@ describe('Generate Bill Run Validation service', () => {
   })
 
   describe('When an invalid bill run ID is supplied', () => {
-    describe('because the bill run is already generating', () => {
+    describe('because the bill run status is `pending`', () => {
       it('throws an error', async () => {
-        const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'generating')
+        const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'pending')
         const err = await expect(GenerateBillRunValidationService.go(generatingBillRun)).to.reject()
 
         expect(err).to.be.an.error()
-        expect(err.output.payload.message).to.equal(`Summary for bill run ${generatingBillRun.id} is already being generated`)
+        expect(err.output.payload.message).to.equal(`Summary for bill run ${generatingBillRun.id} is being updated`)
       })
     })
 
-    describe("because the bill run has already been 'generated'", () => {
+    describe('because the bill run has already been generated', () => {
       it('throws an error', async () => {
         const generatingBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'generated')
         const err = await expect(GenerateBillRunValidationService.go(generatingBillRun)).to.reject()

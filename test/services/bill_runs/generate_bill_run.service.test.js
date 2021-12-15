@@ -68,7 +68,7 @@ describe('Generate Bill Run service', () => {
       billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
     })
 
-    it("sets the bill run status to 'generating'", async () => {
+    it("sets the bill run status to 'pending'", async () => {
       const spy = Sinon.spy(BillRunModel, 'query')
       await CreateTransactionService.go(payload, billRun, authorisedSystem, regime)
       await GenerateBillRunService.go(billRun)
@@ -80,12 +80,12 @@ describe('Generate Bill Run service', () => {
        *   .toKnexQuery() gives us the underlying Knex query
        *   .toString() gives us the SQL query as a string
        *
-       * Finally, we push query strings to the queries array if they set the status to 'generating'.
+       * Finally, we push query strings to the queries array if they set the status to 'pending'.
        */
       const queries = []
       for (let call = 0; call < spy.callCount; call++) {
         const queryString = spy.getCall(call).returnValue.toKnexQuery().toString()
-        if (queryString.includes('set "status" = \'generating\'')) {
+        if (queryString.includes('set "status" = \'pending\'')) {
           queries.push(queryString)
         }
       }

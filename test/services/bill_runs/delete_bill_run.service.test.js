@@ -39,7 +39,7 @@ describe('Delete Bill Run service', () => {
   })
 
   describe('When a valid bill run is supplied', () => {
-    it("sets the bill run status to 'deleting'", async () => {
+    it("sets the bill run status to 'pending'", async () => {
       // We stub the part that actually deletes the bill run for this test so we can confirm the bill run status is
       // updated
       Sinon.stub(DeleteBillRunService, '_deleteBillRun')
@@ -47,7 +47,7 @@ describe('Delete Bill Run service', () => {
 
       const refreshedBillRun = await billRun.$query()
 
-      expect(refreshedBillRun.status).to.equal('deleting')
+      expect(refreshedBillRun.status).to.equal('pending')
     })
 
     it('deletes the bill run', async () => {

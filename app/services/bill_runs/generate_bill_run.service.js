@@ -34,7 +34,7 @@ class GenerateBillRunService {
   }
 
   static async _generateBillRun (billRun) {
-    await this._setGeneratingStatus(billRun)
+    await this._setPendingStatus(billRun)
 
     const minimumChargeAdjustments = await CalculateMinimumChargeForBillRunService.go(billRun)
 
@@ -44,9 +44,9 @@ class GenerateBillRunService {
     })
   }
 
-  static async _setGeneratingStatus (billRun) {
+  static async _setPendingStatus (billRun) {
     await billRun.$query()
-      .patch({ status: 'generating' })
+      .patch({ status: 'pending' })
   }
 
   static _calculateInvoices (invoices) {

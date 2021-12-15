@@ -52,12 +52,6 @@ describe('Bill Run Model', () => {
       expect(instance.$editable()).to.be.true()
     })
 
-    it("returns 'false' when the status is 'generating'", async () => {
-      const instance = BillRunModel.fromJson({ status: 'generating' })
-
-      expect(instance.$editable()).to.be.false()
-    })
-
     it("returns 'true' when the status is 'generated'", async () => {
       const instance = BillRunModel.fromJson({ status: 'generated' })
 
@@ -87,12 +81,6 @@ describe('Bill Run Model', () => {
 
       expect(instance.$editable()).to.be.false()
     })
-
-    it("returns 'false' when the status is 'deleting'", async () => {
-      const instance = BillRunModel.fromJson({ status: 'deleting' })
-
-      expect(instance.$editable()).to.be.false()
-    })
   })
 
   describe('the $patchable() method', () => {
@@ -100,12 +88,6 @@ describe('Bill Run Model', () => {
       const instance = BillRunModel.fromJson({ status: 'initialised' })
 
       expect(instance.$patchable()).to.be.true()
-    })
-
-    it("returns 'false' when the status is 'generating'", async () => {
-      const instance = BillRunModel.fromJson({ status: 'generating' })
-
-      expect(instance.$patchable()).to.be.false()
     })
 
     it("returns 'true' when the status is 'generated'", async () => {
@@ -134,12 +116,6 @@ describe('Bill Run Model', () => {
 
     it("returns 'false' when the status is 'billing_not_required'", async () => {
       const instance = BillRunModel.fromJson({ status: 'billing_not_required' })
-
-      expect(instance.$patchable()).to.be.false()
-    })
-
-    it("returns 'false' when the status is 'deleting'", async () => {
-      const instance = BillRunModel.fromJson({ status: 'deleting' })
 
       expect(instance.$patchable()).to.be.false()
     })
