@@ -33,7 +33,7 @@ const { DeleteLicenceService } = require('../../../app/services')
 
 describe('Delete Licence service', () => {
   let billRun
-  let invoice
+  let srocInvoice
   let licence
   let transaction
   let notifierFake
@@ -43,7 +43,7 @@ describe('Delete Licence service', () => {
 
     transaction = await NewTransactionHelper.create()
     licence = await LicenceModel.query().findById(transaction.licenceId)
-    invoice = await InvoiceModel.query().findById(transaction.invoiceId)
+    srocInvoice = await InvoiceModel.query().findById(transaction.invoiceId)
     billRun = await BillRunModel.query().findById(transaction.billRunId)
 
     // Create a fake function to stand in place of Notifier.omfg()
@@ -99,7 +99,7 @@ describe('Delete Licence service', () => {
     describe('when there are licences left', () => {
       it('updates the invoice level figures', async () => {
         // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
-        await NewLicenceHelper.create(invoice, { licenceNumber: 'SECOND_LICENCE' })
+        await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'SECOND_LICENCE' })
 
         // Generate the bill run to ensure its values are updated before we delete the licence
         await GenerateBillRunService.go(billRun)
@@ -193,6 +193,51 @@ describe('Delete Licence service', () => {
 
           const result = await InvoiceModel.query().findById(secondTransaction.invoiceId)
           expect(result.deminimisInvoice).to.be.false()
+        })
+
+        describe('when the ruleset is `sroc`', () => {
+          let srocBillRun
+          let srocInvoice
+
+          beforeEach(async () => {
+            // Create an sroc bill run and an invoice
+            srocBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'sroc' })
+            srocInvoice = await NewInvoiceHelper.create(srocBillRun)
+
+            // Create two licences which take the invoice over the sroc deminimis limit
+            licence = await NewLicenceHelper.create(srocInvoice)
+            await NewTransactionHelper.create(licence, { chargeValue: 1100 })
+            secondLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'SECOND_LICENCE' })
+            await NewTransactionHelper.create(secondLicence, { chargeValue: 900 })
+
+            // Generate the bill run to ensure its values are updated before we delete the licence
+            await GenerateBillRunService.go(billRun)
+
+            // Refresh bill run
+            billRun = await billRun.$query()
+          })
+
+          it('uses the correct ruleset deminimis limit to set `true`', async () => {
+            // Refresh licence entity
+            licence = await licence.$query()
+
+            // Delete the first licence to bring the invoice value within the sroc deminimis limit
+            await DeleteLicenceService.go(licence, srocBillRun, notifierFake)
+
+            const result = await srocInvoice.$query()
+            expect(result.deminimisInvoice).to.be.true()
+          })
+
+          it('uses the correct ruleset deminimis limit to set `false`', async () => {
+            // Refresh licence entity
+            secondLicence = await secondLicence.$query()
+
+            // Delete the second licence to leave the invoice value over the sroc deminimis limit
+            await DeleteLicenceService.go(secondLicence, srocBillRun, notifierFake)
+
+            const result = await srocInvoice.$query()
+            expect(result.deminimisInvoice).to.be.false()
+          })
         })
       })
 
@@ -319,7 +364,7 @@ describe('Delete Licence service', () => {
 
           beforeEach(async () => {
             // Create a credit licence small enough to leave the invoice as a debit
-            creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+            creditLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'CREDIT' })
             await NewTransactionHelper.create(creditLicence, { chargeValue: 50, chargeCredit: true })
 
             await GenerateBillRunService.go(billRun)
@@ -347,7 +392,7 @@ describe('Delete Licence service', () => {
         describe('and it becomes a credit after deleting licence', () => {
           beforeEach(async () => {
             // Create a credit licence small enough to leave the invoice as a debit
-            const creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+            const creditLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'CREDIT' })
             await NewTransactionHelper.create(creditLicence, { chargeValue: 50, chargeCredit: true })
 
             await GenerateBillRunService.go(billRun)
@@ -371,7 +416,7 @@ describe('Delete Licence service', () => {
         describe('and it becomes zero value after deleting licence', () => {
           beforeEach(async () => {
             // Create a zero value licence
-            const zeroValueLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'ZERO' })
+            const zeroValueLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'ZERO' })
             await NewTransactionHelper.create(zeroValueLicence, { chargeValue: 0, chargeCredit: true })
 
             await GenerateBillRunService.go(billRun)
@@ -396,7 +441,7 @@ describe('Delete Licence service', () => {
         describe('and it remains a credit after deleting licence', () => {
           beforeEach(async () => {
             // Create a credit licence big enough to make the invoice a credit
-            const creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+            const creditLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'CREDIT' })
             await NewTransactionHelper.create(creditLicence, { chargeValue: 50000, chargeCredit: true })
 
             await GenerateBillRunService.go(billRun)
@@ -422,7 +467,7 @@ describe('Delete Licence service', () => {
 
           beforeEach(async () => {
             // Create a credit licence big enough to make the invoice a credit
-            creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+            creditLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'CREDIT' })
             await NewTransactionHelper.create(creditLicence, { chargeValue: 50000, chargeCredit: true })
 
             await GenerateBillRunService.go(billRun)
@@ -488,7 +533,7 @@ describe('Delete Licence service', () => {
         let creditLicence
 
         beforeEach(async () => {
-          creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+          creditLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'CREDIT' })
           await NewTransactionHelper.create(creditLicence, { chargeValue: 770, chargeCredit: true })
 
           await GenerateBillRunService.go(billRun)
@@ -529,10 +574,10 @@ describe('Delete Licence service', () => {
 
         beforeEach(async () => {
           // Create credit and debits which will make the invoice deminimis once the original licence is deleted
-          creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+          creditLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'CREDIT' })
           await NewTransactionHelper.create(creditLicence, { chargeValue: 770, chargeCredit: true })
 
-          debitLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'DEBIT' })
+          debitLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'DEBIT' })
           await NewTransactionHelper.create(debitLicence)
 
           await GenerateBillRunService.go(billRun)
@@ -559,11 +604,11 @@ describe('Delete Licence service', () => {
 
         beforeEach(async () => {
           // Create a credit licence
-          creditLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'CREDIT' })
+          creditLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'CREDIT' })
           await NewTransactionHelper.create(creditLicence, { chargeCredit: true })
 
           // Create a zero value licence
-          zeroValueLicence = await NewLicenceHelper.create(invoice, { licenceNumber: 'ZERO' })
+          zeroValueLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'ZERO' })
           await NewTransactionHelper.create(zeroValueLicence, { chargeValue: 0 })
 
           // Generate the bill run and refresh its instance
@@ -625,7 +670,7 @@ describe('Delete Licence service', () => {
 
       it('updates the bill run level figures', async () => {
         // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
-        await NewLicenceHelper.create(invoice, { licenceNumber: 'SECOND_LICENCE' })
+        await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'SECOND_LICENCE' })
 
         await GenerateBillRunService.go(billRun)
 
@@ -642,7 +687,7 @@ describe('Delete Licence service', () => {
 
       it('restores the bill run status after deletion', async () => {
         // Create a second licence on the invoice to ensure the invoice isn't deleted due to it being empty
-        await NewLicenceHelper.create(invoice, { licenceNumber: 'SECOND_LICENCE' })
+        await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'SECOND_LICENCE' })
 
         await GenerateBillRunService.go(billRun)
 
