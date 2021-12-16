@@ -7,6 +7,11 @@ const routes = [
     method: 'DELETE',
     path: '/v2/{regimeSlug}/bill-runs/{billRunId}/licences/{licenceId}',
     handler: BillRunsLicencesController.delete
+  },
+  {
+    method: 'DELETE',
+    path: '/v3/{regimeSlug}/bill-runs/{billRunId}/licences/{licenceId}',
+    handler: BillRunsLicencesController.delete
   }
 ]
 

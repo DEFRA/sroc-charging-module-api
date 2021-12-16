@@ -15,118 +15,115 @@ const { init } = require('../../app/server')
 const {
   AuthorisationHelper,
   AuthorisedSystemHelper,
-  BillRunHelper,
   DatabaseHelper,
   GeneralHelper,
-  LicenceHelper,
-  RegimeHelper,
-  InvoiceHelper
+  NewLicenceHelper,
+  RegimeHelper
 } = require('../support/helpers')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
 const { DeleteLicenceService, ValidateBillRunLicenceService } = require('../../app/services')
+const { BillRunModel } = require('../../app/models')
 
 describe('Licences controller', () => {
-  const clientID = '1234546789'
   let server
   let authToken
-  let regime
-  let authorisedSystem
   let billRun
-  let invoice
   let licence
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
     server = await init()
 
-    regime = await RegimeHelper.addRegime('wrls', 'WRLS')
-    authorisedSystem = await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
-    billRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
-    invoice = await InvoiceHelper.addInvoice(billRun.id, 'CUSTOMER', '2020')
-    licence = await LicenceHelper.addLicence(billRun.id, 'LICENCE', invoice.id)
+    const regime = await RegimeHelper.addRegime('wrls', 'WRLS')
+    await AuthorisedSystemHelper.addSystem('clientId', 'system1', [regime])
+
+    licence = await NewLicenceHelper.create()
+    billRun = await BillRunModel.query().findById(licence.billRunId)
   })
 
   afterEach(async () => {
     Sinon.restore()
   })
 
-  describe('Delete a licence: DELETE /v2/{regimeSlug}/bill-runs/{billRunId}/licences/{licenceId}', () => {
-    let validationStub
-    let deletionStub
+  for (const version of ['v2', 'v3']) {
+    describe(`Delete a licence: DELETE /${version}/{regimeSlug}/bill-runs/{billRunId}/licences/{licenceId}`, () => {
+      let validationStub
+      let deletionStub
 
-    const options = (token, billRunId, licenceId) => {
-      return {
-        method: 'DELETE',
-        url: `/v2/wrls/bill-runs/${billRunId}/licences/${licenceId}`,
-        headers: { authorization: `Bearer ${token}` }
+      const options = (token, billRunId, licenceId) => {
+        return {
+          method: 'DELETE',
+          url: `/${version}/wrls/bill-runs/${billRunId}/licences/${licenceId}`,
+          headers: { authorization: `Bearer ${token}` }
+        }
       }
-    }
 
-    beforeEach(async () => {
-      authToken = AuthorisationHelper.nonAdminToken(clientID)
+      beforeEach(async () => {
+        authToken = AuthorisationHelper.nonAdminToken('clientId')
 
-      Sinon
-        .stub(JsonWebToken, 'verify')
-        .returns(AuthorisationHelper.decodeToken(authToken))
+        Sinon
+          .stub(JsonWebToken, 'verify')
+          .returns(AuthorisationHelper.decodeToken(authToken))
 
-      validationStub = Sinon
-        .stub(ValidateBillRunLicenceService, 'go').returns()
+        validationStub = Sinon
+          .stub(ValidateBillRunLicenceService, 'go').returns()
 
-      deletionStub = Sinon
-        .stub(DeleteLicenceService, 'go').returns()
-    })
-
-    afterEach(async () => {
-      validationStub.restore()
-      deletionStub.restore()
-    })
-
-    describe('When the request is valid', () => {
-      it('returns a 204 response', async () => {
-        const response = await server.inject(options(authToken, billRun.id, licence.id))
-
-        expect(response.statusCode).to.equal(204)
+        deletionStub = Sinon
+          .stub(DeleteLicenceService, 'go').returns()
       })
 
-      it('calls the licence validation service', async () => {
-        await server.inject(options(authToken, billRun.id, licence.id))
-
-        expect(validationStub.calledOnce).to.be.true()
-        expect(validationStub.firstCall.args[0]).to.equal(billRun.id)
-        expect(validationStub.firstCall.args[1]).to.equal(licence)
+      afterEach(async () => {
+        validationStub.restore()
+        deletionStub.restore()
       })
 
-      it('calls the licence deletion service', async () => {
-        await server.inject(options(authToken, billRun.id, licence.id))
+      describe('When the request is valid', () => {
+        it('returns a 204 response', async () => {
+          const response = await server.inject(options(authToken, billRun.id, licence.id))
 
-        expect(deletionStub.calledOnce).to.be.true()
-        expect(deletionStub.firstCall.args[0]).to.equal(licence)
-        expect(deletionStub.firstCall.args[1]).to.equal(billRun)
-      })
-    })
-
-    describe('When the request is invalid', () => {
-      describe('because the licence does not exist', () => {
-        it('returns error status 404', async () => {
-          const response = await server.inject(options(authToken, billRun.id, GeneralHelper.uuid4()))
-
-          expect(response.statusCode).to.equal(404)
+          expect(response.statusCode).to.equal(204)
         })
 
-        it('does not call the licence validation service', async () => {
-          await server.inject(options(authToken, billRun.id, GeneralHelper.uuid4()))
+        it('calls the licence validation service', async () => {
+          await server.inject(options(authToken, billRun.id, licence.id))
 
-          expect(validationStub.called).to.be.false()
+          expect(validationStub.calledOnce).to.be.true()
+          expect(validationStub.firstCall.args[0]).to.equal(billRun.id)
+          expect(validationStub.firstCall.args[1]).to.equal(licence)
         })
 
-        it('does not call the licence deletion service', async () => {
-          await server.inject(options(authToken, billRun.id, GeneralHelper.uuid4()))
+        it('calls the licence deletion service', async () => {
+          await server.inject(options(authToken, billRun.id, licence.id))
 
-          expect(deletionStub.called).to.be.false()
+          expect(deletionStub.calledOnce).to.be.true()
+          expect(deletionStub.firstCall.args[0]).to.equal(licence)
+          expect(deletionStub.firstCall.args[1]).to.equal(billRun)
+        })
+      })
+
+      describe('When the request is invalid', () => {
+        describe('because the licence does not exist', () => {
+          it('returns error status 404', async () => {
+            const response = await server.inject(options(authToken, billRun.id, GeneralHelper.uuid4()))
+
+            expect(response.statusCode).to.equal(404)
+          })
+
+          it('does not call the licence validation service', async () => {
+            await server.inject(options(authToken, billRun.id, GeneralHelper.uuid4()))
+
+            expect(validationStub.called).to.be.false()
+          })
+
+          it('does not call the licence deletion service', async () => {
+            await server.inject(options(authToken, billRun.id, GeneralHelper.uuid4()))
+
+            expect(deletionStub.called).to.be.false()
+          })
         })
       })
     })
-  })
+  }
 })
