@@ -55,82 +55,85 @@ describe('Invoices controller', () => {
     Sinon.restore()
   })
 
-  describe('Delete an invoice: DELETE /v2/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}', () => {
-    const options = (token, billRunId, invoiceId) => {
-      return {
-        method: 'DELETE',
-        url: `/v2/wrls/bill-runs/${billRunId}/invoices/${invoiceId}`,
-        headers: { authorization: `Bearer ${token}` }
+  // DELETE Invoice
+  for (const version of ['v2', 'v3']) {
+    describe(`Delete an invoice: DELETE /${version}/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}`, () => {
+      const options = (token, billRunId, invoiceId) => {
+        return {
+          method: 'DELETE',
+          url: `/${version}/wrls/bill-runs/${billRunId}/invoices/${invoiceId}`,
+          headers: { authorization: `Bearer ${token}` }
+        }
       }
-    }
 
-    beforeEach(async () => {
-      authToken = AuthorisationHelper.nonAdminToken('clientId')
+      beforeEach(async () => {
+        authToken = AuthorisationHelper.nonAdminToken('clientId')
 
-      Sinon
-        .stub(JsonWebToken, 'verify')
-        .returns(AuthorisationHelper.decodeToken(authToken))
-    })
-
-    describe('When the request is valid', () => {
-      let fetchStub
-      let deleteStub
-
-      before(async () => {
-        fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').returns()
-        deleteStub = Sinon.stub(DeleteInvoiceService, 'go').returns()
+        Sinon
+          .stub(JsonWebToken, 'verify')
+          .returns(AuthorisationHelper.decodeToken(authToken))
       })
 
-      after(async () => {
-        fetchStub.restore()
-        deleteStub.restore()
-      })
-
-      it('returns a 204 response', async () => {
-        const response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
-
-        expect(response.statusCode).to.equal(204)
-      })
-    })
-
-    describe('When the request is invalid', () => {
-      describe('because the invoice does not exist', () => {
+      describe('When the request is valid', () => {
         let fetchStub
+        let deleteStub
 
         before(async () => {
-          fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').throws(Boom.notFound())
+          fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').returns()
+          deleteStub = Sinon.stub(DeleteInvoiceService, 'go').returns()
         })
 
         after(async () => {
           fetchStub.restore()
+          deleteStub.restore()
         })
 
-        it('returns error status 404', async () => {
+        it('returns a 204 response', async () => {
           const response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
 
-          expect(response.statusCode).to.equal(404)
+          expect(response.statusCode).to.equal(204)
         })
       })
 
-      describe('because the invoice is not linked to the bill run', () => {
-        let fetchStub
+      describe('When the request is invalid', () => {
+        describe('because the invoice does not exist', () => {
+          let fetchStub
 
-        before(async () => {
-          fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').throws(Boom.conflict())
+          before(async () => {
+            fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').throws(Boom.notFound())
+          })
+
+          after(async () => {
+            fetchStub.restore()
+          })
+
+          it('returns error status 404', async () => {
+            const response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
+
+            expect(response.statusCode).to.equal(404)
+          })
         })
 
-        after(async () => {
-          fetchStub.restore()
-        })
+        describe('because the invoice is not linked to the bill run', () => {
+          let fetchStub
 
-        it('returns error status 409', async () => {
-          const response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
+          before(async () => {
+            fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').throws(Boom.conflict())
+          })
 
-          expect(response.statusCode).to.equal(409)
+          after(async () => {
+            fetchStub.restore()
+          })
+
+          it('returns error status 409', async () => {
+            const response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
+
+            expect(response.statusCode).to.equal(409)
+          })
         })
       })
     })
-  })
+  }
 
   for (const version of ['v2', 'v3']) {
     describe(`View bill run invoice: GET /${version}/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}`, () => {
