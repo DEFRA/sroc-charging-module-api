@@ -752,14 +752,6 @@ describe('Calculate Charge Sroc translator', () => {
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
             })
           })
-
-          describe('and section127Agreement is `true`', () => {
-            it('throws an error', async () => {
-              invalidPayload.section127Agreement = true
-
-              expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
-            })
-          })
         })
       })
 
