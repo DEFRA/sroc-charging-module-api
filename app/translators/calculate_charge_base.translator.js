@@ -27,6 +27,8 @@ class CalculateChargeBaseTranslator extends BaseTranslator {
       // Dependent on `compensationCharge`
       waterUndertaker: Joi.boolean()
         .when('compensationCharge', { is: true, then: Joi.required() }),
+      twoPartTariff: Joi.boolean().required()
+        .when('compensationCharge', { is: true, then: Joi.equal(false) }),
 
       // Dependent on `twoPartTariff`
       section127Agreement: Joi.boolean().required()
