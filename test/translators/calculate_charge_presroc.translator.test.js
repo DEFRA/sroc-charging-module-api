@@ -80,6 +80,7 @@ describe('Calculate Charge Presroc translator', () => {
         ...payload,
         billableDays: 8,
         authorisedDays: 16,
+        section127Agreement: true,
         twoPartTariff: true
       }
 
