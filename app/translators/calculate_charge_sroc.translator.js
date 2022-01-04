@@ -41,10 +41,7 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
         .when('compensationCharge', { is: true, then: Joi.equal(false) }),
       actualVolume: Joi.number().greater(0)
         .when('twoPartTariff', { is: true, then: Joi.required() }),
-
-      // Dependent on both `compensationCharge` and `twoPartTariff`
       section127Agreement: Joi.boolean().required()
-        .when('compensationCharge', { is: true, then: Joi.equal(false) })
         .when('twoPartTariff', { is: true, then: Joi.equal(true) }),
 
       // Dependent on `supportedSource`
