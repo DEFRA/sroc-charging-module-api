@@ -36,11 +36,9 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
       eiucSource: Joi
         .when('compensationCharge', { is: true, then: Joi.string().valid(...this._validSources()).insensitive().required() }),
 
-      // validated in the rules service
-      regionalChargingArea: Joi.string().required(),
-
       // Case-insensitive validation matches and returns the correctly-capitalised string
       source: Joi.string().valid(...this._validSources()).insensitive().required(),
+      regionalChargingArea: Joi.string().valid(...this._validRegionalChargingAreas()).insensitive().required(),
       season: Joi.string().valid(...this._validSeasons()).insensitive().required()
     }
   }
@@ -71,6 +69,21 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
 
   _validLosses () {
     return ['Very Low', 'Low', 'Medium', 'High']
+  }
+
+  _validRegionalChargingAreas () {
+    return [
+      'Anglian',
+      'Dee',
+      'Midlands',
+      'North West',
+      'Northumbria',
+      'South West (including Wessex)',
+      'Southern',
+      'Thames',
+      'Wye',
+      'Yorkshire'
+    ]
   }
 
   _validSources () {

@@ -394,6 +394,17 @@ describe('Calculate Charge Presroc translator', () => {
           expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
+
+      describe('because regionalChargingArea is not valid', () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            regionalChargingArea: 'INVALID'
+          }
+
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
     })
   })
 })
