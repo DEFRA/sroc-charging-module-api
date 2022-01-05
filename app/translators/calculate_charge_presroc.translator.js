@@ -21,9 +21,8 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
     // Additional post-getter validation to ensure section126Factor has no more than 3 decimal places
     this._validateSection126Factor()
 
-    // Additional post-getter parser to ensure that season and source are all in the right 'case'
-    this.regimeValue6 = this._titleCaseStringValue(this.regimeValue6) // source
-    this.regimeValue7 = this._titleCaseStringValue(this.regimeValue7) // season
+    // Additional post-getter parser to ensure that season is in the right 'case'
+    this.regimeValue7 = this._titleCaseStringValue(this.regimeValue7)
   }
 
   _rules () {
@@ -43,7 +42,9 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
       // validated in the rules service
       regionalChargingArea: Joi.string().required(),
       season: Joi.string().required(),
-      source: Joi.string().required()
+
+      // Case-insensitive validation matches and returns the correctly-capitalised string
+      source: Joi.string().valid(...this._validSources()).insensitive().required()
     }
   }
 
@@ -73,6 +74,10 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
 
   _validLosses () {
     return ['Very Low', 'Low', 'Medium', 'High']
+  }
+
+  _validSources () {
+    return ['Supported', 'Kielder', 'Unsupported', 'Tidal']
   }
 
   /**
@@ -112,8 +117,8 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
    * Use to title case a string value
    *
    * Title case is where the first character of each word is a capital and the rest is lower case. Our testing of the
-   * rules service has highlighted that it will only calculate the charge correctly if the values for `season` and
-   * `source` in the request are in title case. Anything else and it fails to match them to resulting in a 0 charge.
+   * rules service has highlighted that it will only calculate the charge correctly if the value for `season` in the
+   * request is in title case. Anything else and it fails to match them to resulting in a 0 charge.
    *
    * This works for single-word strings (`summer` to `Summer`) and multi-word strings (`all year` to `All Year`).
    *
