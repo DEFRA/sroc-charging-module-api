@@ -35,7 +35,10 @@ class CalculateChargeBaseTranslator extends BaseTranslator {
         .when('twoPartTariff', { is: true, then: Joi.equal(true) }),
 
       // Needed to determine which endpoints to call in the rules service
-      regime: Joi.string().required()
+      regime: Joi.string().required(),
+
+      // Case-insensitive validation matches and returns the correctly-capitalised string
+      loss: Joi.string().valid(...this._validLosses()).insensitive().required()
     }
   }
 
@@ -57,6 +60,10 @@ class CalculateChargeBaseTranslator extends BaseTranslator {
     if (error) {
       throw Boom.badData(error)
     }
+  }
+
+  _validLosses () {
+    throw new Error("Extending class must implement '_validLosses()'")
   }
 
   /**

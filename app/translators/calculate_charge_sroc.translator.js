@@ -24,8 +24,6 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
 
       abatementFactor: Joi.number().allow(null).empty(null).default(1.0),
       aggregateProportion: Joi.number().allow(null).empty(null).default(1.0),
-      // Case-insensitive validation matches and returns the correctly-capitalised string
-      loss: Joi.string().valid(...this._validLosses()).insensitive().required(),
       periodStart: Joi.date().format(this._validDateFormats()).min('01-APR-2021').max(Joi.ref('periodEnd')).required(),
       authorisedVolume: Joi.number().greater(0).required(),
       waterCompanyCharge: Joi.boolean().required(),

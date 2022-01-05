@@ -21,10 +21,9 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
     // Additional post-getter validation to ensure section126Factor has no more than 3 decimal places
     this._validateSection126Factor()
 
-    // Additional post-getter parser to ensure that loss, season and source are all in the right 'case'
-    this.regimeValue6 = this._titleCaseStringValue(this.regimeValue6)
-    this.regimeValue7 = this._titleCaseStringValue(this.regimeValue7)
-    this.regimeValue8 = this._titleCaseStringValue(this.regimeValue8)
+    // Additional post-getter parser to ensure that season and source are all in the right 'case'
+    this.regimeValue6 = this._titleCaseStringValue(this.regimeValue6) // source
+    this.regimeValue7 = this._titleCaseStringValue(this.regimeValue7) // season
   }
 
   _rules () {
@@ -42,7 +41,6 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
         .when('compensationCharge', { is: true, then: Joi.string().required() }),
 
       // validated in the rules service
-      loss: Joi.string().required(),
       regionalChargingArea: Joi.string().required(),
       season: Joi.string().required(),
       source: Joi.string().required()
@@ -71,6 +69,10 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
       waterUndertaker: 'regimeValue14',
       regime: 'regime'
     }
+  }
+
+  _validLosses () {
+    return ['Very Low', 'Low', 'Medium', 'High']
   }
 
   /**
@@ -110,9 +112,8 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
    * Use to title case a string value
    *
    * Title case is where the first character of each word is a capital and the rest is lower case. Our testing of the
-   * rules service has highlighted that it will only calculate the charge correctly if the values for the `loss`,
-   * `season`, and `source` in the request are in title case. Anything else and it fails to match them to resulting in a
-   * 0 charge.
+   * rules service has highlighted that it will only calculate the charge correctly if the values for `season` and
+   * `source` in the request are in title case. Anything else and it fails to match them to resulting in a 0 charge.
    *
    * This works for single-word strings (`summer` to `Summer`) and multi-word strings (`all year` to `All Year`).
    *

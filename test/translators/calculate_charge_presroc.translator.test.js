@@ -202,18 +202,16 @@ describe('Calculate Charge Presroc translator', () => {
   })
 
   describe('handling of strings not in correct case', () => {
-    describe("when 'loss', 'season' and 'source' are not sent as title case", () => {
+    describe("when 'season' and 'source' are not sent as title case", () => {
       it('automatically converts them to title case', () => {
         const lowercasePayload = {
           ...payload,
-          loss: 'lOw',
           season: 'aLl yeAr',
           source: 'supPorTed'
         }
 
         const result = new CalculateChargePresrocTranslator(data(lowercasePayload))
 
-        expect(result.regimeValue8).to.equal('Low')
         expect(result.regimeValue7).to.equal('All Year')
         expect(result.regimeValue6).to.equal('Supported')
       })
@@ -363,6 +361,17 @@ describe('Calculate Charge Presroc translator', () => {
           const invalidPayload = {
             ...payload,
             ruleset: 'INVALID'
+          }
+
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
+      describe('because loss is not valid', () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            loss: 'INVALID'
           }
 
           expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
