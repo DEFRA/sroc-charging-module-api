@@ -209,7 +209,7 @@ describe('Calculate Charge Presroc translator', () => {
         expect(result).to.not.be.an.error()
       })
 
-      describe("if 'compensationCharge' is true", () => {
+      describe("if 'compensationCharge' is false", () => {
         describe("and 'eiucSource' is missing", () => {
           it('still does not throw an error', async () => {
             const validPayload = {
@@ -298,6 +298,18 @@ describe('Calculate Charge Presroc translator', () => {
               compensationCharge: true
             }
             delete invalidPayload.eiucSource
+
+            expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe("and 'eiucSource' is invalid", () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              compensationCharge: true,
+              eiucSource: 'INVALID'
+            }
 
             expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
           })

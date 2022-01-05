@@ -32,9 +32,9 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
       twoPartTariff: Joi.boolean().required(),
       volume: Joi.number().min(0).required(),
 
-      // Dependent on `compensationCharge` and validated in the rules service
+      // Dependent on `compensationCharge` and case-insensitive to return the correctly-capitalised string
       eiucSource: Joi
-        .when('compensationCharge', { is: true, then: Joi.string().required() }),
+        .when('compensationCharge', { is: true, then: Joi.string().valid(...this._validSources()).insensitive().required() }),
 
       // validated in the rules service
       regionalChargingArea: Joi.string().required(),
