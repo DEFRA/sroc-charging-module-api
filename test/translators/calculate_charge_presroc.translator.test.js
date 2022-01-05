@@ -209,7 +209,7 @@ describe('Calculate Charge Presroc translator', () => {
           loss: 'very low',
           source: 'tidAl',
           season: 'ALL YEAR',
-          eiucSource: 'kIeLdEr',
+          eiucSource: 'oThEr',
           regionalChargingArea: 'sOUTH wEST (Including wESSEX)'
         }
         const result = new CalculateChargePresrocTranslator(data(validPayload))
@@ -217,7 +217,7 @@ describe('Calculate Charge Presroc translator', () => {
         expect(result.regimeValue8).to.equal('Very Low')
         expect(result.regimeValue6).to.equal('Tidal')
         expect(result.regimeValue7).to.equal('All Year')
-        expect(result.regimeValue13).to.equal('Kielder')
+        expect(result.regimeValue13).to.equal('Other')
         expect(result.regimeValue15).to.equal('South West (including Wessex)')
       })
     })
