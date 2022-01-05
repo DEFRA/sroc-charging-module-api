@@ -27,9 +27,18 @@ class CalculateChargeBaseTranslator extends BaseTranslator {
       // Dependent on `compensationCharge`
       waterUndertaker: Joi.boolean()
         .when('compensationCharge', { is: true, then: Joi.required() }),
+      twoPartTariff: Joi.boolean().required()
+        .when('compensationCharge', { is: true, then: Joi.equal(false) }),
+
+      // Dependent on `twoPartTariff`
+      section127Agreement: Joi.boolean().required()
+        .when('twoPartTariff', { is: true, then: Joi.equal(true) }),
 
       // Needed to determine which endpoints to call in the rules service
-      regime: Joi.string().required()
+      regime: Joi.string().required(),
+
+      // Case-insensitive validation matches and returns the correctly-capitalised string
+      loss: this._validateStringAgainstList(this._validLosses()).required()
     }
   }
 
@@ -51,6 +60,17 @@ class CalculateChargeBaseTranslator extends BaseTranslator {
     if (error) {
       throw Boom.badData(error)
     }
+  }
+
+  /**
+   * Perorming a case-insensitive validation against a provided list will match and return the correct capitalisation
+   */
+  _validateStringAgainstList (list) {
+    return Joi.string().valid(...list).insensitive()
+  }
+
+  _validLosses () {
+    throw new Error("Extending class must implement '_validLosses()'")
   }
 
   /**

@@ -12,7 +12,6 @@ class TransactionSrocTranslator extends TransactionBaseTranslator {
     return {
       ...this._baseRules(),
       ruleset: Joi.string().valid('sroc').required(),
-      chargePeriod: Joi.string().max(150).required(),
       chargeCategoryDescription: Joi.string().max(150).required()
     }
   }

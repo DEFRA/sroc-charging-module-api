@@ -20,11 +20,6 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
 
     // Additional post-getter validation to ensure section126Factor has no more than 3 decimal places
     this._validateSection126Factor()
-
-    // Additional post-getter parser to ensure that loss, season and source are all in the right 'case'
-    this.regimeValue6 = this._titleCaseStringValue(this.regimeValue6)
-    this.regimeValue7 = this._titleCaseStringValue(this.regimeValue7)
-    this.regimeValue8 = this._titleCaseStringValue(this.regimeValue8)
   }
 
   _rules () {
@@ -34,19 +29,17 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
 
       periodStart: Joi.date().format(this._validDateFormats()).max(Joi.ref('periodEnd')).min('01-APR-2014').required(),
       section126Factor: Joi.number().allow(null).empty(null).default(1.0),
-      section127Agreement: Joi.boolean().required(),
       twoPartTariff: Joi.boolean().required(),
       volume: Joi.number().min(0).required(),
 
-      // Dependent on `compensationCharge` and validated in the rules service
-      eiucSource: Joi
-        .when('compensationCharge', { is: true, then: Joi.string().required() }),
+      // Dependent on `compensationCharge` and case-insensitive to return the correctly-capitalised string
+      eiucSource: this._validateStringAgainstList(this._validSources())
+        .when('compensationCharge', { is: true, then: Joi.required() }),
 
-      // validated in the rules service
-      loss: Joi.string().required(),
-      regionalChargingArea: Joi.string().required(),
-      season: Joi.string().required(),
-      source: Joi.string().required()
+      // Case-insensitive validation matches and returns the correctly-capitalised string
+      source: this._validateStringAgainstList(this._validSources()).required(),
+      regionalChargingArea: this._validateStringAgainstList(this._validRegionalChargingAreas()).required(),
+      season: this._validateStringAgainstList(this._validSeasons()).required()
     }
   }
 
@@ -72,6 +65,33 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
       waterUndertaker: 'regimeValue14',
       regime: 'regime'
     }
+  }
+
+  _validLosses () {
+    return ['Very Low', 'Low', 'Medium', 'High']
+  }
+
+  _validRegionalChargingAreas () {
+    return [
+      'Anglian',
+      'Dee',
+      'Midlands',
+      'North West',
+      'Northumbria',
+      'South West (including Wessex)',
+      'Southern',
+      'Thames',
+      'Wye',
+      'Yorkshire'
+    ]
+  }
+
+  _validSources () {
+    return ['Supported', 'Kielder', 'Unsupported', 'Tidal']
+  }
+
+  _validSeasons () {
+    return ['Summer', 'Winter', 'All Year']
   }
 
   /**
@@ -105,28 +125,6 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
     if (error) {
       throw Boom.badData(error)
     }
-  }
-
-  /**
-   * Use to title case a string value
-   *
-   * Title case is where the first character of each word is a capital and the rest is lower case. Our testing of the
-   * rules service has highlighted that it will only calculate the charge correctly if the values for the `loss`,
-   * `season`, and `source` in the request are in title case. Anything else and it fails to match them to resulting in a
-   * 0 charge.
-   *
-   * This works for single-word strings (`summer` to `Summer`) and multi-word strings (`all year` to `All Year`).
-   *
-   * @param {string} value String value to be converted to title case
-   *
-   * @returns {string} The string value converted to title case
-   */
-  _titleCaseStringValue (value) {
-    return value
-      .toLowerCase()
-      .split(' ')
-      .map(word => word[0].toUpperCase() + word.substring(1))
-      .join(' ')
   }
 
   /**

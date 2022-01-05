@@ -24,31 +24,24 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
 
       abatementFactor: Joi.number().allow(null).empty(null).default(1.0),
       aggregateProportion: Joi.number().allow(null).empty(null).default(1.0),
-      // Case-insensitive validation matches and returns the correctly-capitalised string
-      loss: Joi.string().valid(...this._validLosses()).insensitive().required(),
       periodStart: Joi.date().format(this._validDateFormats()).min('01-APR-2021').max(Joi.ref('periodEnd')).required(),
       authorisedVolume: Joi.number().greater(0).required(),
       waterCompanyCharge: Joi.boolean().required(),
       winterOnly: Joi.boolean().required(),
 
       // Dependent on `compensationCharge`
-      // Case-insensitive validation matches and returns the correctly-capitalised string
-      regionalChargingArea: Joi.string().valid(...this._validRegionalChargingAreas()).insensitive()
+      regionalChargingArea: this._validateStringAgainstList(this._validRegionalChargingAreas())
         .when('compensationCharge', { is: true, then: Joi.required() }),
 
       // Dependent on `twoPartTariff`
-      twoPartTariff: Joi.boolean().required()
-        .when('compensationCharge', { is: true, then: Joi.equal(false) }),
       actualVolume: Joi.number().greater(0)
         .when('twoPartTariff', { is: true, then: Joi.required() }),
-      section127Agreement: Joi.boolean().required()
-        .when('twoPartTariff', { is: true, then: Joi.equal(true) }),
 
       // Dependent on `supportedSource`
       supportedSource: Joi.boolean().required(),
       supportedSourceName: Joi
         // If `true` then we match and return the correctly-capitalised string
-        .when('supportedSource', { is: true, then: Joi.string().valid(...this._validSupportedSourceNames()).insensitive().required() })
+        .when('supportedSource', { is: true, then: this._validateStringAgainstList(this._validSupportedSourceNames()).required() })
         // If `false` then this should be undefined (ie. not present) and we set the value as `Not Applicable`
         .when('supportedSource', { is: false, then: Joi.forbidden().default('Not Applicable') }),
 

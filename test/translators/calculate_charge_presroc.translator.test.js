@@ -80,6 +80,7 @@ describe('Calculate Charge Presroc translator', () => {
         ...payload,
         billableDays: 8,
         authorisedDays: 16,
+        section127Agreement: true,
         twoPartTariff: true
       }
 
@@ -200,21 +201,24 @@ describe('Calculate Charge Presroc translator', () => {
     })
   })
 
-  describe('handling of strings not in correct case', () => {
-    describe("when 'loss', 'season' and 'source' are not sent as title case", () => {
-      it('automatically converts them to title case', () => {
-        const lowercasePayload = {
+  describe('handling of strings', () => {
+    describe('when a valid string is passed to a field that validates against a list', () => {
+      it('returns the correct capitalisation of the string', async () => {
+        const validPayload = {
           ...payload,
-          loss: 'lOw',
-          season: 'aLl yeAr',
-          source: 'supPorTed'
+          loss: 'very low',
+          source: 'tidAl',
+          season: 'ALL YEAR',
+          eiucSource: 'kIeLdEr',
+          regionalChargingArea: 'sOUTH wEST (Including wESSEX)'
         }
+        const result = new CalculateChargePresrocTranslator(data(validPayload))
 
-        const result = new CalculateChargePresrocTranslator(data(lowercasePayload))
-
-        expect(result.regimeValue8).to.equal('Low')
+        expect(result.regimeValue8).to.equal('Very Low')
+        expect(result.regimeValue6).to.equal('Tidal')
         expect(result.regimeValue7).to.equal('All Year')
-        expect(result.regimeValue6).to.equal('Supported')
+        expect(result.regimeValue13).to.equal('Kielder')
+        expect(result.regimeValue15).to.equal('South West (including Wessex)')
       })
     })
   })
@@ -227,7 +231,7 @@ describe('Calculate Charge Presroc translator', () => {
         expect(result).to.not.be.an.error()
       })
 
-      describe("if 'compensationCharge' is true", () => {
+      describe("if 'compensationCharge' is false", () => {
         describe("and 'eiucSource' is missing", () => {
           it('still does not throw an error', async () => {
             const validPayload = {
@@ -321,6 +325,18 @@ describe('Calculate Charge Presroc translator', () => {
           })
         })
 
+        describe("and 'eiucSource' is invalid", () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              compensationCharge: true,
+              eiucSource: 'INVALID'
+            }
+
+            expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
         describe("and 'waterUndertaker' is missing", () => {
           it('throws an error', async () => {
             const invalidPayload = {
@@ -362,6 +378,50 @@ describe('Calculate Charge Presroc translator', () => {
           const invalidPayload = {
             ...payload,
             ruleset: 'INVALID'
+          }
+
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
+      describe('because loss is not valid', () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            loss: 'INVALID'
+          }
+
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
+      describe('because source is not valid', () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            source: 'INVALID'
+          }
+
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
+      describe('because season is not valid', () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            season: 'INVALID'
+          }
+
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
+      describe('because regionalChargingArea is not valid', () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            regionalChargingArea: 'INVALID'
           }
 
           expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)

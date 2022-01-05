@@ -12,7 +12,6 @@ class TransactionPresrocTranslator extends TransactionBaseTranslator {
     return {
       ...this._baseRules(),
       ruleset: Joi.string().allow('presroc').default('presroc'),
-      chargePeriod: Joi.string().required(),
       subjectToMinimumCharge: Joi.boolean().default(false)
     }
   }
