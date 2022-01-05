@@ -20,9 +20,6 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
 
     // Additional post-getter validation to ensure section126Factor has no more than 3 decimal places
     this._validateSection126Factor()
-
-    // Additional post-getter parser to ensure that season is in the right 'case'
-    this.regimeValue7 = this._titleCaseStringValue(this.regimeValue7)
   }
 
   _rules () {
@@ -41,10 +38,10 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
 
       // validated in the rules service
       regionalChargingArea: Joi.string().required(),
-      season: Joi.string().required(),
 
       // Case-insensitive validation matches and returns the correctly-capitalised string
-      source: Joi.string().valid(...this._validSources()).insensitive().required()
+      source: Joi.string().valid(...this._validSources()).insensitive().required(),
+      season: Joi.string().valid(...this._validSeasons()).insensitive().required()
     }
   }
 
@@ -80,6 +77,10 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
     return ['Supported', 'Kielder', 'Unsupported', 'Tidal']
   }
 
+  _validSeasons () {
+    return ['Summer', 'Winter', 'All Year']
+  }
+
   /**
    * Validate `section126Factor` precision is no more than 3 decimal places
    *
@@ -111,27 +112,6 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
     if (error) {
       throw Boom.badData(error)
     }
-  }
-
-  /**
-   * Use to title case a string value
-   *
-   * Title case is where the first character of each word is a capital and the rest is lower case. Our testing of the
-   * rules service has highlighted that it will only calculate the charge correctly if the value for `season` in the
-   * request is in title case. Anything else and it fails to match them to resulting in a 0 charge.
-   *
-   * This works for single-word strings (`summer` to `Summer`) and multi-word strings (`all year` to `All Year`).
-   *
-   * @param {string} value String value to be converted to title case
-   *
-   * @returns {string} The string value converted to title case
-   */
-  _titleCaseStringValue (value) {
-    return value
-      .toLowerCase()
-      .split(' ')
-      .map(word => word[0].toUpperCase() + word.substring(1))
-      .join(' ')
   }
 
   /**
