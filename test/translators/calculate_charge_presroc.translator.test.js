@@ -201,6 +201,28 @@ describe('Calculate Charge Presroc translator', () => {
     })
   })
 
+  describe('handling of strings', () => {
+    describe('when a valid string is passed to a field that validates against a list', () => {
+      it('returns the correct capitalisation of the string', async () => {
+        const validPayload = {
+          ...payload,
+          loss: 'very low',
+          source: 'tidAl',
+          season: 'ALL YEAR',
+          eiucSource: 'kIeLdEr',
+          regionalChargingArea: 'sOUTH wEST (Including wESSEX)'
+        }
+        const result = new CalculateChargePresrocTranslator(data(validPayload))
+
+        expect(result.regimeValue8).to.equal('Very Low')
+        expect(result.regimeValue6).to.equal('Tidal')
+        expect(result.regimeValue7).to.equal('All Year')
+        expect(result.regimeValue13).to.equal('Kielder')
+        expect(result.regimeValue15).to.equal('South West (including Wessex)')
+      })
+    })
+  })
+
   describe('Validation', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', async () => {
