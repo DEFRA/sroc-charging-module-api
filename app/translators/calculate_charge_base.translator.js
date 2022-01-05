@@ -38,7 +38,7 @@ class CalculateChargeBaseTranslator extends BaseTranslator {
       regime: Joi.string().required(),
 
       // Case-insensitive validation matches and returns the correctly-capitalised string
-      loss: Joi.string().valid(...this._validLosses()).insensitive().required()
+      loss: this._validateStringAgainstList(this._validLosses()).required()
     }
   }
 
@@ -60,6 +60,13 @@ class CalculateChargeBaseTranslator extends BaseTranslator {
     if (error) {
       throw Boom.badData(error)
     }
+  }
+
+  /**
+   * Perorming a case-insensitive validation against a provided list will match and return the correct capitalisation
+   */
+  _validateStringAgainstList (list) {
+    return Joi.string().valid(...list).insensitive()
   }
 
   _validLosses () {

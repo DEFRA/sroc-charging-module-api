@@ -30,8 +30,7 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
       winterOnly: Joi.boolean().required(),
 
       // Dependent on `compensationCharge`
-      // Case-insensitive validation matches and returns the correctly-capitalised string
-      regionalChargingArea: Joi.string().valid(...this._validRegionalChargingAreas()).insensitive()
+      regionalChargingArea: this._validateStringAgainstList(this._validRegionalChargingAreas())
         .when('compensationCharge', { is: true, then: Joi.required() }),
 
       // Dependent on `twoPartTariff`
@@ -42,7 +41,7 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
       supportedSource: Joi.boolean().required(),
       supportedSourceName: Joi
         // If `true` then we match and return the correctly-capitalised string
-        .when('supportedSource', { is: true, then: Joi.string().valid(...this._validSupportedSourceNames()).insensitive().required() })
+        .when('supportedSource', { is: true, then: this._validateStringAgainstList(this._validSupportedSourceNames()).required() })
         // If `false` then this should be undefined (ie. not present) and we set the value as `Not Applicable`
         .when('supportedSource', { is: false, then: Joi.forbidden().default('Not Applicable') }),
 

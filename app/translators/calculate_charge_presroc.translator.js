@@ -33,13 +33,13 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
       volume: Joi.number().min(0).required(),
 
       // Dependent on `compensationCharge` and case-insensitive to return the correctly-capitalised string
-      eiucSource: Joi.string().valid(...this._validSources()).insensitive()
+      eiucSource: this._validateStringAgainstList(this._validSources())
         .when('compensationCharge', { is: true, then: Joi.required() }),
 
       // Case-insensitive validation matches and returns the correctly-capitalised string
-      source: Joi.string().valid(...this._validSources()).insensitive().required(),
-      regionalChargingArea: Joi.string().valid(...this._validRegionalChargingAreas()).insensitive().required(),
-      season: Joi.string().valid(...this._validSeasons()).insensitive().required()
+      source: this._validateStringAgainstList(this._validSources()).required(),
+      regionalChargingArea: this._validateStringAgainstList(this._validRegionalChargingAreas()).required(),
+      season: this._validateStringAgainstList(this._validSeasons()).required()
     }
   }
 
