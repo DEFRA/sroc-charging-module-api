@@ -278,43 +278,45 @@ describe('Bill Runs controller', () => {
     })
   }
 
-  describe('Approve bill run: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/approve', () => {
-    const options = (token, billRunId) => {
-      return {
-        method: 'PATCH',
-        url: `/v2/wrls/bill-runs/${billRunId}/approve`,
-        headers: { authorization: `Bearer ${token}` }
+  for (const version of ['v2', 'v3']) {
+    describe(`Approve bill run: PATCH /${version}/{regimeSlug}/bill-runs/{billRunId}/approve`, () => {
+      const options = (token, billRunId) => {
+        return {
+          method: 'PATCH',
+          url: `/${version}/wrls/bill-runs/${billRunId}/approve`,
+          headers: { authorization: `Bearer ${token}` }
+        }
       }
-    }
 
-    beforeEach(async () => {
-      // We need the bill run to contain a transaction so it can be generated before it's approved
-      const transaction = await NewTransactionHelper.create()
-      billRun = await BillRunModel.query().findById(transaction.billRunId)
-    })
-
-    describe('When the request is valid', () => {
-      it('returns success status 204', async () => {
-        await GenerateBillRunService.go(billRun)
-
-        const response = await server.inject(options(authToken, billRun.id))
-
-        expect(response.statusCode).to.equal(204)
+      beforeEach(async () => {
+        // We need the bill run to contain a transaction so it can be generated before it's approved
+        const transaction = await NewTransactionHelper.create()
+        billRun = await BillRunModel.query().findById(transaction.billRunId)
       })
-    })
 
-    describe('When the request is invalid', () => {
-      describe("because the 'bill run' has not been generated", () => {
-        it('returns error status 409', async () => {
+      describe('When the request is valid', () => {
+        it('returns success status 204', async () => {
+          await GenerateBillRunService.go(billRun)
+
           const response = await server.inject(options(authToken, billRun.id))
-          const responsePayload = JSON.parse(response.payload)
 
-          expect(response.statusCode).to.equal(409)
-          expect(responsePayload.message).to.equal(`Bill run ${billRun.id} does not have a status of 'generated'.`)
+          expect(response.statusCode).to.equal(204)
+        })
+      })
+
+      describe('When the request is invalid', () => {
+        describe("because the 'bill run' has not been generated", () => {
+          it('returns error status 409', async () => {
+            const response = await server.inject(options(authToken, billRun.id))
+            const responsePayload = JSON.parse(response.payload)
+
+            expect(response.statusCode).to.equal(409)
+            expect(responsePayload.message).to.equal(`Bill run ${billRun.id} does not have a status of 'generated'.`)
+          })
         })
       })
     })
-  })
+  }
 
   describe('Send bill run: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/send', () => {
     let sendCustomerFileStub
