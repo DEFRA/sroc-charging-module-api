@@ -38,7 +38,6 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
 
       // Case-insensitive validation matches and returns the correctly-capitalised string
       source: this._validateStringAgainstList(this._validSources()).required(),
-      regionalChargingArea: this._validateStringAgainstList(this._validRegionalChargingAreas()).required(),
       season: this._validateStringAgainstList(this._validSeasons()).required()
     }
   }

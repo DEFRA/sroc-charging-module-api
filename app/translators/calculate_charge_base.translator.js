@@ -29,6 +29,9 @@ class CalculateChargeBaseTranslator extends BaseTranslator {
         .when('compensationCharge', { is: true, then: Joi.required() }),
       twoPartTariff: Joi.boolean().required()
         .when('compensationCharge', { is: true, then: Joi.equal(false) }),
+      // Case-insensitive validation matches and returns the correctly-capitalised string
+      regionalChargingArea: this._validateStringAgainstList(this._validRegionalChargingAreas())
+        .when('compensationCharge', { is: true, then: Joi.required() }),
 
       // Dependent on `twoPartTariff`
       section127Agreement: Joi.boolean().required()
