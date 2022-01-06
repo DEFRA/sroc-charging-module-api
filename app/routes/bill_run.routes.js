@@ -56,6 +56,11 @@ const routes = [
   },
   {
     method: 'GET',
+    path: '/v3/{regimeSlug}/bill-runs/{billRunId}/status',
+    handler: BillRunsController.status
+  },
+  {
+    method: 'GET',
     path: '/v2/{regimeSlug}/bill-runs/{billRunId}',
     handler: BillRunsController.view
   },
