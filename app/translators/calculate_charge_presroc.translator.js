@@ -38,7 +38,6 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
 
       // Case-insensitive validation matches and returns the correctly-capitalised string
       source: this._validateStringAgainstList(this._validSources()).required(),
-      regionalChargingArea: this._validateStringAgainstList(this._validRegionalChargingAreas()).required(),
       season: this._validateStringAgainstList(this._validSeasons()).required()
     }
   }
@@ -69,20 +68,6 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
 
   _validLosses () {
     return ['High', 'Medium', 'Low', 'Very Low']
-  }
-
-  _validRegionalChargingAreas () {
-    return [
-      'Anglian',
-      'Midlands',
-      'North West',
-      'Northumbria',
-      'South West (including Wessex)',
-      'Southern',
-      'Thames',
-      'Wye',
-      'Yorkshire'
-    ]
   }
 
   _validSources () {

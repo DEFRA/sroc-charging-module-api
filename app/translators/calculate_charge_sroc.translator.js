@@ -29,10 +29,6 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
       waterCompanyCharge: Joi.boolean().required(),
       winterOnly: Joi.boolean().required(),
 
-      // Dependent on `compensationCharge`
-      regionalChargingArea: this._validateStringAgainstList(this._validRegionalChargingAreas())
-        .when('compensationCharge', { is: true, then: Joi.required() }),
-
       // Dependent on `twoPartTariff`
       actualVolume: Joi.number().greater(0)
         .when('twoPartTariff', { is: true, then: Joi.required() }),
@@ -80,24 +76,6 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
 
   _validLosses () {
     return ['Low', 'Medium', 'High']
-  }
-
-  _validRegionalChargingAreas () {
-    return [
-      'Anglian',
-      'Midlands',
-      'Northumbria',
-      'North West',
-      'Southern',
-      'South West (incl Wessex)',
-      'Devon and Cornwall (South West)',
-      'North and South Wessex',
-      'Thames',
-      'Yorkshire',
-      'Dee',
-      'Wye',
-      'Wales'
-    ]
   }
 
   _validSupportedSourceNames () {
