@@ -73,6 +73,24 @@ class CalculateChargeBaseTranslator extends BaseTranslator {
     throw new Error("Extending class must implement '_validLosses()'")
   }
 
+  _validRegionalChargingAreas () {
+    return [
+      'Anglian',
+      'Midlands',
+      'Northumbria',
+      'North West',
+      'Southern',
+      'South West (incl Wessex)',
+      'Devon and Cornwall (South West)',
+      'North and South Wessex',
+      'Thames',
+      'Yorkshire',
+      'Dee',
+      'Wye',
+      'Wales'
+    ]
+  }
+
   /**
    * Returns the calculated financial year for a given date
    *

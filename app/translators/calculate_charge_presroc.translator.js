@@ -71,20 +71,6 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
     return ['High', 'Medium', 'Low', 'Very Low']
   }
 
-  _validRegionalChargingAreas () {
-    return [
-      'Anglian',
-      'Midlands',
-      'North West',
-      'Northumbria',
-      'South West (including Wessex)',
-      'Southern',
-      'Thames',
-      'Wye',
-      'Yorkshire'
-    ]
-  }
-
   _validSources () {
     return ['Supported', 'Kielder', 'Unsupported', 'Tidal']
   }
