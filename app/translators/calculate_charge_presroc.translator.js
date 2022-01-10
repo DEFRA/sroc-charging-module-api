@@ -29,7 +29,6 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
 
       periodStart: Joi.date().format(this._validDateFormats()).max(Joi.ref('periodEnd')).min('01-APR-2014').required(),
       section126Factor: Joi.number().allow(null).empty(null).default(1.0),
-      twoPartTariff: Joi.boolean().required(),
       volume: Joi.number().min(0).required(),
 
       // Dependent on `compensationCharge` and case-insensitive to return the correctly-capitalised string
