@@ -427,6 +427,18 @@ describe('Calculate Charge Presroc translator', () => {
           expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
         })
       })
+
+      describe('because twoPartTariff and compensationCharge are both true', () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            twoPartTariff: true,
+            compensationCharge: true
+          }
+
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
     })
   })
 })
