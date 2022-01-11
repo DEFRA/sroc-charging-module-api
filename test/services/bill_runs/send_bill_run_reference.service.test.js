@@ -71,12 +71,25 @@ describe('Send Bill Run Reference service', () => {
       expect(sentBillRun.status).to.equal('sending')
     })
 
-    it('generates a file reference for the bill run', async () => {
-      // A bill run needs at least one billable invoice for a file reference to be generated
-      await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 501, 0) // standard debit
-      const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
+    describe('generates a file reference for the bill run', () => {
+      beforeEach(async () => {
+        // A bill run needs at least one billable invoice for a file reference to be generated
+        await InvoiceHelper.addInvoice(billRun.id, 'CMA0000001', 2020, 0, 0, 1, 501, 0) // standard debit
+      })
 
-      expect(sentBillRun.fileReference).to.equal('nalai50001')
+      it('for presroc', async () => {
+        const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
+
+        expect(sentBillRun.fileReference).to.equal('nalai50001')
+      })
+
+      it('for sroc', async () => {
+        billRun.ruleset = 'sroc'
+
+        const sentBillRun = await SendBillRunReferenceService.go(regime, billRun)
+
+        expect(sentBillRun.fileReference).to.equal('nalai50001t')
+      })
     })
 
     describe('for each invoice linked to the bill run', () => {
