@@ -75,7 +75,7 @@ class BaseNextFileReferenceService {
   static _getFilenameSuffix (regimeSlug, ruleset) {
     // We use nullish coalescing to return the value if it exists, or '' if it doesn't. Optional chaining on rulesets
     // means we don't error if an invalid ruleset is passed in (which would be the case if no ruleset was passed to the
-    // service so we defaulted to `null`
+    // service so we defaulted to `null`)
     return RulesServiceConfig.endpoints[regimeSlug].rulesets[ruleset]?.filenameSuffix ?? ''
   }
 
