@@ -29,15 +29,16 @@ class BaseNextFileReferenceService {
    *
    * @param {module:RegimeModel} regime instance of the `RegimeModel` that the reference is for
    * @param {string} region The region the reference is for
+   * @param {string} ruleset The ruleset the reference is for
    * @param {Object} [trx] Optional Objection database `transaction` object to be used in the update to
    * `sequence_counters`
    *
    * @returns {string} the generated file reference
    */
-  static async go (regime, region, trx = null) {
+  static async go (regime, region, ruleset = null, trx = null) {
     const result = await this._updateSequenceCounter(regime.id, region, trx)
 
-    return this._response(regime.slug, region, result[this._field()])
+    return this._response(regime.slug, region, ruleset, result[this._field()])
   }
 
   static async _updateSequenceCounter (regimeId, region, trx) {
@@ -53,10 +54,29 @@ class BaseNextFileReferenceService {
       })
   }
 
-  static _response (regimeSlug, region, fileNumber) {
-    const filenamePrefix = RulesServiceConfig.endpoints[regimeSlug].filenamePrefix
+  static _response (regimeSlug, region, ruleset, fileNumber) {
+    const filenamePrefix = BaseNextFileReferenceService._getFilenamePrefix(regimeSlug)
+    const filenameSuffix = BaseNextFileReferenceService._getFilenameSuffix(regimeSlug, ruleset)
 
-    return `${filenamePrefix}${region.toLowerCase()}${this._fileFixedChar()}${fileNumber}`
+    return `${filenamePrefix}${region.toLowerCase()}${this._fileFixedChar()}${fileNumber}${filenameSuffix}`
+  }
+
+  /**
+   * Returns the filename prefix according to the regime
+   */
+  static _getFilenamePrefix (regimeSlug) {
+    return RulesServiceConfig.endpoints[regimeSlug].filenamePrefix
+  }
+
+  /**
+   * Returns the filename suffix according to the regime and ruleset. If this has not been defined in RulesServiceConfig
+   * then an empty string will be returned
+   */
+  static _getFilenameSuffix (regimeSlug, ruleset) {
+    // We use nullish coalescing to return the value if it exists, or '' if it doesn't. Optional chaining on rulesets
+    // means we don't error if an invalid ruleset is passed in (which would be the case if no ruleset was passed to the
+    // service so we defaulted to `null`
+    return RulesServiceConfig.endpoints[regimeSlug].rulesets[ruleset]?.filenameSuffix ?? ''
   }
 
   /**

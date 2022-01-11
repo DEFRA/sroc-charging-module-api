@@ -57,7 +57,7 @@ class SendBillRunReferenceService {
 
       // We only generate a file reference for the bill run if there was 1 or more billable invoices. This avoids gaps
       // in the file references and concern about whether something got lost in transit
-      const fileReference = billableCount ? await NextTransactionFileReferenceService.go(regime, billRun.region, trx) : null
+      const fileReference = billableCount ? await NextTransactionFileReferenceService.go(regime, billRun.region, billRun.ruleset, trx) : null
 
       // We set the status to `sending` to show that we've finished updating the bill run info and it's now being sent
       return BillRunModel.query(trx)

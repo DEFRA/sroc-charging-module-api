@@ -56,7 +56,8 @@ const config = {
         },
         sroc: {
           application: process.env.WRLS_SROC_APP,
-          ruleset: process.env.WRLS_SROC_RULESET
+          ruleset: process.env.WRLS_SROC_RULESET,
+          filenameSuffix: 't'
         }
       }
     }
