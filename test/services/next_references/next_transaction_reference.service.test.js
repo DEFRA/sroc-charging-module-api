@@ -47,7 +47,6 @@ describe('Next Transaction Reference service', () => {
           const result = await NextTransactionReferenceService.go(regime.id, 'R', 'presroc', 'I')
           const secondResult = await NextTransactionReferenceService.go(regime.id, 'R', 'presroc', 'C')
 
-          // The call to slice(-1) grabs the last character from the returned string
           expect(result.endsWith('1')).to.be.true()
           expect(secondResult.endsWith('2')).to.be.true()
         })
