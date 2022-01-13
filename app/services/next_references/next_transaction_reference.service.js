@@ -64,9 +64,9 @@ class NextTransactionReferenceService {
   static _response (region, ruleset, transactionType, transactionNumber) {
     if (ruleset === 'presroc') {
       return this._presrocResponse(region, transactionType, transactionNumber)
-    } else {
-      return this._srocResponse(region, transactionType, transactionNumber)
     }
+
+    return this._srocResponse(region, transactionType, transactionNumber)
   }
 
   /**
