@@ -55,8 +55,8 @@ class BaseNextFileReferenceService {
   }
 
   static _response (regimeSlug, region, ruleset, fileNumber) {
-    const filenamePrefix = BaseNextFileReferenceService._getFilenamePrefix(regimeSlug)
-    const filenameSuffix = BaseNextFileReferenceService._getFilenameSuffix(regimeSlug, ruleset)
+    const filenamePrefix = this._getFilenamePrefix(regimeSlug)
+    const filenameSuffix = this._getFilenameSuffix(regimeSlug, ruleset)
 
     return `${filenamePrefix}${region.toLowerCase()}${this._fileFixedChar()}${fileNumber}${filenameSuffix}`
   }
