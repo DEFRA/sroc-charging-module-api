@@ -32,31 +32,47 @@ describe('Next Transaction File Reference service', () => {
     })
 
     describe('the file reference generated', () => {
-      it('increments with each call', async () => {
-        const result = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
-        const secondResult = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
+      describe('increments with each call', () => {
+        it('for the same ruleset', async () => {
+          const result = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
+          const secondResult = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
 
-        expect(result).endsWith('1')
-        expect(secondResult).endsWith('2')
+          expect(result).endsWith('1')
+          expect(secondResult).endsWith('2')
+        })
+
+        it('for different rulesets', async () => {
+          const result = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
+          const otherResult = await NextTransactionFileReferenceService.go(regime, 'R', 'sroc')
+
+          expect(result).endsWith('1')
+          expect(otherResult).endsWith('2t')
+        })
       })
 
-      it('increments with each call independently for each regime and region', async () => {
-        const otherRegime = await RegimeHelper.addRegime('cfd', 'CFD')
-        await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
+      describe('increments with each call independently for each regime and region', () => {
+        let otherRegime
 
-        const result = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
-        const otherResult = await NextTransactionFileReferenceService.go(otherRegime, 'S', 'presroc')
+        beforeEach(async () => {
+          otherRegime = await RegimeHelper.addRegime('cfd', 'CFD')
+          await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
+        })
 
-        expect(result).endsWith('1')
-        expect(otherResult).endsWith('1')
-      })
+        it('for the same ruleset', async () => {
+          const result = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
+          const otherResult = await NextTransactionFileReferenceService.go(otherRegime, 'S', 'presroc')
 
-      it('increments as part of the same sequence independently of ruleset', async () => {
-        const result = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
-        const otherResult = await NextTransactionFileReferenceService.go(regime, 'R', 'sroc')
+          expect(result).endsWith('1')
+          expect(otherResult).endsWith('1')
+        })
 
-        expect(result).endsWith('1')
-        expect(otherResult).endsWith('2t')
+        it('for different rulesets', async () => {
+          const result = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
+          const otherResult = await NextTransactionFileReferenceService.go(otherRegime, 'S', 'sroc')
+
+          expect(result).endsWith('1')
+          expect(otherResult).endsWith('1t')
+        })
       })
 
       it('has a prefix specific to the regime', async () => {
@@ -72,8 +88,10 @@ describe('Next Transaction File Reference service', () => {
 
       it('has the correct suffix for a ruleset', async () => {
         const result = await NextTransactionFileReferenceService.go(regime, 'R', 'sroc')
+        const otherResult = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
 
         expect(result).endsWith('t')
+        expect(otherResult).endsWith('2')
       })
     })
   })
