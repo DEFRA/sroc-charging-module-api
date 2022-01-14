@@ -79,6 +79,7 @@ class SendBillRunReferenceService {
       const reference = await NextTransactionReferenceService.go(
         regime.id,
         billRun.region,
+        billRun.ruleset,
         invoice.$transactionType(),
         trx
       )
