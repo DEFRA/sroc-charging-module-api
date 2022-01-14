@@ -40,15 +40,23 @@ describe('Next Transaction File Reference service', () => {
         expect(secondResult).endsWith('2')
       })
 
-      it('increments with each call independently for each regime, region and ruleset', async () => {
+      it('increments with each call independently for each regime and region', async () => {
         const otherRegime = await RegimeHelper.addRegime('cfd', 'CFD')
         await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
 
         const result = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
-        const otherResult = await NextTransactionFileReferenceService.go(otherRegime, 'S')
+        const otherResult = await NextTransactionFileReferenceService.go(otherRegime, 'S', 'presroc')
 
         expect(result).endsWith('1')
         expect(otherResult).endsWith('1')
+      })
+
+      it('increments as part of the same sequence independently of ruleset', async () => {
+        const result = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
+        const otherResult = await NextTransactionFileReferenceService.go(regime, 'R', 'sroc')
+
+        expect(result).endsWith('1')
+        expect(otherResult).endsWith('2t')
       })
 
       it('has a prefix specific to the regime', async () => {
@@ -56,7 +64,7 @@ describe('Next Transaction File Reference service', () => {
         await SequenceCounterHelper.addSequenceCounter(otherRegime.id, 'S')
 
         const result = await NextTransactionFileReferenceService.go(regime, 'R', 'presroc')
-        const otherResult = await NextTransactionFileReferenceService.go(otherRegime, 'S')
+        const otherResult = await NextTransactionFileReferenceService.go(otherRegime, 'S', 'presroc')
 
         expect(result).startsWith('nal')
         expect(otherResult).startsWith('cfd')
@@ -75,7 +83,7 @@ describe('Next Transaction File Reference service', () => {
       const dummyRegime = { id: GeneralHelper.uuid4(), slug: 'cfd' }
 
       const err = await expect(
-        NextTransactionFileReferenceService.go(dummyRegime, 'R')
+        NextTransactionFileReferenceService.go(dummyRegime, 'R', 'presroc')
       ).to.reject(NotFoundError)
 
       expect(err).to.be.an.error()
@@ -83,8 +91,16 @@ describe('Next Transaction File Reference service', () => {
 
     it('throws an error for an invalid region', async () => {
       const err = await expect(
-        NextTransactionFileReferenceService.go(regime, 'X')
+        NextTransactionFileReferenceService.go(regime, 'X', 'presroc')
       ).to.reject(NotFoundError)
+
+      expect(err).to.be.an.error()
+    })
+
+    it('throws an error for an invalid ruleset', async () => {
+      const err = await expect(
+        NextTransactionFileReferenceService.go(regime, 'R', 'INVALID')
+      ).to.reject(TypeError)
 
       expect(err).to.be.an.error()
     })
