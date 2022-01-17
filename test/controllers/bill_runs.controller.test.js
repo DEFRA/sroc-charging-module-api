@@ -318,74 +318,76 @@ describe('Bill Runs controller', () => {
     })
   }
 
-  describe('Send bill run: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/send', () => {
-    let sendCustomerFileStub
-    let sendTransactionFileStub
+  for (const version of ['v2', 'v3']) {
+    describe(`Send bill run: PATCH /${version}/{regimeSlug}/bill-runs/{billRunId}/send`, () => {
+      let sendCustomerFileStub
+      let sendTransactionFileStub
 
-    const options = (token, billRunId) => {
-      return {
-        method: 'PATCH',
-        url: `/v2/wrls/bill-runs/${billRunId}/send`,
-        headers: { authorization: `Bearer ${token}` }
+      const options = (token, billRunId) => {
+        return {
+          method: 'PATCH',
+          url: `/${version}/wrls/bill-runs/${billRunId}/send`,
+          headers: { authorization: `Bearer ${token}` }
+        }
       }
-    }
 
-    beforeEach(async () => {
-      // Stub send file services so we don't try to generate any files
-      sendCustomerFileStub = Sinon.stub(SendCustomerFileService, 'go')
-      sendTransactionFileStub = Sinon.stub(SendTransactionFileService, 'go')
+      beforeEach(async () => {
+        // Stub send file services so we don't try to generate any files
+        sendCustomerFileStub = Sinon.stub(SendCustomerFileService, 'go')
+        sendTransactionFileStub = Sinon.stub(SendTransactionFileService, 'go')
 
-      billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
-      await SequenceCounterHelper.addSequenceCounter(regime.id, billRun.region)
-      // A bill run needs at least one billable invoice for a file reference to be generated
-      await NewInvoiceHelper.create(billRun)
-    })
-
-    afterEach(async () => {
-      sendCustomerFileStub.restore()
-      sendTransactionFileStub.restore()
-    })
-
-    describe('When the request is valid', () => {
-      it('returns success status 204', async () => {
-        await billRun.$query().patch({ status: 'approved' })
-
-        const response = await server.inject(options(authToken, billRun.id))
-
-        expect(response.statusCode).to.equal(204)
+        billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
+        await SequenceCounterHelper.addSequenceCounter(regime.id, billRun.region)
+        // A bill run needs at least one billable invoice for a file reference to be generated
+        await NewInvoiceHelper.create(billRun)
       })
 
-      it('calls SendTransactionFileService', async () => {
-        await billRun.$query().patch({ status: 'approved' })
-
-        await server.inject(options(authToken, billRun.id))
-
-        expect(sendTransactionFileStub.calledOnce).to.be.true()
+      afterEach(async () => {
+        sendCustomerFileStub.restore()
+        sendTransactionFileStub.restore()
       })
 
-      it('calls SendCustomerFileService and passes in the region', async () => {
-        await billRun.$query().patch({ status: 'approved' })
+      describe('When the request is valid', () => {
+        it('returns success status 204', async () => {
+          await billRun.$query().patch({ status: 'approved' })
 
-        await server.inject(options(authToken, billRun.id))
-
-        expect(sendCustomerFileStub.calledOnce).to.be.true()
-        expect(sendCustomerFileStub.getCall(0).args[1]).to.equal([billRun.region])
-      })
-    })
-
-    describe('When the request is invalid', () => {
-      describe("because the 'bill run' has not been approved", () => {
-        it('returns error status 409', async () => {
           const response = await server.inject(options(authToken, billRun.id))
 
-          const responsePayload = JSON.parse(response.payload)
+          expect(response.statusCode).to.equal(204)
+        })
 
-          expect(response.statusCode).to.equal(409)
-          expect(responsePayload.message).to.equal(`Bill run ${billRun.id} does not have a status of 'approved'.`)
+        it('calls SendTransactionFileService', async () => {
+          await billRun.$query().patch({ status: 'approved' })
+
+          await server.inject(options(authToken, billRun.id))
+
+          expect(sendTransactionFileStub.calledOnce).to.be.true()
+        })
+
+        it('calls SendCustomerFileService and passes in the region', async () => {
+          await billRun.$query().patch({ status: 'approved' })
+
+          await server.inject(options(authToken, billRun.id))
+
+          expect(sendCustomerFileStub.calledOnce).to.be.true()
+          expect(sendCustomerFileStub.getCall(0).args[1]).to.equal([billRun.region])
+        })
+      })
+
+      describe('When the request is invalid', () => {
+        describe("because the 'bill run' has not been approved", () => {
+          it('returns error status 409', async () => {
+            const response = await server.inject(options(authToken, billRun.id))
+
+            const responsePayload = JSON.parse(response.payload)
+
+            expect(response.statusCode).to.equal(409)
+            expect(responsePayload.message).to.equal(`Bill run ${billRun.id} does not have a status of 'approved'.`)
+          })
         })
       })
     })
-  })
+  }
 
   describe('Delete bill run: DELETE /v2/{regimeSlug}/bill-runs/{billRunId}', () => {
     const options = (token, billRunId) => {

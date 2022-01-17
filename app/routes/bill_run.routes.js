@@ -55,6 +55,11 @@ const routes = [
     handler: BillRunsController.send
   },
   {
+    method: 'PATCH',
+    path: '/v3/{regimeSlug}/bill-runs/{billRunId}/send',
+    handler: BillRunsController.send
+  },
+  {
     method: 'GET',
     path: '/v2/{regimeSlug}/bill-runs/{billRunId}/status',
     handler: BillRunsController.status
