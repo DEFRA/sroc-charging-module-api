@@ -51,7 +51,7 @@ class PrepareCustomerFileService {
    * Obtains the next file reference for the given regime and region
    */
   static async _fileReference (regime, region, trx) {
-    return NextCustomerFileReferenceService.go(regime, region, trx)
+    return NextCustomerFileReferenceService.go(regime, region, null, trx)
   }
 
   /**

@@ -22,12 +22,12 @@ describe('Base Next File Reference service', () => {
       expect(throws).to.throw("Extending service must implement '_field()'")
     })
 
-    it("must override the '_fileFixedChar()' method", () => {
+    it("must override the '_response()' method", () => {
       const throws = () => {
-        TestService._fileFixedChar()
+        TestService._response()
       }
 
-      expect(throws).to.throw("Extending service must implement '_fileFixedChar()'")
+      expect(throws).to.throw("Extending service must implement '_response()'")
     })
   })
 })
