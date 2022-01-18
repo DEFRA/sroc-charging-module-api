@@ -389,12 +389,12 @@ describe('Calculate Charge Sroc translator', () => {
           const supportedSourceNamePayload = {
             ...payload,
             supportedSource: true,
-            supportedSourceName: 'ouse – hermitage'
+            supportedSourceName: 'ouse - hermitage'
           }
 
           const testTranslator = new CalculateChargeSrocTranslator(data(supportedSourceNamePayload))
 
-          expect(testTranslator.headerAttr6).to.equal('Ouse – Hermitage')
+          expect(testTranslator.headerAttr6).to.equal('Ouse - Hermitage')
         })
       })
     })
@@ -850,7 +850,7 @@ describe('Calculate Charge Sroc translator', () => {
             it('throws an error', async () => {
               invalidPayload = {
                 ...invalidPayload,
-                supportedSourceName: 'Ouse – Hermitage'
+                supportedSourceName: 'Ouse - Hermitage'
               }
 
               expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
