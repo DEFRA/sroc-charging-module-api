@@ -1,11 +1,58 @@
 # Changelog
 
+## [v0.16.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.16.0) (2022-01-18)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.15.0...v0.16.0)
+
+**Implemented enhancements:**
+
+- Create v3 send bill run route [\#650](https://github.com/DEFRA/sroc-charging-module-api/pull/650) ([Cruikshanks](https://github.com/Cruikshanks))
+- Create SRoC transaction file references [\#649](https://github.com/DEFRA/sroc-charging-module-api/pull/649) ([StuAA78](https://github.com/StuAA78))
+- CMEA-220 Add SROC transaction number sequence [\#648](https://github.com/DEFRA/sroc-charging-module-api/pull/648) ([Cruikshanks](https://github.com/Cruikshanks))
+- Align presroc and sroc `regionalChargingArea` validation [\#644](https://github.com/DEFRA/sroc-charging-module-api/pull/644) ([StuAA78](https://github.com/StuAA78))
+- Create v3 approve bill run route [\#643](https://github.com/DEFRA/sroc-charging-module-api/pull/643) ([StuAA78](https://github.com/StuAA78))
+- Create v3 view bill run status route [\#642](https://github.com/DEFRA/sroc-charging-module-api/pull/642) ([StuAA78](https://github.com/StuAA78))
+- Add additional presroc validation [\#640](https://github.com/DEFRA/sroc-charging-module-api/pull/640) ([StuAA78](https://github.com/StuAA78))
+- CMEA-234 Delete SRoC Licence [\#635](https://github.com/DEFRA/sroc-charging-module-api/pull/635) ([StuAA78](https://github.com/StuAA78))
+- CMEA-232 Add new V3 delete invoice endpoint [\#634](https://github.com/DEFRA/sroc-charging-module-api/pull/634) ([Cruikshanks](https://github.com/Cruikshanks))
+- Amend send bill run statuses [\#632](https://github.com/DEFRA/sroc-charging-module-api/pull/632) ([StuAA78](https://github.com/StuAA78))
+- View SRoC Invoice and v3 route [\#629](https://github.com/DEFRA/sroc-charging-module-api/pull/629) ([StuAA78](https://github.com/StuAA78))
+
+**Fixed bugs:**
+
+- Fix sroc supported source name dashes [\#652](https://github.com/DEFRA/sroc-charging-module-api/pull/652) ([StuAA78](https://github.com/StuAA78))
+- Remove `twoPartTariff` validation from presroc translator [\#645](https://github.com/DEFRA/sroc-charging-module-api/pull/645) ([StuAA78](https://github.com/StuAA78))
+- Amend presroc validation lists [\#641](https://github.com/DEFRA/sroc-charging-module-api/pull/641) ([StuAA78](https://github.com/StuAA78))
+- Remove unneeded validation [\#639](https://github.com/DEFRA/sroc-charging-module-api/pull/639) ([StuAA78](https://github.com/StuAA78))
+- Fix invoice flags not correctly reflecting state change [\#630](https://github.com/DEFRA/sroc-charging-module-api/pull/630) ([StuAA78](https://github.com/StuAA78))
+
+**Housekeeping updates:**
+
+- CMEA-226 Make use of pending status consistent [\#633](https://github.com/DEFRA/sroc-charging-module-api/pull/633) ([StuAA78](https://github.com/StuAA78))
+- Refactor SRoC and pre-SRoC translators [\#626](https://github.com/DEFRA/sroc-charging-module-api/pull/626) ([StuAA78](https://github.com/StuAA78))
+
+**Documentation updates:**
+
+- Add Swagger request versioning to docs [\#631](https://github.com/DEFRA/sroc-charging-module-api/pull/631) ([StuAA78](https://github.com/StuAA78))
+
+**Dependency updates:**
+
+- Bump @aws-sdk/client-s3 from 3.46.0 to 3.47.0 [\#651](https://github.com/DEFRA/sroc-charging-module-api/pull/651) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nock from 13.2.1 to 13.2.2 [\#647](https://github.com/DEFRA/sroc-charging-module-api/pull/647) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.44.0 to 3.46.0 [\#646](https://github.com/DEFRA/sroc-charging-module-api/pull/646) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @hapi/lab from 24.4.0 to 24.5.0 [\#638](https://github.com/DEFRA/sroc-charging-module-api/pull/638) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-node from 2.5.0 to 2.5.1 [\#637](https://github.com/DEFRA/sroc-charging-module-api/pull/637) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump joi from 17.4.2 to 17.5.0 [\#628](https://github.com/DEFRA/sroc-charging-module-api/pull/628) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.43.0 to 3.44.0 [\#627](https://github.com/DEFRA/sroc-charging-module-api/pull/627) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.15.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.15.0) (2021-12-02)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.14.2...v0.15.0)
 
 **Implemented enhancements:**
 
+- View SRoC Bill Run and v3 routet [\#624](https://github.com/DEFRA/sroc-charging-module-api/pull/624) ([StuAA78](https://github.com/StuAA78))
+- Generate Bill Run Summary v3 endpoint [\#622](https://github.com/DEFRA/sroc-charging-module-api/pull/622) ([StuAA78](https://github.com/StuAA78))
 - Align sroc translator and presenter fields [\#611](https://github.com/DEFRA/sroc-charging-module-api/pull/611) ([StuAA78](https://github.com/StuAA78))
 - Create Transaction v3 route [\#610](https://github.com/DEFRA/sroc-charging-module-api/pull/610) ([StuAA78](https://github.com/StuAA78))
 - Update `CreateTransactionService` to accept `ruleset` [\#609](https://github.com/DEFRA/sroc-charging-module-api/pull/609) ([StuAA78](https://github.com/StuAA78))
@@ -31,6 +78,7 @@
 
 **Dependency updates:**
 
+- Bump @aws-sdk/client-s3 from 3.42.0 to 3.43.0 [\#623](https://github.com/DEFRA/sroc-charging-module-api/pull/623) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/setup-node from 2.4.1 to 2.5.0 [\#620](https://github.com/DEFRA/sroc-charging-module-api/pull/620) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump @aws-sdk/client-s3 from 3.41.0 to 3.42.0 [\#615](https://github.com/DEFRA/sroc-charging-module-api/pull/615) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump @hapi/code from 8.0.4 to 8.0.5 [\#614](https://github.com/DEFRA/sroc-charging-module-api/pull/614) ([dependabot[bot]](https://github.com/apps/dependabot))
