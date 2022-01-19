@@ -49,102 +49,104 @@ describe('List Customer Files controller', () => {
     await AuthorisedSystemHelper.addSystem(clientID, 'system1', [regime])
   })
 
-  describe('List customer files: GET /v2/{regimeSlug}/customer-files/{days?}', () => {
-    let listStub
+  for (const version of ['v2', 'v3']) {
+    describe(`List customer files: GET /${version}/{regimeSlug}/customer-files/{days?}`, () => {
+      let listStub
 
-    const options = (token, pathParam = '') => {
-      return {
-        method: 'GET',
-        url: `/v2/${regime.slug}/customer-files/${pathParam}`,
-        headers: { authorization: `Bearer ${token}` }
+      const options = (token, pathParam = '') => {
+        return {
+          method: 'GET',
+          url: `/${version}/${regime.slug}/customer-files/${pathParam}`,
+          headers: { authorization: `Bearer ${token}` }
+        }
       }
-    }
 
-    beforeEach(async () => {
-      listStub = Sinon.stub(ListCustomerFilesService, 'go').returns(['result'])
-    })
-
-    afterEach(async () => {
-      listStub.restore()
-    })
-
-    describe('When the request is valid', () => {
-      it('returns a 200 response', async () => {
-        const response = await server.inject(options(authToken))
-
-        expect(response.statusCode).to.equal(200)
+      beforeEach(async () => {
+        listStub = Sinon.stub(ListCustomerFilesService, 'go').returns(['result'])
       })
 
-      it('returns the output of ListCustomerFilesService', async () => {
-        const response = await server.inject(options(authToken))
-        const payload = JSON.parse(response.payload)
-
-        expect(payload).to.equal(['result'])
+      afterEach(async () => {
+        listStub.restore()
       })
 
-      it('calls ListCustomerFilesService', async () => {
-        await server.inject(options(authToken))
+      describe('When the request is valid', () => {
+        it('returns a 200 response', async () => {
+          const response = await server.inject(options(authToken))
 
-        expect(listStub.calledOnce).to.be.true()
-      })
+          expect(response.statusCode).to.equal(200)
+        })
 
-      it('passes the regime to ListCustomerFilesService', async () => {
-        await server.inject(options(authToken))
+        it('returns the output of ListCustomerFilesService', async () => {
+          const response = await server.inject(options(authToken))
+          const payload = JSON.parse(response.payload)
 
-        expect(listStub.firstCall.firstArg.id).to.equal(regime.id)
-      })
+          expect(payload).to.equal(['result'])
+        })
 
-      it('passes the days parameter to ListCustomerFilesService', async () => {
-        await server.inject(options(authToken, '15'))
+        it('calls ListCustomerFilesService', async () => {
+          await server.inject(options(authToken))
 
-        expect(listStub.firstCall.args[1]).to.equal(15)
-      })
+          expect(listStub.calledOnce).to.be.true()
+        })
 
-      it('accepts a value of 0 days', async () => {
-        await server.inject(options(authToken, '0'))
+        it('passes the regime to ListCustomerFilesService', async () => {
+          await server.inject(options(authToken))
 
-        expect(listStub.firstCall.args[1]).to.equal(0)
-      })
+          expect(listStub.firstCall.firstArg.id).to.equal(regime.id)
+        })
 
-      it('defaults to 30 days if the days parameter is not specified', async () => {
-        await server.inject(options(authToken))
+        it('passes the days parameter to ListCustomerFilesService', async () => {
+          await server.inject(options(authToken, '15'))
 
-        expect(listStub.firstCall.args[1]).to.equal(30)
-      })
-    })
+          expect(listStub.firstCall.args[1]).to.equal(15)
+        })
 
-    describe('When the request is invalid', () => {
-      describe('because an invalid days parameter was provided', () => {
-        it('returns a 400 response', async () => {
-          const response = await server.inject(options(authToken, 'FAIL'))
+        it('accepts a value of 0 days', async () => {
+          await server.inject(options(authToken, '0'))
 
-          expect(response.statusCode).to.equal(400)
+          expect(listStub.firstCall.args[1]).to.equal(0)
+        })
+
+        it('defaults to 30 days if the days parameter is not specified', async () => {
+          await server.inject(options(authToken))
+
+          expect(listStub.firstCall.args[1]).to.equal(30)
         })
       })
 
-      describe('because a string was provided for the days parameter', () => {
-        it('returns a 400 response', async () => {
-          const response = await server.inject(options(authToken, 'FAIL'))
+      describe('When the request is invalid', () => {
+        describe('because an invalid days parameter was provided', () => {
+          it('returns a 400 response', async () => {
+            const response = await server.inject(options(authToken, 'FAIL'))
 
-          expect(response.statusCode).to.equal(400)
+            expect(response.statusCode).to.equal(400)
+          })
         })
-      })
 
-      describe('because a negative number was provided for the days parameter', () => {
-        it('returns a 400 response', async () => {
-          const response = await server.inject(options(authToken, '-1'))
+        describe('because a string was provided for the days parameter', () => {
+          it('returns a 400 response', async () => {
+            const response = await server.inject(options(authToken, 'FAIL'))
 
-          expect(response.statusCode).to.equal(400)
+            expect(response.statusCode).to.equal(400)
+          })
         })
-      })
 
-      describe('because a non-integer number was provided for the days parameter', () => {
-        it('returns a 400 response', async () => {
-          const response = await server.inject(options(authToken, '4.2'))
+        describe('because a negative number was provided for the days parameter', () => {
+          it('returns a 400 response', async () => {
+            const response = await server.inject(options(authToken, '-1'))
 
-          expect(response.statusCode).to.equal(400)
+            expect(response.statusCode).to.equal(400)
+          })
+        })
+
+        describe('because a non-integer number was provided for the days parameter', () => {
+          it('returns a 400 response', async () => {
+            const response = await server.inject(options(authToken, '4.2'))
+
+            expect(response.statusCode).to.equal(400)
+          })
         })
       })
     })
-  })
+  }
 })
