@@ -389,52 +389,54 @@ describe('Bill Runs controller', () => {
     })
   }
 
-  describe('Delete bill run: DELETE /v2/{regimeSlug}/bill-runs/{billRunId}', () => {
-    const options = (token, billRunId) => {
-      return {
-        method: 'DELETE',
-        url: `/v2/wrls/bill-runs/${billRunId}`,
-        headers: { authorization: `Bearer ${token}` }
+  for (const version of ['v2', 'v3']) {
+    describe(`Delete bill run: DELETE /${version}/{regimeSlug}/bill-runs/{billRunId}`, () => {
+      const options = (token, billRunId) => {
+        return {
+          method: 'DELETE',
+          url: `/${version}/wrls/bill-runs/${billRunId}`,
+          headers: { authorization: `Bearer ${token}` }
+        }
       }
-    }
 
-    describe('When the request is valid', () => {
-      beforeEach(async () => {
-        billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
-      })
-
-      it('returns success status 204', async () => {
-        const response = await server.inject(options(authToken, billRun.id))
-
-        expect(response.statusCode).to.equal(204)
-      })
-    })
-
-    describe('When the request is invalid', () => {
-      describe('because the bill run does not exist', () => {
-        it('returns error status 404', async () => {
-          const unknownBillRunId = GeneralHelper.uuid4()
-          const response = await server.inject(options(authToken, unknownBillRunId))
-          const responsePayload = JSON.parse(response.payload)
-
-          expect(response.statusCode).to.equal(404)
-          expect(responsePayload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
-        })
-      })
-
-      describe('because the bill run has been billed', () => {
+      describe('When the request is valid', () => {
         beforeEach(async () => {
-          billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { region: 'A', status: 'billed' })
+          billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
         })
 
-        it('returns error status 409', async () => {
+        it('returns success status 204', async () => {
           const response = await server.inject(options(authToken, billRun.id))
-          const responsePayload = JSON.parse(response.payload)
 
-          expect(response.statusCode).to.equal(409)
-          expect(responsePayload.message).to.equal(`Bill run ${billRun.id} cannot be edited because its status is billed.`)
+          expect(response.statusCode).to.equal(204)
+        })
+      })
+
+      describe('When the request is invalid', () => {
+        describe('because the bill run does not exist', () => {
+          it('returns error status 404', async () => {
+            const unknownBillRunId = GeneralHelper.uuid4()
+            const response = await server.inject(options(authToken, unknownBillRunId))
+            const responsePayload = JSON.parse(response.payload)
+
+            expect(response.statusCode).to.equal(404)
+            expect(responsePayload.message).to.equal(`Bill run ${unknownBillRunId} is unknown.`)
+          })
+        })
+
+        describe('because the bill run has been billed', () => {
+          beforeEach(async () => {
+            billRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { region: 'A', status: 'billed' })
+          })
+
+          it('returns error status 409', async () => {
+            const response = await server.inject(options(authToken, billRun.id))
+            const responsePayload = JSON.parse(response.payload)
+
+            expect(response.statusCode).to.equal(409)
+            expect(responsePayload.message).to.equal(`Bill run ${billRun.id} cannot be edited because its status is billed.`)
+          })
         })
       })
     })
-  })
+  }
 })
