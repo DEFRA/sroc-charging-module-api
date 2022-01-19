@@ -15,6 +15,11 @@ const routes = [
     method: 'POST',
     path: '/v2/{regimeSlug}/customer-changes',
     handler: CustomerDetailsController.create
+  },
+  {
+    method: 'POST',
+    path: '/v3/{regimeSlug}/customer-changes',
+    handler: CustomerDetailsController.create
   }
 ]
 

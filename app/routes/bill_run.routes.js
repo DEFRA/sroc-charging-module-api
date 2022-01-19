@@ -85,6 +85,11 @@ const routes = [
     handler: BillRunsController.delete
   },
   {
+    method: 'DELETE',
+    path: '/v3/{regimeSlug}/bill-runs/{billRunId}',
+    handler: BillRunsController.delete
+  },
+  {
     method: 'PATCH',
     path: '/admin/{regimeSlug}/bill-runs/{billRunId}/send',
     handler: AdminBillRunsController.send,
