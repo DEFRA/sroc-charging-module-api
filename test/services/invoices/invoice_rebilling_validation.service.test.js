@@ -154,5 +154,21 @@ describe('Invoice Rebilling Validation service', () => {
         )
       })
     })
+
+    describe("because its ruleset does not match the invoice's current ruleset", () => {
+      it('throws an error', async () => {
+        const invalidNewBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'initialised', 'sroc')
+        const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
+
+        const err = await expect(
+          InvoiceRebillingValidationService.go(invalidNewBillRun, invoice)
+        ).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal(
+          `Invoice ${invoice.id} is for ruleset presroc but bill run ${invalidNewBillRun.id} is for ruleset sroc.`
+        )
+      })
+    })
   })
 })
