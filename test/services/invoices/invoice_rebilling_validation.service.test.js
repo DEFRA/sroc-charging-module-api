@@ -10,9 +10,9 @@ const { expect } = Code
 // Test helpers
 const {
   AuthorisedSystemHelper,
-  BillRunHelper,
   DatabaseHelper,
-  InvoiceHelper,
+  NewBillRunHelper,
+  NewInvoiceHelper,
   RegimeHelper
 } = require('../../support/helpers')
 
@@ -34,13 +34,13 @@ describe('Invoice Rebilling Validation service', () => {
 
   describe('When a valid bill run is supplied', () => {
     beforeEach(async () => {
-      currentBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'billed')
-      newBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id)
+      currentBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { region: 'A', status: 'billed' })
+      newBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id)
     })
 
     describe('and a valid invoice ID', () => {
       it('returns `true`', async () => {
-        const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
+        const invoice = await NewInvoiceHelper.create(currentBillRun)
 
         const result = await InvoiceRebillingValidationService.go(newBillRun, invoice)
 
@@ -49,9 +49,7 @@ describe('Invoice Rebilling Validation service', () => {
 
       describe('which is a rebill invoice', () => {
         it('returns `true`', async () => {
-          const invoice = await InvoiceHelper.addInvoice(
-            currentBillRun.id, 'CUSTOMER REFERENCE', 2020, 0, 0, 0, 0, 0, 0, 0, 0, null, 'R'
-          )
+          const invoice = await NewInvoiceHelper.create(currentBillRun, { rebilledType: 'R' })
 
           const result = await InvoiceRebillingValidationService.go(newBillRun, invoice)
 
@@ -63,7 +61,7 @@ describe('Invoice Rebilling Validation service', () => {
     describe('and an invalid invoice ID', () => {
       describe('because it already belongs to the specified bill run', () => {
         it('throws an error', async () => {
-          const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
+          const invoice = await NewInvoiceHelper.create(currentBillRun, { rebilledType: 'R' })
 
           const err = await expect(
             InvoiceRebillingValidationService.go(currentBillRun, invoice)
@@ -78,8 +76,8 @@ describe('Invoice Rebilling Validation service', () => {
 
       describe('because the status of its bill run is not valid', () => {
         it('throws an error', async () => {
-          const invalidCurrentBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'INVALID')
-          const invoice = await InvoiceHelper.addInvoice(invalidCurrentBillRun.id, 'CUSTOMER REFERENCE', 2020)
+          const invalidCurrentBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { status: 'INVALID' })
+          const invoice = await NewInvoiceHelper.create(invalidCurrentBillRun, { rebilledType: 'R' })
 
           const err = await expect(
             InvoiceRebillingValidationService.go(newBillRun, invoice)
@@ -94,15 +92,9 @@ describe('Invoice Rebilling Validation service', () => {
 
       describe('because it is already being rebilled', () => {
         it('throws an error', async () => {
-          const invoice = await InvoiceHelper.addInvoice(
-            currentBillRun.id, 'CUSTOMER REFERENCE', 2020, 0, 0, 0, 0, 0, 0, 0, 0, null, 'O'
-          )
-          await InvoiceHelper.addInvoice(
-            currentBillRun.id, 'CUSTOMER REFERENCE', 2020, 0, 0, 0, 0, 0, 0, 0, 0, invoice.id, 'R'
-          )
-          await InvoiceHelper.addInvoice(
-            currentBillRun.id, 'CUSTOMER REFERENCE', 2020, 0, 0, 0, 0, 0, 0, 0, 0, invoice.id, 'C'
-          )
+          const invoice = await NewInvoiceHelper.create(currentBillRun, { rebilledType: 'O' })
+          await NewInvoiceHelper.create(currentBillRun, { rebilledType: 'R', rebilledInvoiceId: invoice.id })
+          await NewInvoiceHelper.create(currentBillRun, { rebilledType: 'C', rebilledInvoiceId: invoice.id })
 
           const err = await expect(
             InvoiceRebillingValidationService.go(newBillRun, invoice)
@@ -117,9 +109,7 @@ describe('Invoice Rebilling Validation service', () => {
 
       describe('because it is a rebill cancel invoice', () => {
         it('throws an error', async () => {
-          const invoice = await InvoiceHelper.addInvoice(
-            currentBillRun.id, 'CUSTOMER REFERENCE', 2020, 0, 0, 0, 0, 0, 0, 0, 0, null, 'C'
-          )
+          const invoice = await NewInvoiceHelper.create(currentBillRun, { rebilledType: 'C' })
 
           const err = await expect(
             InvoiceRebillingValidationService.go(newBillRun, invoice)
@@ -136,13 +126,13 @@ describe('Invoice Rebilling Validation service', () => {
 
   describe('When an invalid bill run is supplied', () => {
     beforeEach(async () => {
-      currentBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'billed')
+      currentBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { region: 'A', status: 'billed' })
     })
 
     describe("because its region does not match the invoice's current region", () => {
       it('throws an error', async () => {
-        const invalidNewBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'B')
-        const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
+        const invalidNewBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { region: 'B' })
+        const invoice = await NewInvoiceHelper.create(currentBillRun)
 
         const err = await expect(
           InvoiceRebillingValidationService.go(invalidNewBillRun, invoice)
@@ -157,8 +147,8 @@ describe('Invoice Rebilling Validation service', () => {
 
     describe("because its ruleset does not match the invoice's current ruleset", () => {
       it('throws an error', async () => {
-        const invalidNewBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'initialised', 'sroc')
-        const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
+        const invalidNewBillRun = await NewBillRunHelper.create(authorisedSystem.id, regime.id, { ruleset: 'sroc' })
+        const invoice = await NewInvoiceHelper.create(currentBillRun)
 
         const err = await expect(
           InvoiceRebillingValidationService.go(invalidNewBillRun, invoice)
