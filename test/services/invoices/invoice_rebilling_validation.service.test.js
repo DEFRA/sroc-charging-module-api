@@ -154,5 +154,21 @@ describe('Invoice Rebilling Validation service', () => {
         )
       })
     })
+
+    describe('because its status is not an editable status', () => {
+      it('throws an error', async () => {
+        const invalidNewBillRun = await BillRunHelper.addBillRun(authorisedSystem.id, regime.id, 'A', 'billed')
+        const invoice = await InvoiceHelper.addInvoice(currentBillRun.id, 'CUSTOMER REFERENCE', 2020)
+
+        const err = await expect(
+          InvoiceRebillingValidationService.go(invalidNewBillRun, invoice)
+        ).to.reject()
+
+        expect(err).to.be.an.error()
+        expect(err.output.payload.message).to.equal(
+          `Bill run ${invalidNewBillRun.id} does not have an editable status.`
+        )
+      })
+    })
   })
 })

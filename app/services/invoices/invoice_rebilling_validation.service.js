@@ -14,6 +14,7 @@ class InvoiceRebillingValidationService {
   * - The invoice does not already belong to the bill run it is being rebilled to;
   * - The invoice is not already subject to a rebilling request;
   * - The status of its current bill run is 'billed';
+  * - The status of the new bill run is an editable status (ie. it is not 'pending', 'billed', etc.);
   * - The region of the bill run it is being rebilled to matches the region of its current bill run;
   * - It is not a rebill cancel invoice.
   *
@@ -31,6 +32,7 @@ class InvoiceRebillingValidationService {
     this._validateNotOnNewBillRun(currentBillRun, newBillRun, invoice.id)
     await this._validateNotCurrentlyRebilled(invoice.id)
     this._validateCurrentBillRunStatus(currentBillRun)
+    this._validateNewBillRunStatus(newBillRun)
     this._validateRegion(currentBillRun, newBillRun, invoice.id)
     this._validateNotCancelInvoice(invoice)
 
@@ -60,6 +62,12 @@ class InvoiceRebillingValidationService {
   static _validateCurrentBillRunStatus (billRun) {
     if (!billRun.$billed()) {
       throw Boom.conflict(`Bill run ${billRun.id} does not have a status of 'billed'.`)
+    }
+  }
+
+  static _validateNewBillRunStatus (billRun) {
+    if (!billRun.$editable()) {
+      throw Boom.conflict(`Bill run ${billRun.id} does not have an editable status.`)
     }
   }
 
