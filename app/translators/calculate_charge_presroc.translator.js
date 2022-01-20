@@ -36,6 +36,7 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
         .when('compensationCharge', { is: true, then: Joi.required() }),
 
       // Case-insensitive validation matches and returns the correctly-capitalised string
+      regionalChargingArea: this._validateStringAgainstList(this._validRegionalChargingAreas()).required(),
       source: this._validateStringAgainstList(this._validSources()).required(),
       season: this._validateStringAgainstList(this._validSeasons()).required()
     }
