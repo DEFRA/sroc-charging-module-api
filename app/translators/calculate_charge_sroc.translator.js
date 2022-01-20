@@ -41,6 +41,10 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
         // If `false` then this should be undefined (ie. not present) and we set the value as `Not Applicable`
         .when('supportedSource', { is: false, then: Joi.forbidden().default('Not Applicable') }),
 
+      // Dependent on `compensationCharge` and case-insensitive to return the correctly-capitalised string
+      regionalChargingArea: this._validateStringAgainstList(this._validRegionalChargingAreas())
+        .when('compensationCharge', { is: true, then: Joi.required() }),
+
       // Validated by the rules service
       chargeCategoryCode: Joi.string().required()
     }
