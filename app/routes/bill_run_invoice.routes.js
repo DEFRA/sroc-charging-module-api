@@ -27,6 +27,11 @@ const routes = [
     method: 'PATCH',
     path: '/v2/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill',
     handler: BillRunsInvoicesController.rebill
+  },
+  {
+    method: 'PATCH',
+    path: '/v3/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill',
+    handler: BillRunsInvoicesController.rebill
   }
 ]
 
