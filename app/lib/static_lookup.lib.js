@@ -19,7 +19,8 @@ class StaticLookupLib {
   static get deminimisLimits () {
     return {
       presroc: 500,
-      sroc: 1000
+      // Deminimis is no longer part of sroc so we disable it by setting a 0 deminimis limit
+      sroc: 0
     }
   }
 }
