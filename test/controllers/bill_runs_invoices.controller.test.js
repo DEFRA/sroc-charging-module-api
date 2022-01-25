@@ -197,61 +197,63 @@ describe('Invoices controller', () => {
     })
   }
 
-  describe('Rebill bill run invoice: PATCH /v2/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill', () => {
-    let cancelInvoice
-    let rebillInvoice
-    let validationStub
-    let rebillStub
-    let response
+  for (const version of ['v2', 'v3']) {
+    describe(`Rebill bill run invoice: PATCH /${version}/{regimeSlug}/bill-runs/{billRunId}/invoices/{invoiceId}/rebill`, () => {
+      let cancelInvoice
+      let rebillInvoice
+      let validationStub
+      let rebillStub
+      let response
 
-    const options = (token, billRunId, invoiceId) => {
-      return {
-        method: 'PATCH',
-        url: `/v2/wrls/bill-runs/${billRunId}/invoices/${invoiceId}/rebill`,
-        headers: { authorization: `Bearer ${token}` }
+      const options = (token, billRunId, invoiceId) => {
+        return {
+          method: 'PATCH',
+          url: `/${version}/wrls/bill-runs/${billRunId}/invoices/${invoiceId}/rebill`,
+          headers: { authorization: `Bearer ${token}` }
+        }
       }
-    }
 
-    beforeEach(async () => {
-      authToken = AuthorisationHelper.nonAdminToken('clientId')
+      beforeEach(async () => {
+        authToken = AuthorisationHelper.nonAdminToken('clientId')
 
-      Sinon
-        .stub(JsonWebToken, 'verify')
-        .returns(AuthorisationHelper.decodeToken(authToken))
+        Sinon
+          .stub(JsonWebToken, 'verify')
+          .returns(AuthorisationHelper.decodeToken(authToken))
 
-      cancelInvoice = { id: GeneralHelper.uuid4(), rebilledType: 'C' }
-      rebillInvoice = { id: GeneralHelper.uuid4(), rebilledType: 'R' }
+        cancelInvoice = { id: GeneralHelper.uuid4(), rebilledType: 'C' }
+        rebillInvoice = { id: GeneralHelper.uuid4(), rebilledType: 'R' }
 
-      validationStub = Sinon.stub(InvoiceRebillingValidationService, 'go')
-      rebillStub = Sinon.stub(InvoiceRebillingService, 'go')
-        .returns({
-          invoices: [cancelInvoice, rebillInvoice]
-        })
+        validationStub = Sinon.stub(InvoiceRebillingValidationService, 'go')
+        rebillStub = Sinon.stub(InvoiceRebillingService, 'go')
+          .returns({
+            invoices: [cancelInvoice, rebillInvoice]
+          })
 
-      response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
+        response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
+      })
+
+      it('calls InvoiceRebillingValidationService with the specified bill run and invoice', async () => {
+        expect(validationStub.calledOnce).to.be.true()
+        expect(validationStub.getCall(0).args[0]).to.be.an.instanceof(BillRunModel)
+        expect(validationStub.getCall(0).args[0].id).to.equal(invoice.billRunId)
+        expect(validationStub.getCall(0).args[1]).to.be.an.instanceof(InvoiceModel)
+        expect(validationStub.getCall(0).args[1].id).to.equal(invoice.id)
+      })
+
+      it('calls InvoiceRebillingService with the specified bill run and invoice', async () => {
+        expect(rebillStub.calledOnce).to.be.true()
+        expect(rebillStub.getCall(0).args[0]).to.be.an.instanceof(BillRunModel)
+        expect(rebillStub.getCall(0).args[0].id).to.equal(invoice.billRunId)
+        expect(rebillStub.getCall(0).args[1]).to.be.an.instanceof(InvoiceModel)
+        expect(rebillStub.getCall(0).args[1].id).to.equal(invoice.id)
+      })
+
+      it('returns the expected 201 code and response from InvoiceRebillingService', async () => {
+        const responsePayload = JSON.parse(response.payload)
+
+        expect(response.statusCode).to.equal(201)
+        expect(responsePayload.invoices).length(2)
+      })
     })
-
-    it('calls InvoiceRebillingValidationService with the specified bill run and invoice', async () => {
-      expect(validationStub.calledOnce).to.be.true()
-      expect(validationStub.getCall(0).args[0]).to.be.an.instanceof(BillRunModel)
-      expect(validationStub.getCall(0).args[0].id).to.equal(invoice.billRunId)
-      expect(validationStub.getCall(0).args[1]).to.be.an.instanceof(InvoiceModel)
-      expect(validationStub.getCall(0).args[1].id).to.equal(invoice.id)
-    })
-
-    it('calls InvoiceRebillingService with the specified bill run and invoice', async () => {
-      expect(rebillStub.calledOnce).to.be.true()
-      expect(rebillStub.getCall(0).args[0]).to.be.an.instanceof(BillRunModel)
-      expect(rebillStub.getCall(0).args[0].id).to.equal(invoice.billRunId)
-      expect(rebillStub.getCall(0).args[1]).to.be.an.instanceof(InvoiceModel)
-      expect(rebillStub.getCall(0).args[1].id).to.equal(invoice.id)
-    })
-
-    it('returns the expected 201 code and response from InvoiceRebillingService', async () => {
-      const responsePayload = JSON.parse(response.payload)
-
-      expect(response.statusCode).to.equal(201)
-      expect(responsePayload.invoices).length(2)
-    })
-  })
+  }
 })

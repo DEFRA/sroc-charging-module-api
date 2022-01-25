@@ -34,6 +34,7 @@ class InvoiceRebillingValidationService {
     this._validateCurrentBillRunStatus(currentBillRun)
     this._validateNewBillRunStatus(newBillRun)
     this._validateRegion(currentBillRun, newBillRun, invoice.id)
+    this._validateRuleset(currentBillRun, newBillRun, invoice.id)
     this._validateNotCancelInvoice(invoice)
 
     return true
@@ -75,6 +76,14 @@ class InvoiceRebillingValidationService {
     if (currentBillRun.region !== newBillRun.region) {
       throw Boom.conflict(
           `Invoice ${invoiceId} is for region ${currentBillRun.region} but bill run ${newBillRun.id} is for region ${newBillRun.region}.`
+      )
+    }
+  }
+
+  static _validateRuleset (currentBillRun, newBillRun, invoiceId) {
+    if (currentBillRun.ruleset !== newBillRun.ruleset) {
+      throw Boom.conflict(
+          `Invoice ${invoiceId} is for ruleset ${currentBillRun.ruleset} but bill run ${newBillRun.id} is for ruleset ${newBillRun.ruleset}.`
       )
     }
   }
