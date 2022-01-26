@@ -1,5 +1,28 @@
 # Changelog
 
+## [v0.17.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.17.0) (2022-01-26)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.16.0...v0.17.0)
+
+**Implemented enhancements:**
+
+- Rebilling SRoC support and v3 route [\#659](https://github.com/DEFRA/sroc-charging-module-api/pull/659) ([StuAA78](https://github.com/StuAA78))
+- Create v3 Get customer files route [\#655](https://github.com/DEFRA/sroc-charging-module-api/pull/655) ([Cruikshanks](https://github.com/Cruikshanks))
+- Create v3 Post customer changes route [\#654](https://github.com/DEFRA/sroc-charging-module-api/pull/654) ([Cruikshanks](https://github.com/Cruikshanks))
+- Create v3 Delete Bill run route [\#653](https://github.com/DEFRA/sroc-charging-module-api/pull/653) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Fixed bugs:**
+
+- Validate new bill run status when rebilling [\#658](https://github.com/DEFRA/sroc-charging-module-api/pull/658) ([StuAA78](https://github.com/StuAA78))
+- Revert presroc `regionalChargingArea` validation change [\#657](https://github.com/DEFRA/sroc-charging-module-api/pull/657) ([StuAA78](https://github.com/StuAA78))
+
+**Dependency updates:**
+
+- Bump @hapi/code from 8.0.5 to 8.0.6 [\#662](https://github.com/DEFRA/sroc-charging-module-api/pull/662) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.47.1 to 3.48.0 [\#661](https://github.com/DEFRA/sroc-charging-module-api/pull/661) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.47.0 to 3.47.1 [\#660](https://github.com/DEFRA/sroc-charging-module-api/pull/660) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @hapi/lab from 24.5.0 to 24.5.1 [\#656](https://github.com/DEFRA/sroc-charging-module-api/pull/656) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.16.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.16.0) (2022-01-18)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.15.0...v0.16.0)
