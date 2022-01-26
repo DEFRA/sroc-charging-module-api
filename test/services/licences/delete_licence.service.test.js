@@ -156,43 +156,45 @@ describe('Delete Licence service', () => {
       })
 
       describe('sets deminimisInvoice', () => {
-        let secondTransaction
-        let secondLicence
+        describe('when the ruleset is `presroc`', () => {
+          let secondTransaction
+          let secondLicence
 
-        beforeEach(async () => {
-          // Create a second, non-deminimis invoice
-          const secondInvoice = await NewInvoiceHelper.create(billRun)
-          secondLicence = await NewLicenceHelper.create(secondInvoice)
-          secondTransaction = await NewTransactionHelper.create(secondLicence)
+          beforeEach(async () => {
+            // Create a second, non-deminimis invoice
+            const secondInvoice = await NewInvoiceHelper.create(billRun)
+            secondLicence = await NewLicenceHelper.create(secondInvoice)
+            secondTransaction = await NewTransactionHelper.create(secondLicence)
 
-          // Add a credit to the original invoice to make it deminimis
-          await NewTransactionHelper.create(licence, { chargeCredit: true, chargeValue: 771 })
+            // Add a credit to the original invoice to make it deminimis
+            await NewTransactionHelper.create(licence, { chargeCredit: true, chargeValue: 771 })
 
-          // Generate the bill run to ensure its values are updated before we delete the licence
-          await GenerateBillRunService.go(billRun)
+            // Generate the bill run to ensure its values are updated before we delete the licence
+            await GenerateBillRunService.go(billRun)
 
-          // Refresh bill run
-          billRun = await billRun.$query()
-        })
+            // Refresh bill run
+            billRun = await billRun.$query()
+          })
 
-        it('to `true` when still applicable', async () => {
-          // Refresh licence entity
-          secondLicence = await secondLicence.$query()
+          it('to `true` when still applicable', async () => {
+            // Refresh licence entity
+            secondLicence = await secondLicence.$query()
 
-          await DeleteLicenceService.go(secondLicence, billRun, notifierFake)
+            await DeleteLicenceService.go(secondLicence, billRun, notifierFake)
 
-          const result = await InvoiceModel.query().findById(transaction.invoiceId)
-          expect(result.deminimisInvoice).to.be.true()
-        })
+            const result = await InvoiceModel.query().findById(transaction.invoiceId)
+            expect(result.deminimisInvoice).to.be.true()
+          })
 
-        it('to `false` when not applicable', async () => {
-          // Refresh licence entity
-          licence = await licence.$query()
+          it('to `false` when not applicable', async () => {
+            // Refresh licence entity
+            licence = await licence.$query()
 
-          await DeleteLicenceService.go(licence, billRun, notifierFake)
+            await DeleteLicenceService.go(licence, billRun, notifierFake)
 
-          const result = await InvoiceModel.query().findById(secondTransaction.invoiceId)
-          expect(result.deminimisInvoice).to.be.false()
+            const result = await InvoiceModel.query().findById(secondTransaction.invoiceId)
+            expect(result.deminimisInvoice).to.be.false()
+          })
         })
 
         describe('when the ruleset is `sroc`', () => {
@@ -204,36 +206,24 @@ describe('Delete Licence service', () => {
             srocBillRun = await NewBillRunHelper.create(null, null, { ruleset: 'sroc' })
             srocInvoice = await NewInvoiceHelper.create(srocBillRun)
 
-            // Create two licences which take the invoice over the sroc deminimis limit
-            licence = await NewLicenceHelper.create(srocInvoice)
+            // Create two licences, one with a large value, one with a value of a penny
+            const licence = await NewLicenceHelper.create(srocInvoice)
             await NewTransactionHelper.create(licence, { chargeValue: 1100 })
-            secondLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'SECOND_LICENCE' })
-            await NewTransactionHelper.create(secondLicence, { chargeValue: 900 })
+            const pennyLicence = await NewLicenceHelper.create(srocInvoice, { licenceNumber: 'PENNY_LICENCE' })
+            await NewTransactionHelper.create(pennyLicence, { chargeValue: 1 })
 
             // Generate the bill run to ensure its values are updated before we delete the licence
             await GenerateBillRunService.go(billRun)
 
-            // Refresh bill run
+            // Refresh bill run and licence entities
             billRun = await billRun.$query()
+            await licence.$query()
+            await pennyLicence.$query()
           })
 
-          it('uses the correct ruleset deminimis limit to set `true`', async () => {
-            // Refresh licence entity
-            licence = await licence.$query()
-
-            // Delete the first licence to bring the invoice value within the sroc deminimis limit
+          it('to `false` always, as deminimis does not apply to sroc', async () => {
+            // Delete the first licence to bring the invoice value down to a penny
             await DeleteLicenceService.go(licence, srocBillRun, notifierFake)
-
-            const result = await srocInvoice.$query()
-            expect(result.deminimisInvoice).to.be.true()
-          })
-
-          it('uses the correct ruleset deminimis limit to set `false`', async () => {
-            // Refresh licence entity
-            secondLicence = await secondLicence.$query()
-
-            // Delete the second licence to leave the invoice value over the sroc deminimis limit
-            await DeleteLicenceService.go(secondLicence, srocBillRun, notifierFake)
 
             const result = await srocInvoice.$query()
             expect(result.deminimisInvoice).to.be.false()
