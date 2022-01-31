@@ -6,7 +6,7 @@
 
 const path = require('path')
 
-const GenerateTransactionFileService = require('./generate_transaction_file.service')
+const GeneratePresrocTransactionFileService = require('./generate_presroc_transaction_file.service')
 const SendFileToS3Service = require('../send_file_to_s3.service')
 const DeleteFileService = require('../delete_file.service')
 
@@ -15,7 +15,7 @@ class SendTransactionFileService {
    * Organises the generation and sending of a transaction file:
    * - Validates that the bill run is in the requisite state;
    * - Checks that a transaction file is required;
-   * - Calls GenerateTransactionFileService to generate the transaction file;
+   * - Calls GeneratePresrocTransactionFileService to generate the transaction file;
    * - Calls SendFileToS3Service to send the transaction file to the S3 bucket;
    * - Sets the bill run status to 'billed' if everything was successful.
    *
@@ -63,7 +63,7 @@ class SendTransactionFileService {
    */
   static async _generateAndSend (billRun, regime) {
     const filename = this._filename(billRun.fileReference)
-    const generatedFile = await GenerateTransactionFileService.go(billRun, filename)
+    const generatedFile = await GeneratePresrocTransactionFileService.go(billRun, filename)
 
     // The key is the remote path and filename in the S3 bucket, eg. 'export/wrls/transaction/nalai50001.dat'
     const key = path.join('export', regime.slug, 'transaction', filename)
