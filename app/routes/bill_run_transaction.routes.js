@@ -20,11 +20,6 @@ const routes = [
     method: 'POST',
     path: '/v3/{regimeSlug}/bill-runs/{billRunId}/transactions',
     handler: BillRunsTransactionsController.create
-  },
-  {
-    method: 'GET',
-    path: '/v2/{regimeSlug}/bill-runs/{billRunId}/transactions/{transactionId}',
-    handler: BillRunsTransactionsController.view
   }
 ]
 

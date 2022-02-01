@@ -199,26 +199,4 @@ describe('Bill runs transactions controller', () => {
       expect(responsePayload.transaction.id).to.exist()
     })
   })
-
-  describe('View bill run transaction: GET /v2/{regimeSlug}/bill-runs/{billRunId}/transactions/{transactionId}', () => {
-    const options = (token, billRunId, transactionId) => {
-      return {
-        method: 'GET',
-        url: `/v2/wrls/bill-runs/${billRunId}/transactions/${transactionId}`,
-        headers: { authorization: `Bearer ${token}` }
-      }
-    }
-
-    describe('When the request is valid', () => {
-      it('returns success status 200', async () => {
-        const transaction = await NewTransactionHelper.create()
-
-        const response = await server.inject(options(authToken, transaction.billRunId, transaction.id))
-        const responsePayload = JSON.parse(response.payload)
-
-        expect(response.statusCode).to.equal(200)
-        expect(responsePayload.transaction.id).to.equal(transaction.id)
-      })
-    })
-  })
 })
