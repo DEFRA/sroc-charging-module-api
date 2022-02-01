@@ -19,7 +19,6 @@ const {
   DatabaseHelper,
   GeneralHelper,
   NewBillRunHelper,
-  NewTransactionHelper,
   RegimeHelper
 } = require('../support/helpers')
 
