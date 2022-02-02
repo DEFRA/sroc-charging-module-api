@@ -11,9 +11,6 @@ const BasePresenter = require('./base.presenter')
  *
  * Note that data.index and data.transactionReference are added by StreamTransformUsingPresenter and are not part of the
  * data originally read from the source transaction record.
- *
- * With reference to the existing v1 charging module transaction file presenter:
- * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/transaction_file_presenter.js
  */
 
 class TransactionFileSrocBodyPresenter extends BasePresenter {
@@ -97,14 +94,7 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
   }
 
   /**
-   * Returns the provided value with ' Ml' appended.
-   */
-  _volumeInMegaLitres (value) {
-    return `${value} Ml`
-  }
-
-  /**
-   * Returns a list of reductions
+   * Returns a string containing a list of reductions, separated with commas
    */
   _reductionsList (data) {
     const reductions = []
@@ -133,55 +123,40 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
   }
 
   /**
-   * TODO: REFACTOR THE BELOW INTO A SINGLE "POPULATE IF TRUE" METHOD
+   * Returns `supportedSourceValue, supportedSourceName` if supportedSource is true or blank string if false
    */
-
   _supportedSource (data) {
-    // If supportedSource is false then return blank
-    if (this._isFalse(data.headerAttr5)) {
-      return ''
-    }
-
-    // Otherwise, return supportedSourceValue and supportedSourceName
-    return `${data.lineAttr11}, ${data.headerAttr6}`
+    return this._isTrue(data.headerAttr5) ? `${data.lineAttr11}, ${data.headerAttr6}` : ''
   }
 
+  /**
+   * Returns `actualVolume / authorisedVolume Ml` if twoPartTariff is true or blank string if false
+   */
   _volume (data) {
-    // If twoPartTariff is false then return blank
-    if (this._isFalse(data.regimeValue16)) {
-      return ''
-    }
-
-    // Otherwise, return actualVolume and authorisedVolume
-    return `${data.regimeValue20} / ${data.headerAttr3} Ml`
+    return this._isTrue(data.regimeValue16) ? `${data.regimeValue20} / ${data.headerAttr3} Ml` : ''
   }
 
-  // If waterCompanyCharge is `true` then this is waterCompanyChargeValue
+  /**
+   * Returns `waterCompanyChargeValue` if waterCompanyCharge is true or blank string if false
+   */
   _waterCompany (data) {
-    // If waterCompanyCharge is `false` then return blank
-    if (this._isFalse(data.headerAttr7)) {
-      return ''
-    }
-
-    // Otherwise, return waterCompanyChargeValue
-    return data.headerAttr10
+    return this._isTrue(data.headerAttr7) ? data.headerAttr10 : ''
   }
 
+  /**
+   * Returns `compensationChargePercent% (regionalChargingArea)`
+   */
   _compensationChargeAndRegion (data) {
     return `${data.regimeValue2}% (${data.regimeValue15})`
   }
 
   /**
-   * Convenience methods to determine if a boolean stored as a string is true or false
+   * Convenience method to determine if a boolean stored as a string is true
    */
   _isTrue (field) {
     // We don't expect to store anything other than lower case but we change case just to be safe. We use optional
     // chaining to avoid issues if field is `null`
     return field?.toLowerCase() === 'true'
-  }
-
-  _isFalse (field) {
-    return !this._isTrue(field)
   }
 }
 
