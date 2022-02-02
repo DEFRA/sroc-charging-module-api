@@ -7,7 +7,7 @@
 const BaseGenerateTransactionFileService = require('./base_generate_transaction_file.service')
 
 const {
-  TransactionFileBodyPresenter,
+  TransactionFilePresrocBodyPresenter,
   TransactionFileHeadPresenter,
   TransactionFileTailPresenter
 } = require('../../../presenters')
@@ -18,7 +18,7 @@ class GeneratePresrocTransactionFileService extends BaseGenerateTransactionFileS
   }
 
   static _bodyPresenter () {
-    return TransactionFileBodyPresenter
+    return TransactionFilePresrocBodyPresenter
   }
 
   static _tailPresenter () {
