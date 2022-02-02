@@ -17,7 +17,7 @@ const {
 } = require('../../../support/helpers')
 
 // Things we need to stub
-const { DeleteFileService, GenerateTransactionFileService, SendFileToS3Service } = require('../../../../app/services')
+const { DeleteFileService, GeneratePresrocTransactionFileService, SendFileToS3Service } = require('../../../../app/services')
 
 // Thing under test
 const { SendTransactionFileService } = require('../../../../app/services')
@@ -37,7 +37,7 @@ describe('Send Transaction File service', () => {
     billRun = await BillRunHelper.addBillRun(regime.id, GeneralHelper.uuid4())
 
     deleteStub = Sinon.stub(DeleteFileService, 'go')
-    generateStub = Sinon.stub(GenerateTransactionFileService, 'go').returns('stubFilename')
+    generateStub = Sinon.stub(GeneratePresrocTransactionFileService, 'go').returns('stubFilename')
     sendStub = Sinon.stub(SendFileToS3Service, 'go')
 
     // Create a fake function to stand in place of Notifier.omfg()
