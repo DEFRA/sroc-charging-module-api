@@ -42,22 +42,22 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
       col21: '',
       col22: data.lineAreaCode,
       col23: data.lineDescription,
-      col24: 'A',
+      col24: 'AT',
       col25: '',
       col26: this._blankIfCompensationCharge(data.lineAttr1, data),
-      col27: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr2, data),
-      col28: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr3, data),
-      col29: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr4, data),
-      col30: this._blankIfCompensationChargeOrMinimumCharge(this._volumeInMegaLitres(data.lineAttr5), data),
-      col31: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr6, data),
-      col32: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr7, data),
-      col33: this._blankIfCompensationChargeOrMinimumCharge(data.lineAttr8, data),
-      col34: this._blankIfCompensationChargeOrMinimumCharge(this._cleanseNull(data.lineAttr9), data),
-      col35: this._blankIfCompensationChargeOrMinimumCharge(this._cleanseNull(data.lineAttr10), data),
-      col36: '',
-      col37: '',
-      col38: this._blankIfNotCompensationCharge(data.lineAttr13, data),
-      col39: this._blankIfNotCompensationCharge(data.lineAttr14, data),
+      col27: '',
+      col28: this._blankIfCompensationCharge(data.lineAttr3, data),
+      col29: this._blankIfCompensationCharge(data.lineAttr4, data),
+      col30: this._blankIfCompensationCharge(data.headerAttr4, data), // chargeCategoryCode
+      col31: this._blankIfCompensationCharge(data.regimeValue18, data), // chargeCategoryDescription
+      col32: this._blankIfCompensationCharge(data.headerAttr9, data), // baseCharge [in pence]
+      col33: this._blankIfCompensationCharge(this._reductionsList(data), data),
+      col34: this._blankIfCompensationCharge(this._supportedSource(data), data),
+      col35: this._blankIfCompensationCharge(this._volume(data), data),
+      col36: this._blankIfCompensationCharge(this._waterCompany(data), data),
+      col37: this._blankIfNotCompensationCharge(this._compensationChargeAndRegion(data), data),
+      col38: '',
+      col39: '',
       col40: '',
       col41: '1',
       col42: 'Each',
@@ -90,14 +90,6 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
   }
 
   /**
-   * Returns an empty string if this is a compensation charge
-   * Also returns an empty string if this is a minimum charge adjustment
-   */
-  _blankIfCompensationChargeOrMinimumCharge (value, data) {
-    return this._compensationCharge(data) || data.minimumChargeAdjustment ? '' : value
-  }
-
-  /**
    * Returns an empty string if this is not a compensation charge
    */
   _blankIfNotCompensationCharge (value, data) {
@@ -109,6 +101,87 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
    */
   _volumeInMegaLitres (value) {
     return `${value} Ml`
+  }
+
+  /**
+   * Returns a list of reductions
+   */
+  _reductionsList (data) {
+    const reductions = []
+
+    if (data.headerAttr2 !== 1) { // aggregateProportion
+      reductions.push('Aggregate')
+    }
+
+    if (this._isTrue(data.lineAttr12)) { // winterOnly
+      reductions.push('Winter Only Discount')
+    }
+
+    if (this._isTrue(data.regimeValue9)) { // section130Agreement
+      reductions.push('CRT Discount')
+    }
+
+    if (data.regimeValue19 !== 1) { // abatementFactor
+      reductions.push('Abatement of Charges')
+    }
+
+    if (this._isTrue(data.regimeValue12)) { // section127Agreement
+      reductions.push('Two-Part Tariff')
+    }
+
+    return reductions.join(', ')
+  }
+
+  /**
+   * TODO: REFACTOR THE BELOW INTO A SINGLE "POPULATE IF TRUE" METHOD
+   */
+
+  _supportedSource (data) {
+    // If supportedSource is false then return blank
+    if (this._isFalse(data.headerAttr5)) {
+      return ''
+    }
+
+    // Otherwise, return supportedSourceValue and supportedSourceName
+    return `${data.lineAttr11}, ${data.headerAttr6}`
+  }
+
+  _volume (data) {
+    // If twoPartTariff is false then return blank
+    if (this._isFalse(data.regimeValue16)) {
+      return ''
+    }
+
+    // Otherwise, return actualVolume and authorisedVolume
+    return `${data.regimeValue20} / ${data.headerAttr3} Ml`
+  }
+
+  // If waterCompanyCharge is `true` then this is waterCompanyChargeValue
+  _waterCompany (data) {
+    // If waterCompanyCharge is `false` then return blank
+    if (this._isFalse(data.headerAttr7)) {
+      return ''
+    }
+
+    // Otherwise, return waterCompanyChargeValue
+    return data.headerAttr10
+  }
+
+  _compensationChargeAndRegion (data) {
+    return `${data.regimeValue2}% (${data.regimeValue15})`
+  }
+
+  /**
+   * Convenience methods to determine if a boolean stored as a string is true or false
+   */
+  _isTrue (field) {
+    // We don't expect to store anything other than lower case but we change case just to be safe. We use optional
+    // chaining to avoid issues if field is `null`
+    return field?.toLowerCase() === 'true'
+  }
+
+  _isFalse (field) {
+    return !this._isTrue(field)
   }
 }
 
