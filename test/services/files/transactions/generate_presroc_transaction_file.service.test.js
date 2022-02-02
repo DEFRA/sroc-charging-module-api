@@ -26,9 +26,9 @@ const { BasePresenter } = require('../../../../app/presenters')
 const { temporaryFilePath } = require('../../../../config/server.config')
 
 // Thing under test
-const { GenerateTransactionFileService } = require('../../../../app/services')
+const { GeneratePresrocTransactionFileService } = require('../../../../app/services')
 
-describe('Generate Transaction File service', () => {
+describe('Generate Presroc Transaction File service', () => {
   const filename = 'test.txt'
   const filenameWithPath = path.join(temporaryFilePath, filename)
 
@@ -52,7 +52,7 @@ describe('Generate Transaction File service', () => {
   })
 
   it('creates a file with the correct content', async () => {
-    const returnedFilenameWithPath = await GenerateTransactionFileService.go(billRun, filename)
+    const returnedFilenameWithPath = await GeneratePresrocTransactionFileService.go(billRun, filename)
 
     const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
     const expectedContent = _expectedContent()
@@ -61,7 +61,7 @@ describe('Generate Transaction File service', () => {
   })
 
   it('returns the filename and path', async () => {
-    const returnedFilenameWithPath = await GenerateTransactionFileService.go(billRun, filename)
+    const returnedFilenameWithPath = await GeneratePresrocTransactionFileService.go(billRun, filename)
 
     expect(returnedFilenameWithPath).to.equal(filenameWithPath)
   })
@@ -69,7 +69,7 @@ describe('Generate Transaction File service', () => {
   it('excludes invoices without a transaction reference', async () => {
     // Remove the transaction reference
     await InvoiceModel.query().findOne({ billRunId: billRun.id }).patch({ transactionReference: null })
-    const returnedFilenameWithPath = await GenerateTransactionFileService.go(billRun, filename)
+    const returnedFilenameWithPath = await GeneratePresrocTransactionFileService.go(billRun, filename)
 
     const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
     const numberOfLines = _numberOfLines(file)
@@ -81,7 +81,7 @@ describe('Generate Transaction File service', () => {
   it('excludes zero-value transactions', async () => {
     // Set the charge value to 0
     await TransactionModel.query().findOne({ billRunId: billRun.id }).patch({ chargeValue: 0 })
-    const returnedFilenameWithPath = await GenerateTransactionFileService.go(billRun, filename)
+    const returnedFilenameWithPath = await GeneratePresrocTransactionFileService.go(billRun, filename)
 
     const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
     const numberOfLines = _numberOfLines(file)

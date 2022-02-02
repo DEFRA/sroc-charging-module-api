@@ -3,6 +3,7 @@
 const AdminSendTransactionFileService = require('./files/transactions/admin_send_transaction_file.service')
 const ApproveBillRunService = require('./bill_runs/approve_bill_run.service')
 const AuthorisationService = require('./plugins/authorisation.service')
+const BaseGenerateTransactionFileService = require('./files/transactions/base_generate_transaction_file.service')
 const BaseNextFileReferenceService = require('./next_references/base_next_file_reference.service')
 const BillRunStatusService = require('./bill_runs/bill_run_status.service')
 const CalculateChargeService = require('./charges/calculate_charge.service')
@@ -31,7 +32,7 @@ const FilterRoutesService = require('./plugins/filter_routes.service')
 const GenerateBillRunService = require('./bill_runs/generate_bill_run.service')
 const GenerateBillRunValidationService = require('./bill_runs/generate_bill_run_validation.service')
 const GenerateCustomerFileService = require('./files/customers/generate_customer_file.service')
-const GenerateTransactionFileService = require('./files/transactions/generate_transaction_file.service')
+const GeneratePresrocTransactionFileService = require('./files/transactions/generate_presroc_transaction_file.service')
 const InvoiceRebillingCopyService = require('./invoices/invoice_rebilling_copy.service')
 const InvoiceRebillingCreateLicenceService = require('./invoices/invoice_rebilling_create_licence.service')
 const InvoiceRebillingCreateTransactionService = require('./invoices/invoice_rebilling_create_transaction.service')
@@ -79,6 +80,7 @@ module.exports = {
   AdminSendTransactionFileService,
   ApproveBillRunService,
   AuthorisationService,
+  BaseGenerateTransactionFileService,
   BaseNextFileReferenceService,
   BillRunStatusService,
   CalculateChargeService,
@@ -107,7 +109,7 @@ module.exports = {
   GenerateBillRunService,
   GenerateBillRunValidationService,
   GenerateCustomerFileService,
-  GenerateTransactionFileService,
+  GeneratePresrocTransactionFileService,
   InvoiceRebillingCopyService,
   InvoiceRebillingCreateLicenceService,
   InvoiceRebillingCreateTransactionService,
