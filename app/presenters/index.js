@@ -17,6 +17,7 @@ const RulesServiceSrocPresenter = require('./rules_service_sroc.presenter')
 const TableFilePresenter = require('./table_file.presenter')
 const TransactionFileHeadPresenter = require('./transaction_file_head.presenter')
 const TransactionFilePresrocBodyPresenter = require('./transaction_file_presroc_body.presenter')
+const TransactionFileSrocBodyPresenter = require('./transaction_file_sroc_body.presenter')
 const TransactionFileTailPresenter = require('./transaction_file_tail.presenter')
 const ViewBillRunPresenter = require('./view_bill_run.presenter')
 const ViewBillRunInvoicePresenter = require('./view_bill_run_invoice.presenter')
@@ -42,6 +43,7 @@ module.exports = {
   TableFilePresenter,
   TransactionFileHeadPresenter,
   TransactionFilePresrocBodyPresenter,
+  TransactionFileSrocBodyPresenter,
   TransactionFileTailPresenter,
   ViewBillRunPresenter,
   ViewBillRunInvoicePresenter,
