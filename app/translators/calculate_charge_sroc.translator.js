@@ -11,6 +11,7 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
   constructor (data) {
     super(data)
 
+    this.lineAttr3 = this._prorataDays()
     this.chargeFinancialYear = this._financialYear(this.chargePeriodStart)
 
     // Additional post-getter validation to ensure periodStart and periodEnd are in the same financial year

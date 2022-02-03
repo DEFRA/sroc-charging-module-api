@@ -110,6 +110,32 @@ class CalculateChargeBaseTranslator extends BaseTranslator {
 
     return (month <= 2 ? year - 1 : year)
   }
+
+  /**
+   * Returns billable and authorised day values as a specially formatted string.
+   *
+   * For example, if billable days is 12 and authorised days is 6 it will return `012/006`.
+   *
+   * The exception is if this is a two-part tariff (ie. regimeValue16 is true); in this case, it returns `000/000`.
+   *
+   * @returns {String} Billable days and authorised days as a formatted string
+   */
+  _prorataDays () {
+    return this.regimeValue16
+      ? '000/000'
+      : `${this._padNumber(this.regimeValue4)}/${this._padNumber(this.regimeValue5)}`
+  }
+
+  /**
+   * Return a number as a string, padded to 3 digits with leading zeroes
+   *
+   * For example, `_padNumber(3)` will return `003`.
+   *
+   * @returns {Number} the number padded with leading zeroes
+   */
+  _padNumber (number) {
+    return number.toString().padStart(3, '0')
+  }
 }
 
 module.exports = CalculateChargeBaseTranslator
