@@ -48,4 +48,14 @@ describe('Transaction File Head presenter', () => {
     expect(result.col07).to.equal(data.billRunNumber)
     expect(result.col08).to.equal(date)
   })
+
+  it('correctly presents an sroc file reference', () => {
+    const testPresenter = new TransactionFileHeadPresenter({
+      ...data,
+      fileReference: 'nalri50003t'
+    })
+    const result = testPresenter.go()
+
+    expect(result.col06).to.equal('50003T')
+  })
 })

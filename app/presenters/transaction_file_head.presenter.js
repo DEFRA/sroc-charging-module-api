@@ -31,11 +31,13 @@ class TransactionFileHeadPresenter extends BasePresenter {
   }
 
   /**
-   * When given a file reference eg. 'nalwi50003', returns the file number part '50003'. The format we return it in
-   * doesn't matter so we simply return a string without converting to an integer first.
+   * When given a presroc file reference eg. 'nalwi50003', returns the file number part '50003'.
+   * When given an sroc file reference, eg. 'nalwi50003t', returns the file number part '50003T'.
    */
   _fileNumber (fileReference) {
-    return fileReference.slice(-5)
+    return fileReference
+      .slice(5)
+      .toUpperCase()
   }
 }
 
