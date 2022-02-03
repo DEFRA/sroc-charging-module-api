@@ -33,6 +33,7 @@ const GenerateBillRunService = require('./bill_runs/generate_bill_run.service')
 const GenerateBillRunValidationService = require('./bill_runs/generate_bill_run_validation.service')
 const GenerateCustomerFileService = require('./files/customers/generate_customer_file.service')
 const GeneratePresrocTransactionFileService = require('./files/transactions/generate_presroc_transaction_file.service')
+const GenerateSrocTransactionFileService = require('./files/transactions/generate_sroc_transaction_file.service')
 const InvoiceRebillingCopyService = require('./invoices/invoice_rebilling_copy.service')
 const InvoiceRebillingCreateLicenceService = require('./invoices/invoice_rebilling_create_licence.service')
 const InvoiceRebillingCreateTransactionService = require('./invoices/invoice_rebilling_create_transaction.service')
@@ -110,6 +111,7 @@ module.exports = {
   GenerateBillRunValidationService,
   GenerateCustomerFileService,
   GeneratePresrocTransactionFileService,
+  GenerateSrocTransactionFileService,
   InvoiceRebillingCopyService,
   InvoiceRebillingCreateLicenceService,
   InvoiceRebillingCreateTransactionService,
