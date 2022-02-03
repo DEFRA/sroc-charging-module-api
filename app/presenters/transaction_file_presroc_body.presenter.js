@@ -1,13 +1,13 @@
 'use strict'
 
 /**
- * @module TransactionFileBodyPresenter
+ * @module TransactionFilePresrocBodyPresenter
  */
 
 const BasePresenter = require('./base.presenter')
 
 /**
- * Formats data for the body of a transaction file.
+ * Formats data for the body of a presroc transaction file.
  *
  * Note that data.index and data.transactionReference are added by StreamTransformUsingPresenter and are not part of the
  * data originally read from the source transaction record.
@@ -16,7 +16,7 @@ const BasePresenter = require('./base.presenter')
  * https://github.com/DEFRA/charging-module-api/blob/main/app/schema/pre_sroc/wrls/transaction_file_presenter.js
  */
 
-class TransactionFileBodyPresenter extends BasePresenter {
+class TransactionFilePresrocBodyPresenter extends BasePresenter {
   _presentation (data) {
     return {
       col01: 'D',
@@ -112,4 +112,4 @@ class TransactionFileBodyPresenter extends BasePresenter {
   }
 }
 
-module.exports = TransactionFileBodyPresenter
+module.exports = TransactionFilePresrocBodyPresenter

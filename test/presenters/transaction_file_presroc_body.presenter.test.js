@@ -12,9 +12,9 @@ const { BasePresenter } = require('../../app/presenters')
 const { PresenterHelper } = require('../support/helpers')
 
 // Thing under test
-const { TransactionFileBodyPresenter } = require('../../app/presenters')
+const { TransactionFilePresrocBodyPresenter } = require('../../app/presenters')
 
-describe('Transaction File Body Presenter', () => {
+describe('Transaction File Presroc Body Presenter', () => {
   const data = {
     index: 1,
     customerReference: 'CUSTOMER_REF',
@@ -43,7 +43,7 @@ describe('Transaction File Body Presenter', () => {
   }
 
   it('returns the required columns', () => {
-    const presenter = new TransactionFileBodyPresenter(data)
+    const presenter = new TransactionFilePresrocBodyPresenter(data)
     const result = presenter.go()
 
     const expectedFields = PresenterHelper.generateNumberedColumns(43)
@@ -52,7 +52,7 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns the correct values for static fields', () => {
-    const presenter = new TransactionFileBodyPresenter(data)
+    const presenter = new TransactionFilePresrocBodyPresenter(data)
     const result = presenter.go()
 
     expect(result.col01).to.equal('D')
@@ -79,7 +79,7 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns the correct values for dynamic fields', () => {
-    const presenter = new TransactionFileBodyPresenter(data)
+    const presenter = new TransactionFilePresrocBodyPresenter(data)
     const result = presenter.go()
 
     expect(result.col02).to.equal('0000001')
@@ -92,21 +92,21 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns the correct values for col05 (transactionType) when given a credit', () => {
-    const presenter = new TransactionFileBodyPresenter({ ...data, creditLineValue: 500, debitLineValue: 100 })
+    const presenter = new TransactionFilePresrocBodyPresenter({ ...data, creditLineValue: 500, debitLineValue: 100 })
     const result = presenter.go()
 
     expect(result.col05).to.equal('C')
   })
 
   it('returns the correct values for col05 (transactionType) when given a debit', () => {
-    const presenter = new TransactionFileBodyPresenter({ ...data, debitLineValue: 500, creditLineValue: 100 })
+    const presenter = new TransactionFilePresrocBodyPresenter({ ...data, debitLineValue: 500, creditLineValue: 100 })
     const result = presenter.go()
 
     expect(result.col05).to.equal('I')
   })
 
   it('correctly formats dates', () => {
-    const presenter = new TransactionFileBodyPresenter(data)
+    const presenter = new TransactionFilePresrocBodyPresenter(data)
     const result = presenter.go()
 
     const basePresenter = new BasePresenter()
@@ -117,7 +117,7 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns correct values when compensation charge and minimum charge adjustment are false', () => {
-    const presenter = new TransactionFileBodyPresenter({
+    const presenter = new TransactionFilePresrocBodyPresenter({
       ...data,
       regimeValue17: 'false',
       minimumChargeAdjustment: false
@@ -141,7 +141,7 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns correct values when compensation charge is true', () => {
-    const presenter = new TransactionFileBodyPresenter({
+    const presenter = new TransactionFilePresrocBodyPresenter({
       ...data,
       regimeValue17: 'true',
       minimumChargeAdjustment: false
@@ -166,7 +166,7 @@ describe('Transaction File Body Presenter', () => {
 
   it('returns correct values when minimum charge adjustment is true', () => {
     // regimeValue17 is null for minimum charge transactions
-    const presenter = new TransactionFileBodyPresenter({
+    const presenter = new TransactionFilePresrocBodyPresenter({
       ...data,
       regimeValue17: null,
       minimumChargeAdjustment: true
@@ -190,7 +190,7 @@ describe('Transaction File Body Presenter', () => {
   })
 
   it('returns the correct value for col30', () => {
-    const presenter = new TransactionFileBodyPresenter({
+    const presenter = new TransactionFilePresrocBodyPresenter({
       ...data,
       regimeValue17: 'false',
       minimumChargeAdjustment: false
