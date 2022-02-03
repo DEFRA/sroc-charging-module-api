@@ -7,8 +7,8 @@
 const BaseGenerateTransactionFileService = require('./base_generate_transaction_file.service')
 
 const {
-  TransactionFilePresrocBodyPresenter,
   TransactionFileHeadPresenter,
+  TransactionFileSrocBodyPresenter,
   TransactionFileTailPresenter
 } = require('../../../presenters')
 
@@ -18,7 +18,7 @@ class GenerateSrocTransactionFileService extends BaseGenerateTransactionFileServ
   }
 
   static _bodyPresenter () {
-    return TransactionFilePresrocBodyPresenter
+    return TransactionFileSrocBodyPresenter
   }
 
   static _tailPresenter () {
@@ -41,16 +41,26 @@ class GenerateSrocTransactionFileService extends BaseGenerateTransactionFileServ
       'lineAttr1',
       'lineAttr2',
       'lineAttr3',
-      'lineAttr4',
-      'lineAttr5',
-      'lineAttr6',
-      'lineAttr7',
-      'lineAttr8',
-      'lineAttr9',
-      'lineAttr10',
-      'lineAttr13',
-      'lineAttr14',
-      'regimeValue17',
+      'headerAttr4', // chargeCategoryCode
+      'regimeValue18', // chargeCategoryDescription
+      'headerAttr9', // baseCharge
+      'regimeValue17', // compensationCharge
+      'headerAttr2', // aggregateProportion
+      'lineAttr12', // winterOnly
+      'regimeValue9', // section130Agreement
+      'regimeValue19', // abatementFactor
+      'regimeValue12', // section127Agreement
+      'headerAttr5', // supportedSource
+      'lineAttr11', // supportedSourceValue
+      'headerAttr6', // supportedSourceName
+      'regimeValue16', // twoPartTariff
+      'regimeValue20', // actualVolume
+      'headerAttr3', // authorisedVolume
+      'headerAttr7', // waterCompanyCharge
+      'headerAttr10', // waterCompanyChargeValue
+      'regimeValue2', // compensationChargePercent
+      'regimeValue15', // regionalChargingArea
+
       'minimumChargeAdjustment',
       'invoices.transactionReference',
       'invoices.creditLineValue',
