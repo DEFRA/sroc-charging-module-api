@@ -26,7 +26,7 @@ const { temporaryFilePath } = require('../../../../config/server.config')
 // Thing under test
 const { GenerateSrocTransactionFileService } = require('../../../../app/services')
 
-describe.only('Generate Sroc Transaction File service', () => {
+describe('Generate Sroc Transaction File service', () => {
   const filename = 'abcde67890t'
   const filenameWithPath = path.join(temporaryFilePath, filename)
 
