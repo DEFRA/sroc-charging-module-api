@@ -60,7 +60,6 @@ class GenerateSrocTransactionFileService extends BaseGenerateTransactionFileServ
       'headerAttr10', // waterCompanyChargeValue
       'regimeValue2', // compensationChargePercent
       'regimeValue15', // regionalChargingArea
-
       'minimumChargeAdjustment',
       'invoices.transactionReference',
       'invoices.creditLineValue',
