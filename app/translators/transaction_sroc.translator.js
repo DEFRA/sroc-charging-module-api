@@ -19,6 +19,7 @@ class TransactionSrocTranslator extends TransactionBaseTranslator {
   _translations () {
     return {
       ruleset: 'ruleset',
+      prorataDays: 'lineAttr3',
 
       // Transaction-related, validated here
       billRunId: 'billRunId',

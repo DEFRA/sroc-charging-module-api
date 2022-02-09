@@ -77,6 +77,44 @@ describe('Calculate Charge Sroc translator', () => {
     })
   })
 
+  describe('calculating prorataDays', () => {
+    it('correctly calculates the format', async () => {
+      const proraratPayload = {
+        ...payload,
+        billableDays: 128,
+        authorisedDays: 256
+      }
+      const testTranslator = new CalculateChargeSrocTranslator(data(proraratPayload))
+
+      expect(testTranslator.lineAttr3).to.equal('128/256')
+    })
+
+    it('correctly pads values to 3 digits', async () => {
+      const proraratPayload = {
+        ...payload,
+        billableDays: 8,
+        authorisedDays: 16
+      }
+      const testTranslator = new CalculateChargeSrocTranslator(data(proraratPayload))
+
+      expect(testTranslator.lineAttr3).to.equal('008/016')
+    })
+
+    it("correctly uses '000/000' for a 2-part tariff", async () => {
+      const proraratPayload = {
+        ...payload,
+        billableDays: 8,
+        authorisedDays: 16,
+        section127Agreement: true,
+        twoPartTariff: true
+      }
+
+      const testTranslator = new CalculateChargeSrocTranslator(data(proraratPayload))
+
+      expect(testTranslator.lineAttr3).to.equal('000/000')
+    })
+  })
+
   describe('calculating the financial year', () => {
     it("correctly determines the previous year for 'period' dates in March or earlier", async () => {
       const financialYearPayload = {
