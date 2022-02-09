@@ -44,7 +44,7 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
       col26: this._blankIfCompensationCharge(data.lineAttr1, data),
       col27: '',
       col28: this._blankIfCompensationCharge(data.lineAttr2, data),
-      col29: this._blankIfCompensationCharge(data.lineAttr3, data), // TODO: prorata days need to be stored in the db or generated dynamically here
+      col29: this._blankIfCompensationCharge(data.lineAttr3, data),
       col30: this._blankIfCompensationCharge(data.headerAttr4, data), // chargeCategoryCode
       col31: this._blankIfCompensationCharge(data.regimeValue18, data), // chargeCategoryDescription
       col32: this._blankIfCompensationCharge(data.headerAttr9, data), // baseCharge [in pence]
