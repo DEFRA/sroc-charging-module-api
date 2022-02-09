@@ -4,9 +4,11 @@
  * @module SendTransactionFileService
  */
 
+const Boom = require('@hapi/boom')
 const path = require('path')
 
 const GeneratePresrocTransactionFileService = require('./generate_presroc_transaction_file.service')
+const GenerateSrocTransactionFileService = require('./generate_sroc_transaction_file.service')
 const SendFileToS3Service = require('../send_file_to_s3.service')
 const DeleteFileService = require('../delete_file.service')
 
@@ -63,7 +65,8 @@ class SendTransactionFileService {
    */
   static async _generateAndSend (billRun, regime) {
     const filename = this._filename(billRun.fileReference)
-    const generatedFile = await GeneratePresrocTransactionFileService.go(billRun, filename)
+    const fileService = this._determineFileService(billRun.ruleset)
+    const generatedFile = await fileService.go(billRun, filename)
 
     // The key is the remote path and filename in the S3 bucket, eg. 'export/wrls/transaction/nalai50001.dat'
     const key = path.join('export', regime.slug, 'transaction', filename)
@@ -71,6 +74,17 @@ class SendTransactionFileService {
     await SendFileToS3Service.go(generatedFile, key)
 
     return generatedFile
+  }
+
+  static _determineFileService (ruleset) {
+    switch (ruleset) {
+      case 'presroc':
+        return GeneratePresrocTransactionFileService
+      case 'sroc':
+        return GenerateSrocTransactionFileService
+      default:
+        throw Boom.badData('Invalid ruleset')
+    }
   }
 
   static _filename (fileReference) {
