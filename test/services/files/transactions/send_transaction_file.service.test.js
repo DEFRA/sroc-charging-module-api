@@ -86,6 +86,20 @@ describe('Send Transaction File service', () => {
           expect(generateSrocStub.calledOnce).to.be.true()
         })
       })
+
+      describe('but, if the bill run has an invalid ruleset', () => {
+        beforeEach(async () => {
+          billRun.ruleset = 'INVALID'
+        })
+
+        it('throws an error', async () => {
+          const err = await expect(
+            SendTransactionFileService.go(regime, billRun)
+          ).to.reject()
+
+          expect(err).to.be.an.error()
+        })
+      })
     })
 
     describe('and a transaction file is required', () => {
