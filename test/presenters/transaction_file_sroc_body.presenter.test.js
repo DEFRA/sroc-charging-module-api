@@ -31,10 +31,10 @@ describe('Transaction File Sroc Body Presenter', () => {
     regimeValue18: 'REGIME_VALUE_18',
     headerAttr9: 'HEADER_ATTR_9',
     // Reductions, col33
-    headerAttr2: 1,
+    headerAttr2: '1',
     lineAttr12: 'false',
     regimeValue9: 'false',
-    regimeValue19: 1,
+    regimeValue19: '1',
     regimeValue12: 'false',
     // Supported source, col34
     headerAttr5: 'true',
