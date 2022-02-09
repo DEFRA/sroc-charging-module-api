@@ -32,6 +32,7 @@ describe('Send Transaction File service', () => {
   let billRun
   let deleteStub
   let generatePresrocStub
+  let generateSrocStub
   let sendStub
   let notifierFake
 
@@ -43,6 +44,7 @@ describe('Send Transaction File service', () => {
 
     deleteStub = Sinon.stub(DeleteFileService, 'go')
     generatePresrocStub = Sinon.stub(GeneratePresrocTransactionFileService, 'go').returns('stubPresrocFilename')
+    generateSrocStub = Sinon.stub(GenerateSrocTransactionFileService, 'go').returns('stubSrocFilename')
     sendStub = Sinon.stub(SendFileToS3Service, 'go')
 
     // Create a fake function to stand in place of Notifier.omfg()
@@ -56,6 +58,34 @@ describe('Send Transaction File service', () => {
   describe('When a valid bill run is specified', () => {
     beforeEach(async () => {
       billRun.status = 'sending'
+    })
+
+    describe('the service generates the transaction file based on the rulset', () => {
+      beforeEach(async () => {
+        billRun.fileReference = 'FILE_REFERENCE'
+      })
+
+      describe('so, if the bill run is for presroc', () => {
+        it('generates a presroc transaction file', async () => {
+          await SendTransactionFileService.go(regime, billRun)
+
+          expect(generatePresrocStub.calledOnce).to.be.true()
+          expect(generateSrocStub.calledOnce).to.be.false()
+        })
+      })
+
+      describe('so, if the bill run is for sroc', () => {
+        beforeEach(async () => {
+          billRun.ruleset = 'sroc'
+        })
+
+        it('generates an sroc transaction file', async () => {
+          await SendTransactionFileService.go(regime, billRun)
+
+          expect(generatePresrocStub.calledOnce).to.be.false()
+          expect(generateSrocStub.calledOnce).to.be.true()
+        })
+      })
     })
 
     describe('and a transaction file is required', () => {
