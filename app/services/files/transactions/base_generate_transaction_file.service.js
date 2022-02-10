@@ -5,6 +5,10 @@
  */
 const { TransactionModel } = require('../../../models')
 
+const {
+  TransactionFileHeadPresenter,
+  TransactionFileTailPresenter
+} = require('../../../presenters')
 const TransformRecordsToFileService = require('../transform_records_to_file.service')
 
 class BaseGenerateTransactionFileService {
@@ -38,17 +42,13 @@ class BaseGenerateTransactionFileService {
 
   /**
    * Presenter that handles the head line of the transaction file.
-   *
-   * **Must be overridden by extending class**
    */
   static _headPresenter () {
-    throw new Error("Extending class must implement '_headPresenter()'")
+    return TransactionFileHeadPresenter
   }
 
   /**
    * Presenter that handles the body of the transaction file.
-   *
-   * **Must be overridden by extending class**
    */
   static _bodyPresenter () {
     throw new Error("Extending class must implement '_bodyPresenter()'")
@@ -56,30 +56,31 @@ class BaseGenerateTransactionFileService {
 
   /**
    * Presenter that handles the tail line of the transaction file.
-   *
-   * **Must be overridden by extending class**
    */
   static _tailPresenter () {
-    throw new Error("Extending class must implement '_tailPresenter()'")
+    return TransactionFileTailPresenter
   }
 
   /**
    * Object containing additional data required by the header and tail, which will be passed to each presenter when the
    * db data is streamed to them.
-   *
-   * **Must be overridden by extending class**
    */
-  static _additionalData () {
-    throw new Error("Extending class must implement '_additionalData()'")
+  static _additionalData (billRun) {
+    return {
+      region: billRun.region,
+      billRunNumber: billRun.billRunNumber,
+      billRunUpdatedAt: billRun.updatedAt,
+      invoiceValue: billRun.invoiceValue,
+      creditNoteValue: billRun.creditNoteValue,
+      fileReference: billRun.fileReference
+    }
   }
 
   /**
    * Array of tables to be joined
-   *
-   * **Must be overridden by extending class**
    */
   static _join () {
-    throw new Error("Extending class must implement '_join()'")
+    return ['invoices', 'transactions.invoiceId', 'invoices.id']
   }
 
   /**
@@ -93,11 +94,13 @@ class BaseGenerateTransactionFileService {
 
   /**
    * Array of columns to be sorted by, in the order to sort them
-   *
-   * **Must be overridden by extending class**
    */
   static _sort () {
-    throw new Error("Extending class must implement '_sort()'")
+    return [
+      'invoices.transactionReference', // sort by transaction reference
+      'lineAttr1', // then sort by licence number
+      'regimeValue17' // then sort by compensation charge, where non-compensation charge (ie. false) is first
+    ]
   }
 
   /**
@@ -108,11 +111,12 @@ class BaseGenerateTransactionFileService {
    *   .where('transactions.billRunId', billRun.id)
    *   .whereNotNull('invoices.transactionReference')
    *   .whereNot('chargeValue', 0)
-   *
-   * **Must be overridden by extending class**
    */
-  static _where () {
-    throw new Error("Extending class must implement '_where()'")
+  static _where (builder, billRun) {
+    return builder
+      .where('transactions.billRunId', billRun.id)
+      .whereNotNull('invoices.transactionReference')
+      .whereNot('chargeValue', 0)
   }
 }
 

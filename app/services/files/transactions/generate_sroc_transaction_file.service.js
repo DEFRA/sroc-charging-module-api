@@ -6,27 +6,11 @@
 
 const BaseGenerateTransactionFileService = require('./base_generate_transaction_file.service')
 
-const {
-  TransactionFileHeadPresenter,
-  TransactionFileSrocBodyPresenter,
-  TransactionFileTailPresenter
-} = require('../../../presenters')
+const TransactionFileSrocBodyPresenter = require('../../../presenters/transaction_file_sroc_body.presenter')
 
 class GenerateSrocTransactionFileService extends BaseGenerateTransactionFileService {
-  static _headPresenter () {
-    return TransactionFileHeadPresenter
-  }
-
   static _bodyPresenter () {
     return TransactionFileSrocBodyPresenter
-  }
-
-  static _tailPresenter () {
-    return TransactionFileTailPresenter
-  }
-
-  static _join () {
-    return ['invoices', 'transactions.invoiceId', 'invoices.id']
   }
 
   static _select () {
@@ -65,32 +49,6 @@ class GenerateSrocTransactionFileService extends BaseGenerateTransactionFileServ
       'invoices.creditLineValue',
       'invoices.debitLineValue'
     ]
-  }
-
-  static _sort () {
-    return [
-      'invoices.transactionReference', // sort by transaction reference
-      'lineAttr1', // then sort by licence number
-      'regimeValue17' // then sort by compensation charge, where non-compensation charge (ie. false) is first
-    ]
-  }
-
-  static _where (builder, billRun) {
-    return builder
-      .where('transactions.billRunId', billRun.id)
-      .whereNotNull('invoices.transactionReference')
-      .whereNot('chargeValue', 0)
-  }
-
-  static _additionalData (billRun) {
-    return {
-      region: billRun.region,
-      billRunNumber: billRun.billRunNumber,
-      billRunUpdatedAt: billRun.updatedAt,
-      invoiceValue: billRun.invoiceValue,
-      creditNoteValue: billRun.creditNoteValue,
-      fileReference: billRun.fileReference
-    }
   }
 }
 
