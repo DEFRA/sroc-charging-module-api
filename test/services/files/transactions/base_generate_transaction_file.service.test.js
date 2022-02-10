@@ -13,14 +13,8 @@ const { BaseGenerateTransactionFileService } = require('../../../../app/services
 describe('Base Generate Transaction File service', () => {
   describe('When a class extends it', () => {
     const methodsToOverride = [
-      '_headPresenter',
       '_bodyPresenter',
-      '_tailPresenter',
-      '_additionalData',
-      '_join',
-      '_select',
-      '_sort',
-      '_where'
+      '_select'
     ]
 
     for (const method of methodsToOverride) {
