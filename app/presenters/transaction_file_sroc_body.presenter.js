@@ -111,7 +111,7 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
       reductions.push('CRT Discount')
     }
 
-    if (data.regimeValue19 !== '1') { // abatementFactor
+    if (data.regimeValue11 !== '1') { // abatementFactor
       reductions.push('Abatement of Charges')
     }
 

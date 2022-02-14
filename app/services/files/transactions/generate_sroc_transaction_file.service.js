@@ -32,7 +32,7 @@ class GenerateSrocTransactionFileService extends BaseGenerateTransactionFileServ
       'headerAttr2', // aggregateProportion
       'lineAttr12', // winterOnly
       'regimeValue9', // section130Agreement
-      'regimeValue19', // abatementFactor
+      'regimeValue11', // abatementFactor
       'regimeValue12', // section127Agreement
       'headerAttr5', // supportedSource
       'lineAttr11', // supportedSourceValue

@@ -34,7 +34,7 @@ describe('Transaction File Sroc Body Presenter', () => {
     headerAttr2: '1',
     lineAttr12: 'false',
     regimeValue9: 'false',
-    regimeValue19: '1',
+    regimeValue11: '1',
     regimeValue12: 'false',
     // Supported source, col34
     headerAttr5: 'true',
@@ -192,7 +192,7 @@ describe('Transaction File Sroc Body Presenter', () => {
         headerAttr2: 0.5,
         lineAttr12: 'true',
         regimeValue9: 'true',
-        regimeValue19: 0.5,
+        regimeValue11: 0.5,
         regimeValue12: 'true'
       })
 
