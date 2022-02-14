@@ -19,7 +19,7 @@ class RulesServiceSrocPresenter extends BasePresenter {
         WRLSChargingRequest: {
           // Some field names differ from their use elsewhere, eg. CalculateChargeSrocTranslator. Their alternate names
           // are commented below.
-          abatementAdjustment: data.regimeValue11,
+          abatementAdjustment: data.regimeValue11, // abatementFactor
           abstractableDays: data.regimeValue5, // authorisedDays
           actualVolume: data.regimeValue20,
           aggregateProportion: data.headerAttr2,
