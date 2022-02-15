@@ -37,7 +37,7 @@ class TransactionSrocTranslator extends TransactionBaseTranslator {
       chargeCategoryDescription: 'regimeValue18',
 
       // Charge-related, validated in CalculateChargeSrocTranslator
-      abatementFactor: 'regimeValue19',
+      abatementFactor: 'regimeValue11',
       actualVolume: 'regimeValue20',
       aggregateProportion: 'headerAttr2',
       authorisedDays: 'regimeValue5',

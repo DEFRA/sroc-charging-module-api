@@ -52,7 +52,7 @@ describe('Calculate Charge Sroc translator', () => {
       }
       const testTranslator = new CalculateChargeSrocTranslator(data(abatementFactorPayload))
 
-      expect(testTranslator.regimeValue19).to.be.a.number().and.equal(1.0)
+      expect(testTranslator.regimeValue11).to.be.a.number().and.equal(1.0)
     })
 
     it('defaults aggregateProportion to `1.0`', async () => {
@@ -245,7 +245,7 @@ describe('Calculate Charge Sroc translator', () => {
         it('accepts a decimal value', async () => {
           const testTranslator = new CalculateChargeSrocTranslator(data(validPayload))
 
-          expect(testTranslator.regimeValue19).to.be.a.number().and.equal(0.75)
+          expect(testTranslator.regimeValue11).to.be.a.number().and.equal(0.75)
         })
       })
 

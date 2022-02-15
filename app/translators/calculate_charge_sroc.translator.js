@@ -53,7 +53,7 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
 
   _translations () {
     return {
-      abatementFactor: 'regimeValue19',
+      abatementFactor: 'regimeValue11',
       actualVolume: 'regimeValue20',
       aggregateProportion: 'headerAttr2',
       authorisedDays: 'regimeValue5',
