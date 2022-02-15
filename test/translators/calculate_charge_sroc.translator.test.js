@@ -34,7 +34,8 @@ describe('Calculate Charge Sroc translator', () => {
     loss: 'Low',
     authorisedVolume: 1,
     actualVolume: 1,
-    credit: false
+    credit: false,
+    adjustmentFactor: 1
   }
 
   const data = (payload, regime = 'wrls') => {
@@ -967,6 +968,50 @@ describe('Calculate Charge Sroc translator', () => {
             const invalidPayload = {
               ...payload,
               credit: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because adjustmentFactor', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.adjustmentFactor
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is not a number', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              adjustmentFactor: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is 0', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              adjustmentFactor: 0
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is less than 0', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              adjustmentFactor: -1
             }
 
             expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)

@@ -1,6 +1,7 @@
 {
   "abatementFactor": 1.0,
   "actualVolume": 2.0,
+  "adjustmentFactor": 1.0,
   "aggregateProportion": 1.0,
   "areaCode": "ARCA",
   "authorisedDays": 214,

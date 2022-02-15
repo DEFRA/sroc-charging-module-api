@@ -24,6 +24,7 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
       ruleset: Joi.string().valid('sroc').required(),
 
       abatementFactor: Joi.number().allow(null).empty(null).default(1.0),
+      adjustmentFactor: Joi.number().greater(0).required(),
       aggregateProportion: Joi.number().allow(null).empty(null).default(1.0),
       periodStart: Joi.date().format(this._validDateFormats()).min('01-APR-2021').max(Joi.ref('periodEnd')).required(),
       authorisedVolume: Joi.number().greater(0).required(),
@@ -55,6 +56,7 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
     return {
       abatementFactor: 'regimeValue11',
       actualVolume: 'regimeValue20',
+      adjustmentFactor: 'regimeValue19',
       aggregateProportion: 'headerAttr2',
       authorisedDays: 'regimeValue5',
       authorisedVolume: 'headerAttr3',
