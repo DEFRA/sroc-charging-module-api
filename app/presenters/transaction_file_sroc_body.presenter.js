@@ -119,6 +119,10 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
       reductions.push('Two-Part Tariff')
     }
 
+    if (data.regimeValue19 !== '1') { // adjustmentFactor
+      reductions.push('Other')
+    }
+
     return reductions.join(', ')
   }
 
