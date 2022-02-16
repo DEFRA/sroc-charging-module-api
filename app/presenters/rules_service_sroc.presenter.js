@@ -22,6 +22,7 @@ class RulesServiceSrocPresenter extends BasePresenter {
           abatementAdjustment: data.regimeValue11, // abatementFactor
           abstractableDays: data.regimeValue5, // authorisedDays
           actualVolume: data.regimeValue20,
+          adjustmentFactor: data.regimeValue19,
           aggregateProportion: data.headerAttr2,
           authorisedVolume: data.headerAttr3,
           billableDays: data.regimeValue4,
