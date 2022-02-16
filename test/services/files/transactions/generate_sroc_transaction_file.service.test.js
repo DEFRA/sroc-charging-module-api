@@ -135,6 +135,7 @@ describe('Generate Sroc Transaction File service', () => {
       headerAttr9: '178300',
       headerAttr2: '1',
       regimeValue11: '1',
+      regimeValue19: '1',
       lineAttr2: '01-APR-2018 - 31-MAR-2019',
       headerAttr5: 'true',
       lineAttr11: '628200',

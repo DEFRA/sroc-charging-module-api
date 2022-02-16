@@ -36,6 +36,7 @@ describe('Transaction File Sroc Body Presenter', () => {
     regimeValue9: 'false',
     regimeValue11: '1',
     regimeValue12: 'false',
+    regimeValue19: '1',
     // Supported source, col34
     headerAttr5: 'true',
     lineAttr11: 15000,
@@ -193,12 +194,13 @@ describe('Transaction File Sroc Body Presenter', () => {
         lineAttr12: 'true',
         regimeValue9: 'true',
         regimeValue11: 0.5,
-        regimeValue12: 'true'
+        regimeValue12: 'true',
+        regimeValue19: 0.5
       })
 
       const result = presenter.go()
 
-      expect(result.col33).to.equal('Aggregate, Winter Only Discount, CRT Discount, Abatement of Charges, Two-Part Tariff')
+      expect(result.col33).to.equal('Aggregate, Winter Only Discount, CRT Discount, Abatement of Charges, Two-Part Tariff, Other')
     })
 
     it('returns an empty list if no reductions apply', () => {
