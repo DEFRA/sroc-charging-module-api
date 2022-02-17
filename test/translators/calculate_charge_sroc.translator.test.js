@@ -11,7 +11,7 @@ const { ValidationError } = require('joi')
 // Thing under test
 const { CalculateChargeSrocTranslator } = require('../../app/translators')
 
-describe.only('Calculate Charge Sroc translator', () => {
+describe('Calculate Charge Sroc translator', () => {
   let validPayload
 
   const payload = {
