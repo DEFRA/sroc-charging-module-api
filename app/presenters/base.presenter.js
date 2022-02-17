@@ -19,20 +19,18 @@ class BasePresenter {
   _formatDate (date) {
     const dateObject = new Date(date)
 
-    // We use .toLocaleString() to convert the date into a format close to the one we need, eg. "25 Mar 2021"
-    // Passing 'en-nz' ensures it returns the elements in the correct order and correctly gives us 'Sep' for September
-    // (whereas en-gb gives us 'Sept').
-    const dateString = dateObject.toLocaleString('en-nz', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    })
+    // The output date format of methods such as toLocaleString() are based on the Unicode CLDR which is subject to
+    // change and cannot be relied on to be consistent: https://github.com/nodejs/node/issues/42030. We therefore
+    // generate the formatted date ourselves.
+    const unpaddedDay = dateObject.getDate()
+    const day = this._leftPadZeroes(unpaddedDay, 2)
 
-    // Make the string upper case and replace the spaces with dashes
-    return dateString
-      .toUpperCase()
-      .split(' ')
-      .join('-')
+    const monthStrings = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+    const month = monthStrings[dateObject.getMonth()]
+
+    const year = dateObject.getFullYear()
+
+    return `${day}-${month}-${year}`
   }
 
   /**
