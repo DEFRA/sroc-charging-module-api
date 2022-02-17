@@ -11,7 +11,7 @@ const { ValidationError } = require('joi')
 // Thing under test
 const { CalculateChargeSrocTranslator } = require('../../app/translators')
 
-describe('Calculate Charge Sroc translator', () => {
+describe.only('Calculate Charge Sroc translator', () => {
   let validPayload
 
   const payload = {
@@ -35,7 +35,9 @@ describe('Calculate Charge Sroc translator', () => {
     authorisedVolume: 1,
     actualVolume: 1,
     credit: false,
-    adjustmentFactor: 1
+    adjustmentFactor: 1,
+    abatementFactor: 1,
+    aggregateProportion: 1
   }
 
   const data = (payload, regime = 'wrls') => {
@@ -46,26 +48,6 @@ describe('Calculate Charge Sroc translator', () => {
   }
 
   describe('Default values', () => {
-    it('defaults abatementFactor to `1.0`', async () => {
-      const abatementFactorPayload = {
-        ...payload,
-        abatementFactor: undefined
-      }
-      const testTranslator = new CalculateChargeSrocTranslator(data(abatementFactorPayload))
-
-      expect(testTranslator.regimeValue11).to.be.a.number().and.equal(1.0)
-    })
-
-    it('defaults aggregateProportion to `1.0`', async () => {
-      const aggregateProportionPayload = {
-        ...payload,
-        abatementFactor: undefined
-      }
-      const testTranslator = new CalculateChargeSrocTranslator(data(aggregateProportionPayload))
-
-      expect(testTranslator.headerAttr2).to.be.a.number().and.equal(1.0)
-    })
-
     it('defaults supportedSourceName to `Not Applicable` when `undefined` and supportedSource is `false`', async () => {
       const supportedSourcePayload = {
         ...payload,
@@ -1012,6 +994,94 @@ describe('Calculate Charge Sroc translator', () => {
             const invalidPayload = {
               ...payload,
               adjustmentFactor: -1
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because abatementFactor', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.abatementFactor
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is not a number', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              abatementFactor: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is 0', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              abatementFactor: 0
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is less than 0', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              abatementFactor: -1
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+      })
+
+      describe('because aggregateProportion', () => {
+        describe('is missing', () => {
+          it('throws an error', async () => {
+            const invalidPayload = { ...payload }
+            delete invalidPayload.aggregateProportion
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is not a number', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              aggregateProportion: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is 0', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              aggregateProportion: 0
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is less than 0', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              aggregateProportion: -1
             }
 
             expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
