@@ -31,6 +31,10 @@ class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
       section126Factor: Joi.number().allow(null).empty(null).default(1.0),
       volume: Joi.number().min(0).required(),
 
+      // Dependent on `compensationCharge`
+      waterUndertaker: Joi.boolean()
+        .when('compensationCharge', { is: true, then: Joi.required() }),
+
       // Dependent on `compensationCharge` and case-insensitive to return the correctly-capitalised string
       eiucSource: this._validateStringAgainstList(this._validEiucSources())
         .when('compensationCharge', { is: true, then: Joi.required() }),
