@@ -43,6 +43,17 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
         // If `false` then this should be undefined (ie. not present) and we set the value as `Not Applicable`
         .when('supportedSource', { is: false, then: Joi.forbidden().default('Not Applicable') }),
 
+      // Dependent on `compensationCharge` and `waterCompanyCharge`
+      waterUndertaker: Joi.boolean()
+        .when('compensationCharge', {
+          is: true,
+          then: Joi
+            // If compensationCharge is `true` then waterUndertaker is required
+            .required()
+            // And if waterCompanyCharge is `true` then waterUndertaker must also be `true`
+            .when('waterCompanyCharge', { is: true, then: Joi.equal(true) })
+        }),
+
       // Dependent on `compensationCharge` and case-insensitive to return the correctly-capitalised string
       regionalChargingArea: this._validateStringAgainstList(this._validRegionalChargingAreas())
         .when('compensationCharge', { is: true, then: Joi.required() }),

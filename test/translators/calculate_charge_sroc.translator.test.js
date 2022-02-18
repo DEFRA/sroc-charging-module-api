@@ -436,6 +436,23 @@ describe('Calculate Charge Sroc translator', () => {
           expect(testTranslator.headerAttr6).to.equal('Ouse - Hermitage')
         })
       })
+
+      describe('because waterUndertaker', () => {
+        describe('is `true` and compensationCharge and waterCompanyCharge are also `true`', () => {
+          it('does not throw an error', async () => {
+            const validPayload = {
+              ...payload,
+              waterUndertaker: true,
+              compensationCharge: true,
+              waterCompanyCharge: true,
+              regionalChargingArea: 'Devon and Cornwall (South West)' // required when compensationCharge is `true`
+            }
+            const result = new CalculateChargeSrocTranslator(data(validPayload))
+
+            expect(result).to.not.be.an.error()
+          })
+        })
+      })
     })
 
     describe('when the data is not valid', () => {
@@ -800,6 +817,20 @@ describe('Calculate Charge Sroc translator', () => {
             const invalidPayload = {
               ...payload,
               waterUndertaker: 'INVALID'
+            }
+
+            expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+          })
+        })
+
+        describe('is `false` but compensationCharge and waterCompanyCharge are `true`', () => {
+          it('throws an error', async () => {
+            const invalidPayload = {
+              ...payload,
+              waterUndertaker: false,
+              compensationCharge: true,
+              waterCompanyCharge: true,
+              regionalChargingArea: 'Devon and Cornwall (South West)' // required when compensationCharge is `true`
             }
 
             expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
