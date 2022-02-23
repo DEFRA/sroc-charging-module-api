@@ -23,9 +23,9 @@ class CalculateChargeSrocTranslator extends CalculateChargeBaseTranslator {
       ...this._baseRules(),
       ruleset: Joi.string().valid('sroc').required(),
 
-      abatementFactor: Joi.number().allow(null).empty(null).default(1.0),
+      abatementFactor: Joi.number().greater(0).required(),
       adjustmentFactor: Joi.number().greater(0).required(),
-      aggregateProportion: Joi.number().allow(null).empty(null).default(1.0),
+      aggregateProportion: Joi.number().greater(0).required(),
       periodStart: Joi.date().format(this._validDateFormats()).min('01-APR-2021').max(Joi.ref('periodEnd')).required(),
       authorisedVolume: Joi.number().greater(0).required(),
       waterCompanyCharge: Joi.boolean().required(),
