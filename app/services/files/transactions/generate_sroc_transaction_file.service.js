@@ -30,7 +30,7 @@ class GenerateSrocTransactionFileService extends BaseGenerateTransactionFileServ
       'headerAttr9', // baseCharge
       'regimeValue17', // compensationCharge
       'headerAttr2', // aggregateProportion
-      'lineAttr12', // winterOnly
+      'headerAttr8', // winterOnly
       'regimeValue9', // section130Agreement
       'regimeValue11', // abatementFactor
       'regimeValue19', // adjustmentFactor

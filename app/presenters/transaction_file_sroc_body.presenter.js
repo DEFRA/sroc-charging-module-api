@@ -103,7 +103,7 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
       reductions.push('Aggregate')
     }
 
-    if (this._isTrue(data.lineAttr12)) { // winterOnly
+    if (this._isTrue(data.headerAttr8)) { // winterOnly
       reductions.push('Winter Only Discount')
     }
 
