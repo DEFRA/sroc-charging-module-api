@@ -32,7 +32,7 @@ describe('Transaction File Sroc Body Presenter', () => {
     headerAttr9: 'HEADER_ATTR_9',
     // Reductions, col33
     headerAttr2: '1',
-    lineAttr12: 'false',
+    headerAttr8: 'false',
     regimeValue9: 'false',
     regimeValue11: '1',
     regimeValue12: 'false',
@@ -143,7 +143,7 @@ describe('Transaction File Sroc Body Presenter', () => {
         ...data,
         regimeValue17: 'false',
         // We set a reduction to ensure the reductions col is not empty
-        lineAttr12: 'true'
+        headerAttr8: 'true'
       })
 
       const result = presenter.go()
@@ -191,7 +191,7 @@ describe('Transaction File Sroc Body Presenter', () => {
         ...data,
         regimeValue17: 'false',
         headerAttr2: 0.5,
-        lineAttr12: 'true',
+        headerAttr8: 'true',
         regimeValue9: 'true',
         regimeValue11: 0.5,
         regimeValue12: 'true',
