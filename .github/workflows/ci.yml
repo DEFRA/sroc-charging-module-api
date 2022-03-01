@@ -76,7 +76,7 @@ jobs:
 
       # Gets the version to use by referring to the previous step
       - name: Install Node
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
         with:
           node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
