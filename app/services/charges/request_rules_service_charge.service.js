@@ -4,8 +4,10 @@
  * @module RequestRulesServiceChargeService
  */
 
-const Got = require('got')
 const Boom = require('@hapi/boom')
+
+// Note that we also import the got dependency but this is done within the _callRulesService method -- see the comment
+// there for details
 
 const { RulesServiceConfig } = require('../../../config')
 
@@ -114,7 +116,12 @@ class RequestRulesServiceChargeService {
   }
 
   static async _callRulesService (path, requestOptions) {
-    const response = await Got.post(path, requestOptions)
+    // As of v12, the got dependency no longer supports CJS modules. This causes us a problem as we are locked into
+    // using these for the time being. Some workarounds are provided here: https://github.com/sindresorhus/got/issues/1789
+    // We have gone the route of using await import('got'). We cannot do this at the top level as Node doesn't support
+    // top level in CJS so we do it here instead.
+    const { got } = await import('got')
+    const response = await got.post(path, requestOptions)
     return response.body
   }
 
@@ -151,7 +158,9 @@ class RequestRulesServiceChargeService {
         // We set statusCodes as an empty array to ensure that 4xx, 5xx etc. errors are not retried
         statusCodes: []
       },
-      timeout,
+      timeout: {
+        request: timeout
+      },
       username,
       password
     }
