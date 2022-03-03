@@ -13,13 +13,11 @@ const path = require('path')
 
 // Test helpers
 const {
-  BillRunHelper,
   DatabaseHelper,
-  GeneralHelper,
-  TransactionHelper
+  NewTransactionHelper
 } = require('../../../support/helpers')
 
-const { InvoiceModel, TransactionModel } = require('../../../../app/models')
+const { InvoiceModel, TransactionModel, BillRunModel } = require('../../../../app/models')
 
 const { BasePresenter } = require('../../../../app/presenters')
 
@@ -37,14 +35,23 @@ describe('Generate Presroc Transaction File service', () => {
   beforeEach(async () => {
     await DatabaseHelper.clean()
 
-    billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
-    billRun.fileReference = filename
-    billRun.billRunNumber = 12345
+    const transaction = await NewTransactionHelper.create()
 
-    await TransactionHelper.addTransaction(billRun.id)
+    // Patch the bill run with file reference and bill run number
+    await BillRunModel.query()
+      .findById(transaction.billRunId)
+      .patch({
+        fileReference: filename,
+        billRunNumber: 12345
+      })
+
+    // Get the bill run
+    billRun = await BillRunModel.query().findById(transaction.billRunId)
 
     // Set the transaction reference on the invoice
-    await InvoiceModel.query().findOne({ billRunId: billRun.id }).patch({ transactionReference: 'TRANSACTION_REF' })
+    await InvoiceModel.query()
+      .findOne({ billRunId: transaction.billRunId })
+      .patch({ transactionReference: 'TRANSACTION_REF' })
   })
 
   afterEach(async () => {
