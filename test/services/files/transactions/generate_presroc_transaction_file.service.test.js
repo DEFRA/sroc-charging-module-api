@@ -20,7 +20,7 @@ const {
   NewTransactionHelper
 } = require('../../../support/helpers')
 
-const { InvoiceModel, TransactionModel, BillRunModel } = require('../../../../app/models')
+const { BillRunModel, InvoiceModel, TransactionModel } = require('../../../../app/models')
 
 const { BasePresenter } = require('../../../../app/presenters')
 
@@ -34,26 +34,20 @@ describe('Generate Presroc Transaction File service', () => {
   const filenameWithPath = path.join(temporaryFilePath, filename)
 
   let billRun
-  let transaction
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
+    const transaction = await NewTransactionHelper.create()
 
-    // Create a transaction with line description 'second' for later comparison. We set compensation charge to 'true'
-    // to ensure this transaction comes second when checking the compensation charge sort order
-    transaction = await NewTransactionHelper.create()
-
-    // Get the bill run
     billRun = await BillRunModel.query().findById(transaction.billRunId)
 
-    // Patch the bill run with file reference and bill run number
+    // The transaction file cannot be generated without certain fields so we patch them in on the bill run and invoice
     await billRun.$query()
       .patch({
         fileReference: filename,
         billRunNumber: 12345
       })
 
-    // Set the transaction reference on the invoice
     await InvoiceModel.query()
       .findOne({ billRunId: transaction.billRunId })
       .patch({ transactionReference: 'TRANSACTION_REF' })
@@ -104,83 +98,17 @@ describe('Generate Presroc Transaction File service', () => {
 
   describe('the order of the file content', () => {
     beforeEach(async () => {
-      // We clean the db and start again as we want our initial transaction to be different for these tests
-      await DatabaseHelper.clean()
-
-      // Create a transaction with line description 'second' for later comparison. We set compensation charge to 'true'
-      // to ensure this transaction comes second when checking the compensation charge sort order
-      transaction = await NewTransactionHelper.create(null, {
-        lineDescription: 'second',
-        regimeValue17: 'true'
-      })
-
-      // Get the bill run
-      billRun = await BillRunModel.query().findById(transaction.billRunId)
-
-      // Patch the bill run with file reference and bill run number
-      await billRun.$query()
-        .patch({
-          fileReference: filename,
-          billRunNumber: 12345
-        })
-
-      // Set the transaction reference on the invoice
-      await InvoiceModel.query()
-        .findOne({ billRunId: transaction.billRunId })
-        .patch({ transactionReference: 'TRANSACTION_REF' })
-    })
-
-    it('is correctly sorted by compensation charge', async () => {
-      const newInvoice = await NewInvoiceHelper.create(billRun, { transactionReference: 'TRANSACTION_REF' })
-      const newLicence = await NewLicenceHelper.create(newInvoice)
-      await NewTransactionHelper.create(newLicence, { regimeValue17: 'false', lineDescription: 'first' })
-
-      const returnedFilenameWithPath = await GeneratePresrocTransactionFileService.go(billRun, filename)
-      const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
-
-      const result = _getLineDescriptions(file)
-      expect(result).to.equal(['first', 'second'])
-    })
-
-    it('is correctly sorted by licence number', async () => {
-      // Create a new invoice and add a licence with a different licence number, then add a transaction to it
-      const newInvoice = await NewInvoiceHelper.create(billRun, { transactionReference: 'TRANSACTION_REF' })
-      const newLicence = await NewLicenceHelper.create(newInvoice)
-      // We set compensation charge to 'true' to match the first transaction we created
-      await NewTransactionHelper.create(newLicence, { regimeValue17: 'true', lineAttr1: 'A', lineDescription: 'first' })
-
-      const returnedFilenameWithPath = await GeneratePresrocTransactionFileService.go(billRun, filename)
-      const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
-
-      const result = _getLineDescriptions(file)
-      expect(result).to.equal(['first', 'second'])
-    })
-
-    it('is correctly sorted by invoice transaction reference', async () => {
-      // Create a new invoice with a different transaction reference and add a licence & transaction to it
-      const newInvoice = await NewInvoiceHelper.create(billRun, { transactionReference: 'A' })
-      const newLicence = await NewLicenceHelper.create(newInvoice)
-      // We set compensation charge to 'true' to match the first transaction we created
-      await NewTransactionHelper.create(newLicence, { regimeValue17: 'true', lineDescription: 'first' })
-
-      const returnedFilenameWithPath = await GeneratePresrocTransactionFileService.go(billRun, filename)
-      const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
-
-      const result = _getLineDescriptions(file)
-      expect(result).to.equal(['first', 'second'])
-    })
-
-    it('sorts the fields in the correct order', async () => {
-      // For simplicity's sake we clean the db first then create a fresh bill run
-      await DatabaseHelper.clean()
+      // For simplicity's sake we start from scratch with a fresh bill run
       billRun = await NewBillRunHelper.create()
 
-      // Patch the bill run with file reference and bill run number
+      // Patch the bill run with required fields
       await billRun.$query().patch({
         fileReference: filename,
         billRunNumber: 12345
       })
+    })
 
+    it('is sorted by field in the correct order', async () => {
       // Create 2 invoices and licences
       const invoiceA = await NewInvoiceHelper.create(billRun, { transactionReference: 'TRANSACTION_REF_A' })
       const licenceOnInvoiceA = await NewLicenceHelper.create(invoiceA)
