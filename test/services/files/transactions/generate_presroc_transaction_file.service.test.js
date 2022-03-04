@@ -13,13 +13,14 @@ const path = require('path')
 
 // Test helpers
 const {
-  BillRunHelper,
   DatabaseHelper,
-  GeneralHelper,
-  TransactionHelper
+  NewBillRunHelper,
+  NewInvoiceHelper,
+  NewLicenceHelper,
+  NewTransactionHelper
 } = require('../../../support/helpers')
 
-const { InvoiceModel, TransactionModel } = require('../../../../app/models')
+const { BillRunModel, InvoiceModel, TransactionModel } = require('../../../../app/models')
 
 const { BasePresenter } = require('../../../../app/presenters')
 
@@ -36,15 +37,20 @@ describe('Generate Presroc Transaction File service', () => {
 
   beforeEach(async () => {
     await DatabaseHelper.clean()
+    const transaction = await NewTransactionHelper.create()
 
-    billRun = await BillRunHelper.addBillRun(GeneralHelper.uuid4(), GeneralHelper.uuid4())
-    billRun.fileReference = filename
-    billRun.billRunNumber = 12345
+    billRun = await BillRunModel.query().findById(transaction.billRunId)
 
-    await TransactionHelper.addTransaction(billRun.id)
+    // The transaction file cannot be generated without certain fields so we patch them in on the bill run and invoice
+    await billRun.$query()
+      .patch({
+        fileReference: filename,
+        billRunNumber: 12345
+      })
 
-    // Set the transaction reference on the invoice
-    await InvoiceModel.query().findOne({ billRunId: billRun.id }).patch({ transactionReference: 'TRANSACTION_REF' })
+    await InvoiceModel.query()
+      .findOne({ billRunId: transaction.billRunId })
+      .patch({ transactionReference: 'TRANSACTION_REF' })
   })
 
   afterEach(async () => {
@@ -89,6 +95,63 @@ describe('Generate Presroc Transaction File service', () => {
     // The transaction should be excluded so only the head and tail should be written to the file
     expect(numberOfLines).to.equal(2)
   })
+
+  describe('the order of the file content', () => {
+    beforeEach(async () => {
+      // For simplicity's sake we start from scratch with a fresh bill run
+      billRun = await NewBillRunHelper.create()
+
+      // Patch the bill run with required fields
+      await billRun.$query().patch({
+        fileReference: filename,
+        billRunNumber: 12345
+      })
+    })
+
+    it('is sorted by field in the correct order', async () => {
+      // Create 2 invoices and licences
+      const invoiceA = await NewInvoiceHelper.create(billRun, { transactionReference: 'TRANSACTION_REF_A' })
+      const licenceOnInvoiceA = await NewLicenceHelper.create(invoiceA)
+      const invoiceB = await NewInvoiceHelper.create(billRun, { transactionReference: 'TRANSACTION_REF_B' })
+      const licenceOnInvoiceB = await NewLicenceHelper.create(invoiceB)
+
+      // Create our transactions. We do this in a mixed-up order to ensure that sorting takes place
+      await NewTransactionHelper.create(licenceOnInvoiceB, { lineAttr1: 'LICENCE_2', regimeValue17: 'true', lineDescription: 'eighth' })
+      await NewTransactionHelper.create(licenceOnInvoiceA, { lineAttr1: 'LICENCE_1', regimeValue17: 'false', lineDescription: 'first' })
+      await NewTransactionHelper.create(licenceOnInvoiceB, { lineAttr1: 'LICENCE_2', regimeValue17: 'false', lineDescription: 'seventh' })
+      await NewTransactionHelper.create(licenceOnInvoiceA, { lineAttr1: 'LICENCE_1', regimeValue17: 'true', lineDescription: 'second' })
+      await NewTransactionHelper.create(licenceOnInvoiceB, { lineAttr1: 'LICENCE_1', regimeValue17: 'true', lineDescription: 'sixth' })
+      await NewTransactionHelper.create(licenceOnInvoiceA, { lineAttr1: 'LICENCE_2', regimeValue17: 'false', lineDescription: 'third' })
+      await NewTransactionHelper.create(licenceOnInvoiceB, { lineAttr1: 'LICENCE_1', regimeValue17: 'false', lineDescription: 'fifth' })
+      await NewTransactionHelper.create(licenceOnInvoiceA, { lineAttr1: 'LICENCE_2', regimeValue17: 'true', lineDescription: 'fourth' })
+
+      const returnedFilenameWithPath = await GeneratePresrocTransactionFileService.go(billRun, filename)
+      const file = fs.readFileSync(returnedFilenameWithPath, 'utf-8')
+
+      const result = _getLineDescriptions(file)
+      expect(result).to.equal(['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'])
+    })
+  })
+
+  /**
+   * Returns an array of line descriptions from a file in order from the first to the last line.
+   *
+   * We expect to receive files which are comma-delimited with quotes around each item. For simplicity, we strip all
+   * double quotes from the file then split each line by comma. This is therefore unsuitable for test data which
+   * contains double quotes or commas.
+   */
+  function _getLineDescriptions (file) {
+    return file
+      // Split the file into an array of lines
+      .split('\n')
+      // Slice the array to remove the head and tail lines. We also exclude the blank line at the end of the file,
+      // hence `slice(1, -2)`
+      .slice(1, -2)
+      // Strip quotes from each line and split by comma
+      .map(line => line.replaceAll('"', '').split(','))
+      // Finally, extract the line description from each line
+      .map(line => line[22])
+  }
 
   function _expectedContent () {
     // Get today's date using new Date() and convert it to the format we expect using BaseBresenter._formatDate()

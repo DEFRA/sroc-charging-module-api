@@ -36,7 +36,9 @@ class BaseGenerateTransactionFileService {
       .knexQuery()
       .join(...this._join())
       .select(...this._select())
-      .orderBy(...this._sort())
+      // Note that we don't use the spread operator for orderBy as it expects an array, whereas we use it for join and
+      // select as they expect multiple arguments ie. .select('first', 'second', 'third')
+      .orderBy(this._sort())
       .where(builder => this._where(builder, billRun))
   }
 
