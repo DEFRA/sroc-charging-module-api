@@ -7,7 +7,7 @@
 const { Notifier } = require('@airbrake/node')
 const Pino = require('pino')
 
-const { AirbrakeConfig } = require('../../config')
+const AirbrakeConfig = require('../../config/airbrake.config')
 
 /**
  * Based class for combined logging and Airbrake (Errbit) notification managers
