@@ -6,7 +6,7 @@
 
 const path = require('path')
 
-const { CustomerFileModel } = require('../../../models')
+const CustomerFileModel = require('../../../models/customer_file.model')
 
 const DeleteFileService = require('../delete_file.service')
 const GenerateCustomerFileService = require('./generate_customer_file.service')

@@ -6,7 +6,7 @@
 
 const Boom = require('@hapi/boom')
 
-const { InvoiceModel } = require('../../models')
+const InvoiceModel = require('../../models/invoice.model')
 
 class ValidateBillRunLicenceService {
   /**

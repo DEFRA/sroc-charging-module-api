@@ -5,6 +5,7 @@
  */
 
 const BaseNextFileReferenceService = require('./base_next_file_reference.service')
+
 const StaticLookupLib = require('../../lib/static_lookup.lib')
 
 /**

@@ -7,9 +7,10 @@
 const path = require('path')
 const { pipeline } = require('stream')
 const util = require('util')
-const { temporaryFilePath } = require('../../../config/server.config')
 
-const { TableFilePresenter } = require('../../presenters')
+const temporaryFilePath = require('../../../config/server.config').temporaryFilePath
+
+const TableFilePresenter = require('../../presenters/table_file.presenter')
 
 const StreamReadableDataService = require('../streams/stream_readable_data.service')
 const StreamReadableRecordsService = require('../streams/stream_readable_records.service')

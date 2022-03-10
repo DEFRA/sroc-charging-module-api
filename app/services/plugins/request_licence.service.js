@@ -6,7 +6,7 @@
 
 const Boom = require('@hapi/boom')
 
-const { LicenceModel } = require('../../models')
+const LicenceModel = require('../../models/licence.model')
 
 class RequestLicenceService {
   /**

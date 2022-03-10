@@ -4,7 +4,6 @@
  * @module CalculateMinimumChargeForBillRunService
  */
 
-// Files in the same folder cannot be destructured from index.js so have to be required directly
 const CreateMinimumChargeAdjustmentTransactionService = require('../transactions/create_minimum_charge_adjustment_transaction.service')
 
 const MINIMUM_CHARGE_LIMIT = 2500

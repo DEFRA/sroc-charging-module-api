@@ -6,7 +6,6 @@
 
 const SendTransactionFileService = require('./send_transaction_file.service')
 
-// We require BoomNotifierLib this way as the usual way of destructuring it results in a circular dependency error
 const BoomNotifierLib = require('../../../lib/boom_notifier.lib')
 
 const Boom = require('@hapi/boom')

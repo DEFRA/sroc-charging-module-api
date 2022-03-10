@@ -4,11 +4,12 @@
  * @module CreateBillRunService
  */
 
-const { BillRunModel } = require('../../models')
-const { BillRunTranslator } = require('../../translators')
-const { CreateBillRunPresenter } = require('../../presenters')
+const BillRunModel = require('../../models/bill_run.model')
 
-// Files in the same folder cannot be destructured from index.js so have to be required directly
+const BillRunTranslator = require('../../translators/bill_run.translator')
+
+const CreateBillRunPresenter = require('../../presenters/create_bill_run.presenter')
+
 const NextBillRunNumberService = require('../next_references/next_bill_run_number.service')
 
 /**

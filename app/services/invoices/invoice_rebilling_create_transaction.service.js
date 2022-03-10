@@ -4,7 +4,10 @@
  * @module InvoiceRebillingCreateTransactionService
  */
 
-const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../../models')
+const BillRunModel = require('../../models/bill_run.model')
+const InvoiceModel = require('../../models/invoice.model')
+const LicenceModel = require('../../models/licence.model')
+const TransactionModel = require('../../models/transaction.model')
 
 class InvoiceRebillingCreateTransactionService {
   /**

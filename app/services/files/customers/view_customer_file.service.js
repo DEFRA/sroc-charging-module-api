@@ -6,8 +6,8 @@
 
 const Boom = require('@hapi/boom')
 
-const { CustomerFileModel } = require('../../../models')
-const { JsonPresenter } = require('../../../presenters')
+const CustomerFileModel = require('../../../models/customer_file.model')
+const JsonPresenter = require('../../../presenters/json.presenter')
 
 /**
  * Returns the customer file with matching Id

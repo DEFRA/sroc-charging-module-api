@@ -4,7 +4,7 @@
  * @module NextBillRunNumberService
  */
 
-const { SequenceCounterModel } = require('../../models')
+const SequenceCounterModel = require('../../models/sequence_counter.model')
 
 class NextBillRunNumberService {
   /**

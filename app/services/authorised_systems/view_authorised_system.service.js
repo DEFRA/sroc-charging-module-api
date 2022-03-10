@@ -6,8 +6,9 @@
 
 const Boom = require('@hapi/boom')
 
-const { AuthorisedSystemModel } = require('../../models')
-const { JsonPresenter } = require('../../presenters')
+const AuthorisedSystemModel = require('../../models/authorised_system.model')
+
+const JsonPresenter = require('../../presenters/json.presenter')
 
 /**
  * Returns the authorised system with the matching Id

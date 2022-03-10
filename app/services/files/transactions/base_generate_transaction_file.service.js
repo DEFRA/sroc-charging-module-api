@@ -3,12 +3,12 @@
 /**
  * @module BaseGenerateTransactionFileService
  */
-const { TransactionModel } = require('../../../models')
 
-const {
-  TransactionFileHeadPresenter,
-  TransactionFileTailPresenter
-} = require('../../../presenters')
+const TransactionModel = require('../../../models/transaction.model')
+
+const TransactionFileHeadPresenter = require('../../../presenters/transaction_file_head.presenter')
+const TransactionFileTailPresenter = require('../../../presenters/transaction_file_tail.presenter')
+
 const TransformRecordsToFileService = require('../transform_records_to_file.service')
 
 class BaseGenerateTransactionFileService {

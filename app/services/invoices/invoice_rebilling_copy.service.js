@@ -7,7 +7,8 @@
 const InvoiceRebillingCreateLicenceService = require('./invoice_rebilling_create_licence.service')
 const InvoiceRebillingCreateTransactionService = require('./invoice_rebilling_create_transaction.service')
 
-const { LicenceModel, TransactionModel } = require('../../models')
+const LicenceModel = require('../../models/licence.model')
+const TransactionModel = require('../../models/transaction.model')
 
 class InvoiceRebillingCopyService {
   /**

@@ -6,8 +6,9 @@
 
 const Boom = require('@hapi/boom')
 
-const { TransactionModel } = require('../../models')
-const { JsonPresenter } = require('../../presenters')
+const TransactionModel = require('../../models/transaction.model')
+
+const JsonPresenter = require('../../presenters/json.presenter')
 
 /**
  * Returns the transaction with matching Id

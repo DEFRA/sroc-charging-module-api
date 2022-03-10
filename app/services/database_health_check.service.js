@@ -5,7 +5,8 @@
  */
 
 const { db } = require('../../db')
-const { JsonPresenter } = require('../presenters')
+
+const JsonPresenter = require('../presenters/json.presenter')
 
 /**
  * Generates an array of stats for each table in the database when `go()` is called

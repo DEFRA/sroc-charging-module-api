@@ -6,19 +6,15 @@
 
 const Boom = require('@hapi/boom')
 
-const {
-  CalculateChargePresrocTranslator,
-  CalculateChargeSrocTranslator,
-  RulesServicePresrocTranslator,
-  RulesServiceSrocTranslator
-} = require('../../translators')
+const CalculateChargePresrocTranslator = require('../../translators/calculate_charge_presroc.translator')
+const CalculateChargeSrocTranslator = require('../../translators/calculate_charge_sroc.translator')
+const RulesServicePresrocTranslator = require('../../translators/rules_service_presroc.translator')
+const RulesServiceSrocTranslator = require('../../translators/rules_service_sroc.translator')
 
-const {
-  CalculateChargePresrocPresenter,
-  CalculateChargeSrocPresenter,
-  RulesServicePresrocPresenter,
-  RulesServiceSrocPresenter
-} = require('../../presenters')
+const CalculateChargePresrocPresenter = require('../../presenters/calculate_charge_presroc.presenter')
+const CalculateChargeSrocPresenter = require('../../presenters/calculate_charge_sroc.presenter')
+const RulesServicePresrocPresenter = require('../../presenters/rules_service_presroc.presenter')
+const RulesServiceSrocPresenter = require('../../presenters/rules_service_sroc.presenter')
 
 const RequestRulesServiceChargeService = require('./request_rules_service_charge.service')
 
