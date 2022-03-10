@@ -1,7 +1,9 @@
 'use strict'
 
-const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
+
+const BaseTranslator = require('./base.translator')
+
 const StaticLookupLib = require('../lib/static_lookup.lib')
 
 class BillRunTranslator extends BaseTranslator {

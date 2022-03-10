@@ -4,8 +4,9 @@
  * @module RulesServicePresrocTranslator
  */
 
-const RulesServiceBaseTranslator = require('./rules_service_base.translator')
 const Joi = require('joi')
+
+const RulesServiceBaseTranslator = require('./rules_service_base.translator')
 
 class RulesServiceSrocTranslator extends RulesServiceBaseTranslator {
   constructor (data) {

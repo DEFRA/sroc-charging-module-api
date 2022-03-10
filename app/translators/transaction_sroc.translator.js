@@ -4,8 +4,9 @@
  * @module TransactionSrocTranslator
  */
 
-const TransactionBaseTranslator = require('./transaction_base.translator')
 const Joi = require('joi')
+
+const TransactionBaseTranslator = require('./transaction_base.translator')
 
 class TransactionSrocTranslator extends TransactionBaseTranslator {
   _rules () {

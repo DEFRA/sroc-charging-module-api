@@ -4,9 +4,6 @@ const Joi = require('joi')
 
 const BaseTranslator = require('./base.translator')
 
-// TODO: Use commented out version once 'module exports inside circular dependency' issue resolved
-// See https://github.com/DEFRA/sroc-service-team/issues/66
-// const { StaticLookupLib } = require('../lib')
 const StaticLookupLib = require('../lib/static_lookup.lib')
 
 class CustomerTranslator extends BaseTranslator {
