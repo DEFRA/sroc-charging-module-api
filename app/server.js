@@ -4,27 +4,28 @@ const Hapi = require('@hapi/hapi')
 const Joi = require('joi')
 const GlobalAgent = require('global-agent')
 
-const { ServerConfig, TestConfig } = require('../config')
-const { JwtStrategyAuthLib } = require('./lib')
-const {
-  AirbrakePlugin,
-  AuthorisationPlugin,
-  BlippPlugin,
-  DbErrorsPlugin,
-  DeprecatedRoutePlugin,
-  HapiNowAuthPlugin,
-  HapiPinoPlugin,
-  InvalidCharactersPlugin,
-  MissingPayloadPlugin,
-  PayloadCleanerPlugin,
-  RequestBillRunPlugin,
-  RequestInvoicePlugin,
-  RequestLicencePlugin,
-  RequestNotifierPlugin,
-  RouterPlugin,
-  StopPlugin,
-  VersionInfoPlugin
-} = require('./plugins')
+const ServerConfig = require('../config/server.config')
+const TestConfig = require('../config/test.config')
+
+const JwtStrategyAuthLib = require('./lib/jwt_strategy.lib')
+
+const AirbrakePlugin = require('./plugins/airbrake.plugin')
+const AuthorisationPlugin = require('./plugins/authorisation.plugin')
+const BlippPlugin = require('./plugins/blipp.plugin')
+const DbErrorsPlugin = require('./plugins/db_errors.plugin')
+const DeprecatedRoutePlugin = require('./plugins/deprecated_route.plugin')
+const HapiNowAuthPlugin = require('./plugins/hapi_now_auth.plugin')
+const HapiPinoPlugin = require('./plugins/hapi_pino.plugin')
+const InvalidCharactersPlugin = require('./plugins/invalid_characters.plugin')
+const MissingPayloadPlugin = require('./plugins/missing_payload.plugin')
+const PayloadCleanerPlugin = require('./plugins/payload_cleaner.plugin')
+const RequestBillRunPlugin = require('./plugins/request_bill_run.plugin')
+const RequestInvoicePlugin = require('./plugins/request_invoice.plugin')
+const RequestLicencePlugin = require('./plugins/request_licence.plugin')
+const RequestNotifierPlugin = require('./plugins/request_notifier.plugin')
+const RouterPlugin = require('./plugins/router.plugin')
+const StopPlugin = require('./plugins/stop.plugin')
+const VersionInfoPlugin = require('./plugins/version_info.plugin')
 
 const registerPlugins = async (server) => {
   // Register our auth plugin and then the strategies (needs to be done in this order)
