@@ -5,6 +5,7 @@
  */
 
 const { Model } = require('objection')
+
 const BaseModel = require('./base.model')
 
 class RegimeModel extends BaseModel {

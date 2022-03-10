@@ -5,6 +5,7 @@
  */
 
 const { Model } = require('objection')
+
 const BaseUpsertModel = require('./base_upsert.model')
 
 class LicenceModel extends BaseUpsertModel {

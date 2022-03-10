@@ -5,6 +5,7 @@
  */
 
 const { Model } = require('objection')
+
 const BaseUpsertModel = require('./base_upsert.model')
 
 // This is the value used for new invoices. Reason? To allow us to accept multiple rebill invoices with the same
