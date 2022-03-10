@@ -1,6 +1,6 @@
 'use strict'
 
-const { CustomersController } = require('../controllers')
+const CustomersController = require('../controllers/admin/customers.controller')
 
 const routes = [
   {

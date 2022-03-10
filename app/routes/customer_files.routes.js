@@ -1,7 +1,8 @@
 'use strict'
 
-const { CustomerFilesController } = require('../controllers')
 const Joi = require('joi')
+
+const CustomerFilesController = require('../controllers/customer_files.controller')
 
 const routes = [
   {
