@@ -4,7 +4,7 @@
  * @module DataExportTask
  */
 
-const { ExportDataFiles } = require('../services')
+const ExportDataFiles = require('../services/files/exports/export_data_files.service')
 
 class DataExportTask {
   /**
