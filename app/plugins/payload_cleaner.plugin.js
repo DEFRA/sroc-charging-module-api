@@ -1,6 +1,6 @@
 'use strict'
 
-const { ObjectCleaningService } = require('../services')
+const ObjectCleaningService = require('../services/plugins/object_cleaning.service')
 
 /**
  * Loop through a request's payload and 'clean' it.

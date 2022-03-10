@@ -22,7 +22,7 @@
  * {@link https://hapi.dev/api/?v=20.1.0#-requestapp|Hapi documentation} to make it available to all controllers.
  */
 
-const { RequestBillRunService } = require('../services')
+const RequestBillRunService = require('../services/plugins/request_bill_run.service')
 
 const RequestBillRunPlugin = {
   name: 'request_bill_run',

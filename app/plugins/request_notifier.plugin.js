@@ -9,7 +9,7 @@
  * @module RequestNotifierPlugin
  */
 
-const { RequestNotifierLib } = require('../lib')
+const RequestNotifierLib = require('../lib/request_notifier.lib')
 
 const RequestNotifierPlugin = {
   name: 'Notifier',

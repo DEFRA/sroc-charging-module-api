@@ -14,7 +14,7 @@
  * @module RequestInvoicePlugin
  */
 
-const { RequestInvoiceService } = require('../services')
+const RequestInvoiceService = require('../services/plugins/request_invoice.service')
 
 const RequestInvoicePlugin = {
   name: 'request_invoice',

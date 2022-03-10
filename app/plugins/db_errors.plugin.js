@@ -14,7 +14,7 @@
  * @module DbErrorsPlugin
  */
 
-const { DbErrorsService } = require('../services')
+const DbErrorsService = require('../services/plugins/db_errors.service')
 
 const DbErrorsPlugin = {
   name: 'db_errors',

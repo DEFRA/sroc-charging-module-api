@@ -11,26 +11,24 @@
  * @module RouterPlugin
  */
 
-const { FilterRoutesService } = require('../services')
-const { AuthenticationConfig } = require('../../config')
+const FilterRoutesService = require('../services/plugins/filter_routes.service')
+const AuthenticationConfig = require('../../config/authentication.config')
 
-const {
-  AirbrakeRoutes,
-  AuthorisedSystemRoutes,
-  BillRunRoutes,
-  BillRunInvoiceRoutes,
-  BillRunLicenceRoutes,
-  BillRunTransactionRoutes,
-  CustomerDetailsRoutes,
-  CustomerFilesRoutes,
-  CustomerRoutes,
-  DatabaseRoutes,
-  RegimeRoutes,
-  RootRoutes,
-  TestRoutes,
-  TransactionRoutes,
-  CalculateChargeRoutes
-} = require('../routes')
+const AirbrakeRoutes = require('../routes/airbrake.routes')
+const AuthorisedSystemRoutes = require('../routes/authorised_system.routes')
+const BillRunRoutes = require('../routes/bill_run.routes')
+const BillRunInvoiceRoutes = require('../routes/bill_run_invoice.routes')
+const BillRunLicenceRoutes = require('../routes/bill_run_licence.routes')
+const BillRunTransactionRoutes = require('../routes/bill_run_transaction.routes')
+const CalculateChargeRoutes = require('../routes/calculate_charge.routes')
+const CustomerDetailsRoutes = require('../routes/customer_details.routes')
+const CustomerFilesRoutes = require('../routes/customer_files.routes')
+const CustomerRoutes = require('../routes/customer.routes')
+const DatabaseRoutes = require('../routes/database.routes')
+const RegimeRoutes = require('../routes/regime.routes')
+const RootRoutes = require('../routes/root.routes')
+const TestRoutes = require('../routes/test.routes')
+const TransactionRoutes = require('../routes/transaction.routes')
 
 const routes = [
   ...RootRoutes,
@@ -40,14 +38,14 @@ const routes = [
   ...BillRunInvoiceRoutes,
   ...BillRunLicenceRoutes,
   ...BillRunTransactionRoutes,
+  ...CalculateChargeRoutes,
   ...CustomerDetailsRoutes,
   ...CustomerFilesRoutes,
   ...CustomerRoutes,
   ...DatabaseRoutes,
   ...TestRoutes,
   ...TransactionRoutes,
-  ...RegimeRoutes,
-  ...CalculateChargeRoutes
+  ...RegimeRoutes
 ]
 
 const RouterPlugin = {

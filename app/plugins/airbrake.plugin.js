@@ -18,7 +18,7 @@
  */
 
 const { Notifier } = require('@airbrake/node')
-const { AirbrakeConfig } = require('../../config')
+const AirbrakeConfig = require('../../config/airbrake.config')
 
 const AirbrakePlugin = {
   name: 'airbrake',

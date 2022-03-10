@@ -1,7 +1,7 @@
 'use strict'
 
 const Boom = require('@hapi/boom')
-const { AuthorisationService } = require('../services')
+const AuthorisationService = require('../services/plugins/authorisation.service')
 
 /**
  * Checks the client is authorised to access the requested endpoint
