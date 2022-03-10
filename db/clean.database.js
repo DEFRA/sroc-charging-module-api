@@ -1,7 +1,8 @@
 'use strict'
 
 const { db, dbConfig } = require('./index')
-const { DatabaseHelper } = require('../test/support/helpers')
+
+const DatabaseHelper = require('../test/support/helpers/database.helper')
 
 const clean = async () => {
   try {
