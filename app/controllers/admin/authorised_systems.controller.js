@@ -1,11 +1,9 @@
 'use strict'
 
-const {
-  CreateAuthorisedSystemService,
-  ListAuthorisedSystemsService,
-  ViewAuthorisedSystemService,
-  UpdateAuthorisedSystemService
-} = require('../../services')
+const CreateAuthorisedSystemService = require('../../services/authorised_systems/create_authorised_system.service')
+const ListAuthorisedSystemsService = require('../../services/authorised_systems/list_authorised_systems.service')
+const ViewAuthorisedSystemService = require('../../services/authorised_systems/view_authorised_system.service')
+const UpdateAuthorisedSystemService = require('../../services/authorised_systems/update_authorised_system.service')
 
 class AuthorisedSystemsController {
   static async index (_req, h) {

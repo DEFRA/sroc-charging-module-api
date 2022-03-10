@@ -1,6 +1,6 @@
 'use strict'
 
-const { AdminSendTransactionFileService } = require('../../services')
+const AdminSendTransactionFileService = require('../../services/files/transactions/admin_send_transaction_file.service')
 
 class AdminBillRunsController {
   static async send (req, h) {

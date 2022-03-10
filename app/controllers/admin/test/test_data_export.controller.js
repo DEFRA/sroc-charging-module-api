@@ -1,6 +1,6 @@
 'use strict'
 
-const { ExportDataFiles } = require('../../../services')
+const ExportDataFiles = require('../../../services/files/exports/export_data_files.service')
 
 class TestDataExportController {
   static async export (req, h) {

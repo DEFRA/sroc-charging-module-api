@@ -1,8 +1,8 @@
 'use strict'
 
-const { BillRunModel } = require('../../../models')
-const { CreateBillRunService } = require('../../../services')
-const { BillRunGenerator } = require('../../../../test/support/generators')
+const BillRunModel = require('../../../models/bill_run.model')
+const CreateBillRunService = require('../../../services/bill_runs/create_bill_run.service')
+const BillRunGenerator = require('../../../../test/support/generators/bill_run.generator')
 
 class TestBillRunController {
   static async create (req, h) {

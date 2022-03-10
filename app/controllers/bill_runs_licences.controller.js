@@ -1,6 +1,7 @@
 'use strict'
 
-const { DeleteLicenceService, ValidateBillRunLicenceService } = require('../services')
+const DeleteLicenceService = require('../services/licences/delete_licence.service')
+const ValidateBillRunLicenceService = require('../services/licences/validate_bill_run_licence.service')
 
 class BillRunsLicencesController {
   static async delete (req, h) {

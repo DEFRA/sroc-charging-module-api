@@ -1,10 +1,8 @@
 'use strict'
 
-const {
-  CreateTransactionService,
-  CreateTransactionV2GuardService,
-  ValidateBillRunRegion
-} = require('../services')
+const CreateTransactionService = require('../services/transactions/create_transaction.service')
+const CreateTransactionV2GuardService = require('../services/guards/create_transaction_v2_guard.service')
+const ValidateBillRunRegion = require('../services/bill_runs/validate_bill_run_region.service')
 
 class BillRunsTransactionsController {
   static async createV2 (req, h) {

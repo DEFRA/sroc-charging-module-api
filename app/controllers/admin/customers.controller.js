@@ -1,7 +1,7 @@
 'use strict'
 
-const { SendCustomerFileService } = require('../../services')
-const { StaticLookupLib } = require('../../lib')
+const SendCustomerFileService = require('../../services/files/customers/send_customer_file.service')
+const StaticLookupLib = require('../../lib/static_lookup.lib')
 
 class CustomersController {
   static async send (req, h) {

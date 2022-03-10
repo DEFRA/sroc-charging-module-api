@@ -1,6 +1,6 @@
 'use strict'
 
-const { CreateCustomerDetailsService } = require('../services')
+const CreateCustomerDetailsService = require('../services/create_customer_details.service')
 
 class CustomerDetailsController {
   static async create (req, h) {
