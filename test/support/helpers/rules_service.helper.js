@@ -1,6 +1,6 @@
 'use strict'
 
-const { RulesServiceConfig } = require('../../../config')
+const RulesServiceConfig = require('../../../config/rules_service.config')
 
 class RulesServiceHelper {
   static get url () {

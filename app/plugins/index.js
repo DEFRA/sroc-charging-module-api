@@ -1,6 +1,6 @@
 'use strict'
 
-const { ServerConfig } = require('../../config')
+const ServerConfig = require('../../config/server.config')
 
 const AirbrakePlugin = require('./airbrake.plugin')
 const AuthorisationPlugin = require('./authorisation.plugin')

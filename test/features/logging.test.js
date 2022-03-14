@@ -12,7 +12,7 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Things we need to stub
-const { TestConfig } = require('../../config')
+const TestConfig = require('../../config/test.config')
 
 describe('Only output the log when running unit tests if configured to', () => {
   let server

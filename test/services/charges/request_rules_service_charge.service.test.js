@@ -17,7 +17,7 @@ const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_ch
 const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
 // Things we need to stub
-const { RulesServiceConfig } = require('../../../config')
+const RulesServiceConfig = require('../../../config/rules_service.config')
 
 // As detailed in RequestRulesServiceChangeService, we cannot use require to bring in the got dependency as it no longer
 // supports CJS as of v12. Since we want to import it at the top level so we can use a spy to monitor it, we therefore
