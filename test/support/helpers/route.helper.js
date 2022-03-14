@@ -1,13 +1,5 @@
 'use strict'
 
-// We don't know why but when we added `TestBillRunController` and specifically added it to `app/controllers/index` this
-// require started failing. After some investigation we tracked it down to the controller's `require BillRunGenerator`
-// call. Take that out and all is well. Leave it in and
-// `const { NotSupportedController } = require('../../../app/controllers')` would fail. Requiring the
-// NotSupportedController directly resolves the issue.
-//
-// We suspect it's a circular dependency where something in the chain is requiring RouteHelper causing it to cycle back
-// again. TLDR; you need to NotSupportedController in this way to avoid an error
 const NotSupportedController = require('../../../app/controllers/not_supported.controller')
 
 /**
