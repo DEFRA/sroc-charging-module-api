@@ -1,6 +1,6 @@
 'use strict'
 
-const { db, dbConfig } = require('../../../db/index')
+const { db, dbConfig } = require('../../../db/db')
 
 /**
  * Use to help with cleaning the database between tests

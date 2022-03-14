@@ -1,6 +1,6 @@
 'use strict'
 
-const { db, dbConfig } = require('./index')
+const { db, dbConfig } = require('./db')
 
 const DatabaseHelper = require('../test/support/helpers/database.helper')
 

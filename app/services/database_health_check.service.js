@@ -4,7 +4,7 @@
  * @module DatabaseHealthCheckService
  */
 
-const { db } = require('../../db/index')
+const { db } = require('../../db/db')
 
 const JsonPresenter = require('../presenters/json.presenter')
 
