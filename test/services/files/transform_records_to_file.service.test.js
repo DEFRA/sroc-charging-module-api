@@ -9,20 +9,20 @@ const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const BillRunHelper = require('../../support/helpers/bill_run.helper')
-const DatabaseHelper = require('../../support/helpers/database.helper')
-const GeneralHelper = require('../../support/helpers/general.helper')
-const TransactionHelper = require('../../support/helpers/transaction.helper')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const TransactionHelper = require('../../support/helpers/transaction.helper.js')
 
-const TransactionModel = require('../../../app/models/transaction.model')
+const TransactionModel = require('../../../app/models/transaction.model.js')
 
 const fs = require('fs')
 const path = require('path')
 
-const { temporaryFilePath } = require('../../../config/server.config')
+const { temporaryFilePath } = require('../../../config/server.config.js')
 
 // Thing under test
-const TransformRecordsToFileService = require('../../../app/services/files/transform_records_to_file.service')
+const TransformRecordsToFileService = require('../../../app/services/files/transform_records_to_file.service.js')
 
 describe('Transform Records To File service', () => {
   let billRun

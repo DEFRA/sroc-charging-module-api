@@ -6,10 +6,10 @@
 
 const Boom = require('@hapi/boom')
 
-const AuthorisedSystemModel = require('../../models/authorised_system.model')
-const RegimeModel = require('../../models/regime.model')
+const AuthorisedSystemModel = require('../../models/authorised_system.model.js')
+const RegimeModel = require('../../models/regime.model.js')
 
-const AuthenticationConfig = require('../../../config/authentication.config')
+const AuthenticationConfig = require('../../../config/authentication.config.js')
 
 class UpdateAuthorisedSystemService {
   /**

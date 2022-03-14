@@ -4,7 +4,7 @@
  * @module ListCustomerFilesPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+const BasePresenter = require('./base.presenter.js')
 
 /**
  * Formats data for the list customer files endpoint.

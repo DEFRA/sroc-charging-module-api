@@ -4,7 +4,7 @@
  * @module InvoiceRebillingInitialiseService
  */
 
-const InvoiceModel = require('../../models/invoice.model')
+const InvoiceModel = require('../../models/invoice.model.js')
 
 class InvoiceRebillingInitialiseService {
   /**

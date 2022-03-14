@@ -6,7 +6,7 @@
 
 const { Model } = require('objection')
 
-const BaseUpsertModel = require('./base_upsert.model')
+const BaseUpsertModel = require('./base_upsert.model.js')
 
 class LicenceModel extends BaseUpsertModel {
   static get tableName () {

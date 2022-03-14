@@ -12,14 +12,14 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const AuthorisationHelper = require('../support/helpers/authorisation.helper')
-const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper')
-const DatabaseHelper = require('../support/helpers/database.helper')
-const RegimeHelper = require('../support/helpers/regime.helper')
+const AuthorisationHelper = require('../support/helpers/authorisation.helper.js')
+const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../support/helpers/database.helper.js')
+const RegimeHelper = require('../support/helpers/regime.helper.js')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const ListCustomerFilesService = require('../../app/services/files/customers/list_customer_files.service')
+const ListCustomerFilesService = require('../../app/services/files/customers/list_customer_files.service.js')
 
 describe('List Customer Files controller', () => {
   const clientID = '1234546789'

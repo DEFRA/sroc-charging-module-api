@@ -1,8 +1,8 @@
 'use strict'
 
-const AuthenticationConfig = require('../../config/authentication.config')
-const CognitoJwtToPemService = require('../services/plugins/cognito_jwt_to_pem.service')
-const AuthorisedSystemModel = require('../models/authorised_system.model')
+const AuthenticationConfig = require('../../config/authentication.config.js')
+const CognitoJwtToPemService = require('../services/plugins/cognito_jwt_to_pem.service.js')
+const AuthorisedSystemModel = require('../models/authorised_system.model.js')
 const Boom = require('@hapi/boom')
 
 const authOptions = {

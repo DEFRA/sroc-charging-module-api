@@ -1,6 +1,6 @@
 'use strict'
 
-const DatabaseController = require('../controllers/admin/health/database.controller')
+const DatabaseController = require('../controllers/admin/health/database.controller.js')
 
 const routes = [
   {

@@ -1,10 +1,10 @@
 'use strict'
 
-const DeleteInvoiceService = require('../services/invoices/delete_invoice.service')
-const FetchAndValidateInvoiceService = require('../services/invoices/fetch_and_validate_invoice.service')
-const InvoiceRebillingService = require('../services/invoices/invoice_rebilling.service')
-const InvoiceRebillingValidationService = require('../services/invoices/invoice_rebilling_validation.service')
-const ViewInvoiceService = require('../services/invoices/view_invoice.service')
+const DeleteInvoiceService = require('../services/invoices/delete_invoice.service.js')
+const FetchAndValidateInvoiceService = require('../services/invoices/fetch_and_validate_invoice.service.js')
+const InvoiceRebillingService = require('../services/invoices/invoice_rebilling.service.js')
+const InvoiceRebillingValidationService = require('../services/invoices/invoice_rebilling_validation.service.js')
+const ViewInvoiceService = require('../services/invoices/view_invoice.service.js')
 
 class BillRunsInvoicesController {
   static async delete (req, h) {

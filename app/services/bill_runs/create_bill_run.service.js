@@ -4,13 +4,13 @@
  * @module CreateBillRunService
  */
 
-const BillRunModel = require('../../models/bill_run.model')
+const BillRunModel = require('../../models/bill_run.model.js')
 
-const BillRunTranslator = require('../../translators/bill_run.translator')
+const BillRunTranslator = require('../../translators/bill_run.translator.js')
 
-const CreateBillRunPresenter = require('../../presenters/create_bill_run.presenter')
+const CreateBillRunPresenter = require('../../presenters/create_bill_run.presenter.js')
 
-const NextBillRunNumberService = require('../next_references/next_bill_run_number.service')
+const NextBillRunNumberService = require('../next_references/next_bill_run_number.service.js')
 
 /**
  * Creates a new bill run record

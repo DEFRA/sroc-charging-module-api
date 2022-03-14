@@ -8,12 +8,12 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const DatabaseHelper = require('../support/helpers/database.helper')
-const RegimeHelper = require('../support/helpers/regime.helper')
-const CustomerModel = require('../../app/models/customer.model')
+const DatabaseHelper = require('../support/helpers/database.helper.js')
+const RegimeHelper = require('../support/helpers/regime.helper.js')
+const CustomerModel = require('../../app/models/customer.model.js')
 
 // Thing under test
-const CreateCustomerDetailsService = require('../../app/services/create_customer_details.service')
+const CreateCustomerDetailsService = require('../../app/services/create_customer_details.service.js')
 
 describe('Create Customer Details service', () => {
   let regime

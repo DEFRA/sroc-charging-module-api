@@ -21,7 +21,7 @@ This allows us to return a decoded version of the tokens we generate in the test
 
 const Sinon = require('sinon')
 
-const AuthorisationHelper = require('../support/helpers/authorisation.helper')
+const AuthorisationHelper = require('../support/helpers/authorisation.helper.js')
 
 const JsonWebToken = require('jsonwebtoken')
 

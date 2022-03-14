@@ -4,7 +4,7 @@
  * @module ViewTransactionPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+const BasePresenter = require('./base.presenter.js')
 
 /**
  * Handles formatting the transaction data into the response we send to clients when a GET request is received. Note

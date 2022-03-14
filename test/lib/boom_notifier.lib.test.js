@@ -9,7 +9,7 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const BoomNotifierLib = require('../../app/lib/boom_notifier.lib')
+const BoomNotifierLib = require('../../app/lib/boom_notifier.lib.js')
 
 describe('BoomNotifierLib class', () => {
   const id = '1234567890'

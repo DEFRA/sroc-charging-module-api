@@ -6,10 +6,10 @@
 
 const Boom = require('@hapi/boom')
 
-const BillRunModel = require('../../models/bill_run.model')
+const BillRunModel = require('../../models/bill_run.model.js')
 
-const NextTransactionFileReferenceService = require('../next_references/next_transaction_file_reference.service')
-const NextTransactionReferenceService = require('../next_references/next_transaction_reference.service')
+const NextTransactionFileReferenceService = require('../next_references/next_transaction_file_reference.service.js')
+const NextTransactionReferenceService = require('../next_references/next_transaction_reference.service.js')
 
 class SendBillRunReferenceService {
   /**

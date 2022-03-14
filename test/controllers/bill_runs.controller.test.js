@@ -12,28 +12,28 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const AuthorisationHelper = require('../support/helpers/authorisation.helper')
-const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper')
-const DatabaseHelper = require('../support/helpers/database.helper')
-const GeneralHelper = require('../support/helpers/general.helper')
-const NewBillRunHelper = require('../support/helpers/new_bill_run.helper')
-const NewInvoiceHelper = require('../support/helpers/new_invoice.helper')
-const NewTransactionHelper = require('../support/helpers/new_transaction.helper')
-const RegimeHelper = require('../support/helpers/regime.helper')
-const SequenceCounterHelper = require('../support/helpers/sequence_counter.helper')
+const AuthorisationHelper = require('../support/helpers/authorisation.helper.js')
+const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../support/helpers/database.helper.js')
+const GeneralHelper = require('../support/helpers/general.helper.js')
+const NewBillRunHelper = require('../support/helpers/new_bill_run.helper.js')
+const NewInvoiceHelper = require('../support/helpers/new_invoice.helper.js')
+const NewTransactionHelper = require('../support/helpers/new_transaction.helper.js')
+const RegimeHelper = require('../support/helpers/regime.helper.js')
+const SequenceCounterHelper = require('../support/helpers/sequence_counter.helper.js')
 
-const CreateBillRunService = require('../../app/services/bill_runs/create_bill_run.service')
-const CreateBillRunV2GuardService = require('../../app/services/guards/create_bill_run_v2_guard.service')
-const GenerateBillRunService = require('../../app/services/bill_runs/generate_bill_run.service')
-const GenerateBillRunValidationService = require('../../app/services/bill_runs/generate_bill_run_validation.service')
-const SendCustomerFileService = require('../../app/services/files/customers/send_customer_file.service')
-const SendTransactionFileService = require('../../app/services/files/transactions/send_transaction_file.service')
+const CreateBillRunService = require('../../app/services/bill_runs/create_bill_run.service.js')
+const CreateBillRunV2GuardService = require('../../app/services/guards/create_bill_run_v2_guard.service.js')
+const GenerateBillRunService = require('../../app/services/bill_runs/generate_bill_run.service.js')
+const GenerateBillRunValidationService = require('../../app/services/bill_runs/generate_bill_run_validation.service.js')
+const SendCustomerFileService = require('../../app/services/files/customers/send_customer_file.service.js')
+const SendTransactionFileService = require('../../app/services/files/transactions/send_transaction_file.service.js')
 
-const RequestNotifierLib = require('../../app/lib/request_notifier.lib')
+const RequestNotifierLib = require('../../app/lib/request_notifier.lib.js')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const BillRunModel = require('../../app/models/bill_run.model')
+const BillRunModel = require('../../app/models/bill_run.model.js')
 
 describe('Bill Runs controller', () => {
   const clientID = '1234546789'

@@ -8,10 +8,10 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const GeneralHelper = require('../support/helpers/general.helper')
+const GeneralHelper = require('../support/helpers/general.helper.js')
 
 // Thing under test
-const BillRunStatusPresenter = require('../../app/presenters/bill_run_status.presenter')
+const BillRunStatusPresenter = require('../../app/presenters/bill_run_status.presenter.js')
 
 describe('Bill run status Presenter', () => {
   it("returns the 'status' of the bill run", () => {

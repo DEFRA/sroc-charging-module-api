@@ -6,7 +6,7 @@
 
 const { Model } = require('objection')
 
-const BaseModel = require('./base.model')
+const BaseModel = require('./base.model.js')
 
 class SequenceCounterModel extends BaseModel {
   static get tableName () {

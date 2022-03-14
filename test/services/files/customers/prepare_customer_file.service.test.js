@@ -9,17 +9,17 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const DatabaseHelper = require('../../../support/helpers/database.helper')
-const RegimeHelper = require('../../../support/helpers/regime.helper')
+const DatabaseHelper = require('../../../support/helpers/database.helper.js')
+const RegimeHelper = require('../../../support/helpers/regime.helper.js')
 
-const CustomerFileModel = require('../../../../app/models/customer_file.model')
-const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service')
+const CustomerFileModel = require('../../../../app/models/customer_file.model.js')
+const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service.js')
 
 // Things we need to stub
-const NextCustomerFileReferenceService = require('../../../../app/services/next_references/next_customer_file_reference.service')
+const NextCustomerFileReferenceService = require('../../../../app/services/next_references/next_customer_file_reference.service.js')
 
 // Thing under test
-const PrepareCustomerFileService = require('../../../../app/services/files/customers/prepare_customer_file.service')
+const PrepareCustomerFileService = require('../../../../app/services/files/customers/prepare_customer_file.service.js')
 
 describe('Prepare Customer File service', () => {
   let regime

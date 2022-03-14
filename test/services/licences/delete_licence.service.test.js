@@ -9,23 +9,23 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const DatabaseHelper = require('../../support/helpers/database.helper')
-const GeneralHelper = require('../../support/helpers/general.helper')
-const NewLicenceHelper = require('../../support/helpers/new_licence.helper')
-const NewBillRunHelper = require('../../support/helpers/new_bill_run.helper')
-const NewInvoiceHelper = require('../../support/helpers/new_invoice.helper')
-const NewTransactionHelper = require('../../support/helpers/new_transaction.helper')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const NewLicenceHelper = require('../../support/helpers/new_licence.helper.js')
+const NewBillRunHelper = require('../../support/helpers/new_bill_run.helper.js')
+const NewInvoiceHelper = require('../../support/helpers/new_invoice.helper.js')
+const NewTransactionHelper = require('../../support/helpers/new_transaction.helper.js')
 
-const BillRunModel = require('../../../app/models/bill_run.model')
-const InvoiceModel = require('../../../app/models/invoice.model')
-const LicenceModel = require('../../../app/models/licence.model')
-const RegimeModel = require('../../../app/models/regime.model')
-const TransactionModel = require('../../../app/models/transaction.model')
+const BillRunModel = require('../../../app/models/bill_run.model.js')
+const InvoiceModel = require('../../../app/models/invoice.model.js')
+const LicenceModel = require('../../../app/models/licence.model.js')
+const RegimeModel = require('../../../app/models/regime.model.js')
+const TransactionModel = require('../../../app/models/transaction.model.js')
 
-const GenerateBillRunService = require('../../../app/services/bill_runs/generate_bill_run.service')
+const GenerateBillRunService = require('../../../app/services/bill_runs/generate_bill_run.service.js')
 
 // Thing under test
-const DeleteLicenceService = require('../../../app/services/licences/delete_licence.service')
+const DeleteLicenceService = require('../../../app/services/licences/delete_licence.service.js')
 
 describe('Delete Licence service', () => {
   let billRun

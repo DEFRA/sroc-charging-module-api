@@ -2,9 +2,9 @@
 
 const Joi = require('joi')
 
-const BaseTranslator = require('./base.translator')
+const BaseTranslator = require('./base.translator.js')
 
-const StaticLookupLib = require('../lib/static_lookup.lib')
+const StaticLookupLib = require('../lib/static_lookup.lib.js')
 
 class BillRunTranslator extends BaseTranslator {
   _translations () {

@@ -4,7 +4,7 @@
  * @module TableFilePresenter
  */
 
-const BasePresenter = require('./base.presenter')
+const BasePresenter = require('./base.presenter.js')
 
 /**
  * Formats data for an exported table file.

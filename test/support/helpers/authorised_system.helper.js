@@ -1,9 +1,9 @@
 'use strict'
 
-const AuthenticationConfig = require('../../../config/authentication.config')
-const AuthorisedSystemModel = require('../../../app/models/authorised_system.model')
+const AuthenticationConfig = require('../../../config/authentication.config.js')
+const AuthorisedSystemModel = require('../../../app/models/authorised_system.model.js')
 
-const RegimeHelper = require('./regime.helper')
+const RegimeHelper = require('./regime.helper.js')
 
 /**
  * Use to help with creating `AuthorisedSystem` records

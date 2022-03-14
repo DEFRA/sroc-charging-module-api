@@ -11,7 +11,7 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const RouteHelper = require('../support/helpers/route.helper')
+const RouteHelper = require('../support/helpers/route.helper.js')
 
 const options = payload => {
   return {

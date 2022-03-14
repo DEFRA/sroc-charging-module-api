@@ -8,11 +8,11 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const GeneralHelper = require('../support/helpers/general.helper')
+const GeneralHelper = require('../support/helpers/general.helper.js')
 const { ValidationError } = require('joi')
 
 // Thing under test
-const CustomerTranslator = require('../../app/translators/customer.translator')
+const CustomerTranslator = require('../../app/translators/customer.translator.js')
 
 describe('Customer translator', () => {
   const input = {

@@ -4,9 +4,9 @@
  * @module AdminSendTransactionFileService
  */
 
-const SendTransactionFileService = require('./send_transaction_file.service')
+const SendTransactionFileService = require('./send_transaction_file.service.js')
 
-const BoomNotifierLib = require('../../../lib/boom_notifier.lib')
+const BoomNotifierLib = require('../../../lib/boom_notifier.lib.js')
 
 const Boom = require('@hapi/boom')
 

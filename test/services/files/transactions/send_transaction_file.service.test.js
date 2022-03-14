@@ -9,19 +9,19 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const BillRunHelper = require('../../../support/helpers/bill_run.helper')
-const DatabaseHelper = require('../../../support/helpers/database.helper')
-const GeneralHelper = require('../../../support/helpers/general.helper')
-const RegimeHelper = require('../../../support/helpers/regime.helper')
+const BillRunHelper = require('../../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../../support/helpers/general.helper.js')
+const RegimeHelper = require('../../../support/helpers/regime.helper.js')
 
 // Things we need to stub
-const DeleteFileService = require('../../../../app/services/files/delete_file.service')
-const GeneratePresrocTransactionFileService = require('../../../../app/services/files/transactions/generate_presroc_transaction_file.service')
-const GenerateSrocTransactionFileService = require('../../../../app/services/files/transactions/generate_sroc_transaction_file.service')
-const SendFileToS3Service = require('../../../../app/services/files/send_file_to_s3.service')
+const DeleteFileService = require('../../../../app/services/files/delete_file.service.js')
+const GeneratePresrocTransactionFileService = require('../../../../app/services/files/transactions/generate_presroc_transaction_file.service.js')
+const GenerateSrocTransactionFileService = require('../../../../app/services/files/transactions/generate_sroc_transaction_file.service.js')
+const SendFileToS3Service = require('../../../../app/services/files/send_file_to_s3.service.js')
 
 // Thing under test
-const SendTransactionFileService = require('../../../../app/services/files/transactions/send_transaction_file.service')
+const SendTransactionFileService = require('../../../../app/services/files/transactions/send_transaction_file.service.js')
 
 describe('Send Transaction File service', () => {
   let regime

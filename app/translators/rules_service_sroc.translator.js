@@ -6,7 +6,7 @@
 
 const Joi = require('joi')
 
-const RulesServiceBaseTranslator = require('./rules_service_base.translator')
+const RulesServiceBaseTranslator = require('./rules_service_base.translator.js')
 
 class RulesServiceSrocTranslator extends RulesServiceBaseTranslator {
   constructor (data) {

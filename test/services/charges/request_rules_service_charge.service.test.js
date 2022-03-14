@@ -10,14 +10,14 @@ const { describe, it, before, after, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const RulesServiceHelper = require('../../support/helpers/rules_service.helper')
+const RulesServiceHelper = require('../../support/helpers/rules_service.helper.js')
 
 const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
 
 const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
 // Things we need to stub
-const RulesServiceConfig = require('../../../config/rules_service.config')
+const RulesServiceConfig = require('../../../config/rules_service.config.js')
 
 // As detailed in RequestRulesServiceChangeService, we cannot use require to bring in the got dependency as it no longer
 // supports CJS as of v12. Since we want to import it at the top level so we can use a spy to monitor it, we therefore
@@ -29,7 +29,7 @@ let got;
 })()
 
 // Thing under test
-const RequestRulesServiceCharge = require('../../../app/services/charges/request_rules_service_charge.service')
+const RequestRulesServiceCharge = require('../../../app/services/charges/request_rules_service_charge.service.js')
 
 // Wraps regime, financial year and charge params in a dummy presenter object for passing to rules service
 const dummyPresenter = (regime, financialYear, ruleset, chargeParams = {}) => {

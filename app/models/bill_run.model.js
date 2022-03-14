@@ -6,9 +6,9 @@
 
 const { Model } = require('objection')
 
-const BaseModel = require('./base.model')
+const BaseModel = require('./base.model.js')
 
-const StaticLookupLib = require('../lib/static_lookup.lib')
+const StaticLookupLib = require('../lib/static_lookup.lib.js')
 
 class BillRunModel extends BaseModel {
   static get tableName () {
@@ -104,7 +104,7 @@ class BillRunModel extends BaseModel {
    * @returns {string} ID of the bill run that was updated
    */
   static async patchTally (transaction, trx) {
-    const CreateTransactionTallyService = require('../services/transactions/create_transaction_tally.service')
+    const CreateTransactionTallyService = require('../services/transactions/create_transaction_tally.service.js')
 
     const { patch } = CreateTransactionTallyService.go(transaction, this.tableName)
 

@@ -10,23 +10,23 @@ const { describe, it, before, beforeEach, after, afterEach } = exports.lab = Lab
 const { expect } = Code
 
 // Test helpers
-const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper')
-const BillRunHelper = require('../../support/helpers/bill_run.helper')
-const DatabaseHelper = require('../../support/helpers/database.helper')
-const GeneralHelper = require('../../support/helpers/general.helper')
-const RegimeHelper = require('../../support/helpers/regime.helper')
-const RulesServiceHelper = require('../../support/helpers/rules_service.helper')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper.js')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
+const RulesServiceHelper = require('../../support/helpers/rules_service.helper.js')
 
-const LicenceModel = require('../../../app/models/licence.model')
-const TransactionModel = require('../../../app/models/transaction.model')
+const LicenceModel = require('../../../app/models/licence.model.js')
+const TransactionModel = require('../../../app/models/transaction.model.js')
 
-const CreateTransactionService = require('../../../app/services/transactions/create_transaction.service')
+const CreateTransactionService = require('../../../app/services/transactions/create_transaction.service.js')
 
 const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
 
 // Thing under test
-const CreateMinimumChargeAdjustmentTransactionService = require('../../../app/services/transactions/create_minimum_charge_adjustment_transaction.service')
+const CreateMinimumChargeAdjustmentTransactionService = require('../../../app/services/transactions/create_minimum_charge_adjustment_transaction.service.js')
 
 describe('Create Minimum Charge Adjustment Transaction service', () => {
   let authorisedSystem

@@ -1,6 +1,6 @@
 'use strict'
 
-const NotSupportedController = require('../../../app/controllers/not_supported.controller')
+const NotSupportedController = require('../../../app/controllers/not_supported.controller.js')
 
 /**
  * A helper that provides test routes.

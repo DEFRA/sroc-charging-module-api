@@ -1,14 +1,14 @@
 'use strict'
 
-const TransactionModel = require('../../../app/models/transaction.model')
+const TransactionModel = require('../../../app/models/transaction.model.js')
 
-const RulesServicePresrocTranslator = require('../../../app/translators/rules_service_presroc.translator')
-const TransactionPresrocTranslator = require('../../../app/translators/transaction_presroc.translator')
+const RulesServicePresrocTranslator = require('../../../app/translators/rules_service_presroc.translator.js')
+const TransactionPresrocTranslator = require('../../../app/translators/transaction_presroc.translator.js')
 
-const CreateTransactionTallyService = require('../../../app/services/transactions/create_transaction_tally.service')
+const CreateTransactionTallyService = require('../../../app/services/transactions/create_transaction_tally.service.js')
 
-const GeneralHelper = require('./general.helper')
-const NewLicenceHelper = require('./new_licence.helper')
+const GeneralHelper = require('./general.helper.js')
+const NewLicenceHelper = require('./new_licence.helper.js')
 
 const { presroc: requestFixtures } = require('../fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../fixtures/calculate_charge')

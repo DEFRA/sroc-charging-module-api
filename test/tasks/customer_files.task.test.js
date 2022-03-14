@@ -12,8 +12,8 @@ const { expect } = Code
 const CustomerFilesTask = require('../../app/tasks/customer_files.task')
 
 // Things we need to stub
-const RegimeModel = require('../../app/models/regime.model')
-const SendCustomerFileService = require('../../app/services/files/customers/send_customer_file.service')
+const RegimeModel = require('../../app/models/regime.model.js')
+const SendCustomerFileService = require('../../app/services/files/customers/send_customer_file.service.js')
 
 describe('Customer Files Task', () => {
   let notifierFake

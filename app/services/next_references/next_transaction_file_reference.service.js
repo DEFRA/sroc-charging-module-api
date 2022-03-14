@@ -4,9 +4,9 @@
  * @module NextTransactionFileReferenceService
  */
 
-const BaseNextFileReferenceService = require('./base_next_file_reference.service')
+const BaseNextFileReferenceService = require('./base_next_file_reference.service.js')
 
-const StaticLookupLib = require('../../lib/static_lookup.lib')
+const StaticLookupLib = require('../../lib/static_lookup.lib.js')
 
 /**
  * Returns the next customer file reference for the given region, regime and ruleset, in the format `nalri50001t` where:

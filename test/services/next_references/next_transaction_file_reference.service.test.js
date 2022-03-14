@@ -8,14 +8,14 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const DatabaseHelper = require('../../support/helpers/database.helper')
-const GeneralHelper = require('../../support/helpers/general.helper')
-const RegimeHelper = require('../../support/helpers/regime.helper')
-const SequenceCounterHelper = require('../../support/helpers/sequence_counter.helper')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
+const SequenceCounterHelper = require('../../support/helpers/sequence_counter.helper.js')
 const { NotFoundError } = require('objection')
 
 // Thing under test
-const NextTransactionFileReferenceService = require('../../../app/services/next_references/next_transaction_file_reference.service')
+const NextTransactionFileReferenceService = require('../../../app/services/next_references/next_transaction_file_reference.service.js')
 
 describe('Next Transaction File Reference service', () => {
   let regime

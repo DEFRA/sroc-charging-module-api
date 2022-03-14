@@ -1,8 +1,8 @@
 'use strict'
 
-const AdminBillRunsController = require('../controllers/admin/bill_runs.controller')
-const BillRunsController = require('../controllers/bill_runs.controller')
-const NotSupportedController = require('../controllers/not_supported.controller')
+const AdminBillRunsController = require('../controllers/admin/bill_runs.controller.js')
+const BillRunsController = require('../controllers/bill_runs.controller.js')
+const NotSupportedController = require('../controllers/not_supported.controller.js')
 
 const routes = [
   {

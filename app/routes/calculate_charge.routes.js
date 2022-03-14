@@ -1,7 +1,7 @@
 'use strict'
 
-const NotSupportedController = require('../controllers/not_supported.controller')
-const CalculateChargeController = require('../controllers/calculate_charge.controller')
+const NotSupportedController = require('../controllers/not_supported.controller.js')
+const CalculateChargeController = require('../controllers/calculate_charge.controller.js')
 
 const routes = [
   {

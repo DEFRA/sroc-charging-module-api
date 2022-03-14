@@ -8,10 +8,10 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const DatabaseHelper = require('../support/helpers/database.helper')
+const DatabaseHelper = require('../support/helpers/database.helper.js')
 
 // Thing under test
-const DatabaseHealthCheckService = require('../../app/services/database_health_check.service')
+const DatabaseHealthCheckService = require('../../app/services/database_health_check.service.js')
 
 describe('Database Health Check service', () => {
   beforeEach(async () => {

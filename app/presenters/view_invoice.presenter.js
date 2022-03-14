@@ -4,8 +4,8 @@
  * @module ViewInvoicePresenter
  */
 
-const BasePresenter = require('./base.presenter')
-const ViewLicencePresenter = require('./view_licence.presenter')
+const BasePresenter = require('./base.presenter.js')
+const ViewLicencePresenter = require('./view_licence.presenter.js')
 
 /**
  * Handles formatting the data into the response we send to clients after a request to view an invoice. Note that we

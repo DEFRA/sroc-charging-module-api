@@ -6,7 +6,7 @@
 
 const { Model } = require('objection')
 
-const { db } = require('../../db/db')
+const { db } = require('../../db/db.js')
 
 // We only have to do this once in the app and then it will be set globally for Objection. As we are not using multiple
 // databases we have no need to pass it into each query we build. And setting it here means all subclasses will inherit

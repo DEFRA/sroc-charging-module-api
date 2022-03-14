@@ -1,8 +1,8 @@
 'use strict'
 
-const LicenceModel = require('../../../app/models/licence.model')
+const LicenceModel = require('../../../app/models/licence.model.js')
 
-const InvoiceHelper = require('./invoice.helper')
+const InvoiceHelper = require('./invoice.helper.js')
 
 class LicenceHelper {
   /**

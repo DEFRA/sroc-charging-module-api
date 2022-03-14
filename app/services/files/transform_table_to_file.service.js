@@ -8,15 +8,15 @@ const path = require('path')
 const { pipeline } = require('stream')
 const util = require('util')
 
-const temporaryFilePath = require('../../../config/server.config').temporaryFilePath
+const temporaryFilePath = require('../../../config/server.config.js').temporaryFilePath
 
-const TableFilePresenter = require('../../presenters/table_file.presenter')
+const TableFilePresenter = require('../../presenters/table_file.presenter.js')
 
-const StreamReadableDataService = require('../streams/stream_readable_data.service')
-const StreamReadableRecordsService = require('../streams/stream_readable_records.service')
-const StreamTransformCSVRowService = require('../streams/stream_transform_csv_row.service')
-const StreamTransformUsingPresenterService = require('../streams/stream_transform_using_presenter.service')
-const StreamWritableFileService = require('../streams/stream_writable_file.service')
+const StreamReadableDataService = require('../streams/stream_readable_data.service.js')
+const StreamReadableRecordsService = require('../streams/stream_readable_records.service.js')
+const StreamTransformCSVRowService = require('../streams/stream_transform_csv_row.service.js')
+const StreamTransformUsingPresenterService = require('../streams/stream_transform_using_presenter.service.js')
+const StreamWritableFileService = require('../streams/stream_writable_file.service.js')
 
 class TransformTableToFileService {
   /**

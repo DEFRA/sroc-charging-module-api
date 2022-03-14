@@ -1,9 +1,9 @@
 'use strict'
 
-const TestBillRunsController = require('../controllers/admin/test/test_bill_runs.controller')
-const TestCustomerFilesController = require('../controllers/admin/test/test_customer_files.controller')
-const TestDataExportController = require('../controllers/admin/test/test_data_export.controller')
-const TestTransactionsController = require('../controllers/admin/test/test_transactions.controller')
+const TestBillRunsController = require('../controllers/admin/test/test_bill_runs.controller.js')
+const TestCustomerFilesController = require('../controllers/admin/test/test_customer_files.controller.js')
+const TestDataExportController = require('../controllers/admin/test/test_data_export.controller.js')
+const TestTransactionsController = require('../controllers/admin/test/test_transactions.controller.js')
 
 const routes = [
   {

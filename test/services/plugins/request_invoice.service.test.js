@@ -8,14 +8,14 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const BillRunHelper = require('../../support/helpers/bill_run.helper')
-const DatabaseHelper = require('../../support/helpers/database.helper')
-const InvoiceHelper = require('../../support/helpers/invoice.helper')
-const GeneralHelper = require('../../support/helpers/general.helper')
-const RegimeHelper = require('../../support/helpers/regime.helper')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const InvoiceHelper = require('../../support/helpers/invoice.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
 
 // Thing under test
-const RequestInvoiceService = require('../../../app/services/plugins/request_invoice.service')
+const RequestInvoiceService = require('../../../app/services/plugins/request_invoice.service.js')
 
 describe('Request invoice service', () => {
   let regime

@@ -4,9 +4,9 @@
  * @module ExportTableToFileService
  */
 
-const TransformTableToFileService = require('../transform_table_to_file.service')
+const TransformTableToFileService = require('../transform_table_to_file.service.js')
 
-const { db } = require('../../../../db/db')
+const { db } = require('../../../../db/db.js')
 
 class ExportTableToFileService {
   /**

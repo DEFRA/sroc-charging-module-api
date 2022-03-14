@@ -6,17 +6,17 @@
 
 const Boom = require('@hapi/boom')
 
-const CalculateChargePresrocTranslator = require('../../translators/calculate_charge_presroc.translator')
-const CalculateChargeSrocTranslator = require('../../translators/calculate_charge_sroc.translator')
-const RulesServicePresrocTranslator = require('../../translators/rules_service_presroc.translator')
-const RulesServiceSrocTranslator = require('../../translators/rules_service_sroc.translator')
+const CalculateChargePresrocTranslator = require('../../translators/calculate_charge_presroc.translator.js')
+const CalculateChargeSrocTranslator = require('../../translators/calculate_charge_sroc.translator.js')
+const RulesServicePresrocTranslator = require('../../translators/rules_service_presroc.translator.js')
+const RulesServiceSrocTranslator = require('../../translators/rules_service_sroc.translator.js')
 
-const CalculateChargePresrocPresenter = require('../../presenters/calculate_charge_presroc.presenter')
-const CalculateChargeSrocPresenter = require('../../presenters/calculate_charge_sroc.presenter')
-const RulesServicePresrocPresenter = require('../../presenters/rules_service_presroc.presenter')
-const RulesServiceSrocPresenter = require('../../presenters/rules_service_sroc.presenter')
+const CalculateChargePresrocPresenter = require('../../presenters/calculate_charge_presroc.presenter.js')
+const CalculateChargeSrocPresenter = require('../../presenters/calculate_charge_sroc.presenter.js')
+const RulesServicePresrocPresenter = require('../../presenters/rules_service_presroc.presenter.js')
+const RulesServiceSrocPresenter = require('../../presenters/rules_service_sroc.presenter.js')
 
-const RequestRulesServiceChargeService = require('./request_rules_service_charge.service')
+const RequestRulesServiceChargeService = require('./request_rules_service_charge.service.js')
 
 /**
  * Handles calling the rules service and returning a response when calculating a charge

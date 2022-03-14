@@ -11,7 +11,7 @@ const { expect } = Code
 const { ValidationError } = require('joi')
 
 // Thing under test
-const AuthorisedSystemTranslator = require('../../app/translators/authorised_system.translator')
+const AuthorisedSystemTranslator = require('../../app/translators/authorised_system.translator.js')
 
 describe('Authorised system translator', () => {
   const payload = {

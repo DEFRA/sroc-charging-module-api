@@ -6,7 +6,7 @@
 
 const Joi = require('joi')
 
-const TransactionBaseTranslator = require('./transaction_base.translator')
+const TransactionBaseTranslator = require('./transaction_base.translator.js')
 
 class TransactionSrocTranslator extends TransactionBaseTranslator {
   _rules () {

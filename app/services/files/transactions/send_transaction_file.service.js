@@ -7,10 +7,10 @@
 const Boom = require('@hapi/boom')
 const path = require('path')
 
-const GeneratePresrocTransactionFileService = require('./generate_presroc_transaction_file.service')
-const GenerateSrocTransactionFileService = require('./generate_sroc_transaction_file.service')
-const SendFileToS3Service = require('../send_file_to_s3.service')
-const DeleteFileService = require('../delete_file.service')
+const GeneratePresrocTransactionFileService = require('./generate_presroc_transaction_file.service.js')
+const GenerateSrocTransactionFileService = require('./generate_sroc_transaction_file.service.js')
+const SendFileToS3Service = require('../send_file_to_s3.service.js')
+const DeleteFileService = require('../delete_file.service.js')
 
 class SendTransactionFileService {
   /**

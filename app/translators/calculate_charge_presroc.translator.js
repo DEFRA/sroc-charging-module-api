@@ -7,7 +7,7 @@
 const Boom = require('@hapi/boom')
 const Joi = require('joi').extend(require('@joi/date'))
 
-const CalculateChargeBaseTranslator = require('./calculate_charge_base.translator')
+const CalculateChargeBaseTranslator = require('./calculate_charge_base.translator.js')
 
 class CalculateChargePresrocTranslator extends CalculateChargeBaseTranslator {
   constructor (data) {

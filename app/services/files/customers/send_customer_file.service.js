@@ -6,13 +6,13 @@
 
 const path = require('path')
 
-const CustomerFileModel = require('../../../models/customer_file.model')
+const CustomerFileModel = require('../../../models/customer_file.model.js')
 
-const DeleteFileService = require('../delete_file.service')
-const GenerateCustomerFileService = require('./generate_customer_file.service')
-const MoveCustomerDetailsToExportedTableService = require('./move_customer_details_to_exported_table.service')
-const PrepareCustomerFileService = require('./prepare_customer_file.service')
-const SendFileToS3Service = require('../send_file_to_s3.service')
+const DeleteFileService = require('../delete_file.service.js')
+const GenerateCustomerFileService = require('./generate_customer_file.service.js')
+const MoveCustomerDetailsToExportedTableService = require('./move_customer_details_to_exported_table.service.js')
+const PrepareCustomerFileService = require('./prepare_customer_file.service.js')
+const SendFileToS3Service = require('../send_file_to_s3.service.js')
 
 class SendCustomerFileService {
   /**

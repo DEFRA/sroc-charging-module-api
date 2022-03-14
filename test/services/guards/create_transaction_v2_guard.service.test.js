@@ -7,10 +7,10 @@ const Code = require('@hapi/code')
 const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
-const NewBillRunHelper = require('../../support/helpers/new_bill_run.helper')
+const NewBillRunHelper = require('../../support/helpers/new_bill_run.helper.js')
 
 // Thing under test
-const CreateTransactionV2GuardService = require('../../../app/services/guards/create_transaction_v2_guard.service')
+const CreateTransactionV2GuardService = require('../../../app/services/guards/create_transaction_v2_guard.service.js')
 
 describe('Create Transaction V2 guard service', () => {
   describe('When a valid presroc bill run is supplied', () => {

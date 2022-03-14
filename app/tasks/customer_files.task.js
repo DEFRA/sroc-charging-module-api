@@ -4,11 +4,11 @@
  * @module CustomerFilesTask
  */
 
-const StaticLookupLib = require('../lib/static_lookup.lib')
+const StaticLookupLib = require('../lib/static_lookup.lib.js')
 
-const RegimeModel = require('../models/regime.model')
+const RegimeModel = require('../models/regime.model.js')
 
-const SendCustomerFileService = require('../services/files/customers/send_customer_file.service')
+const SendCustomerFileService = require('../services/files/customers/send_customer_file.service.js')
 
 class CustomerFilesTask {
   /**

@@ -1,9 +1,9 @@
 'use strict'
 
-const BillRunModel = require('../../../app/models/bill_run.model')
-const InvoiceModel = require('../../../app/models/invoice.model')
+const BillRunModel = require('../../../app/models/bill_run.model.js')
+const InvoiceModel = require('../../../app/models/invoice.model.js')
 
-const NewBillRunHelper = require('./new_bill_run.helper')
+const NewBillRunHelper = require('./new_bill_run.helper.js')
 
 class NewInvoiceHelper {
   /**

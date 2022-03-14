@@ -4,14 +4,14 @@
  * @module GenerateBillRunService
  */
 
-const CalculateMinimumChargeForBillRunService = require('./calculate_minimum_charge_for_bill_run.service')
+const CalculateMinimumChargeForBillRunService = require('./calculate_minimum_charge_for_bill_run.service.js')
 
-const BillRunModel = require('../../models/bill_run.model')
-const InvoiceModel = require('../../models/invoice.model')
-const LicenceModel = require('../../models/licence.model')
-const TransactionModel = require('../../models/transaction.model')
+const BillRunModel = require('../../models/bill_run.model.js')
+const InvoiceModel = require('../../models/invoice.model.js')
+const LicenceModel = require('../../models/licence.model.js')
+const TransactionModel = require('../../models/transaction.model.js')
 
-const { raw } = require('../../models/base.model')
+const { raw } = require('../../models/base.model.js')
 
 class GenerateBillRunService {
   /**

@@ -8,7 +8,7 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const CalculateChargePresrocPresenter = require('../../app/presenters/calculate_charge_presroc.presenter')
+const CalculateChargePresrocPresenter = require('../../app/presenters/calculate_charge_presroc.presenter.js')
 
 describe('Calculate Charge Presroc presenter', () => {
   describe("when the request was marked as a 'credit'", () => {

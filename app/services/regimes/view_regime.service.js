@@ -6,9 +6,9 @@
 
 const Boom = require('@hapi/boom')
 
-const RegimeModel = require('../../models/regime.model')
+const RegimeModel = require('../../models/regime.model.js')
 
-const JsonPresenter = require('../../presenters/json.presenter')
+const JsonPresenter = require('../../presenters/json.presenter.js')
 
 /**
  * Returns the regime with matching Id

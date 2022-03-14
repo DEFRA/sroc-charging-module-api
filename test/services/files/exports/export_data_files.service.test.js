@@ -9,12 +9,12 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Things we need to stub
-const DeleteFileService = require('../../../../app/services/files/delete_file.service')
-const ExportTableToFileService = require('../../../../app/services/files/exports/export_table_to_file.service')
-const SendFileToS3Service = require('../../../../app/services/files/send_file_to_s3.service')
+const DeleteFileService = require('../../../../app/services/files/delete_file.service.js')
+const ExportTableToFileService = require('../../../../app/services/files/exports/export_table_to_file.service.js')
+const SendFileToS3Service = require('../../../../app/services/files/send_file_to_s3.service.js')
 
 // Thing under test
-const ExportDataFiles = require('../../../../app/services/files/exports/export_data_files.service')
+const ExportDataFiles = require('../../../../app/services/files/exports/export_data_files.service.js')
 
 describe('Export Data Files service', () => {
   let exportTableStub

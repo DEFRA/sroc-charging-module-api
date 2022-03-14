@@ -12,15 +12,15 @@ const { expect } = Code
 const { init } = require('../../../../app/server')
 
 // Test helpers
-const AuthorisationHelper = require('../../../support/helpers/authorisation.helper')
-const AuthorisedSystemHelper = require('../../../support/helpers/authorised_system.helper')
-const DatabaseHelper = require('../../../support/helpers/database.helper')
-const GeneralHelper = require('../../../support/helpers/general.helper')
+const AuthorisationHelper = require('../../../support/helpers/authorisation.helper.js')
+const AuthorisedSystemHelper = require('../../../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../../support/helpers/general.helper.js')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const TestListCustomerFilesService = require('../../../../app/services/files/customers/test_list_customer_files.service')
-const ViewCustomerFileService = require('../../../../app/services/files/customers/view_customer_file.service')
+const TestListCustomerFilesService = require('../../../../app/services/files/customers/test_list_customer_files.service.js')
+const ViewCustomerFileService = require('../../../../app/services/files/customers/view_customer_file.service.js')
 
 describe('Test customer files controller', () => {
   let server

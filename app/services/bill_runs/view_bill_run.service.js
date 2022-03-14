@@ -6,9 +6,9 @@
 
 const Boom = require('@hapi/boom')
 
-const BillRunModel = require('../../models/bill_run.model')
+const BillRunModel = require('../../models/bill_run.model.js')
 
-const ViewBillRunPresenter = require('../../presenters/view_bill_run.presenter')
+const ViewBillRunPresenter = require('../../presenters/view_bill_run.presenter.js')
 
 /**
  * Locates a bill run and returns the available details

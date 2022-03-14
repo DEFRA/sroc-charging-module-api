@@ -4,7 +4,7 @@
  * @module TransactionFileTailPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+const BasePresenter = require('./base.presenter.js')
 
 /**
  * Formats data for the tail of a transaction file.

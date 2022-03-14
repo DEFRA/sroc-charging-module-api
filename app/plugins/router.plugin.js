@@ -11,8 +11,8 @@
  * @module RouterPlugin
  */
 
-const FilterRoutesService = require('../services/plugins/filter_routes.service')
-const AuthenticationConfig = require('../../config/authentication.config')
+const FilterRoutesService = require('../services/plugins/filter_routes.service.js')
+const AuthenticationConfig = require('../../config/authentication.config.js')
 
 const AirbrakeRoutes = require('../routes/airbrake.routes')
 const AuthorisedSystemRoutes = require('../routes/authorised_system.routes')

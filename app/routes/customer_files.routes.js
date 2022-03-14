@@ -2,7 +2,7 @@
 
 const Joi = require('joi')
 
-const CustomerFilesController = require('../controllers/customer_files.controller')
+const CustomerFilesController = require('../controllers/customer_files.controller.js')
 
 const routes = [
   {

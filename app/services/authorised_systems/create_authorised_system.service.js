@@ -4,12 +4,12 @@
  * @module CreateAuthorisedSystemService
  */
 
-const AuthorisedSystemModel = require('../../models/authorised_system.model')
-const RegimeModel = require('../../models/regime.model')
+const AuthorisedSystemModel = require('../../models/authorised_system.model.js')
+const RegimeModel = require('../../models/regime.model.js')
 
-const AuthorisedSystemTranslator = require('../../translators/authorised_system.translator')
+const AuthorisedSystemTranslator = require('../../translators/authorised_system.translator.js')
 
-const JsonPresenter = require('../../presenters/json.presenter')
+const JsonPresenter = require('../../presenters/json.presenter.js')
 
 /**
  * Creates a new authorised system record

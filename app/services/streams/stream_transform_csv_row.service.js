@@ -6,7 +6,7 @@
 
 const { Transform } = require('stream')
 
-const ConvertToCSVService = require('../convert_to_csv.service')
+const ConvertToCSVService = require('../convert_to_csv.service.js')
 
 /**
  * Returns a Transform stream which turns an incoming array into a CSV row, ie. comma-separated, with text elements

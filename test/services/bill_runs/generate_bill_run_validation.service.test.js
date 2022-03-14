@@ -8,13 +8,13 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper')
-const BillRunHelper = require('../../support/helpers/bill_run.helper')
-const DatabaseHelper = require('../../support/helpers/database.helper')
-const RegimeHelper = require('../../support/helpers/regime.helper')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper.js')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
 
 // Thing under test
-const GenerateBillRunValidationService = require('../../../app/services/bill_runs/generate_bill_run_validation.service')
+const GenerateBillRunValidationService = require('../../../app/services/bill_runs/generate_bill_run_validation.service.js')
 
 describe('Generate Bill Run Validation service', () => {
   let billRun

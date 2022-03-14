@@ -4,9 +4,9 @@
  * @module ListAuthorisedSystemsService
  */
 
-const AuthorisedSystemModel = require('../../models/authorised_system.model')
+const AuthorisedSystemModel = require('../../models/authorised_system.model.js')
 
-const JsonPresenter = require('../../presenters/json.presenter')
+const JsonPresenter = require('../../presenters/json.presenter.js')
 
 /**
  * Returns an array of authorised systems

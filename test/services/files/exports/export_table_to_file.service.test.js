@@ -12,19 +12,19 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const DatabaseHelper = require('../../../support/helpers/database.helper')
-const GeneralHelper = require('../../../support/helpers/general.helper')
-const RegimeHelper = require('../../../support/helpers/regime.helper')
+const DatabaseHelper = require('../../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../../support/helpers/general.helper.js')
+const RegimeHelper = require('../../../support/helpers/regime.helper.js')
 
-const { temporaryFilePath } = require('../../../../config/server.config')
+const { temporaryFilePath } = require('../../../../config/server.config.js')
 
-const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service')
+const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service.js')
 
-const CustomerFileModel = require('../../../../app/models/customer_file.model')
-const CustomerModel = require('../../../../app/models/customer.model')
+const CustomerFileModel = require('../../../../app/models/customer_file.model.js')
+const CustomerModel = require('../../../../app/models/customer.model.js')
 
 // Thing under test
-const ExportTableToFileService = require('../../../../app/services/files/exports/export_table_to_file.service')
+const ExportTableToFileService = require('../../../../app/services/files/exports/export_table_to_file.service.js')
 
 describe('Export Table To File service', () => {
   const table = 'customers'

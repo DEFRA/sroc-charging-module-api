@@ -4,7 +4,7 @@
  * @module RulesServicePresrocPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+const BasePresenter = require('./base.presenter.js')
 
 /**
  * Handles formatting the data into the payload sent to the Rules Service when requesting a charge calculation.

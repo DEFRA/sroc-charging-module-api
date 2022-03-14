@@ -4,7 +4,7 @@
  * @module InvoiceRebillingCreateLicenceService
  */
 
-const LicenceModel = require('../../models/licence.model')
+const LicenceModel = require('../../models/licence.model.js')
 
 class InvoiceRebillingCreateLicenceService {
   /**

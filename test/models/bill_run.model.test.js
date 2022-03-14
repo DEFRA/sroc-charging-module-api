@@ -8,12 +8,12 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const DatabaseHelper = require('../support/helpers/database.helper')
-const NewBillRunHelper = require('../support/helpers/new_bill_run.helper')
-const NewInvoiceHelper = require('../support/helpers/new_invoice.helper')
+const DatabaseHelper = require('../support/helpers/database.helper.js')
+const NewBillRunHelper = require('../support/helpers/new_bill_run.helper.js')
+const NewInvoiceHelper = require('../support/helpers/new_invoice.helper.js')
 
 // Thing under test
-const BillRunModel = require('../../app/models/bill_run.model')
+const BillRunModel = require('../../app/models/bill_run.model.js')
 
 describe('Bill Run Model', () => {
   describe('the patchTally() class method', () => {

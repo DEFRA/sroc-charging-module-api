@@ -8,10 +8,10 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const GeneralHelper = require('../../support/helpers/general.helper')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
 
 // Thing under test
-const FilterRoutesService = require('../../../app/services/plugins/filter_routes.service')
+const FilterRoutesService = require('../../../app/services/plugins/filter_routes.service.js')
 
 describe('Filter routes service', () => {
   const routes = [

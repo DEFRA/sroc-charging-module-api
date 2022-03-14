@@ -9,10 +9,10 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Things we need to stub
-const BaseNotifierLib = require('../../app/lib/base_notifier.lib')
+const BaseNotifierLib = require('../../app/lib/base_notifier.lib.js')
 
 // Thing under test
-const TaskNotifierLib = require('../../app/lib/task_notifier.lib')
+const TaskNotifierLib = require('../../app/lib/task_notifier.lib.js')
 
 describe('TaskNotifierLib class', () => {
   let airbrakeFake

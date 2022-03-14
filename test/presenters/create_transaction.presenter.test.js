@@ -8,10 +8,10 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const GeneralHelper = require('../support/helpers/general.helper')
+const GeneralHelper = require('../support/helpers/general.helper.js')
 
 // Thing under test
-const CreateTransactionPresenter = require('../../app/presenters/create_transaction.presenter')
+const CreateTransactionPresenter = require('../../app/presenters/create_transaction.presenter.js')
 
 describe('Create Transaction presenter', () => {
   describe('using the data passed in', () => {

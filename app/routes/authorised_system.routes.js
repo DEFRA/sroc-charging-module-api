@@ -1,6 +1,6 @@
 'use strict'
 
-const AuthorisedSystemsController = require('../controllers/admin/authorised_systems.controller')
+const AuthorisedSystemsController = require('../controllers/admin/authorised_systems.controller.js')
 
 const routes = [
   {

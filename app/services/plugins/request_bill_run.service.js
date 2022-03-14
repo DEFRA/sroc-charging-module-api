@@ -6,7 +6,7 @@
 
 const Boom = require('@hapi/boom')
 
-const BillRunModel = require('../../models/bill_run.model')
+const BillRunModel = require('../../models/bill_run.model.js')
 
 class RequestBillRunService {
   /**

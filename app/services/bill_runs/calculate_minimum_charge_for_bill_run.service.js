@@ -4,7 +4,7 @@
  * @module CalculateMinimumChargeForBillRunService
  */
 
-const CreateMinimumChargeAdjustmentTransactionService = require('../transactions/create_minimum_charge_adjustment_transaction.service')
+const CreateMinimumChargeAdjustmentTransactionService = require('../transactions/create_minimum_charge_adjustment_transaction.service.js')
 
 const MINIMUM_CHARGE_LIMIT = 2500
 

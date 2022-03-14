@@ -8,15 +8,15 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper')
-const DatabaseHelper = require('../../support/helpers/database.helper')
-const GeneralHelper = require('../../support/helpers/general.helper')
-const RegimeHelper = require('../../support/helpers/regime.helper')
-const RegimeModel = require('../../../app/models/regime.model')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
+const RegimeModel = require('../../../app/models/regime.model.js')
 const { DataError } = require('objection')
 
 // Thing under test
-const ViewRegimeService = require('../../../app/services/regimes/view_regime.service')
+const ViewRegimeService = require('../../../app/services/regimes/view_regime.service.js')
 
 describe('Show Regime service', () => {
   beforeEach(async () => {

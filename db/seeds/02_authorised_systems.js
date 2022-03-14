@@ -1,6 +1,6 @@
 'use strict'
 
-const config = require('../../config/authentication.config')
+const config = require('../../config/authentication.config.js')
 
 exports.seed = async function (knex) {
   await knex('authorised_systems').del()

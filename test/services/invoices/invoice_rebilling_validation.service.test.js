@@ -8,14 +8,14 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper')
-const DatabaseHelper = require('../../support/helpers/database.helper')
-const NewBillRunHelper = require('../../support/helpers/new_bill_run.helper')
-const NewInvoiceHelper = require('../../support/helpers/new_invoice.helper')
-const RegimeHelper = require('../../support/helpers/regime.helper')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const NewBillRunHelper = require('../../support/helpers/new_bill_run.helper.js')
+const NewInvoiceHelper = require('../../support/helpers/new_invoice.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
 
 // Thing under test
-const InvoiceRebillingValidationService = require('../../../app/services/invoices/invoice_rebilling_validation.service')
+const InvoiceRebillingValidationService = require('../../../app/services/invoices/invoice_rebilling_validation.service.js')
 
 describe('Invoice Rebilling Validation service', () => {
   let currentBillRun

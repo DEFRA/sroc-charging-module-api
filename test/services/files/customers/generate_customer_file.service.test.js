@@ -12,20 +12,20 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const DatabaseHelper = require('../../../support/helpers/database.helper')
-const RegimeHelper = require('../../../support/helpers/regime.helper')
+const DatabaseHelper = require('../../../support/helpers/database.helper.js')
+const RegimeHelper = require('../../../support/helpers/regime.helper.js')
 
-const BasePresenter = require('../../../../app/presenters/base.presenter')
+const BasePresenter = require('../../../../app/presenters/base.presenter.js')
 
-const { temporaryFilePath } = require('../../../../config/server.config')
+const { temporaryFilePath } = require('../../../../config/server.config.js')
 
-const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service')
+const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service.js')
 
-const CustomerFileModel = require('../../../../app/models/customer_file.model')
-const CustomerModel = require('../../../../app/models/customer.model')
+const CustomerFileModel = require('../../../../app/models/customer_file.model.js')
+const CustomerModel = require('../../../../app/models/customer.model.js')
 
 // Thing under test
-const GenerateCustomerFileService = require('../../../../app/services/files/customers/generate_customer_file.service')
+const GenerateCustomerFileService = require('../../../../app/services/files/customers/generate_customer_file.service.js')
 
 describe('Generate Customer File service', () => {
   const fileReference = 'nalwc50003'

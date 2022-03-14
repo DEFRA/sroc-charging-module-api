@@ -8,11 +8,11 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const GeneralHelper = require('../support/helpers/general.helper')
+const GeneralHelper = require('../support/helpers/general.helper.js')
 const rulesServiceFixture = require('../support/fixtures/calculate_charge/presroc/simple_rules_service.json')
 
 // Thing under test
-const RulesServicePresrocTranslator = require('../../app/translators/rules_service_presroc.translator')
+const RulesServicePresrocTranslator = require('../../app/translators/rules_service_presroc.translator.js')
 
 describe('Rules Service Presroc translator', () => {
   let data

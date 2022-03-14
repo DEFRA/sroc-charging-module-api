@@ -12,15 +12,15 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const AuthorisationHelper = require('../support/helpers/authorisation.helper')
-const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper')
-const DatabaseHelper = require('../support/helpers/database.helper')
-const RegimeHelper = require('../support/helpers/regime.helper')
+const AuthorisationHelper = require('../support/helpers/authorisation.helper.js')
+const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../support/helpers/database.helper.js')
+const RegimeHelper = require('../support/helpers/regime.helper.js')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const CalculateChargeService = require('../../app/services/charges/calculate_charge.service')
-const CalculateChargeV2GuardService = require('../../app/services/guards/calculate_charge_v2_guard.service')
+const CalculateChargeService = require('../../app/services/charges/calculate_charge.service.js')
+const CalculateChargeV2GuardService = require('../../app/services/guards/calculate_charge_v2_guard.service.js')
 
 describe('Calculate charge controller', () => {
   const clientID = '1234546789'
