@@ -20,13 +20,13 @@ const RulesServiceHelper = require('../../support/helpers/rules_service.helper')
 const LicenceModel = require('../../../app/models/licence.model')
 const TransactionModel = require('../../../app/models/transaction.model')
 
-const { CreateTransactionService } = require('../../../app/services')
+const CreateTransactionService = require('../../../app/services/transactions/create_transaction.service')
 
 const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
 
 // Thing under test
-const { CreateMinimumChargeAdjustmentTransactionService } = require('../../../app/services')
+const CreateMinimumChargeAdjustmentTransactionService = require('../../../app/services/transactions/create_minimum_charge_adjustment_transaction.service')
 
 describe('Create Minimum Charge Adjustment Transaction service', () => {
   let authorisedSystem

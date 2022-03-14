@@ -13,7 +13,7 @@ const { CustomerFilesTask } = require('../../app/tasks')
 
 // Things we need to stub
 const RegimeModel = require('../../app/models/regime.model')
-const { SendCustomerFileService } = require('../../app/services')
+const SendCustomerFileService = require('../../app/services/files/customers/send_customer_file.service')
 
 describe('Customer Files Task', () => {
   let notifierFake

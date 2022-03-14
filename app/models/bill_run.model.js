@@ -104,7 +104,7 @@ class BillRunModel extends BaseModel {
    * @returns {string} ID of the bill run that was updated
    */
   static async patchTally (transaction, trx) {
-    const { CreateTransactionTallyService } = require('../services')
+    const CreateTransactionTallyService = require('../services/transactions/create_transaction_tally.service')
 
     const { patch } = CreateTransactionTallyService.go(transaction, this.tableName)
 

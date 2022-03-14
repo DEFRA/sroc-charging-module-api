@@ -15,7 +15,7 @@ const GeneralHelper = require('../../support/helpers/general.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 
 // Thing under test
-const { RequestInvoiceService } = require('../../../app/services')
+const RequestInvoiceService = require('../../../app/services/plugins/request_invoice.service')
 
 describe('Request invoice service', () => {
   let regime

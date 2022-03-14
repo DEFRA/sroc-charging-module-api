@@ -17,11 +17,11 @@ const RegimeHelper = require('../../support/helpers/regime.helper')
 const InvoiceHelper = require('../../support/helpers/invoice.helper')
 
 // Things we need to stub
-const { InvoiceRebillingCopyService } = require('../../../app/services')
-const { InvoiceRebillingInitialiseService } = require('../../../app/services')
+const InvoiceRebillingCopyService = require('../../../app/services/invoices/invoice_rebilling_copy.service')
+const InvoiceRebillingInitialiseService = require('../../../app/services/invoices/invoice_rebilling_initialise.service')
 
 // Thing under test
-const { InvoiceRebillingService } = require('../../../app/services')
+const InvoiceRebillingService = require('../../../app/services/invoices/invoice_rebilling.service')
 
 describe('Invoice Rebilling service', () => {
   let authorisedSystem

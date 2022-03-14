@@ -20,7 +20,7 @@ const RegimeHelper = require('../../support/helpers/regime.helper')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { AdminSendTransactionFileService } = require('../../../app/services')
+const AdminSendTransactionFileService = require('../../../app/services/files/transactions/admin_send_transaction_file.service')
 
 describe('Admin Bill Runs controller', () => {
   let server

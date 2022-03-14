@@ -13,7 +13,7 @@ const DatabaseHelper = require('../../support/helpers/database.helper')
 const GeneralHelper = require('../../support/helpers/general.helper')
 
 // Thing under test
-const { ValidateBillRunRegion } = require('../../../app/services')
+const ValidateBillRunRegion = require('../../../app/services/bill_runs/validate_bill_run_region.service')
 
 describe('Validate Bill Run Region service', () => {
   let billRun

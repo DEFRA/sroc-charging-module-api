@@ -18,7 +18,7 @@ const DatabaseHelper = require('../../../support/helpers/database.helper')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { ExportDataFiles } = require('../../../../app/services')
+const ExportDataFiles = require('../../../../app/services/files/exports/export_data_files.service')
 
 describe('Test data export controller', () => {
   let server

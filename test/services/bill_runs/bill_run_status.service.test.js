@@ -13,7 +13,7 @@ const DatabaseHelper = require('../../support/helpers/database.helper')
 const GeneralHelper = require('../../support/helpers/general.helper')
 
 // Thing under test
-const { BillRunStatusService } = require('../../../app/services')
+const BillRunStatusService = require('../../../app/services/bill_runs/bill_run_status.service')
 
 describe('Bill run status service', () => {
   let billRun

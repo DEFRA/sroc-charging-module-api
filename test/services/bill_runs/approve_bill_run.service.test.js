@@ -13,7 +13,7 @@ const DatabaseHelper = require('../../support/helpers/database.helper')
 const GeneralHelper = require('../../support/helpers/general.helper')
 
 // Thing under test
-const { ApproveBillRunService } = require('../../../app/services')
+const ApproveBillRunService = require('../../../app/services/bill_runs/approve_bill_run.service')
 
 describe('Approve Bill Run service', () => {
   let billRun

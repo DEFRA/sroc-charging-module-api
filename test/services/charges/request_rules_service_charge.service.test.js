@@ -29,7 +29,7 @@ let got;
 })()
 
 // Thing under test
-const { RequestRulesServiceCharge } = require('../../../app/services')
+const RequestRulesServiceCharge = require('../../../app/services/charges/request_rules_service_charge.service')
 
 // Wraps regime, financial year and charge params in a dummy presenter object for passing to rules service
 const dummyPresenter = (regime, financialYear, ruleset, chargeParams = {}) => {

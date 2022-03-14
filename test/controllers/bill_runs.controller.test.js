@@ -22,12 +22,12 @@ const NewTransactionHelper = require('../support/helpers/new_transaction.helper'
 const RegimeHelper = require('../support/helpers/regime.helper')
 const SequenceCounterHelper = require('../support/helpers/sequence_counter.helper')
 
-const { CreateBillRunService } = require('../../app/services')
-const { CreateBillRunV2GuardService } = require('../../app/services')
-const { GenerateBillRunService } = require('../../app/services')
-const { GenerateBillRunValidationService } = require('../../app/services')
-const { SendCustomerFileService } = require('../../app/services')
-const { SendTransactionFileService } = require('../../app/services')
+const CreateBillRunService = require('../../app/services/bill_runs/create_bill_run.service')
+const CreateBillRunV2GuardService = require('../../app/services/guards/create_bill_run_v2_guard.service')
+const GenerateBillRunService = require('../../app/services/bill_runs/generate_bill_run.service')
+const GenerateBillRunValidationService = require('../../app/services/bill_runs/generate_bill_run_validation.service')
+const SendCustomerFileService = require('../../app/services/files/customers/send_customer_file.service')
+const SendTransactionFileService = require('../../app/services/files/transactions/send_transaction_file.service')
 
 const { RequestNotifierLib } = require('../../app/lib')
 

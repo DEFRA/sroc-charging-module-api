@@ -15,18 +15,18 @@ const RegimeHelper = require('../../../support/helpers/regime.helper')
 const CustomerFileModel = require('../../../../app/models/customer_file.model')
 const CustomerModel = require('../../../../app/models/customer.model')
 
-const { CreateCustomerDetailsService } = require('../../../../app/services')
-const { MoveCustomerDetailsToExportedTableService } = require('../../../../app/services')
+const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service')
+const MoveCustomerDetailsToExportedTableService = require('../../../../app/services/files/customers/move_customer_details_to_exported_table.service')
 
 // Things we need to stub
-const { DeleteFileService } = require('../../../../app/services')
-const { GenerateCustomerFileService } = require('../../../../app/services')
-const { NextCustomerFileReferenceService } = require('../../../../app/services')
-const { PrepareCustomerFileService } = require('../../../../app/services')
-const { SendFileToS3Service } = require('../../../../app/services')
+const DeleteFileService = require('../../../../app/services/files/delete_file.service')
+const GenerateCustomerFileService = require('../../../../app/services/files/customers/generate_customer_file.service')
+const NextCustomerFileReferenceService = require('../../../../app/services/next_references/next_customer_file_reference.service')
+const PrepareCustomerFileService = require('../../../../app/services/files/customers/prepare_customer_file.service')
+const SendFileToS3Service = require('../../../../app/services/files/send_file_to_s3.service')
 
 // Thing under test
-const { SendCustomerFileService } = require('../../../../app/services')
+const SendCustomerFileService = require('../../../../app/services/files/customers/send_customer_file.service')
 
 describe('Send Customer File service', () => {
   let regime

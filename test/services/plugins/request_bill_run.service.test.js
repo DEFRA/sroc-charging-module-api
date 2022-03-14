@@ -14,7 +14,7 @@ const GeneralHelper = require('../../support/helpers/general.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 
 // Thing under test
-const { RequestBillRunService } = require('../../../app/services')
+const RequestBillRunService = require('../../../app/services/plugins/request_bill_run.service')
 
 describe('Request bill run service', () => {
   let regime

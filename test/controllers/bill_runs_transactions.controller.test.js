@@ -24,9 +24,9 @@ const { presroc: requestFixtures } = require('../support/fixtures/create_transac
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { CreateTransactionService } = require('../../app/services')
-const { CreateTransactionV2GuardService } = require('../../app/services')
-const { ValidateBillRunRegion } = require('../../app/services')
+const CreateTransactionService = require('../../app/services/transactions/create_transaction.service')
+const CreateTransactionV2GuardService = require('../../app/services/guards/create_transaction_v2_guard.service')
+const ValidateBillRunRegion = require('../../app/services/bill_runs/validate_bill_run_region.service')
 
 describe('Bill runs transactions controller', () => {
   const clientID = '1234546789'

@@ -21,8 +21,8 @@ const RegimeHelper = require('../support/helpers/regime.helper')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { DeleteLicenceService } = require('../../app/services')
-const { ValidateBillRunLicenceService } = require('../../app/services')
+const DeleteLicenceService = require('../../app/services/licences/delete_licence.service')
+const ValidateBillRunLicenceService = require('../../app/services/licences/validate_bill_run_licence.service')
 const BillRunModel = require('../../app/models/bill_run.model')
 
 describe('Licences controller', () => {

@@ -24,7 +24,7 @@ const { BasePresenter } = require('../../../../app/presenters')
 const { temporaryFilePath } = require('../../../../config/server.config')
 
 // Thing under test
-const { GenerateSrocTransactionFileService } = require('../../../../app/services')
+const GenerateSrocTransactionFileService = require('../../../../app/services/files/transactions/generate_sroc_transaction_file.service')
 
 describe('Generate Sroc Transaction File service', () => {
   const filename = 'abcde67890t'

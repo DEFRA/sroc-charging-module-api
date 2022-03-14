@@ -13,7 +13,7 @@ const stream = require('stream')
 const StreamHelper = require('../../support/helpers/stream.helper')
 
 // Thing under test
-const { StreamReadableDataService } = require('../../../app/services')
+const StreamReadableDataService = require('../../../app/services/streams/stream_readable_data.service')
 
 describe('Stream Readable Data service', () => {
   describe('When data is passed to it', () => {

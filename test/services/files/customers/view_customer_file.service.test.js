@@ -15,7 +15,7 @@ const CustomerFileModel = require('../../../../app/models/customer_file.model')
 const { DataError } = require('objection')
 
 // Thing under test
-const { ViewCustomerFileService } = require('../../../../app/services')
+const ViewCustomerFileService = require('../../../../app/services/files/customers/view_customer_file.service')
 
 describe('Show Customer File service', () => {
   beforeEach(async () => {

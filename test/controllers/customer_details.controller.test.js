@@ -19,7 +19,7 @@ const RegimeHelper = require('../support/helpers/regime.helper')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { CreateCustomerDetailsService } = require('../../app/services')
+const CreateCustomerDetailsService = require('../../app/services/create_customer_details.service')
 
 describe('Customer Details controller', () => {
   const clientID = '1234546789'

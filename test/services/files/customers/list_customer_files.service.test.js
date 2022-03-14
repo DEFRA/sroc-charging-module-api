@@ -14,7 +14,7 @@ const GeneralHelper = require('../../../support/helpers/general.helper')
 const RegimeHelper = require('../../../support/helpers/regime.helper')
 
 // Thing under test
-const { ListCustomerFilesService } = require('../../../../app/services')
+const ListCustomerFilesService = require('../../../../app/services/files/customers/list_customer_files.service')
 
 describe('List Customer Files service', () => {
   let regime

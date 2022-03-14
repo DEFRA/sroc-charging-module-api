@@ -13,7 +13,7 @@ const stream = require('stream')
 const StreamHelper = require('../../support/helpers/stream.helper')
 
 // Thing under test
-const { StreamTransformDatRowService } = require('../../../app/services')
+const StreamTransformDatRowService = require('../../../app/services/streams/stream_transform_dat_row.service')
 
 describe('Stream Transform Dat Row service', () => {
   describe('When data is passed to it', () => {

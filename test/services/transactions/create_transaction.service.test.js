@@ -28,10 +28,10 @@ const { presroc: presrocChargeFixtures } = require('../../support/fixtures/calcu
 const { sroc: srocChargeFixtures } = require('../../support/fixtures/calculate_charge')
 
 // Things we need to stub
-const { RequestRulesServiceCharge } = require('../../../app/services')
+const RequestRulesServiceCharge = require('../../../app/services/charges/request_rules_service_charge.service')
 
 // Thing under test
-const { CreateTransactionService } = require('../../../app/services')
+const CreateTransactionService = require('../../../app/services/transactions/create_transaction.service')
 
 describe('Create Transaction service', () => {
   let billRun

@@ -19,8 +19,8 @@ const RegimeHelper = require('../support/helpers/regime.helper')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { CalculateChargeService } = require('../../app/services')
-const { CalculateChargeV2GuardService } = require('../../app/services')
+const CalculateChargeService = require('../../app/services/charges/calculate_charge.service')
+const CalculateChargeV2GuardService = require('../../app/services/guards/calculate_charge_v2_guard.service')
 
 describe('Calculate charge controller', () => {
   const clientID = '1234546789'

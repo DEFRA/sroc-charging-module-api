@@ -19,7 +19,7 @@ const LicenceModel = require('../../../app/models/licence.model')
 const TransactionModel = require('../../../app/models/transaction.model')
 
 // Thing under test
-const { InvoiceRebillingCopyService } = require('../../../app/services')
+const InvoiceRebillingCopyService = require('../../../app/services/invoices/invoice_rebilling_copy.service')
 
 describe('Invoice Rebilling Copy service', () => {
   let currentBillRun

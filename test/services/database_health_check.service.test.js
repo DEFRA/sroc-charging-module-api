@@ -11,7 +11,7 @@ const { expect } = Code
 const DatabaseHelper = require('../support/helpers/database.helper')
 
 // Thing under test
-const { DatabaseHealthCheckService } = require('../../app/services')
+const DatabaseHealthCheckService = require('../../app/services/database_health_check.service')
 
 describe('Database Health Check service', () => {
   beforeEach(async () => {

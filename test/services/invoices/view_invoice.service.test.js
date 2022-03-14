@@ -14,7 +14,7 @@ const GeneralHelper = require('../../support/helpers/general.helper')
 const TransactionHelper = require('../../support/helpers/transaction.helper')
 
 // Thing under test
-const { ViewInvoiceService } = require('../../../app/services')
+const ViewInvoiceService = require('../../../app/services/invoices/view_invoice.service')
 
 describe('View Invoice service', () => {
   beforeEach(async () => {

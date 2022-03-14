@@ -15,7 +15,7 @@ const SequenceCounterHelper = require('../../support/helpers/sequence_counter.he
 const { NotFoundError } = require('objection')
 
 // Thing under test
-const { NextTransactionFileReferenceService } = require('../../../app/services')
+const NextTransactionFileReferenceService = require('../../../app/services/next_references/next_transaction_file_reference.service')
 
 describe('Next Transaction File Reference service', () => {
   let regime

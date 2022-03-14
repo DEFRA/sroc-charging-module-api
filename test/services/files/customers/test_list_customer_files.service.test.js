@@ -13,7 +13,7 @@ const CustomerHelper = require('../../../support/helpers/customer.helper')
 const RegimeHelper = require('../../../support/helpers/regime.helper')
 
 // Thing under test
-const { TestListCustomerFilesService } = require('../../../../app/services')
+const TestListCustomerFilesService = require('../../../../app/services/files/customers/test_list_customer_files.service')
 
 describe('Test List Customer Files service', () => {
   let regime

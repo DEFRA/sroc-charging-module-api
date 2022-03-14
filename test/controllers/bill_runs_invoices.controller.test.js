@@ -22,10 +22,10 @@ const RegimeHelper = require('../support/helpers/regime.helper')
 
 const Boom = require('@hapi/boom')
 
-const { DeleteInvoiceService } = require('../../app/services')
-const { FetchAndValidateInvoiceService } = require('../../app/services')
-const { InvoiceRebillingService } = require('../../app/services')
-const { InvoiceRebillingValidationService } = require('../../app/services')
+const DeleteInvoiceService = require('../../app/services/invoices/delete_invoice.service')
+const FetchAndValidateInvoiceService = require('../../app/services/invoices/fetch_and_validate_invoice.service')
+const InvoiceRebillingService = require('../../app/services/invoices/invoice_rebilling.service')
+const InvoiceRebillingValidationService = require('../../app/services/invoices/invoice_rebilling_validation.service')
 
 const BillRunModel = require('../../app/models/bill_run.model')
 const InvoiceModel = require('../../app/models/invoice.model')

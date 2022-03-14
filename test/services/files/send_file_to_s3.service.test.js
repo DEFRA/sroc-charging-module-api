@@ -16,7 +16,7 @@ const path = require('path')
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 
 // Thing under test
-const { SendFileToS3Service } = require('../../../app/services')
+const SendFileToS3Service = require('../../../app/services/files/send_file_to_s3.service')
 
 describe('Send File To S3 service', () => {
   let s3Stub

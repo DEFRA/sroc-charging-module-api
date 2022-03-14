@@ -12,7 +12,7 @@ const { expect } = Code
 const { DataExportTask } = require('../../app/tasks')
 
 // Things we need to stub
-const { ExportDataFiles } = require('../../app/services')
+const ExportDataFiles = require('../../app/services/files/exports/export_data_files.service')
 
 describe('Customer Files Task', () => {
   let notifierFake

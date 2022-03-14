@@ -13,10 +13,10 @@ const RegimeHelper = require('../../../support/helpers/regime.helper')
 const CustomerModel = require('../../../../app/models/customer.model')
 const CustomerFileModel = require('../../../../app/models/customer_file.model')
 const ExportedCustomerModel = require('../../../../app/models/exported_customer.model')
-const { CreateCustomerDetailsService } = require('../../../../app/services')
+const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service')
 
 // Thing under test
-const { MoveCustomerDetailsToExportedTableService } = require('../../../../app/services')
+const MoveCustomerDetailsToExportedTableService = require('../../../../app/services/files/customers/move_customer_details_to_exported_table.service')
 
 describe('Move Customer Details To Exported Table service', () => {
   let regime

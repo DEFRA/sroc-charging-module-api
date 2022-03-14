@@ -17,7 +17,7 @@ const NewLicenceHelper = require('../../support/helpers/new_licence.helper')
 const BillRunModel = require('../../../app/models/bill_run.model')
 
 // Thing under test
-const { ValidateBillRunLicenceService } = require('../../../app/services')
+const ValidateBillRunLicenceService = require('../../../app/services/licences/validate_bill_run_licence.service')
 
 describe('Validate Bill Run Licence service', () => {
   let billRun

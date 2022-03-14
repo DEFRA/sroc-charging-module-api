@@ -16,8 +16,8 @@ const GeneralHelper = require('../../support/helpers/general.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 const RulesServiceHelper = require('../../support/helpers/rules_service.helper')
 
-const { CreateTransactionService } = require('../../../app/services')
-const { GenerateBillRunService } = require('../../../app/services')
+const CreateTransactionService = require('../../../app/services/transactions/create_transaction.service')
+const GenerateBillRunService = require('../../../app/services/bill_runs/generate_bill_run.service')
 
 const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
@@ -25,10 +25,10 @@ const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_ch
 const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
 // Things we need to stub
-const { RequestRulesServiceCharge } = require('../../../app/services')
+const RequestRulesServiceCharge = require('../../../app/services/charges/request_rules_service_charge.service')
 
 // Thing under test
-const { ViewBillRunService } = require('../../../app/services')
+const ViewBillRunService = require('../../../app/services/bill_runs/view_bill_run.service')
 
 describe('View Bill Run service', () => {
   let billRun

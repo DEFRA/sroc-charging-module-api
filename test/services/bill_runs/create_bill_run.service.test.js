@@ -17,7 +17,7 @@ const BillRunModel = require('../../../app/models/bill_run.model')
 const { ValidationError } = require('joi')
 
 // Thing under test
-const { CreateBillRunService } = require('../../../app/services')
+const CreateBillRunService = require('../../../app/services/bill_runs/create_bill_run.service')
 
 describe('Create Bill Run service', () => {
   const payload = {

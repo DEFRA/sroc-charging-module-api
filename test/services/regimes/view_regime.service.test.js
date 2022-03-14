@@ -16,7 +16,7 @@ const RegimeModel = require('../../../app/models/regime.model')
 const { DataError } = require('objection')
 
 // Thing under test
-const { ViewRegimeService } = require('../../../app/services')
+const ViewRegimeService = require('../../../app/services/regimes/view_regime.service')
 
 describe('Show Regime service', () => {
   beforeEach(async () => {

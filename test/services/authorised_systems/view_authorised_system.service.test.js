@@ -16,7 +16,7 @@ const AuthorisedSystemModel = require('../../../app/models/authorised_system.mod
 const { DataError } = require('objection')
 
 // Thing under test
-const { ViewAuthorisedSystemService } = require('../../../app/services')
+const ViewAuthorisedSystemService = require('../../../app/services/authorised_systems/view_authorised_system.service')
 
 describe('View Authorised System service', () => {
   beforeEach(async () => {

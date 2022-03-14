@@ -15,7 +15,7 @@ const GeneralHelper = require('../../support/helpers/general.helper')
 const TransactionHelper = require('../../support/helpers/transaction.helper')
 
 // Thing under test
-const { DeleteBillRunService } = require('../../../app/services')
+const DeleteBillRunService = require('../../../app/services/bill_runs/delete_bill_run.service')
 
 describe('Delete Bill Run service', () => {
   let billRun

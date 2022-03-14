@@ -16,7 +16,7 @@ const LicenceHelper = require('../../support/helpers/licence.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 
 // Thing under test
-const { RequestLicenceService } = require('../../../app/services')
+const RequestLicenceService = require('../../../app/services/plugins/request_licence.service')
 const LicenceModel = require('../../../app/models/licence.model')
 
 describe('Request licence service', () => {

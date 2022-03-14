@@ -16,7 +16,7 @@ const InvoiceHelper = require('../../support/helpers/invoice.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 
 // Thing under test
-const { FetchAndValidateInvoiceService } = require('../../../app/services')
+const FetchAndValidateInvoiceService = require('../../../app/services/invoices/fetch_and_validate_invoice.service')
 
 describe('Fetch and Validate Invoice service', () => {
   let billRun

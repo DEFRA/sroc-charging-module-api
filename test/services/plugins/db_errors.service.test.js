@@ -11,7 +11,7 @@ const { expect } = Code
 const { DBError, UniqueViolationError } = require('db-errors')
 
 // Thing under test
-const { DbErrorsService } = require('../../../app/services')
+const DbErrorsService = require('../../../app/services/plugins/db_errors.service')
 
 describe('Db Errors service', () => {
   describe('If the value passed in is a DB error', () => {

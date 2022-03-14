@@ -16,7 +16,7 @@ const StreamHelper = require('../../support/helpers/stream.helper')
 const mockFs = require('mock-fs')
 
 // Thing under test
-const { StreamWritableFileService } = require('../../../app/services')
+const StreamWritableFileService = require('../../../app/services/streams/stream_writable_file.service')
 
 describe('Stream Writable File service', () => {
   let filenameWithPath

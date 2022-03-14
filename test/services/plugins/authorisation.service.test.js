@@ -13,7 +13,7 @@ const DatabaseHelper = require('../../support/helpers/database.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 
 // Thing under test
-const { AuthorisationService } = require('../../../app/services')
+const AuthorisationService = require('../../../app/services/plugins/authorisation.service')
 
 describe('Authorisation service', () => {
   beforeEach(async () => {

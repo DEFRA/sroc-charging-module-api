@@ -15,7 +15,7 @@ const RegimeHelper = require('../../support/helpers/regime.helper')
 const InvoiceHelper = require('../../support/helpers/invoice.helper')
 
 // Thing under test
-const { InvoiceRebillingCreateLicenceService } = require('../../../app/services')
+const InvoiceRebillingCreateLicenceService = require('../../../app/services/invoices/invoice_rebilling_create_licence.service')
 
 describe('Invoice Rebilling Create Licence service', () => {
   let billRun

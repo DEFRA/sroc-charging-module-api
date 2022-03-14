@@ -19,13 +19,13 @@ const { BasePresenter } = require('../../../../app/presenters')
 
 const { temporaryFilePath } = require('../../../../config/server.config')
 
-const { CreateCustomerDetailsService } = require('../../../../app/services')
+const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service')
 
 const CustomerFileModel = require('../../../../app/models/customer_file.model')
 const CustomerModel = require('../../../../app/models/customer.model')
 
 // Thing under test
-const { GenerateCustomerFileService } = require('../../../../app/services')
+const GenerateCustomerFileService = require('../../../../app/services/files/customers/generate_customer_file.service')
 
 describe('Generate Customer File service', () => {
   const fileReference = 'nalwc50003'

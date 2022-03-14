@@ -19,8 +19,8 @@ const GeneralHelper = require('../../../support/helpers/general.helper')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { TestListCustomerFilesService } = require('../../../../app/services')
-const { ViewCustomerFileService } = require('../../../../app/services')
+const TestListCustomerFilesService = require('../../../../app/services/files/customers/test_list_customer_files.service')
+const ViewCustomerFileService = require('../../../../app/services/files/customers/view_customer_file.service')
 
 describe('Test customer files controller', () => {
   let server

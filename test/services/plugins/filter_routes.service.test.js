@@ -11,7 +11,7 @@ const { expect } = Code
 const GeneralHelper = require('../../support/helpers/general.helper')
 
 // Thing under test
-const { FilterRoutesService } = require('../../../app/services')
+const FilterRoutesService = require('../../../app/services/plugins/filter_routes.service')
 
 describe('Filter routes service', () => {
   const routes = [

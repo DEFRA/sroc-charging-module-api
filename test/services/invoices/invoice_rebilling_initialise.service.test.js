@@ -14,7 +14,7 @@ const GeneralHelper = require('../../support/helpers/general.helper')
 const InvoiceHelper = require('../../support/helpers/invoice.helper')
 
 // Thing under test
-const { InvoiceRebillingInitialiseService } = require('../../../app/services')
+const InvoiceRebillingInitialiseService = require('../../../app/services/invoices/invoice_rebilling_initialise.service')
 
 describe('Invoice Rebilling Initialise service', () => {
   let originalInvoice

@@ -22,7 +22,7 @@ const path = require('path')
 const { temporaryFilePath } = require('../../../config/server.config')
 
 // Thing under test
-const { TransformTableToFileService } = require('../../../app/services')
+const TransformTableToFileService = require('../../../app/services/files/transform_table_to_file.service')
 
 describe('Transform Table To File service', () => {
   let billRun

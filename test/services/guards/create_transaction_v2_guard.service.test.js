@@ -10,7 +10,7 @@ const { expect } = Code
 const NewBillRunHelper = require('../../support/helpers/new_bill_run.helper')
 
 // Thing under test
-const { CreateTransactionV2GuardService } = require('../../../app/services')
+const CreateTransactionV2GuardService = require('../../../app/services/guards/create_transaction_v2_guard.service')
 
 describe('Create Transaction V2 guard service', () => {
   describe('When a valid presroc bill run is supplied', () => {

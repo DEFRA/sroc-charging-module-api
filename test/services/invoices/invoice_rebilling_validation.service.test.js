@@ -15,7 +15,7 @@ const NewInvoiceHelper = require('../../support/helpers/new_invoice.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 
 // Thing under test
-const { InvoiceRebillingValidationService } = require('../../../app/services')
+const InvoiceRebillingValidationService = require('../../../app/services/invoices/invoice_rebilling_validation.service')
 
 describe('Invoice Rebilling Validation service', () => {
   let currentBillRun

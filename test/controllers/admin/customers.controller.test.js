@@ -18,7 +18,7 @@ const DatabaseHelper = require('../../support/helpers/database.helper')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { SendCustomerFileService } = require('../../../app/services')
+const SendCustomerFileService = require('../../../app/services/files/customers/send_customer_file.service')
 
 describe('Customers controller', () => {
   let server

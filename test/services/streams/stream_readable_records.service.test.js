@@ -18,7 +18,7 @@ const TransactionHelper = require('../../support/helpers/transaction.helper')
 const TransactionModel = require('../../../app/models/transaction.model')
 
 // Thing under test
-const { StreamReadableRecordsService } = require('../../../app/services')
+const StreamReadableRecordsService = require('../../../app/services/streams/stream_readable_records.service')
 
 describe('Stream Readable Records service', () => {
   let billRun

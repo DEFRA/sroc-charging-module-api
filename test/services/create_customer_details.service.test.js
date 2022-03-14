@@ -13,7 +13,7 @@ const RegimeHelper = require('../support/helpers/regime.helper')
 const CustomerModel = require('../../app/models/customer.model')
 
 // Thing under test
-const { CreateCustomerDetailsService } = require('../../app/services')
+const CreateCustomerDetailsService = require('../../app/services/create_customer_details.service')
 
 describe('Create Customer Details service', () => {
   let regime

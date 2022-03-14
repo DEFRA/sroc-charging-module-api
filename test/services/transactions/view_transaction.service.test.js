@@ -24,7 +24,7 @@ const TransactionModel = require('../../../app/models/transaction.model')
 const { DataError } = require('objection')
 
 // Thing under test
-const { ViewTransactionService } = require('../../../app/services')
+const ViewTransactionService = require('../../../app/services/transactions/view_transaction.service')
 
 describe('Show Transaction service', () => {
   beforeEach(async () => {

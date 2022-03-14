@@ -20,10 +20,10 @@ const InvoiceModel = require('../../../app/models/invoice.model')
 const LicenceModel = require('../../../app/models/licence.model')
 const TransactionModel = require('../../../app/models/transaction.model')
 
-const { GenerateBillRunService } = require('../../../app/services')
+const GenerateBillRunService = require('../../../app/services/bill_runs/generate_bill_run.service')
 
 // Thing under test
-const { DeleteInvoiceService } = require('../../../app/services')
+const DeleteInvoiceService = require('../../../app/services/invoices/delete_invoice.service')
 
 describe('Delete Invoice service', () => {
   let notifierFake

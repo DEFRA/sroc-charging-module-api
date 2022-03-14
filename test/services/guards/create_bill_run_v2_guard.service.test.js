@@ -8,7 +8,7 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { CreateBillRunV2GuardService } = require('../../../app/services')
+const CreateBillRunV2GuardService = require('../../../app/services/guards/create_bill_run_v2_guard.service')
 
 describe('Create Bill Run V2 guard service', () => {
   describe('When a valid payload is supplied', () => {

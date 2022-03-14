@@ -36,7 +36,7 @@ class BaseUpsertModel extends BaseModel {
    * @returns {string} id of the record created or updated
    */
   static async updateTally (transaction, trx = null) {
-    const { CreateTransactionTallyService } = require('../services')
+    const CreateTransactionTallyService = require('../services/transactions/create_transaction_tally.service')
 
     const tallyObject = CreateTransactionTallyService.go(transaction, this.tableName)
     Object.assign(tallyObject.insertData, this._baseOnInsertObject(transaction))

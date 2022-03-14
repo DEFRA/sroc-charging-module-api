@@ -18,13 +18,13 @@ const RegimeHelper = require('../../../support/helpers/regime.helper')
 
 const { temporaryFilePath } = require('../../../../config/server.config')
 
-const { CreateCustomerDetailsService } = require('../../../../app/services')
+const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service')
 
 const CustomerFileModel = require('../../../../app/models/customer_file.model')
 const CustomerModel = require('../../../../app/models/customer.model')
 
 // Thing under test
-const { ExportTableToFileService } = require('../../../../app/services')
+const ExportTableToFileService = require('../../../../app/services/files/exports/export_table_to_file.service')
 
 describe('Export Table To File service', () => {
   const table = 'customers'

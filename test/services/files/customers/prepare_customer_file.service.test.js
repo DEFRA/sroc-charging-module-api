@@ -13,13 +13,13 @@ const DatabaseHelper = require('../../../support/helpers/database.helper')
 const RegimeHelper = require('../../../support/helpers/regime.helper')
 
 const CustomerFileModel = require('../../../../app/models/customer_file.model')
-const { CreateCustomerDetailsService } = require('../../../../app/services')
+const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service')
 
 // Things we need to stub
-const { NextCustomerFileReferenceService } = require('../../../../app/services')
+const NextCustomerFileReferenceService = require('../../../../app/services/next_references/next_customer_file_reference.service')
 
 // Thing under test
-const { PrepareCustomerFileService } = require('../../../../app/services')
+const PrepareCustomerFileService = require('../../../../app/services/files/customers/prepare_customer_file.service')
 
 describe('Prepare Customer File service', () => {
   let regime

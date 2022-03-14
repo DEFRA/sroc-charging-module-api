@@ -12,7 +12,7 @@ const DatabaseHelper = require('../../support/helpers/database.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 
 // Thing under test
-const { ListRegimesService } = require('../../../app/services')
+const ListRegimesService = require('../../../app/services/regimes/list_regimes.service')
 
 describe('List Regimes service', () => {
   beforeEach(async () => {

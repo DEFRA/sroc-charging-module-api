@@ -12,7 +12,7 @@ const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.
 const DatabaseHelper = require('../../support/helpers/database.helper')
 
 // Thing under test
-const { ListAuthorisedSystemsService } = require('../../../app/services')
+const ListAuthorisedSystemsService = require('../../../app/services/authorised_systems/list_authorised_systems.service')
 
 describe('List Authorised Systems service', () => {
   beforeEach(async () => {

@@ -13,7 +13,7 @@ const stream = require('stream')
 const StreamHelper = require('../../support/helpers/stream.helper')
 
 // Thing under test
-const { StreamTransformUsingPresenterService } = require('../../../app/services')
+const StreamTransformUsingPresenterService = require('../../../app/services/streams/stream_transform_using_presenter.service')
 
 describe('Stream Transform CSV service', () => {
   class testPresenter {

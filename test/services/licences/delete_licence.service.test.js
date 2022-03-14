@@ -22,10 +22,10 @@ const LicenceModel = require('../../../app/models/licence.model')
 const RegimeModel = require('../../../app/models/regime.model')
 const TransactionModel = require('../../../app/models/transaction.model')
 
-const { GenerateBillRunService } = require('../../../app/services')
+const GenerateBillRunService = require('../../../app/services/bill_runs/generate_bill_run.service')
 
 // Thing under test
-const { DeleteLicenceService } = require('../../../app/services')
+const DeleteLicenceService = require('../../../app/services/licences/delete_licence.service')
 
 describe('Delete Licence service', () => {
   let billRun

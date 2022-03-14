@@ -22,7 +22,7 @@ const InvoiceModel = require('../../../app/models/invoice.model')
 const LicenceModel = require('../../../app/models/licence.model')
 
 // Thing under test
-const { InvoiceRebillingCreateTransactionService } = require('../../../app/services')
+const InvoiceRebillingCreateTransactionService = require('../../../app/services/invoices/invoice_rebilling_create_transaction.service')
 
 describe('Invoice Rebilling Create Transaction service', () => {
   let originalBillRun

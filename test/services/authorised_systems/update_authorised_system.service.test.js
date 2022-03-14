@@ -16,7 +16,7 @@ const RegimeHelper = require('../../support/helpers/regime.helper')
 const { DataError } = require('objection')
 
 // Thing under test
-const { UpdateAuthorisedSystemService } = require('../../../app/services')
+const UpdateAuthorisedSystemService = require('../../../app/services/authorised_systems/update_authorised_system.service')
 
 describe('Update Authorised System service', () => {
   let adminAuthSystem

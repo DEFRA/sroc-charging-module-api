@@ -15,10 +15,10 @@ const GeneralHelper = require('../../../support/helpers/general.helper')
 const RegimeHelper = require('../../../support/helpers/regime.helper')
 
 // Things to stub
-const { SendTransactionFileService } = require('../../../../app/services')
+const SendTransactionFileService = require('../../../../app/services/files/transactions/send_transaction_file.service')
 
 // Thing under test
-const { AdminSendTransactionFileService } = require('../../../../app/services')
+const AdminSendTransactionFileService = require('../../../../app/services/files/transactions/admin_send_transaction_file.service')
 
 describe('Admin Send Transaction File service', () => {
   let regime

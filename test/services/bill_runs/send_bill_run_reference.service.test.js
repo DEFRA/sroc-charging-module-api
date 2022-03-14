@@ -19,7 +19,7 @@ const SequenceCounterHelper = require('../../support/helpers/sequence_counter.he
 const BillRunModel = require('../../../app/models/bill_run.model')
 
 // Thing under test
-const { SendBillRunReferenceService } = require('../../../app/services')
+const SendBillRunReferenceService = require('../../../app/services/bill_runs/send_bill_run_reference.service')
 
 describe('Send Bill Run Reference service', () => {
   let regime

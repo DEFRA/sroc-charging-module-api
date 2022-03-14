@@ -11,7 +11,7 @@ const { expect } = Code
 const { RawBuilder } = require('objection/lib/queryBuilder/RawBuilder')
 
 // Thing under test
-const { CreateTransactionTallyService } = require('../../../app/services')
+const CreateTransactionTallyService = require('../../../app/services/transactions/create_transaction_tally.service')
 
 describe('Create Transaction Tally service', () => {
   const tableName = 'widgets'

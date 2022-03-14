@@ -15,7 +15,7 @@ const { ValidationError } = require('joi')
 const { UniqueViolationError } = require('db-errors')
 
 // Thing under test
-const { CreateAuthorisedSystemService } = require('../../../app/services')
+const CreateAuthorisedSystemService = require('../../../app/services/authorised_systems/create_authorised_system.service')
 
 describe('Create Authorised System service', () => {
   beforeEach(async () => {

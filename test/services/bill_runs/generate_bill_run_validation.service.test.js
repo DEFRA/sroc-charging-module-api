@@ -14,7 +14,7 @@ const DatabaseHelper = require('../../support/helpers/database.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 
 // Thing under test
-const { GenerateBillRunValidationService } = require('../../../app/services')
+const GenerateBillRunValidationService = require('../../../app/services/bill_runs/generate_bill_run_validation.service')
 
 describe('Generate Bill Run Validation service', () => {
   let billRun

@@ -7,7 +7,7 @@
 const Boom = require('@hapi/boom')
 const Nock = require('nock')
 
-const { CreateTransactionService } = require('../../../app/services')
+const CreateTransactionService = require('../../../app/services/transactions/create_transaction.service')
 
 const RulesServiceHelper = require('../helpers/rules_service.helper')
 const { presroc: requestFixtures } = require('../fixtures/create_transaction')

@@ -15,13 +15,13 @@ const GeneralHelper = require('../../../support/helpers/general.helper')
 const RegimeHelper = require('../../../support/helpers/regime.helper')
 
 // Things we need to stub
-const { DeleteFileService } = require('../../../../app/services')
-const { GeneratePresrocTransactionFileService } = require('../../../../app/services')
-const { GenerateSrocTransactionFileService } = require('../../../../app/services')
-const { SendFileToS3Service } = require('../../../../app/services')
+const DeleteFileService = require('../../../../app/services/files/delete_file.service')
+const GeneratePresrocTransactionFileService = require('../../../../app/services/files/transactions/generate_presroc_transaction_file.service')
+const GenerateSrocTransactionFileService = require('../../../../app/services/files/transactions/generate_sroc_transaction_file.service')
+const SendFileToS3Service = require('../../../../app/services/files/send_file_to_s3.service')
 
 // Thing under test
-const { SendTransactionFileService } = require('../../../../app/services')
+const SendTransactionFileService = require('../../../../app/services/files/transactions/send_transaction_file.service')
 
 describe('Send Transaction File service', () => {
   let regime
