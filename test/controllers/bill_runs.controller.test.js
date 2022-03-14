@@ -29,7 +29,7 @@ const GenerateBillRunValidationService = require('../../app/services/bill_runs/g
 const SendCustomerFileService = require('../../app/services/files/customers/send_customer_file.service')
 const SendTransactionFileService = require('../../app/services/files/transactions/send_transaction_file.service')
 
-const { RequestNotifierLib } = require('../../app/lib')
+const RequestNotifierLib = require('../../app/lib/request_notifier.lib')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
