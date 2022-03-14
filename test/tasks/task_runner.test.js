@@ -9,10 +9,10 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const TaskRunner = require('../../app/tasks/task_runner')
+const TaskRunner = require('../../app/tasks/task_runner.js')
 
 // Things we need to stub
-const CustomerFilesTask = require('../../app/tasks/customer_files.task')
+const CustomerFilesTask = require('../../app/tasks/customer_files.task.js')
 
 describe('Task Runner', () => {
   let taskStub

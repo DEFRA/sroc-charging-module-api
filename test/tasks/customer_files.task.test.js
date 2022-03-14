@@ -9,7 +9,7 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const CustomerFilesTask = require('../../app/tasks/customer_files.task')
+const CustomerFilesTask = require('../../app/tasks/customer_files.task.js')
 
 // Things we need to stub
 const RegimeModel = require('../../app/models/regime.model.js')
