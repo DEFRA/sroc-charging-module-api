@@ -8,7 +8,7 @@ const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
 const fs = require('fs')
 
 const S3Config = require('../../../config/s3.config.js')
-const temporaryFilePath = require('../../../config/server.config.js').temporaryFilePath
+const { temporaryFilePath } = require('../../../config/server.config.js')
 
 class SendFileToS3Service {
   /**

@@ -8,7 +8,7 @@ const path = require('path')
 const { pipeline } = require('stream')
 const util = require('util')
 
-const temporaryFilePath = require('../../../config/server.config.js').temporaryFilePath
+const { temporaryFilePath } = require('../../../config/server.config.js')
 
 const StreamReadableDataService = require('../streams/stream_readable_data.service.js')
 const StreamReadableRecordsService = require('../streams/stream_readable_records.service.js')

@@ -8,7 +8,7 @@ const path = require('path')
 const { pipeline } = require('stream')
 const util = require('util')
 
-const temporaryFilePath = require('../../../config/server.config.js').temporaryFilePath
+const { temporaryFilePath } = require('../../../config/server.config.js')
 
 const TableFilePresenter = require('../../presenters/table_file.presenter.js')
 
