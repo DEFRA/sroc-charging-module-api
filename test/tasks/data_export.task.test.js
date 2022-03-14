@@ -9,7 +9,7 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { DataExportTask } = require('../../app/tasks')
+const DataExportTask = require('../../app/tasks/data_export.task')
 
 // Things we need to stub
 const ExportDataFiles = require('../../app/services/files/exports/export_data_files.service')
