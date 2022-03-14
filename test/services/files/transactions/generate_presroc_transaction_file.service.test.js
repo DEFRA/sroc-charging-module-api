@@ -18,7 +18,9 @@ const NewInvoiceHelper = require('../../../support/helpers/new_invoice.helper')
 const NewLicenceHelper = require('../../../support/helpers/new_licence.helper')
 const NewTransactionHelper = require('../../../support/helpers/new_transaction.helper')
 
-const { BillRunModel, InvoiceModel, TransactionModel } = require('../../../../app/models')
+const BillRunModel = require('../../../../app/models/bill_run.model')
+const InvoiceModel = require('../../../../app/models/invoice.model')
+const TransactionModel = require('../../../../app/models/transaction.model')
 
 const { BasePresenter } = require('../../../../app/presenters')
 

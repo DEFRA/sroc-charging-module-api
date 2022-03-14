@@ -10,9 +10,9 @@ const { expect } = Code
 // Test helpers
 const DatabaseHelper = require('../../../support/helpers/database.helper')
 const RegimeHelper = require('../../../support/helpers/regime.helper')
-const { CustomerModel } = require('../../../../app/models')
-const { CustomerFileModel } = require('../../../../app/models')
-const { ExportedCustomerModel } = require('../../../../app/models')
+const CustomerModel = require('../../../../app/models/customer.model')
+const CustomerFileModel = require('../../../../app/models/customer_file.model')
+const ExportedCustomerModel = require('../../../../app/models/exported_customer.model')
 const { CreateCustomerDetailsService } = require('../../../../app/services')
 
 // Thing under test

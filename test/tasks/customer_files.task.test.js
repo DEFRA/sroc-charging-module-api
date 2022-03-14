@@ -12,7 +12,7 @@ const { expect } = Code
 const { CustomerFilesTask } = require('../../app/tasks')
 
 // Things we need to stub
-const { RegimeModel } = require('../../app/models')
+const RegimeModel = require('../../app/models/regime.model')
 const { SendCustomerFileService } = require('../../app/services')
 
 describe('Customer Files Task', () => {

@@ -16,7 +16,7 @@ const InvoiceHelper = require('../../support/helpers/invoice.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 const SequenceCounterHelper = require('../../support/helpers/sequence_counter.helper')
 
-const { BillRunModel } = require('../../../app/models')
+const BillRunModel = require('../../../app/models/bill_run.model')
 
 // Thing under test
 const { SendBillRunReferenceService } = require('../../../app/services')

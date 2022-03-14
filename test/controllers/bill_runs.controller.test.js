@@ -33,7 +33,7 @@ const { RequestNotifierLib } = require('../../app/lib')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { BillRunModel } = require('../../app/models')
+const BillRunModel = require('../../app/models/bill_run.model')
 
 describe('Bill Runs controller', () => {
   const clientID = '1234546789'

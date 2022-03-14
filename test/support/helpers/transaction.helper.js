@@ -1,6 +1,6 @@
 'use strict'
 
-const { TransactionModel } = require('../../../app/models')
+const TransactionModel = require('../../../app/models/transaction.model')
 
 const { RulesServicePresrocTranslator } = require('../../../app/translators')
 const { TransactionPresrocTranslator } = require('../../../app/translators')

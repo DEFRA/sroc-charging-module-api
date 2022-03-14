@@ -14,7 +14,7 @@ const DatabaseHelper = require('../../support/helpers/database.helper')
 const GeneralHelper = require('../../support/helpers/general.helper')
 const TransactionHelper = require('../../support/helpers/transaction.helper')
 
-const { TransactionModel } = require('../../../app/models')
+const TransactionModel = require('../../../app/models/transaction.model')
 
 const fs = require('fs')
 const path = require('path')

@@ -16,7 +16,7 @@ const GeneralHelper = require('../../support/helpers/general.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 const RulesServiceHelper = require('../../support/helpers/rules_service.helper')
 
-const { TransactionModel } = require('../../../app/models')
+const TransactionModel = require('../../../app/models/transaction.model')
 
 const { CreateTransactionService } = require('../../../app/services')
 

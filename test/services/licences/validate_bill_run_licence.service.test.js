@@ -14,7 +14,7 @@ const NewBillRunHelper = require('../../support/helpers/new_bill_run.helper')
 const NewInvoiceHelper = require('../../support/helpers/new_invoice.helper')
 const NewLicenceHelper = require('../../support/helpers/new_licence.helper')
 
-const { BillRunModel } = require('../../../app/models')
+const BillRunModel = require('../../../app/models/bill_run.model')
 
 // Thing under test
 const { ValidateBillRunLicenceService } = require('../../../app/services')

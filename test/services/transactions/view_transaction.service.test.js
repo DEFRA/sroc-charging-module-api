@@ -16,10 +16,10 @@ const RegimeHelper = require('../../support/helpers/regime.helper')
 
 const { BillRunGenerator } = require('../../support/generators')
 
-const { BillRunModel } = require('../../../app/models')
-const { InvoiceModel } = require('../../../app/models')
-const { LicenceModel } = require('../../../app/models')
-const { TransactionModel } = require('../../../app/models')
+const BillRunModel = require('../../../app/models/bill_run.model')
+const InvoiceModel = require('../../../app/models/invoice.model')
+const LicenceModel = require('../../../app/models/licence.model')
+const TransactionModel = require('../../../app/models/transaction.model')
 
 const { DataError } = require('objection')
 

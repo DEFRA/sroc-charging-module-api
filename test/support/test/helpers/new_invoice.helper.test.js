@@ -9,7 +9,7 @@ const { expect } = Code
 
 // Test helpers
 const DatabaseHelper = require('../../helpers/database.helper')
-const { BillRunModel } = require('../../../../app/models')
+const BillRunModel = require('../../../../app/models/bill_run.model')
 
 // Thing under test
 const NewInvoiceHelper = require('../../helpers/new_invoice.helper')

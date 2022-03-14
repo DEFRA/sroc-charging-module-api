@@ -15,9 +15,9 @@ const path = require('path')
 const DatabaseHelper = require('../../../support/helpers/database.helper')
 const NewTransactionHelper = require('../../../support/helpers/new_transaction.helper')
 
-const { InvoiceModel } = require('../../../../app/models')
-const { TransactionModel } = require('../../../../app/models')
-const { BillRunModel } = require('../../../../app/models')
+const InvoiceModel = require('../../../../app/models/invoice.model')
+const TransactionModel = require('../../../../app/models/transaction.model')
+const BillRunModel = require('../../../../app/models/bill_run.model')
 
 const { BasePresenter } = require('../../../../app/presenters')
 

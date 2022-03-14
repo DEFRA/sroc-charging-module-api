@@ -23,7 +23,7 @@ const RegimeHelper = require('../support/helpers/regime.helper')
 const JsonWebToken = require('jsonwebtoken')
 const { DeleteLicenceService } = require('../../app/services')
 const { ValidateBillRunLicenceService } = require('../../app/services')
-const { BillRunModel } = require('../../app/models')
+const BillRunModel = require('../../app/models/bill_run.model')
 
 describe('Licences controller', () => {
   let server

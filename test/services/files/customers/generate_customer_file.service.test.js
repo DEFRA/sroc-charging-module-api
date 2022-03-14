@@ -21,8 +21,8 @@ const { temporaryFilePath } = require('../../../../config/server.config')
 
 const { CreateCustomerDetailsService } = require('../../../../app/services')
 
-const { CustomerFileModel } = require('../../../../app/models')
-const { CustomerModel } = require('../../../../app/models')
+const CustomerFileModel = require('../../../../app/models/customer_file.model')
+const CustomerModel = require('../../../../app/models/customer.model')
 
 // Thing under test
 const { GenerateCustomerFileService } = require('../../../../app/services')

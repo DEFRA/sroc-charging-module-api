@@ -14,7 +14,7 @@ const DatabaseHelper = require('../support/helpers/database.helper')
 const RegimeHelper = require('../support/helpers/regime.helper')
 const TransactionHelper = require('../support/helpers/transaction.helper')
 
-const { TransactionModel } = require('../../app/models')
+const TransactionModel = require('../../app/models/transaction.model')
 
 describe('Handling BigInts', () => {
   let authorisedSystem

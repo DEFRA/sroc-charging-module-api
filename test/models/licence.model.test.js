@@ -15,7 +15,7 @@ const InvoiceHelper = require('../support/helpers/invoice.helper')
 const LicenceHelper = require('../support/helpers/licence.helper')
 
 // Thing under test
-const { LicenceModel } = require('../../app/models')
+const LicenceModel = require('../../app/models/licence.model')
 
 describe('Licence Model', () => {
   describe('the updateTally() class method', () => {

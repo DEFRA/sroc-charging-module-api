@@ -10,7 +10,7 @@ const { expect } = Code
 // Test helpers
 const DatabaseHelper = require('../support/helpers/database.helper')
 const RegimeHelper = require('../support/helpers/regime.helper')
-const { CustomerModel } = require('../../app/models')
+const CustomerModel = require('../../app/models/customer.model')
 
 // Thing under test
 const { CreateCustomerDetailsService } = require('../../app/services')

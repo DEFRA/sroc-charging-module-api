@@ -1,6 +1,6 @@
 'use strict'
 
-const { BillRunModel } = require('../../../app/models')
+const BillRunModel = require('../../../app/models/bill_run.model')
 
 class BillRunHelper {
   /**

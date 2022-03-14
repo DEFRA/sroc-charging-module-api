@@ -15,7 +15,7 @@ const DatabaseHelper = require('../../support/helpers/database.helper')
 const GeneralHelper = require('../../support/helpers/general.helper')
 const StreamHelper = require('../../support/helpers/stream.helper')
 const TransactionHelper = require('../../support/helpers/transaction.helper')
-const { TransactionModel } = require('../../../app/models')
+const TransactionModel = require('../../../app/models/transaction.model')
 
 // Thing under test
 const { StreamReadableRecordsService } = require('../../../app/services')

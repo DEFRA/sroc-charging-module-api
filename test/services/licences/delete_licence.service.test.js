@@ -16,11 +16,11 @@ const NewBillRunHelper = require('../../support/helpers/new_bill_run.helper')
 const NewInvoiceHelper = require('../../support/helpers/new_invoice.helper')
 const NewTransactionHelper = require('../../support/helpers/new_transaction.helper')
 
-const { BillRunModel } = require('../../../app/models')
-const { InvoiceModel } = require('../../../app/models')
-const { LicenceModel } = require('../../../app/models')
-const { RegimeModel } = require('../../../app/models')
-const { TransactionModel } = require('../../../app/models')
+const BillRunModel = require('../../../app/models/bill_run.model')
+const InvoiceModel = require('../../../app/models/invoice.model')
+const LicenceModel = require('../../../app/models/licence.model')
+const RegimeModel = require('../../../app/models/regime.model')
+const TransactionModel = require('../../../app/models/transaction.model')
 
 const { GenerateBillRunService } = require('../../../app/services')
 

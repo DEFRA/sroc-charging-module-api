@@ -12,7 +12,7 @@ const { expect } = Code
 const DatabaseHelper = require('../../../support/helpers/database.helper')
 const RegimeHelper = require('../../../support/helpers/regime.helper')
 
-const { CustomerFileModel } = require('../../../../app/models')
+const CustomerFileModel = require('../../../../app/models/customer_file.model')
 const { CreateCustomerDetailsService } = require('../../../../app/services')
 
 // Things we need to stub

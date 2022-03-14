@@ -11,7 +11,7 @@ const { expect } = Code
 const DatabaseHelper = require('../../../support/helpers/database.helper')
 const CustomerHelper = require('../../../support/helpers/customer.helper')
 const GeneralHelper = require('../../../support/helpers/general.helper')
-const { CustomerFileModel } = require('../../../../app/models')
+const CustomerFileModel = require('../../../../app/models/customer_file.model')
 const { DataError } = require('objection')
 
 // Thing under test

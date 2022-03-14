@@ -1,7 +1,7 @@
 'use strict'
 
-const { CustomerFileModel } = require('../../../app/models')
-const { ExportedCustomerModel } = require('../../../app/models')
+const CustomerFileModel = require('../../../app/models/customer_file.model')
+const ExportedCustomerModel = require('../../../app/models/exported_customer.model')
 const GeneralHelper = require('./general.helper')
 
 /**

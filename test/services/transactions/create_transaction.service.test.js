@@ -17,7 +17,8 @@ const NewBillRunHelper = require('../../support/helpers/new_bill_run.helper')
 const NewTransactionHelper = require('../../support/helpers/new_transaction.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 
-const { BillRunModel, TransactionModel } = require('../../../app/models')
+const BillRunModel = require('../../../app/models/bill_run.model')
+const TransactionModel = require('../../../app/models/transaction.model')
 const { ValidationError } = require('joi')
 
 const { presroc: presrocTransactionFixtures } = require('../../support/fixtures/create_transaction')

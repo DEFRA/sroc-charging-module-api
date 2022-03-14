@@ -27,8 +27,8 @@ const { FetchAndValidateInvoiceService } = require('../../app/services')
 const { InvoiceRebillingService } = require('../../app/services')
 const { InvoiceRebillingValidationService } = require('../../app/services')
 
-const { BillRunModel } = require('../../app/models')
-const { InvoiceModel } = require('../../app/models')
+const BillRunModel = require('../../app/models/bill_run.model')
+const InvoiceModel = require('../../app/models/invoice.model')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')

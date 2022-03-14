@@ -1,6 +1,6 @@
 'use strict'
 
-const { RegimeModel } = require('../../../app/models')
+const RegimeModel = require('../../../app/models/regime.model')
 
 /**
  * Use to help wwith creating 'Regime' records

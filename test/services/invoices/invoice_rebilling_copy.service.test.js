@@ -15,8 +15,8 @@ const InvoiceHelper = require('../../support/helpers/invoice.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 const TransactionHelper = require('../../support/helpers/transaction.helper')
 
-const { LicenceModel } = require('../../../app/models')
-const { TransactionModel } = require('../../../app/models')
+const LicenceModel = require('../../../app/models/licence.model')
+const TransactionModel = require('../../../app/models/transaction.model')
 
 // Thing under test
 const { InvoiceRebillingCopyService } = require('../../../app/services')

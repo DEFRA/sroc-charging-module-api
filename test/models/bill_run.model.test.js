@@ -13,7 +13,7 @@ const NewBillRunHelper = require('../support/helpers/new_bill_run.helper')
 const NewInvoiceHelper = require('../support/helpers/new_invoice.helper')
 
 // Thing under test
-const { BillRunModel } = require('../../app/models')
+const BillRunModel = require('../../app/models/bill_run.model')
 
 describe('Bill Run Model', () => {
   describe('the patchTally() class method', () => {

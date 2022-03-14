@@ -14,7 +14,7 @@ const GeneralHelper = require('../support/helpers/general.helper')
 const InvoiceHelper = require('../support/helpers/invoice.helper')
 
 // Thing under test
-const { InvoiceModel } = require('../../app/models')
+const InvoiceModel = require('../../app/models/invoice.model')
 
 describe('Invoice Model', () => {
   let billRun
