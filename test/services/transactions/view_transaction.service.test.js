@@ -14,7 +14,7 @@ const DatabaseHelper = require('../../support/helpers/database.helper')
 const GeneralHelper = require('../../support/helpers/general.helper')
 const RegimeHelper = require('../../support/helpers/regime.helper')
 
-const { BillRunGenerator } = require('../../support/generators')
+const BillRunGenerator = require('../../support/generators/bill_run.generator')
 
 const BillRunModel = require('../../../app/models/bill_run.model')
 const InvoiceModel = require('../../../app/models/invoice.model')

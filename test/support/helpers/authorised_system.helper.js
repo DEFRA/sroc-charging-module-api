@@ -1,6 +1,6 @@
 'use strict'
 
-const { AuthenticationConfig } = require('../../../config')
+const AuthenticationConfig = require('../../../config/authentication.config')
 const AuthorisedSystemModel = require('../../../app/models/authorised_system.model')
 
 const RegimeHelper = require('./regime.helper')
