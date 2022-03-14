@@ -10,7 +10,7 @@ const { expect } = Code
 const PresenterHelper = require('../support/helpers/presenter.helper')
 
 // Thing under test
-const { CustomerFileTailPresenter } = require('../../app/presenters')
+const CustomerFileTailPresenter = require('../../app/presenters/customer_file_tail.presenter')
 
 describe('Customer File Tail Presenter', () => {
   const data = {

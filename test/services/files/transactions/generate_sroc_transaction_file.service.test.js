@@ -19,7 +19,7 @@ const InvoiceModel = require('../../../../app/models/invoice.model')
 const TransactionModel = require('../../../../app/models/transaction.model')
 const BillRunModel = require('../../../../app/models/bill_run.model')
 
-const { BasePresenter } = require('../../../../app/presenters')
+const BasePresenter = require('../../../../app/presenters/base.presenter')
 
 const { temporaryFilePath } = require('../../../../config/server.config')
 

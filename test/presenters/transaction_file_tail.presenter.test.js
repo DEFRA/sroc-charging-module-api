@@ -10,7 +10,7 @@ const { expect } = Code
 const PresenterHelper = require('../support/helpers/presenter.helper')
 
 // Thing under test
-const { TransactionFileTailPresenter } = require('../../app/presenters')
+const TransactionFileTailPresenter = require('../../app/presenters/transaction_file_tail.presenter')
 
 describe('Transaction File Tail Presenter', () => {
   const data = {

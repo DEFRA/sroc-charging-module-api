@@ -11,7 +11,7 @@ const { expect } = Code
 const GeneralHelper = require('../support/helpers/general.helper')
 
 // Thing under test
-const { InvoiceRebillingPresenter } = require('../../app/presenters')
+const InvoiceRebillingPresenter = require('../../app/presenters/invoice_rebilling.presenter')
 
 describe('Invoice Rebilling presenter', () => {
   it('correctly presents the data', () => {

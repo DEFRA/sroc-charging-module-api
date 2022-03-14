@@ -15,7 +15,7 @@ const path = require('path')
 const DatabaseHelper = require('../../../support/helpers/database.helper')
 const RegimeHelper = require('../../../support/helpers/regime.helper')
 
-const { BasePresenter } = require('../../../../app/presenters')
+const BasePresenter = require('../../../../app/presenters/base.presenter')
 
 const { temporaryFilePath } = require('../../../../config/server.config')
 

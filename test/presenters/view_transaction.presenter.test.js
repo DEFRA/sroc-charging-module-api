@@ -11,7 +11,7 @@ const { expect } = Code
 const GeneralHelper = require('../support/helpers/general.helper')
 
 // Thing under test
-const { ViewTransactionPresenter } = require('../../app/presenters')
+const ViewTransactionPresenter = require('../../app/presenters/view_transaction.presenter')
 
 describe('View Transaction Presenter', () => {
   const data = {

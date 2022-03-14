@@ -11,7 +11,7 @@ const { expect } = Code
 const GeneralHelper = require('../support/helpers/general.helper')
 
 // Thing under test
-const { BillRunStatusPresenter } = require('../../app/presenters')
+const BillRunStatusPresenter = require('../../app/presenters/bill_run_status.presenter')
 
 describe('Bill run status Presenter', () => {
   it("returns the 'status' of the bill run", () => {

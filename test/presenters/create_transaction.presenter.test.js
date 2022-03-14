@@ -11,7 +11,7 @@ const { expect } = Code
 const GeneralHelper = require('../support/helpers/general.helper')
 
 // Thing under test
-const { CreateTransactionPresenter } = require('../../app/presenters')
+const CreateTransactionPresenter = require('../../app/presenters/create_transaction.presenter')
 
 describe('Create Transaction presenter', () => {
   describe('using the data passed in', () => {

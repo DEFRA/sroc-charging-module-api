@@ -8,7 +8,7 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { JsonPresenter } = require('../../app/presenters')
+const JsonPresenter = require('../../app/presenters/json.presenter')
 
 describe('Json Presenter', () => {
   it('returns whatever you pass in', () => {

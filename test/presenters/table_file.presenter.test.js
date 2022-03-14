@@ -10,7 +10,7 @@ const { expect } = Code
 const PresenterHelper = require('../support/helpers/presenter.helper')
 
 // Thing under test
-const { TableFilePresenter } = require('../../app/presenters')
+const TableFilePresenter = require('../../app/presenters/table_file.presenter')
 
 describe('Table Body Presenter', () => {
   const data = {

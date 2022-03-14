@@ -9,7 +9,7 @@ const { describe, it, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { BasePresenter } = require('../../app/presenters')
+const BasePresenter = require('../../app/presenters/base.presenter')
 
 describe('Base presenter', () => {
   afterEach(async () => {
