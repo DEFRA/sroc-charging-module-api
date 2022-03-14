@@ -6,7 +6,7 @@
 
 const TransformTableToFileService = require('../transform_table_to_file.service')
 
-const { db } = require('../../../../db')
+const { db } = require('../../../../db/index')
 
 class ExportTableToFileService {
   /**
