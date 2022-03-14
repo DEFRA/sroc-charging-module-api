@@ -10,14 +10,11 @@ const { expect } = Code
 const stream = require('stream')
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  StreamHelper,
-  TransactionHelper
-} = require('../../support/helpers')
-
+const { BillRunHelper } = require('../../support/helpers')
+const { DatabaseHelper } = require('../../support/helpers')
+const { GeneralHelper } = require('../../support/helpers')
+const { StreamHelper } = require('../../support/helpers')
+const { TransactionHelper } = require('../../support/helpers')
 const { TransactionModel } = require('../../../app/models')
 
 // Thing under test

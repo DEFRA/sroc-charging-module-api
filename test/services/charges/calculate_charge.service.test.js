@@ -9,7 +9,8 @@ const { expect } = Code
 
 // Test helpers
 const { GeneralHelper } = require('../../support/helpers')
-const { presroc: presrocFixtures, sroc: srocFixtures } = require('../../support/fixtures/calculate_charge')
+const { presroc: presrocFixtures } = require('../../support/fixtures/calculate_charge')
+const { sroc: srocFixtures } = require('../../support/fixtures/calculate_charge')
 const { ValidationError } = require('joi')
 
 // Things we need to stub

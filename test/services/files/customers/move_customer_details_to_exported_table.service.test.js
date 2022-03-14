@@ -8,8 +8,11 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { DatabaseHelper, RegimeHelper } = require('../../../support/helpers')
-const { CustomerModel, CustomerFileModel, ExportedCustomerModel } = require('../../../../app/models')
+const { DatabaseHelper } = require('../../../support/helpers')
+const { RegimeHelper } = require('../../../support/helpers')
+const { CustomerModel } = require('../../../../app/models')
+const { CustomerFileModel } = require('../../../../app/models')
+const { ExportedCustomerModel } = require('../../../../app/models')
 const { CreateCustomerDetailsService } = require('../../../../app/services')
 
 // Thing under test

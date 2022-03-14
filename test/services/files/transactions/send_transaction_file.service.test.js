@@ -9,20 +9,16 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper
-} = require('../../../support/helpers')
+const { BillRunHelper } = require('../../../support/helpers')
+const { DatabaseHelper } = require('../../../support/helpers')
+const { GeneralHelper } = require('../../../support/helpers')
+const { RegimeHelper } = require('../../../support/helpers')
 
 // Things we need to stub
-const {
-  DeleteFileService,
-  GeneratePresrocTransactionFileService,
-  GenerateSrocTransactionFileService,
-  SendFileToS3Service
-} = require('../../../../app/services')
+const { DeleteFileService } = require('../../../../app/services')
+const { GeneratePresrocTransactionFileService } = require('../../../../app/services')
+const { GenerateSrocTransactionFileService } = require('../../../../app/services')
+const { SendFileToS3Service } = require('../../../../app/services')
 
 // Thing under test
 const { SendTransactionFileService } = require('../../../../app/services')

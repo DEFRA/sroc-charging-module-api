@@ -8,7 +8,10 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, DatabaseHelper, GeneralHelper, RegimeHelper } = require('../../support/helpers')
+const { AuthorisedSystemHelper } = require('../../support/helpers')
+const { DatabaseHelper } = require('../../support/helpers')
+const { GeneralHelper } = require('../../support/helpers')
+const { RegimeHelper } = require('../../support/helpers')
 const AuthorisedSystemModel = require('../../../app/models/authorised_system.model')
 const { DataError } = require('objection')
 

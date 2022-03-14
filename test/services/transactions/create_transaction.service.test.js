@@ -9,26 +9,22 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  NewBillRunHelper,
-  NewTransactionHelper,
-  RegimeHelper
-} = require('../../support/helpers')
+const { AuthorisedSystemHelper } = require('../../support/helpers')
+const { BillRunHelper } = require('../../support/helpers')
+const { DatabaseHelper } = require('../../support/helpers')
+const { GeneralHelper } = require('../../support/helpers')
+const { NewBillRunHelper } = require('../../support/helpers')
+const { NewTransactionHelper } = require('../../support/helpers')
+const { RegimeHelper } = require('../../support/helpers')
+
 const { BillRunModel, TransactionModel } = require('../../../app/models')
 const { ValidationError } = require('joi')
 
-const {
-  presroc: presrocTransactionFixtures,
-  sroc: srocTransactionFixtures
-} = require('../../support/fixtures/create_transaction')
-const {
-  presroc: presrocChargeFixtures,
-  sroc: srocChargeFixtures
-} = require('../../support/fixtures/calculate_charge')
+const { presroc: presrocTransactionFixtures } = require('../../support/fixtures/create_transaction')
+const { sroc: srocTransactionFixtures } = require('../../support/fixtures/create_transaction')
+
+const { presroc: presrocChargeFixtures } = require('../../support/fixtures/calculate_charge')
+const { sroc: srocChargeFixtures } = require('../../support/fixtures/calculate_charge')
 
 // Things we need to stub
 const { RequestRulesServiceCharge } = require('../../../app/services')

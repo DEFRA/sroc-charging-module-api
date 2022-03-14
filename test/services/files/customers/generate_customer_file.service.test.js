@@ -12,7 +12,8 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const { DatabaseHelper, RegimeHelper } = require('../../../support/helpers')
+const { DatabaseHelper } = require('../../../support/helpers')
+const { RegimeHelper } = require('../../../support/helpers')
 
 const { BasePresenter } = require('../../../../app/presenters')
 
@@ -20,7 +21,8 @@ const { temporaryFilePath } = require('../../../../config/server.config')
 
 const { CreateCustomerDetailsService } = require('../../../../app/services')
 
-const { CustomerFileModel, CustomerModel } = require('../../../../app/models')
+const { CustomerFileModel } = require('../../../../app/models')
+const { CustomerModel } = require('../../../../app/models')
 
 // Thing under test
 const { GenerateCustomerFileService } = require('../../../../app/services')

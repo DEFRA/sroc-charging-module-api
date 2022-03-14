@@ -9,16 +9,15 @@ const { afterEach, describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper,
-  RulesServiceHelper
-} = require('../../support/helpers')
+const { AuthorisedSystemHelper } = require('../../support/helpers')
+const { BillRunHelper } = require('../../support/helpers')
+const { DatabaseHelper } = require('../../support/helpers')
+const { GeneralHelper } = require('../../support/helpers')
+const { RegimeHelper } = require('../../support/helpers')
+const { RulesServiceHelper } = require('../../support/helpers')
 
-const { CreateTransactionService, GenerateBillRunService } = require('../../../app/services')
+const { CreateTransactionService } = require('../../../app/services')
+const { GenerateBillRunService } = require('../../../app/services')
 
 const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')

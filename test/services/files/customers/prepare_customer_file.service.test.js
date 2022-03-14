@@ -9,18 +9,14 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  DatabaseHelper,
-  RegimeHelper
-} = require('../../../support/helpers')
+const { DatabaseHelper } = require('../../../support/helpers')
+const { RegimeHelper } = require('../../../support/helpers')
 
 const { CustomerFileModel } = require('../../../../app/models')
 const { CreateCustomerDetailsService } = require('../../../../app/services')
 
 // Things we need to stub
-const {
-  NextCustomerFileReferenceService
-} = require('../../../../app/services')
+const { NextCustomerFileReferenceService } = require('../../../../app/services')
 
 // Thing under test
 const { PrepareCustomerFileService } = require('../../../../app/services')

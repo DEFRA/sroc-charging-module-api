@@ -8,7 +8,9 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, DatabaseHelper, RegimeHelper } = require('../../support/helpers')
+const { AuthorisedSystemHelper } = require('../../support/helpers')
+const { DatabaseHelper } = require('../../support/helpers')
+const { RegimeHelper } = require('../../support/helpers')
 const { ValidationError } = require('joi')
 const { UniqueViolationError } = require('db-errors')
 

@@ -8,7 +8,11 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, DatabaseHelper, RegimeHelper, SequenceCounterHelper } = require('../../support/helpers')
+const { AuthorisedSystemHelper } = require('../../support/helpers')
+const { DatabaseHelper } = require('../../support/helpers')
+const { RegimeHelper } = require('../../support/helpers')
+const { SequenceCounterHelper } = require('../../support/helpers')
+
 const BillRunModel = require('../../../app/models/bill_run.model')
 const { ValidationError } = require('joi')
 

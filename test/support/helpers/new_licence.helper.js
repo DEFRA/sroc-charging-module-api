@@ -1,6 +1,7 @@
 'use strict'
 
-const { InvoiceModel, LicenceModel } = require('../../../app/models')
+const { InvoiceModel } = require('../../../app/models')
+const { LicenceModel } = require('../../../app/models')
 
 const NewInvoiceHelper = require('./new_invoice.helper')
 

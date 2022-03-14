@@ -12,13 +12,16 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const { DatabaseHelper, GeneralHelper, RegimeHelper } = require('../../../support/helpers')
+const { DatabaseHelper } = require('../../../support/helpers')
+const { GeneralHelper } = require('../../../support/helpers')
+const { RegimeHelper } = require('../../../support/helpers')
 
 const { temporaryFilePath } = require('../../../../config/server.config')
 
 const { CreateCustomerDetailsService } = require('../../../../app/services')
 
-const { CustomerFileModel, CustomerModel } = require('../../../../app/models')
+const { CustomerFileModel } = require('../../../../app/models')
+const { CustomerModel } = require('../../../../app/models')
 
 // Thing under test
 const { ExportTableToFileService } = require('../../../../app/services')

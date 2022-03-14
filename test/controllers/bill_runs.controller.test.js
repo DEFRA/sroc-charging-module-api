@@ -12,26 +12,22 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  NewBillRunHelper,
-  NewInvoiceHelper,
-  NewTransactionHelper,
-  RegimeHelper,
-  SequenceCounterHelper
-} = require('../support/helpers')
+const { AuthorisationHelper } = require('../support/helpers')
+const { AuthorisedSystemHelper } = require('../support/helpers')
+const { DatabaseHelper } = require('../support/helpers')
+const { GeneralHelper } = require('../support/helpers')
+const { NewBillRunHelper } = require('../support/helpers')
+const { NewInvoiceHelper } = require('../support/helpers')
+const { NewTransactionHelper } = require('../support/helpers')
+const { RegimeHelper } = require('../support/helpers')
+const { SequenceCounterHelper } = require('../support/helpers')
 
-const {
-  CreateBillRunService,
-  CreateBillRunV2GuardService,
-  GenerateBillRunService,
-  GenerateBillRunValidationService,
-  SendCustomerFileService,
-  SendTransactionFileService
-} = require('../../app/services')
+const { CreateBillRunService } = require('../../app/services')
+const { CreateBillRunV2GuardService } = require('../../app/services')
+const { GenerateBillRunService } = require('../../app/services')
+const { GenerateBillRunValidationService } = require('../../app/services')
+const { SendCustomerFileService } = require('../../app/services')
+const { SendTransactionFileService } = require('../../app/services')
 
 const { RequestNotifierLib } = require('../../app/lib')
 

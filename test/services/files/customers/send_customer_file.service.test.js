@@ -9,23 +9,21 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  DatabaseHelper,
-  RegimeHelper
-} = require('../../../support/helpers')
+const { DatabaseHelper } = require('../../../support/helpers')
+const { RegimeHelper } = require('../../../support/helpers')
 
-const { CustomerFileModel, CustomerModel } = require('../../../../app/models')
+const { CustomerFileModel } = require('../../../../app/models')
+const { CustomerModel } = require('../../../../app/models')
 
-const { CreateCustomerDetailsService, MoveCustomerDetailsToExportedTableService } = require('../../../../app/services')
+const { CreateCustomerDetailsService } = require('../../../../app/services')
+const { MoveCustomerDetailsToExportedTableService } = require('../../../../app/services')
 
 // Things we need to stub
-const {
-  DeleteFileService,
-  GenerateCustomerFileService,
-  NextCustomerFileReferenceService,
-  PrepareCustomerFileService,
-  SendFileToS3Service
-} = require('../../../../app/services')
+const { DeleteFileService } = require('../../../../app/services')
+const { GenerateCustomerFileService } = require('../../../../app/services')
+const { NextCustomerFileReferenceService } = require('../../../../app/services')
+const { PrepareCustomerFileService } = require('../../../../app/services')
+const { SendFileToS3Service } = require('../../../../app/services')
 
 // Thing under test
 const { SendCustomerFileService } = require('../../../../app/services')

@@ -9,12 +9,10 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper
-} = require('../../../support/helpers')
+const { BillRunHelper } = require('../../../support/helpers')
+const { DatabaseHelper } = require('../../../support/helpers')
+const { GeneralHelper } = require('../../../support/helpers')
+const { RegimeHelper } = require('../../../support/helpers')
 
 // Things to stub
 const { SendTransactionFileService } = require('../../../../app/services')

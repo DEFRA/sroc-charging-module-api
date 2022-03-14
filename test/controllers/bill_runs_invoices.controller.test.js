@@ -12,26 +12,23 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  NewInvoiceHelper,
-  NewTransactionHelper,
-  RegimeHelper
-} = require('../support/helpers')
+const { AuthorisationHelper } = require('../support/helpers')
+const { AuthorisedSystemHelper } = require('../support/helpers')
+const { DatabaseHelper } = require('../support/helpers')
+const { GeneralHelper } = require('../support/helpers')
+const { NewInvoiceHelper } = require('../support/helpers')
+const { NewTransactionHelper } = require('../support/helpers')
+const { RegimeHelper } = require('../support/helpers')
 
 const Boom = require('@hapi/boom')
 
-const {
-  DeleteInvoiceService,
-  FetchAndValidateInvoiceService,
-  InvoiceRebillingService,
-  InvoiceRebillingValidationService
-} = require('../../app/services')
+const { DeleteInvoiceService } = require('../../app/services')
+const { FetchAndValidateInvoiceService } = require('../../app/services')
+const { InvoiceRebillingService } = require('../../app/services')
+const { InvoiceRebillingValidationService } = require('../../app/services')
 
-const { BillRunModel, InvoiceModel } = require('../../app/models')
+const { BillRunModel } = require('../../app/models')
+const { InvoiceModel } = require('../../app/models')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')

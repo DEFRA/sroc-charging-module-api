@@ -9,17 +9,16 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper,
-  InvoiceHelper
-} = require('../../support/helpers')
+const { AuthorisedSystemHelper } = require('../../support/helpers')
+const { BillRunHelper } = require('../../support/helpers')
+const { DatabaseHelper } = require('../../support/helpers')
+const { GeneralHelper } = require('../../support/helpers')
+const { RegimeHelper } = require('../../support/helpers')
+const { InvoiceHelper } = require('../../support/helpers')
 
 // Things we need to stub
-const { InvoiceRebillingCopyService, InvoiceRebillingInitialiseService } = require('../../../app/services')
+const { InvoiceRebillingCopyService } = require('../../../app/services')
+const { InvoiceRebillingInitialiseService } = require('../../../app/services')
 
 // Thing under test
 const { InvoiceRebillingService } = require('../../../app/services')

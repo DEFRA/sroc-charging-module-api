@@ -1,7 +1,9 @@
 'use strict'
 
 const { TransactionModel } = require('../../../app/models')
-const { RulesServicePresrocTranslator, TransactionPresrocTranslator } = require('../../../app/translators')
+
+const { RulesServicePresrocTranslator } = require('../../../app/translators')
+const { TransactionPresrocTranslator } = require('../../../app/translators')
 
 const GeneralHelper = require('./general.helper')
 const LicenceHelper = require('./licence.helper')
