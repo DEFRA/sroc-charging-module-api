@@ -12,11 +12,11 @@ const { expect } = Code
 const { init } = require('../../../../app/server')
 
 // Test helpers
-const { AuthorisationHelper } = require('../../../support/helpers')
-const { AuthorisedSystemHelper } = require('../../../support/helpers')
-const { DatabaseHelper } = require('../../../support/helpers')
-const { GeneralHelper } = require('../../../support/helpers')
-const { SequenceCounterHelper } = require('../../../support/helpers')
+const AuthorisationHelper = require('../../../support/helpers/authorisation.helper')
+const AuthorisedSystemHelper = require('../../../support/helpers/authorised_system.helper')
+const DatabaseHelper = require('../../../support/helpers/database.helper')
+const GeneralHelper = require('../../../support/helpers/general.helper')
+const SequenceCounterHelper = require('../../../support/helpers/sequence_counter.helper')
 const { BillRunModel } = require('../../../../app/models')
 
 // Things we need to stub

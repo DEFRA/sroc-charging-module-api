@@ -8,7 +8,7 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { GeneralHelper } = require('../support/helpers')
+const GeneralHelper = require('../support/helpers/general.helper')
 const { ValidationError } = require('joi')
 
 // Thing under test

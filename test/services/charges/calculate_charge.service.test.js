@@ -8,7 +8,7 @@ const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { GeneralHelper } = require('../../support/helpers')
+const GeneralHelper = require('../../support/helpers/general.helper')
 const { presroc: presrocFixtures } = require('../../support/fixtures/calculate_charge')
 const { sroc: srocFixtures } = require('../../support/fixtures/calculate_charge')
 const { ValidationError } = require('joi')

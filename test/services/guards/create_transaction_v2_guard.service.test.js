@@ -7,7 +7,7 @@ const Code = require('@hapi/code')
 const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
-const { NewBillRunHelper } = require('../../support/helpers')
+const NewBillRunHelper = require('../../support/helpers/new_bill_run.helper')
 
 // Thing under test
 const { CreateTransactionV2GuardService } = require('../../../app/services')

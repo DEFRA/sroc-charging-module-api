@@ -8,10 +8,10 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { DatabaseHelper } = require('../../support/helpers')
-const { GeneralHelper } = require('../../support/helpers')
-const { RegimeHelper } = require('../../support/helpers')
-const { SequenceCounterHelper } = require('../../support/helpers')
+const DatabaseHelper = require('../../support/helpers/database.helper')
+const GeneralHelper = require('../../support/helpers/general.helper')
+const RegimeHelper = require('../../support/helpers/regime.helper')
+const SequenceCounterHelper = require('../../support/helpers/sequence_counter.helper')
 const { NotFoundError } = require('objection')
 
 // Thing under test

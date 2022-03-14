@@ -9,7 +9,7 @@ const Nock = require('nock')
 
 const { CreateTransactionService } = require('../../../app/services')
 
-const { RulesServiceHelper } = require('../helpers')
+const RulesServiceHelper = require('../helpers/rules_service.helper')
 const { presroc: requestFixtures } = require('../fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../fixtures/calculate_charge')
 

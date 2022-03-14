@@ -12,11 +12,11 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const { DatabaseHelper } = require('../../../support/helpers')
-const { NewBillRunHelper } = require('../../../support/helpers')
-const { NewInvoiceHelper } = require('../../../support/helpers')
-const { NewLicenceHelper } = require('../../../support/helpers')
-const { NewTransactionHelper } = require('../../../support/helpers')
+const DatabaseHelper = require('../../../support/helpers/database.helper')
+const NewBillRunHelper = require('../../../support/helpers/new_bill_run.helper')
+const NewInvoiceHelper = require('../../../support/helpers/new_invoice.helper')
+const NewLicenceHelper = require('../../../support/helpers/new_licence.helper')
+const NewTransactionHelper = require('../../../support/helpers/new_transaction.helper')
 
 const { BillRunModel, InvoiceModel, TransactionModel } = require('../../../../app/models')
 

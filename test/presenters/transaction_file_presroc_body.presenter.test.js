@@ -9,7 +9,7 @@ const { expect } = Code
 
 const { BasePresenter } = require('../../app/presenters')
 
-const { PresenterHelper } = require('../support/helpers')
+const PresenterHelper = require('../support/helpers/presenter.helper')
 
 // Thing under test
 const { TransactionFilePresrocBodyPresenter } = require('../../app/presenters')

@@ -11,7 +11,7 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const { RouteHelper } = require('../support/helpers')
+const RouteHelper = require('../support/helpers/route.helper')
 
 describe('Not Supported controller', () => {
   let server

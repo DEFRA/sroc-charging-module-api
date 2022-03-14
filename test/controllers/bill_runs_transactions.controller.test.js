@@ -13,12 +13,12 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const { AuthorisationHelper } = require('../support/helpers')
-const { AuthorisedSystemHelper } = require('../support/helpers')
-const { DatabaseHelper } = require('../support/helpers')
-const { GeneralHelper } = require('../support/helpers')
-const { NewBillRunHelper } = require('../support/helpers')
-const { RegimeHelper } = require('../support/helpers')
+const AuthorisationHelper = require('../support/helpers/authorisation.helper')
+const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper')
+const DatabaseHelper = require('../support/helpers/database.helper')
+const GeneralHelper = require('../support/helpers/general.helper')
+const NewBillRunHelper = require('../support/helpers/new_bill_run.helper')
+const RegimeHelper = require('../support/helpers/regime.helper')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
 

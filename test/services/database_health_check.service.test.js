@@ -8,7 +8,7 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { DatabaseHelper } = require('../support/helpers')
+const DatabaseHelper = require('../support/helpers/database.helper')
 
 // Thing under test
 const { DatabaseHealthCheckService } = require('../../app/services')

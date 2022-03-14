@@ -12,7 +12,7 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const { StreamHelper } = require('../../support/helpers')
+const StreamHelper = require('../../support/helpers/stream.helper')
 const mockFs = require('mock-fs')
 
 // Thing under test

@@ -8,9 +8,9 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { DatabaseHelper } = require('../../../support/helpers')
-const { CustomerHelper } = require('../../../support/helpers')
-const { GeneralHelper } = require('../../../support/helpers')
+const DatabaseHelper = require('../../../support/helpers/database.helper')
+const CustomerHelper = require('../../../support/helpers/customer.helper')
+const GeneralHelper = require('../../../support/helpers/general.helper')
 const { CustomerFileModel } = require('../../../../app/models')
 const { DataError } = require('objection')
 

@@ -12,8 +12,8 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const { DatabaseHelper } = require('../../../support/helpers')
-const { NewTransactionHelper } = require('../../../support/helpers')
+const DatabaseHelper = require('../../../support/helpers/database.helper')
+const NewTransactionHelper = require('../../../support/helpers/new_transaction.helper')
 
 const { InvoiceModel } = require('../../../../app/models')
 const { TransactionModel } = require('../../../../app/models')

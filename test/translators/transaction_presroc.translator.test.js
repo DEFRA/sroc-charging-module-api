@@ -9,7 +9,7 @@ const { expect } = Code
 
 // Test helpers
 const { ValidationError } = require('joi')
-const { GeneralHelper } = require('../support/helpers')
+const GeneralHelper = require('../support/helpers/general.helper')
 
 // Thing under test
 const { TransactionPresrocTranslator } = require('../../app/translators')

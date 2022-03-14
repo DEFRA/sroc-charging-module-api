@@ -10,7 +10,7 @@ const { expect } = Code
 const stream = require('stream')
 
 // Test helpers
-const { StreamHelper } = require('../../support/helpers')
+const StreamHelper = require('../../support/helpers/stream.helper')
 
 // Thing under test
 const { StreamTransformUsingPresenterService } = require('../../../app/services')

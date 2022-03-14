@@ -12,8 +12,8 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const { DatabaseHelper } = require('../../../support/helpers')
-const { RegimeHelper } = require('../../../support/helpers')
+const DatabaseHelper = require('../../../support/helpers/database.helper')
+const RegimeHelper = require('../../../support/helpers/regime.helper')
 
 const { BasePresenter } = require('../../../../app/presenters')
 

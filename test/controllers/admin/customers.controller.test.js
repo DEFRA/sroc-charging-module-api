@@ -12,9 +12,9 @@ const { expect } = Code
 const { init } = require('../../../app/server')
 
 // Test helpers
-const { AuthorisationHelper } = require('../../support/helpers')
-const { AuthorisedSystemHelper } = require('../../support/helpers')
-const { DatabaseHelper } = require('../../support/helpers')
+const AuthorisationHelper = require('../../support/helpers/authorisation.helper')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper')
+const DatabaseHelper = require('../../support/helpers/database.helper')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')

@@ -10,7 +10,7 @@ const { describe, it, before, after, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { RulesServiceHelper } = require('../../support/helpers')
+const RulesServiceHelper = require('../../support/helpers/rules_service.helper')
 
 const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
 

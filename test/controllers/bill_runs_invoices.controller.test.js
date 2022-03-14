@@ -12,13 +12,13 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const { AuthorisationHelper } = require('../support/helpers')
-const { AuthorisedSystemHelper } = require('../support/helpers')
-const { DatabaseHelper } = require('../support/helpers')
-const { GeneralHelper } = require('../support/helpers')
-const { NewInvoiceHelper } = require('../support/helpers')
-const { NewTransactionHelper } = require('../support/helpers')
-const { RegimeHelper } = require('../support/helpers')
+const AuthorisationHelper = require('../support/helpers/authorisation.helper')
+const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper')
+const DatabaseHelper = require('../support/helpers/database.helper')
+const GeneralHelper = require('../support/helpers/general.helper')
+const NewInvoiceHelper = require('../support/helpers/new_invoice.helper')
+const NewTransactionHelper = require('../support/helpers/new_transaction.helper')
+const RegimeHelper = require('../support/helpers/regime.helper')
 
 const Boom = require('@hapi/boom')
 

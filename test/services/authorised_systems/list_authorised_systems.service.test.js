@@ -8,8 +8,8 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper } = require('../../support/helpers')
-const { DatabaseHelper } = require('../../support/helpers')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper')
+const DatabaseHelper = require('../../support/helpers/database.helper')
 
 // Thing under test
 const { ListAuthorisedSystemsService } = require('../../../app/services')

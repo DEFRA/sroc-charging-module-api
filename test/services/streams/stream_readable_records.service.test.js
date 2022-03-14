@@ -10,11 +10,11 @@ const { expect } = Code
 const stream = require('stream')
 
 // Test helpers
-const { BillRunHelper } = require('../../support/helpers')
-const { DatabaseHelper } = require('../../support/helpers')
-const { GeneralHelper } = require('../../support/helpers')
-const { StreamHelper } = require('../../support/helpers')
-const { TransactionHelper } = require('../../support/helpers')
+const BillRunHelper = require('../../support/helpers/bill_run.helper')
+const DatabaseHelper = require('../../support/helpers/database.helper')
+const GeneralHelper = require('../../support/helpers/general.helper')
+const StreamHelper = require('../../support/helpers/stream.helper')
+const TransactionHelper = require('../../support/helpers/transaction.helper')
 const { TransactionModel } = require('../../../app/models')
 
 // Thing under test

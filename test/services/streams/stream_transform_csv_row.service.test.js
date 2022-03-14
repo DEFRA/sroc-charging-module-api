@@ -11,7 +11,7 @@ const { expect } = Code
 const stream = require('stream')
 
 // Test helpers
-const { StreamHelper } = require('../../support/helpers')
+const StreamHelper = require('../../support/helpers/stream.helper')
 
 // Things we need to stub
 const { ConvertToCSVService } = require('../../../app/services')
