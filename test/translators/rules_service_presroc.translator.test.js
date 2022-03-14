@@ -12,7 +12,7 @@ const GeneralHelper = require('../support/helpers/general.helper')
 const rulesServiceFixture = require('../support/fixtures/calculate_charge/presroc/simple_rules_service.json')
 
 // Thing under test
-const { RulesServicePresrocTranslator } = require('../../app/translators')
+const RulesServicePresrocTranslator = require('../../app/translators/rules_service_presroc.translator')
 
 describe('Rules Service Presroc translator', () => {
   let data

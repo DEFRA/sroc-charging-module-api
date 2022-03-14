@@ -12,7 +12,7 @@ const { ValidationError } = require('joi')
 const GeneralHelper = require('../support/helpers/general.helper')
 
 // Thing under test
-const { TransactionSrocTranslator } = require('../../app/translators')
+const TransactionSrocTranslator = require('../../app/translators/transaction_sroc.translator')
 
 describe('Transaction Sroc translator', () => {
   const payload = {

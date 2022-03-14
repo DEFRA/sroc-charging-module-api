@@ -2,8 +2,8 @@
 
 const TransactionModel = require('../../../app/models/transaction.model')
 
-const { RulesServicePresrocTranslator } = require('../../../app/translators')
-const { TransactionPresrocTranslator } = require('../../../app/translators')
+const RulesServicePresrocTranslator = require('../../../app/translators/rules_service_presroc.translator')
+const TransactionPresrocTranslator = require('../../../app/translators/transaction_presroc.translator')
 
 const GeneralHelper = require('./general.helper')
 const LicenceHelper = require('./licence.helper')

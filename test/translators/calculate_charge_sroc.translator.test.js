@@ -9,7 +9,7 @@ const { expect } = Code
 const { ValidationError } = require('joi')
 
 // Thing under test
-const { CalculateChargeSrocTranslator } = require('../../app/translators')
+const CalculateChargeSrocTranslator = require('../../app/translators/calculate_charge_sroc.translator')
 
 describe('Calculate Charge Sroc translator', () => {
   let validPayload
