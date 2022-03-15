@@ -1,15 +1,16 @@
 'use strict'
 
 const DeleteInvoiceService = require('../services/invoices/delete_invoice.service.js')
-const FetchAndValidateInvoiceService = require('../services/invoices/fetch_and_validate_invoice.service.js')
 const InvoiceRebillingService = require('../services/invoices/invoice_rebilling.service.js')
 const InvoiceRebillingValidationService = require('../services/invoices/invoice_rebilling_validation.service.js')
+const ValidateInvoiceService = require('../services/invoices/validate_invoice.service.js')
 const ViewInvoiceService = require('../services/invoices/view_invoice.service.js')
 
 class BillRunsInvoicesController {
   static async delete (req, h) {
-    // We fetch and validate the invoice within the controller so a not found/conflict error is returned immediately
-    const invoice = await FetchAndValidateInvoiceService.go(req.params.billRunId, req.params.invoiceId)
+    // We validate that the invoice is linked to the bill run within the controller so a not found/conflict error is
+    // returned immediately
+    const invoice = await ValidateInvoiceService.go(req.app.billRun, req.app.invoice)
 
     // We start DeleteInvoiceService without await so that it runs in the background
     DeleteInvoiceService.go(invoice, req.app.billRun, req.app.notifier)
