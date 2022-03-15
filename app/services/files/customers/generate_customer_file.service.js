@@ -4,13 +4,13 @@
  * @module GenerateCustomerFileService
  */
 
-const { CustomerModel } = require('../../../models')
-const TransformRecordsToFileService = require('../transform_records_to_file.service')
-const {
-  CustomerFileBodyPresenter,
-  CustomerFileHeadPresenter,
-  CustomerFileTailPresenter
-} = require('../../../presenters')
+const CustomerModel = require('../../../models/customer.model.js')
+
+const TransformRecordsToFileService = require('../transform_records_to_file.service.js')
+
+const CustomerFileBodyPresenter = require('../../../presenters/customer_file_body.presenter.js')
+const CustomerFileHeadPresenter = require('../../../presenters/customer_file_head.presenter.js')
+const CustomerFileTailPresenter = require('../../../presenters/customer_file_tail.presenter.js')
 
 class GenerateCustomerFileService {
   /**

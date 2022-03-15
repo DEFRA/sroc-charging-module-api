@@ -4,7 +4,7 @@
  * @module ViewInvoicePresenter
  */
 
-const BasePresenter = require('./base.presenter')
+const BasePresenter = require('./base.presenter.js')
 
 /**
  * Handles formatting the data into the response we send to clients after a request to view an a bill run. This handles

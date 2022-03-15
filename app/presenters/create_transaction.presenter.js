@@ -4,7 +4,7 @@
  * @module CreateTransactionPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+const BasePresenter = require('./base.presenter.js')
 
 /**
  * Handles formatting the data into the response we send to clients after a create transaction request.

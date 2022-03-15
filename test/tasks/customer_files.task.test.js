@@ -9,11 +9,11 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { CustomerFilesTask } = require('../../app/tasks')
+const CustomerFilesTask = require('../../app/tasks/customer_files.task.js')
 
 // Things we need to stub
-const { RegimeModel } = require('../../app/models')
-const { SendCustomerFileService } = require('../../app/services')
+const RegimeModel = require('../../app/models/regime.model.js')
+const SendCustomerFileService = require('../../app/services/files/customers/send_customer_file.service.js')
 
 describe('Customer Files Task', () => {
   let notifierFake

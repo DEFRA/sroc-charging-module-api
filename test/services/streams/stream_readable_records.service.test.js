@@ -10,18 +10,15 @@ const { expect } = Code
 const stream = require('stream')
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  StreamHelper,
-  TransactionHelper
-} = require('../../support/helpers')
-
-const { TransactionModel } = require('../../../app/models')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const StreamHelper = require('../../support/helpers/stream.helper.js')
+const TransactionHelper = require('../../support/helpers/transaction.helper.js')
+const TransactionModel = require('../../../app/models/transaction.model.js')
 
 // Thing under test
-const { StreamReadableRecordsService } = require('../../../app/services')
+const StreamReadableRecordsService = require('../../../app/services/streams/stream_readable_records.service.js')
 
 describe('Stream Readable Records service', () => {
   let billRun

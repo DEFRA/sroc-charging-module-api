@@ -8,21 +8,21 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper,
-  TransactionHelper,
-  InvoiceHelper,
-  LicenceHelper
-} = require('../../support/helpers')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper.js')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
+const TransactionHelper = require('../../support/helpers/transaction.helper.js')
+const InvoiceHelper = require('../../support/helpers/invoice.helper.js')
+const LicenceHelper = require('../../support/helpers/licence.helper.js')
 
-const { BillRunModel, InvoiceModel, LicenceModel } = require('../../../app/models')
+const BillRunModel = require('../../../app/models/bill_run.model.js')
+const InvoiceModel = require('../../../app/models/invoice.model.js')
+const LicenceModel = require('../../../app/models/licence.model.js')
 
 // Thing under test
-const { InvoiceRebillingCreateTransactionService } = require('../../../app/services')
+const InvoiceRebillingCreateTransactionService = require('../../../app/services/invoices/invoice_rebilling_create_transaction.service.js')
 
 describe('Invoice Rebilling Create Transaction service', () => {
   let originalBillRun

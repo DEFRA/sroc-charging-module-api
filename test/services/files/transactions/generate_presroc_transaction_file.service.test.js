@@ -12,22 +12,22 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const {
-  DatabaseHelper,
-  NewBillRunHelper,
-  NewInvoiceHelper,
-  NewLicenceHelper,
-  NewTransactionHelper
-} = require('../../../support/helpers')
+const DatabaseHelper = require('../../../support/helpers/database.helper.js')
+const NewBillRunHelper = require('../../../support/helpers/new_bill_run.helper.js')
+const NewInvoiceHelper = require('../../../support/helpers/new_invoice.helper.js')
+const NewLicenceHelper = require('../../../support/helpers/new_licence.helper.js')
+const NewTransactionHelper = require('../../../support/helpers/new_transaction.helper.js')
 
-const { BillRunModel, InvoiceModel, TransactionModel } = require('../../../../app/models')
+const BillRunModel = require('../../../../app/models/bill_run.model.js')
+const InvoiceModel = require('../../../../app/models/invoice.model.js')
+const TransactionModel = require('../../../../app/models/transaction.model.js')
 
-const { BasePresenter } = require('../../../../app/presenters')
+const BasePresenter = require('../../../../app/presenters/base.presenter.js')
 
-const { temporaryFilePath } = require('../../../../config/server.config')
+const { temporaryFilePath } = require('../../../../config/server.config.js')
 
 // Thing under test
-const { GeneratePresrocTransactionFileService } = require('../../../../app/services')
+const GeneratePresrocTransactionFileService = require('../../../../app/services/files/transactions/generate_presroc_transaction_file.service.js')
 
 describe('Generate Presroc Transaction File service', () => {
   const filename = 'abcde67890'

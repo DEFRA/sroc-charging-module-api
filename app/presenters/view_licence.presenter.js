@@ -4,8 +4,8 @@
  * @module ViewLicencePresenter
  */
 
-const BasePresenter = require('./base.presenter')
-const ViewTransactionPresenter = require('./view_transaction.presenter')
+const BasePresenter = require('./base.presenter.js')
+const ViewTransactionPresenter = require('./view_transaction.presenter.js')
 
 /**
  * Handles formatting the licence data into the response we send to clients when a GET request is received. Note that we

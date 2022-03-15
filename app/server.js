@@ -4,27 +4,28 @@ const Hapi = require('@hapi/hapi')
 const Joi = require('joi')
 const GlobalAgent = require('global-agent')
 
-const { ServerConfig, TestConfig } = require('../config')
-const { JwtStrategyAuthLib } = require('./lib')
-const {
-  AirbrakePlugin,
-  AuthorisationPlugin,
-  BlippPlugin,
-  DbErrorsPlugin,
-  DeprecatedRoutePlugin,
-  HapiNowAuthPlugin,
-  HapiPinoPlugin,
-  InvalidCharactersPlugin,
-  MissingPayloadPlugin,
-  PayloadCleanerPlugin,
-  RequestBillRunPlugin,
-  RequestInvoicePlugin,
-  RequestLicencePlugin,
-  RequestNotifierPlugin,
-  RouterPlugin,
-  StopPlugin,
-  VersionInfoPlugin
-} = require('./plugins')
+const ServerConfig = require('../config/server.config.js')
+const TestConfig = require('../config/test.config.js')
+
+const JwtStrategyAuthLib = require('./lib/jwt_strategy.lib.js')
+
+const AirbrakePlugin = require('./plugins/airbrake.plugin.js')
+const AuthorisationPlugin = require('./plugins/authorisation.plugin.js')
+const BlippPlugin = require('./plugins/blipp.plugin.js')
+const DbErrorsPlugin = require('./plugins/db_errors.plugin.js')
+const DeprecatedRoutePlugin = require('./plugins/deprecated_route.plugin.js')
+const HapiNowAuthPlugin = require('./plugins/hapi_now_auth.plugin.js')
+const HapiPinoPlugin = require('./plugins/hapi_pino.plugin.js')
+const InvalidCharactersPlugin = require('./plugins/invalid_characters.plugin.js')
+const MissingPayloadPlugin = require('./plugins/missing_payload.plugin.js')
+const PayloadCleanerPlugin = require('./plugins/payload_cleaner.plugin.js')
+const RequestBillRunPlugin = require('./plugins/request_bill_run.plugin.js')
+const RequestInvoicePlugin = require('./plugins/request_invoice.plugin.js')
+const RequestLicencePlugin = require('./plugins/request_licence.plugin.js')
+const RequestNotifierPlugin = require('./plugins/request_notifier.plugin.js')
+const RouterPlugin = require('./plugins/router.plugin.js')
+const StopPlugin = require('./plugins/stop.plugin.js')
+const VersionInfoPlugin = require('./plugins/version_info.plugin.js')
 
 const registerPlugins = async (server) => {
   // Register our auth plugin and then the strategies (needs to be done in this order)

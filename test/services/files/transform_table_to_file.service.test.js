@@ -9,22 +9,20 @@ const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  TransactionHelper
-} = require('../../support/helpers')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const TransactionHelper = require('../../support/helpers/transaction.helper.js')
 
-const { TransactionModel } = require('../../../app/models')
+const TransactionModel = require('../../../app/models/transaction.model.js')
 
 const fs = require('fs')
 const path = require('path')
 
-const { temporaryFilePath } = require('../../../config/server.config')
+const { temporaryFilePath } = require('../../../config/server.config.js')
 
 // Thing under test
-const { TransformTableToFileService } = require('../../../app/services')
+const TransformTableToFileService = require('../../../app/services/files/transform_table_to_file.service.js')
 
 describe('Transform Table To File service', () => {
   let billRun

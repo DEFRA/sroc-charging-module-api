@@ -4,7 +4,7 @@
  * @module NextCustomerFileReferenceService
  */
 
-const BaseNextFileReferenceService = require('./base_next_file_reference.service')
+const BaseNextFileReferenceService = require('./base_next_file_reference.service.js')
 
 /**
  * Returns the next customer file reference for the given region and regime, in the format `nalrc50001` where:

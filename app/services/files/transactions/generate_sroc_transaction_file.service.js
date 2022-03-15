@@ -4,9 +4,9 @@
  * @module GenerateSrocTransactionFileService
  */
 
-const BaseGenerateTransactionFileService = require('./base_generate_transaction_file.service')
+const BaseGenerateTransactionFileService = require('./base_generate_transaction_file.service.js')
 
-const TransactionFileSrocBodyPresenter = require('../../../presenters/transaction_file_sroc_body.presenter')
+const TransactionFileSrocBodyPresenter = require('../../../presenters/transaction_file_sroc_body.presenter.js')
 
 class GenerateSrocTransactionFileService extends BaseGenerateTransactionFileService {
   static _bodyPresenter () {

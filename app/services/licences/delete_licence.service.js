@@ -4,9 +4,9 @@
  * @module DeleteLicenceService
  */
 
-const { LicenceModel } = require('../../models')
+const LicenceModel = require('../../models/licence.model.js')
 
-const DeleteInvoiceService = require('../invoices/delete_invoice.service')
+const DeleteInvoiceService = require('../invoices/delete_invoice.service.js')
 
 class DeleteLicenceService {
   /**

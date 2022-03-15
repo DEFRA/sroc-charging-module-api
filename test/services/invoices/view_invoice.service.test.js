@@ -8,15 +8,13 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  TransactionHelper
-} = require('../../support/helpers')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const TransactionHelper = require('../../support/helpers/transaction.helper.js')
 
 // Thing under test
-const { ViewInvoiceService } = require('../../../app/services')
+const ViewInvoiceService = require('../../../app/services/invoices/view_invoice.service.js')
 
 describe('View Invoice service', () => {
   beforeEach(async () => {

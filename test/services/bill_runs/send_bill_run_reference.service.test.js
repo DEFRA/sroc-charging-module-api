@@ -9,19 +9,17 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  InvoiceHelper,
-  RegimeHelper,
-  SequenceCounterHelper
-} = require('../../support/helpers')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const InvoiceHelper = require('../../support/helpers/invoice.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
+const SequenceCounterHelper = require('../../support/helpers/sequence_counter.helper.js')
 
-const { BillRunModel } = require('../../../app/models')
+const BillRunModel = require('../../../app/models/bill_run.model.js')
 
 // Thing under test
-const { SendBillRunReferenceService } = require('../../../app/services')
+const SendBillRunReferenceService = require('../../../app/services/bill_runs/send_bill_run_reference.service.js')
 
 describe('Send Bill Run Reference service', () => {
   let regime

@@ -1,6 +1,6 @@
 'use strict'
 
-const { InvoiceModel } = require('../../../app/models')
+const InvoiceModel = require('../../../app/models/invoice.model.js')
 
 class InvoiceHelper {
   /**

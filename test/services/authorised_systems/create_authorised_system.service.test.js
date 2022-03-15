@@ -8,12 +8,14 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, DatabaseHelper, RegimeHelper } = require('../../support/helpers')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
 const { ValidationError } = require('joi')
 const { UniqueViolationError } = require('db-errors')
 
 // Thing under test
-const { CreateAuthorisedSystemService } = require('../../../app/services')
+const CreateAuthorisedSystemService = require('../../../app/services/authorised_systems/create_authorised_system.service.js')
 
 describe('Create Authorised System service', () => {
   beforeEach(async () => {

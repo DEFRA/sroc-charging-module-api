@@ -10,7 +10,7 @@ const { expect } = Code
 // Test helpers
 
 // Thing under test
-const { ObjectCleaningService } = require('../../../app/services')
+const ObjectCleaningService = require('../../../app/services/plugins/object_cleaning.service.js')
 
 describe('Object cleaning service', () => {
   describe('When an object contains values with extra whitespace', () => {

@@ -6,9 +6,9 @@
 
 const path = require('path')
 
-const ExportTableToFileService = require('./export_table_to_file.service')
-const SendFileToS3Service = require('../send_file_to_s3.service')
-const DeleteFileService = require('../delete_file.service')
+const ExportTableToFileService = require('./export_table_to_file.service.js')
+const SendFileToS3Service = require('../send_file_to_s3.service.js')
+const DeleteFileService = require('../delete_file.service.js')
 
 class ExportDataFilesService {
   /**

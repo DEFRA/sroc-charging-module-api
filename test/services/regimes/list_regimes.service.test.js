@@ -8,10 +8,11 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { DatabaseHelper, RegimeHelper } = require('../../support/helpers')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
 
 // Thing under test
-const { ListRegimesService } = require('../../../app/services')
+const ListRegimesService = require('../../../app/services/regimes/list_regimes.service.js')
 
 describe('List Regimes service', () => {
   beforeEach(async () => {

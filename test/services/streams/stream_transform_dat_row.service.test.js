@@ -10,10 +10,10 @@ const { expect } = Code
 const stream = require('stream')
 
 // Test helpers
-const { StreamHelper } = require('../../support/helpers')
+const StreamHelper = require('../../support/helpers/stream.helper.js')
 
 // Thing under test
-const { StreamTransformDatRowService } = require('../../../app/services')
+const StreamTransformDatRowService = require('../../../app/services/streams/stream_transform_dat_row.service.js')
 
 describe('Stream Transform Dat Row service', () => {
   describe('When data is passed to it', () => {

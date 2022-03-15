@@ -1,6 +1,6 @@
 'use strict'
 
-const { RegimesController } = require('../controllers')
+const RegimesController = require('../controllers/admin/regimes.controller.js')
 
 const routes = [
   {

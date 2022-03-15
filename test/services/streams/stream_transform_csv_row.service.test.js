@@ -11,13 +11,13 @@ const { expect } = Code
 const stream = require('stream')
 
 // Test helpers
-const { StreamHelper } = require('../../support/helpers')
+const StreamHelper = require('../../support/helpers/stream.helper.js')
 
 // Things we need to stub
-const { ConvertToCSVService } = require('../../../app/services')
+const ConvertToCSVService = require('../../../app/services/convert_to_csv.service.js')
 
 // Thing under test
-const { StreamTransformCSVRowService } = require('../../../app/services')
+const StreamTransformCSVRowService = require('../../../app/services/streams/stream_transform_csv_row.service.js')
 
 describe('Stream Transform CSV Row service', () => {
   let csvStub

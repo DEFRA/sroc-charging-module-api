@@ -13,7 +13,7 @@ const fs = require('fs')
 const path = require('path')
 
 // Thing under test
-const { DeleteFileService } = require('../../../app/services')
+const DeleteFileService = require('../../../app/services/files/delete_file.service.js')
 
 describe('Delete File service', () => {
   let filenameWithPath

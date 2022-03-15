@@ -8,7 +8,7 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { AuthorisedSystemModel } = require('../../app/models')
+const AuthorisedSystemModel = require('../../app/models/authorised_system.model.js')
 
 describe('Authorised System Model', () => {
   describe('the $active() method', () => {

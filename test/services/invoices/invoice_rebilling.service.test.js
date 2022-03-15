@@ -9,20 +9,19 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper,
-  InvoiceHelper
-} = require('../../support/helpers')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper.js')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
+const InvoiceHelper = require('../../support/helpers/invoice.helper.js')
 
 // Things we need to stub
-const { InvoiceRebillingCopyService, InvoiceRebillingInitialiseService } = require('../../../app/services')
+const InvoiceRebillingCopyService = require('../../../app/services/invoices/invoice_rebilling_copy.service.js')
+const InvoiceRebillingInitialiseService = require('../../../app/services/invoices/invoice_rebilling_initialise.service.js')
 
 // Thing under test
-const { InvoiceRebillingService } = require('../../../app/services')
+const InvoiceRebillingService = require('../../../app/services/invoices/invoice_rebilling.service.js')
 
 describe('Invoice Rebilling service', () => {
   let authorisedSystem

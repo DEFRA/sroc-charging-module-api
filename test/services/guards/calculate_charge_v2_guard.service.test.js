@@ -8,7 +8,7 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { CalculateChargeV2GuardService } = require('../../../app/services')
+const CalculateChargeV2GuardService = require('../../../app/services/guards/calculate_charge_v2_guard.service.js')
 
 describe('Calculate Charge V2 guard service', () => {
   describe('When a valid payload is supplied', () => {

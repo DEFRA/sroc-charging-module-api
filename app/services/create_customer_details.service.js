@@ -4,8 +4,9 @@
  * @module CreateCustomerDetailsService
  */
 
-const { CustomerModel } = require('../models')
-const { CustomerTranslator } = require('../translators')
+const CustomerModel = require('../models/customer.model.js')
+
+const CustomerTranslator = require('../translators/customer.translator.js')
 
 class CreateCustomerDetailsService {
   /**

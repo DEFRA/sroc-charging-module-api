@@ -1,6 +1,6 @@
 'use strict'
 
-const { ViewTransactionService } = require('../../../services')
+const ViewTransactionService = require('../../../services/transactions/view_transaction.service.js')
 
 class TestTransactionsController {
   static async view (req, h) {

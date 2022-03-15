@@ -4,8 +4,9 @@
  * @module DatabaseHealthCheckService
  */
 
-const { db } = require('../../db')
-const { JsonPresenter } = require('../presenters')
+const { db } = require('../../db/db.js')
+
+const JsonPresenter = require('../presenters/json.presenter.js')
 
 /**
  * Generates an array of stats for each table in the database when `go()` is called

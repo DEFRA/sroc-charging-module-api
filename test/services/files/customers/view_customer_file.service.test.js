@@ -8,16 +8,14 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  DatabaseHelper,
-  CustomerHelper,
-  GeneralHelper
-} = require('../../../support/helpers')
-const { CustomerFileModel } = require('../../../../app/models')
+const DatabaseHelper = require('../../../support/helpers/database.helper.js')
+const CustomerHelper = require('../../../support/helpers/customer.helper.js')
+const GeneralHelper = require('../../../support/helpers/general.helper.js')
+const CustomerFileModel = require('../../../../app/models/customer_file.model.js')
 const { DataError } = require('objection')
 
 // Thing under test
-const { ViewCustomerFileService } = require('../../../../app/services')
+const ViewCustomerFileService = require('../../../../app/services/files/customers/view_customer_file.service.js')
 
 describe('Show Customer File service', () => {
   beforeEach(async () => {

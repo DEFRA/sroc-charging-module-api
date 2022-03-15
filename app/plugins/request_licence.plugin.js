@@ -14,7 +14,7 @@
  * @module RequestLicencePlugin
  */
 
-const { RequestLicenceService } = require('../services')
+const RequestLicenceService = require('../services/plugins/request_licence.service.js')
 
 const RequestLicencePlugin = {
   name: 'request_licence',

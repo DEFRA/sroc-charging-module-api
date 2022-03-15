@@ -4,11 +4,14 @@
  * @module GenerateBillRunService
  */
 
-// Files in the same folder cannot be destructured from index.js so have to be required directly
-const CalculateMinimumChargeForBillRunService = require('./calculate_minimum_charge_for_bill_run.service')
+const CalculateMinimumChargeForBillRunService = require('./calculate_minimum_charge_for_bill_run.service.js')
 
-const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../../models')
-const { raw } = require('../../models/base.model')
+const BillRunModel = require('../../models/bill_run.model.js')
+const InvoiceModel = require('../../models/invoice.model.js')
+const LicenceModel = require('../../models/licence.model.js')
+const TransactionModel = require('../../models/transaction.model.js')
+
+const { raw } = require('../../models/base.model.js')
 
 class GenerateBillRunService {
   /**

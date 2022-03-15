@@ -4,7 +4,7 @@
  * @module TransactionFileHeadPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+const BasePresenter = require('./base.presenter.js')
 
 /**
  * Formats data for the head of a transaction file.

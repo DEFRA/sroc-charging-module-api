@@ -7,12 +7,12 @@ const Code = require('@hapi/code')
 const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
-const { BasePresenter } = require('../../app/presenters')
+const BasePresenter = require('../../app/presenters/base.presenter.js')
 
-const { PresenterHelper } = require('../support/helpers')
+const PresenterHelper = require('../support/helpers/presenter.helper.js')
 
 // Thing under test
-const { TransactionFileSrocBodyPresenter } = require('../../app/presenters')
+const TransactionFileSrocBodyPresenter = require('../../app/presenters/transaction_file_sroc_body.presenter.js')
 
 describe('Transaction File Sroc Body Presenter', () => {
   // Note that generic fields hold true/false values as text, not boolean

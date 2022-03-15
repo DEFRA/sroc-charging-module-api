@@ -4,9 +4,10 @@
  * @module TaskRunner
  */
 
-const { TaskNotifierLib } = require('../lib')
-const CustomerFilesTask = require('./customer_files.task')
-const DataExportTask = require('./data_export.task')
+const TaskNotifierLib = require('../lib/task_notifier.lib.js')
+
+const CustomerFilesTask = require('./customer_files.task.js')
+const DataExportTask = require('./data_export.task.js')
 
 /**
  * Use to run any one of our 'tasks'

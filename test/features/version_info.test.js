@@ -11,7 +11,8 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const { GeneralHelper, RouteHelper } = require('../support/helpers')
+const GeneralHelper = require('../support/helpers/general.helper.js')
+const RouteHelper = require('../support/helpers/route.helper.js')
 
 const options = {
   method: 'GET',

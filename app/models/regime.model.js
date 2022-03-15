@@ -5,7 +5,8 @@
  */
 
 const { Model } = require('objection')
-const BaseModel = require('./base.model')
+
+const BaseModel = require('./base.model.js')
 
 class RegimeModel extends BaseModel {
   static get tableName () {

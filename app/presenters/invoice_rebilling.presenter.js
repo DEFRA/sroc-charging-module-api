@@ -4,7 +4,7 @@
  * @module InvoiceRebillingPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+const BasePresenter = require('./base.presenter.js')
 
 /**
  * Handles formatting the details of the rebilling and cancelling invoices involved in a rebilling request.

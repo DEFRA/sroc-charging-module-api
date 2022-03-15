@@ -6,10 +6,17 @@
 
 const Boom = require('@hapi/boom')
 
-const { BillRunModel, InvoiceModel, LicenceModel, TransactionModel } = require('../../models')
-const { TransactionPresrocTranslator, TransactionSrocTranslator } = require('../../translators')
-const CalculateChargeService = require('../charges/calculate_charge.service')
-const { CreateTransactionPresenter } = require('../../presenters')
+const BillRunModel = require('../../models/bill_run.model.js')
+const InvoiceModel = require('../../models/invoice.model.js')
+const LicenceModel = require('../../models/licence.model.js')
+const TransactionModel = require('../../models/transaction.model.js')
+
+const TransactionPresrocTranslator = require('../../translators/transaction_presroc.translator.js')
+const TransactionSrocTranslator = require('../../translators/transaction_sroc.translator.js')
+
+const CalculateChargeService = require('../charges/calculate_charge.service.js')
+
+const CreateTransactionPresenter = require('../../presenters/create_transaction.presenter.js')
 
 class CreateTransactionService {
   /**

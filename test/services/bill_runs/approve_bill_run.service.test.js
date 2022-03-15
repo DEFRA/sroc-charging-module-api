@@ -8,14 +8,12 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper
-} = require('../../support/helpers')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
 
 // Thing under test
-const { ApproveBillRunService } = require('../../../app/services')
+const ApproveBillRunService = require('../../../app/services/bill_runs/approve_bill_run.service.js')
 
 describe('Approve Bill Run service', () => {
   let billRun

@@ -1,6 +1,6 @@
 'use strict'
 
-const { SequenceCounterModel } = require('../../../app/models')
+const SequenceCounterModel = require('../../../app/models/sequence_counter.model.js')
 
 /**
  * Use to help with creating 'Sequence counter' records

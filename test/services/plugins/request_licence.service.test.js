@@ -8,18 +8,16 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  InvoiceHelper,
-  LicenceHelper,
-  RegimeHelper
-} = require('../../support/helpers')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const InvoiceHelper = require('../../support/helpers/invoice.helper.js')
+const LicenceHelper = require('../../support/helpers/licence.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
 
 // Thing under test
-const { RequestLicenceService } = require('../../../app/services')
-const { LicenceModel } = require('../../../app/models')
+const RequestLicenceService = require('../../../app/services/plugins/request_licence.service.js')
+const LicenceModel = require('../../../app/models/licence.model.js')
 
 describe('Request licence service', () => {
   let regime

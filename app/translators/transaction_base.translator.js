@@ -4,8 +4,9 @@
  * @module TransactionBaseTranslator
  */
 
-const BaseTranslator = require('./base.translator')
 const Joi = require('joi')
+
+const BaseTranslator = require('./base.translator.js')
 
 class TransactionBaseTranslator extends BaseTranslator {
   _schema () {

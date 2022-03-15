@@ -9,10 +9,10 @@ const { expect } = Code
 
 // Test helpers
 const { ValidationError } = require('joi')
-const { GeneralHelper } = require('../support/helpers')
+const GeneralHelper = require('../support/helpers/general.helper.js')
 
 // Thing under test
-const { TransactionPresrocTranslator } = require('../../app/translators')
+const TransactionPresrocTranslator = require('../../app/translators/transaction_presroc.translator.js')
 
 describe('Transaction Presroc translator', () => {
   const payload = {

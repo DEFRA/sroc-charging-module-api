@@ -10,10 +10,10 @@ const { expect } = Code
 const stream = require('stream')
 
 // Test helpers
-const { StreamHelper } = require('../../support/helpers')
+const StreamHelper = require('../../support/helpers/stream.helper.js')
 
 // Thing under test
-const { StreamTransformUsingPresenterService } = require('../../../app/services')
+const StreamTransformUsingPresenterService = require('../../../app/services/streams/stream_transform_using_presenter.service.js')
 
 describe('Stream Transform CSV service', () => {
   class testPresenter {

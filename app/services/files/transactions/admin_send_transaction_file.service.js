@@ -4,10 +4,9 @@
  * @module AdminSendTransactionFileService
  */
 
-const SendTransactionFileService = require('./send_transaction_file.service')
+const SendTransactionFileService = require('./send_transaction_file.service.js')
 
-// We require BoomNotifierLib this way as the usual way of destructuring it results in a circular dependency error
-const BoomNotifierLib = require('../../../lib/boom_notifier.lib')
+const BoomNotifierLib = require('../../../lib/boom_notifier.lib.js')
 
 const Boom = require('@hapi/boom')
 

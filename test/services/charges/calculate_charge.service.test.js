@@ -8,15 +8,16 @@ const { describe, it, afterEach, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { GeneralHelper } = require('../../support/helpers')
-const { presroc: presrocFixtures, sroc: srocFixtures } = require('../../support/fixtures/calculate_charge')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const { presroc: presrocFixtures } = require('../../support/fixtures/calculate_charge')
+const { sroc: srocFixtures } = require('../../support/fixtures/calculate_charge')
 const { ValidationError } = require('joi')
 
 // Things we need to stub
-const { RequestRulesServiceCharge } = require('../../../app/services')
+const RequestRulesServiceCharge = require('../../../app/services/charges/request_rules_service_charge.service.js')
 
 // Thing under test
-const { CalculateChargeService } = require('../../../app/services')
+const CalculateChargeService = require('../../../app/services/charges/calculate_charge.service.js')
 
 describe('Calculate Charge service', () => {
   // We don't need an actual regime record for the calculate charge service as nowhere in its logic do we need anything

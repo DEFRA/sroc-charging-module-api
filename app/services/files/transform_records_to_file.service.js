@@ -7,13 +7,14 @@
 const path = require('path')
 const { pipeline } = require('stream')
 const util = require('util')
-const { temporaryFilePath } = require('../../../config/server.config')
 
-const StreamReadableDataService = require('../streams/stream_readable_data.service')
-const StreamReadableRecordsService = require('../streams/stream_readable_records.service')
-const StreamTransformDatRowService = require('../streams/stream_transform_dat_row.service')
-const StreamTransformUsingPresenterService = require('../streams/stream_transform_using_presenter.service')
-const StreamWritableFileService = require('../streams/stream_writable_file.service')
+const { temporaryFilePath } = require('../../../config/server.config.js')
+
+const StreamReadableDataService = require('../streams/stream_readable_data.service.js')
+const StreamReadableRecordsService = require('../streams/stream_readable_records.service.js')
+const StreamTransformDatRowService = require('../streams/stream_transform_dat_row.service.js')
+const StreamTransformUsingPresenterService = require('../streams/stream_transform_using_presenter.service.js')
+const StreamWritableFileService = require('../streams/stream_writable_file.service.js')
 
 class TransformRecordsToFileService {
   /**

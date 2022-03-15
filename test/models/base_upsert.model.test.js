@@ -8,7 +8,7 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const BaseUpsertModel = require('../../app/models/base_upsert.model')
+const BaseUpsertModel = require('../../app/models/base_upsert.model.js')
 
 class TestModel extends BaseUpsertModel { }
 

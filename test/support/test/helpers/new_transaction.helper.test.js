@@ -8,11 +8,13 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { DatabaseHelper } = require('../../helpers')
-const { BillRunModel, InvoiceModel, LicenceModel } = require('../../../../app/models')
+const DatabaseHelper = require('../../helpers/database.helper.js')
+const BillRunModel = require('../../../../app/models/bill_run.model.js')
+const InvoiceModel = require('../../../../app/models/invoice.model.js')
+const LicenceModel = require('../../../../app/models/licence.model.js')
 
 // Thing under test
-const { NewTransactionHelper } = require('../../helpers')
+const NewTransactionHelper = require('../../helpers/new_transaction.helper.js')
 
 describe('New Transaction helper', () => {
   let transaction

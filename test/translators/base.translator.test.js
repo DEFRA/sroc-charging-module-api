@@ -11,7 +11,7 @@ const { expect } = Code
 const Joi = require('joi')
 
 // Thing under test
-const { BaseTranslator } = require('../../app/translators')
+const BaseTranslator = require('../../app/translators/base.translator.js')
 
 let translationsStub
 let schemaStub

@@ -8,10 +8,10 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { GeneralHelper } = require('../support/helpers')
+const GeneralHelper = require('../support/helpers/general.helper.js')
 
 // Thing under test
-const { CreateBillRunPresenter } = require('../../app/presenters')
+const CreateBillRunPresenter = require('../../app/presenters/create_bill_run.presenter.js')
 
 describe('Create Bill Run presenter', () => {
   it('correctly presents the data', () => {

@@ -12,14 +12,13 @@ const { expect } = Code
 const { init } = require('../../../../app/server')
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  SequenceCounterHelper
-} = require('../../../support/helpers')
-const { BillRunModel } = require('../../../../app/models')
+const AuthorisationHelper = require('../../../support/helpers/authorisation.helper.js')
+const AuthorisedSystemHelper = require('../../../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../../support/helpers/general.helper.js')
+const SequenceCounterHelper = require('../../../support/helpers/sequence_counter.helper.js')
+
+const BillRunModel = require('../../../../app/models/bill_run.model.js')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')

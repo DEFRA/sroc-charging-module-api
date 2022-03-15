@@ -4,8 +4,10 @@
  * @module PrepareCustomerFileService
  */
 
-const { CustomerFileModel, CustomerModel } = require('../../../models')
-const NextCustomerFileReferenceService = require('../../next_references/next_customer_file_reference.service')
+const CustomerFileModel = require('../../../models/customer_file.model.js')
+const CustomerModel = require('../../../models/customer.model.js')
+
+const NextCustomerFileReferenceService = require('../../next_references/next_customer_file_reference.service.js')
 
 class PrepareCustomerFileService {
   /**

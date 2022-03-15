@@ -1,6 +1,6 @@
 'use strict'
 
-const BaseTranslator = require('./base.translator')
+const BaseTranslator = require('./base.translator.js')
 const Joi = require('joi')
 
 class AuthorisedSystemTranslator extends BaseTranslator {

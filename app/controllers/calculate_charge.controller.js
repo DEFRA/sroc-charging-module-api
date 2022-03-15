@@ -1,6 +1,7 @@
 'use strict'
 
-const { CalculateChargeService, CalculateChargeV2GuardService } = require('../services')
+const CalculateChargeService = require('../services/charges/calculate_charge.service.js')
+const CalculateChargeV2GuardService = require('../services/guards/calculate_charge_v2_guard.service.js')
 
 class CalculateChargeController {
   static async calculateV2 (req, h) {

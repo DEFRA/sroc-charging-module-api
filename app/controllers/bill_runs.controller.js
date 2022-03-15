@@ -1,18 +1,16 @@
 'use strict'
 
-const {
-  ApproveBillRunService,
-  BillRunStatusService,
-  CreateBillRunService,
-  CreateBillRunV2GuardService,
-  DeleteBillRunService,
-  GenerateBillRunService,
-  GenerateBillRunValidationService,
-  SendBillRunReferenceService,
-  SendCustomerFileService,
-  SendTransactionFileService,
-  ViewBillRunService
-} = require('../services')
+const ApproveBillRunService = require('../services/bill_runs/approve_bill_run.service.js')
+const BillRunStatusService = require('../services/bill_runs/bill_run_status.service.js')
+const CreateBillRunService = require('../services/bill_runs/create_bill_run.service.js')
+const CreateBillRunV2GuardService = require('../services/guards/create_bill_run_v2_guard.service.js')
+const DeleteBillRunService = require('../services/bill_runs/delete_bill_run.service.js')
+const GenerateBillRunService = require('../services/bill_runs/generate_bill_run.service.js')
+const GenerateBillRunValidationService = require('../services/bill_runs/generate_bill_run_validation.service.js')
+const SendBillRunReferenceService = require('../services/bill_runs/send_bill_run_reference.service.js')
+const SendCustomerFileService = require('../services/files/customers/send_customer_file.service.js')
+const SendTransactionFileService = require('../services/files/transactions/send_transaction_file.service.js')
+const ViewBillRunService = require('../services/bill_runs/view_bill_run.service.js')
 
 class BillRunsController {
   static async createV2 (req, h) {

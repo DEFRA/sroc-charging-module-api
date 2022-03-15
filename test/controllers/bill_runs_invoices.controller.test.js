@@ -12,26 +12,23 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  NewInvoiceHelper,
-  NewTransactionHelper,
-  RegimeHelper
-} = require('../support/helpers')
+const AuthorisationHelper = require('../support/helpers/authorisation.helper.js')
+const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../support/helpers/database.helper.js')
+const GeneralHelper = require('../support/helpers/general.helper.js')
+const NewInvoiceHelper = require('../support/helpers/new_invoice.helper.js')
+const NewTransactionHelper = require('../support/helpers/new_transaction.helper.js')
+const RegimeHelper = require('../support/helpers/regime.helper.js')
 
 const Boom = require('@hapi/boom')
 
-const {
-  DeleteInvoiceService,
-  FetchAndValidateInvoiceService,
-  InvoiceRebillingService,
-  InvoiceRebillingValidationService
-} = require('../../app/services')
+const DeleteInvoiceService = require('../../app/services/invoices/delete_invoice.service.js')
+const FetchAndValidateInvoiceService = require('../../app/services/invoices/fetch_and_validate_invoice.service.js')
+const InvoiceRebillingService = require('../../app/services/invoices/invoice_rebilling.service.js')
+const InvoiceRebillingValidationService = require('../../app/services/invoices/invoice_rebilling_validation.service.js')
 
-const { BillRunModel, InvoiceModel } = require('../../app/models')
+const BillRunModel = require('../../app/models/bill_run.model.js')
+const InvoiceModel = require('../../app/models/invoice.model.js')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')

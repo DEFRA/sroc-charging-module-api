@@ -12,11 +12,11 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const { StreamHelper } = require('../../support/helpers')
+const StreamHelper = require('../../support/helpers/stream.helper.js')
 const mockFs = require('mock-fs')
 
 // Thing under test
-const { StreamWritableFileService } = require('../../../app/services')
+const StreamWritableFileService = require('../../../app/services/streams/stream_writable_file.service.js')
 
 describe('Stream Writable File service', () => {
   let filenameWithPath

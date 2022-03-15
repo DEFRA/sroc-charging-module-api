@@ -12,19 +12,19 @@ const fs = require('fs')
 const path = require('path')
 
 // Test helpers
-const {
-  DatabaseHelper,
-  NewTransactionHelper
-} = require('../../../support/helpers')
+const DatabaseHelper = require('../../../support/helpers/database.helper.js')
+const NewTransactionHelper = require('../../../support/helpers/new_transaction.helper.js')
 
-const { InvoiceModel, TransactionModel, BillRunModel } = require('../../../../app/models')
+const InvoiceModel = require('../../../../app/models/invoice.model.js')
+const TransactionModel = require('../../../../app/models/transaction.model.js')
+const BillRunModel = require('../../../../app/models/bill_run.model.js')
 
-const { BasePresenter } = require('../../../../app/presenters')
+const BasePresenter = require('../../../../app/presenters/base.presenter.js')
 
-const { temporaryFilePath } = require('../../../../config/server.config')
+const { temporaryFilePath } = require('../../../../config/server.config.js')
 
 // Thing under test
-const { GenerateSrocTransactionFileService } = require('../../../../app/services')
+const GenerateSrocTransactionFileService = require('../../../../app/services/files/transactions/generate_sroc_transaction_file.service.js')
 
 describe('Generate Sroc Transaction File service', () => {
   const filename = 'abcde67890t'

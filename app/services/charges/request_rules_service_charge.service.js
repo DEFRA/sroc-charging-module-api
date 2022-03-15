@@ -9,7 +9,7 @@ const Boom = require('@hapi/boom')
 // Note that we also import the got dependency but this is done within the _callRulesService method -- see the comment
 // there for details
 
-const { RulesServiceConfig } = require('../../../config')
+const RulesServiceConfig = require('../../../config/rules_service.config.js')
 
 /**
  * Handles requests to the Rules Service

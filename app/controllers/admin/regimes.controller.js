@@ -1,6 +1,7 @@
 'use strict'
 
-const { ListRegimesService, ViewRegimeService } = require('../../services')
+const ListRegimesService = require('../../services/regimes/list_regimes.service.js')
+const ViewRegimeService = require('../../services/regimes/view_regime.service.js')
 
 class RegimesController {
   static async index (_req, h) {

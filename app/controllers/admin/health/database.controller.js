@@ -1,6 +1,6 @@
 'use strict'
 
-const { DatabaseHealthCheckService } = require('../../../services')
+const DatabaseHealthCheckService = require('../../../services/database_health_check.service.js')
 
 class DatabaseController {
   static async index (_req, h) {

@@ -8,12 +8,16 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { AuthorisedSystemHelper, DatabaseHelper, RegimeHelper, SequenceCounterHelper } = require('../../support/helpers')
-const BillRunModel = require('../../../app/models/bill_run.model')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
+const SequenceCounterHelper = require('../../support/helpers/sequence_counter.helper.js')
+
+const BillRunModel = require('../../../app/models/bill_run.model.js')
 const { ValidationError } = require('joi')
 
 // Thing under test
-const { CreateBillRunService } = require('../../../app/services')
+const CreateBillRunService = require('../../../app/services/bill_runs/create_bill_run.service.js')
 
 describe('Create Bill Run service', () => {
   const payload = {

@@ -9,16 +9,15 @@ const { afterEach, describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  RegimeHelper,
-  RulesServiceHelper
-} = require('../../support/helpers')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper.js')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
+const RulesServiceHelper = require('../../support/helpers/rules_service.helper.js')
 
-const { CreateTransactionService, GenerateBillRunService } = require('../../../app/services')
+const CreateTransactionService = require('../../../app/services/transactions/create_transaction.service.js')
+const GenerateBillRunService = require('../../../app/services/bill_runs/generate_bill_run.service.js')
 
 const { presroc: requestFixtures } = require('../../support/fixtures/create_transaction')
 const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_charge')
@@ -26,10 +25,10 @@ const { presroc: chargeFixtures } = require('../../support/fixtures/calculate_ch
 const { rulesService: rulesServiceResponse } = chargeFixtures.simple
 
 // Things we need to stub
-const { RequestRulesServiceCharge } = require('../../../app/services')
+const RequestRulesServiceCharge = require('../../../app/services/charges/request_rules_service_charge.service.js')
 
 // Thing under test
-const { ViewBillRunService } = require('../../../app/services')
+const ViewBillRunService = require('../../../app/services/bill_runs/view_bill_run.service.js')
 
 describe('View Bill Run service', () => {
   let billRun

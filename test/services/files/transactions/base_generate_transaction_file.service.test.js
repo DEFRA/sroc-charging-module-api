@@ -8,7 +8,7 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { BaseGenerateTransactionFileService } = require('../../../../app/services')
+const BaseGenerateTransactionFileService = require('../../../../app/services/files/transactions/base_generate_transaction_file.service.js')
 
 describe('Base Generate Transaction File service', () => {
   describe('When a class extends it', () => {

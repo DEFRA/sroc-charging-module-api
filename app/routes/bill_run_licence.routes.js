@@ -1,6 +1,6 @@
 'use strict'
 
-const { BillRunsLicencesController } = require('../controllers')
+const BillRunsLicencesController = require('../controllers/bill_runs_licences.controller.js')
 
 const routes = [
   {

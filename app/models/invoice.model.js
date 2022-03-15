@@ -5,7 +5,8 @@
  */
 
 const { Model } = require('objection')
-const BaseUpsertModel = require('./base_upsert.model')
+
+const BaseUpsertModel = require('./base_upsert.model.js')
 
 // This is the value used for new invoices. Reason? To allow us to accept multiple rebill invoices with the same
 // customer reference and financial year in the same bill run. It ensures the invoices table constraint works for new

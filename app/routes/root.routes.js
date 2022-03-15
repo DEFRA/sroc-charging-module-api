@@ -1,6 +1,6 @@
 'use strict'
 
-const { RootController } = require('../controllers')
+const RootController = require('../controllers/root.controller.js')
 
 const routes = [
   {

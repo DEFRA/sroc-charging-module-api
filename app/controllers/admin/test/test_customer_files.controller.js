@@ -1,6 +1,7 @@
 'use strict'
 
-const { TestListCustomerFilesService, ViewCustomerFileService } = require('../../../services')
+const TestListCustomerFilesService = require('../../../services/files/customers/test_list_customer_files.service.js')
+const ViewCustomerFileService = require('../../../services/files/customers/view_customer_file.service.js')
 
 class TestCustomerFilesController {
   static async index (req, h) {

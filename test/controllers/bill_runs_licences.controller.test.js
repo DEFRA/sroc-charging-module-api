@@ -12,19 +12,18 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  NewLicenceHelper,
-  RegimeHelper
-} = require('../support/helpers')
+const AuthorisationHelper = require('../support/helpers/authorisation.helper.js')
+const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../support/helpers/database.helper.js')
+const GeneralHelper = require('../support/helpers/general.helper.js')
+const NewLicenceHelper = require('../support/helpers/new_licence.helper.js')
+const RegimeHelper = require('../support/helpers/regime.helper.js')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { DeleteLicenceService, ValidateBillRunLicenceService } = require('../../app/services')
-const { BillRunModel } = require('../../app/models')
+const DeleteLicenceService = require('../../app/services/licences/delete_licence.service.js')
+const ValidateBillRunLicenceService = require('../../app/services/licences/validate_bill_run_licence.service.js')
+const BillRunModel = require('../../app/models/bill_run.model.js')
 
 describe('Licences controller', () => {
   let server

@@ -1,6 +1,6 @@
 'use strict'
 
-const { db, dbConfig } = require('../../../db')
+const { db, dbConfig } = require('../../../db/db.js')
 
 /**
  * Use to help with cleaning the database between tests

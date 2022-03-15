@@ -13,24 +13,20 @@ const { expect } = Code
 const { init } = require('../../app/server')
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  DatabaseHelper,
-  GeneralHelper,
-  NewBillRunHelper,
-  RegimeHelper
-} = require('../support/helpers')
+const AuthorisationHelper = require('../support/helpers/authorisation.helper.js')
+const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper.js')
+const DatabaseHelper = require('../support/helpers/database.helper.js')
+const GeneralHelper = require('../support/helpers/general.helper.js')
+const NewBillRunHelper = require('../support/helpers/new_bill_run.helper.js')
+const RegimeHelper = require('../support/helpers/regime.helper.js')
 
 const { presroc: requestFixtures } = require('../support/fixtures/create_transaction')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const {
-  CreateTransactionService,
-  CreateTransactionV2GuardService,
-  ValidateBillRunRegion
-} = require('../../app/services')
+const CreateTransactionService = require('../../app/services/transactions/create_transaction.service.js')
+const CreateTransactionV2GuardService = require('../../app/services/guards/create_transaction_v2_guard.service.js')
+const ValidateBillRunRegion = require('../../app/services/bill_runs/validate_bill_run_region.service.js')
 
 describe('Bill runs transactions controller', () => {
   const clientID = '1234546789'

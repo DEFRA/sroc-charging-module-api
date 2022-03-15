@@ -8,12 +8,15 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const { DatabaseHelper, RegimeHelper } = require('../../../support/helpers')
-const { CustomerModel, CustomerFileModel, ExportedCustomerModel } = require('../../../../app/models')
-const { CreateCustomerDetailsService } = require('../../../../app/services')
+const DatabaseHelper = require('../../../support/helpers/database.helper.js')
+const RegimeHelper = require('../../../support/helpers/regime.helper.js')
+const CustomerModel = require('../../../../app/models/customer.model.js')
+const CustomerFileModel = require('../../../../app/models/customer_file.model.js')
+const ExportedCustomerModel = require('../../../../app/models/exported_customer.model.js')
+const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service.js')
 
 // Thing under test
-const { MoveCustomerDetailsToExportedTableService } = require('../../../../app/services')
+const MoveCustomerDetailsToExportedTableService = require('../../../../app/services/files/customers/move_customer_details_to_exported_table.service.js')
 
 describe('Move Customer Details To Exported Table service', () => {
   let regime

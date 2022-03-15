@@ -9,26 +9,24 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  DatabaseHelper,
-  RegimeHelper
-} = require('../../../support/helpers')
+const DatabaseHelper = require('../../../support/helpers/database.helper.js')
+const RegimeHelper = require('../../../support/helpers/regime.helper.js')
 
-const { CustomerFileModel, CustomerModel } = require('../../../../app/models')
+const CustomerFileModel = require('../../../../app/models/customer_file.model.js')
+const CustomerModel = require('../../../../app/models/customer.model.js')
 
-const { CreateCustomerDetailsService, MoveCustomerDetailsToExportedTableService } = require('../../../../app/services')
+const CreateCustomerDetailsService = require('../../../../app/services/create_customer_details.service.js')
+const MoveCustomerDetailsToExportedTableService = require('../../../../app/services/files/customers/move_customer_details_to_exported_table.service.js')
 
 // Things we need to stub
-const {
-  DeleteFileService,
-  GenerateCustomerFileService,
-  NextCustomerFileReferenceService,
-  PrepareCustomerFileService,
-  SendFileToS3Service
-} = require('../../../../app/services')
+const DeleteFileService = require('../../../../app/services/files/delete_file.service.js')
+const GenerateCustomerFileService = require('../../../../app/services/files/customers/generate_customer_file.service.js')
+const NextCustomerFileReferenceService = require('../../../../app/services/next_references/next_customer_file_reference.service.js')
+const PrepareCustomerFileService = require('../../../../app/services/files/customers/prepare_customer_file.service.js')
+const SendFileToS3Service = require('../../../../app/services/files/send_file_to_s3.service.js')
 
 // Thing under test
-const { SendCustomerFileService } = require('../../../../app/services')
+const SendCustomerFileService = require('../../../../app/services/files/customers/send_customer_file.service.js')
 
 describe('Send Customer File service', () => {
   let regime

@@ -1,9 +1,7 @@
 'use strict'
 
-const {
-  NotSupportedController,
-  CustomerDetailsController
-} = require('../controllers')
+const NotSupportedController = require('../controllers/not_supported.controller.js')
+const CustomerDetailsController = require('../controllers/customer_details.controller.js')
 
 const routes = [
   {

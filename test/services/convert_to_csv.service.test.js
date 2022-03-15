@@ -8,7 +8,7 @@ const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Thing under test
-const { ConvertToCSVService } = require('../../app/services')
+const ConvertToCSVService = require('../../app/services/convert_to_csv.service.js')
 
 describe('Convert To CSV service', () => {
   describe('When data is passed to it', () => {

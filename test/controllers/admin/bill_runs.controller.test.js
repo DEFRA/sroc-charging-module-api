@@ -12,17 +12,15 @@ const { expect } = Code
 const { init } = require('../../../app/server')
 
 // Test helpers
-const {
-  AuthorisationHelper,
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  RegimeHelper
-} = require('../../support/helpers')
+const AuthorisationHelper = require('../../support/helpers/authorisation.helper.js')
+const AuthorisedSystemHelper = require('../../support/helpers/authorised_system.helper.js')
+const BillRunHelper = require('../../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const RegimeHelper = require('../../support/helpers/regime.helper.js')
 
 // Things we need to stub
 const JsonWebToken = require('jsonwebtoken')
-const { AdminSendTransactionFileService } = require('../../../app/services')
+const AdminSendTransactionFileService = require('../../../app/services/files/transactions/admin_send_transaction_file.service.js')
 
 describe('Admin Bill Runs controller', () => {
   let server

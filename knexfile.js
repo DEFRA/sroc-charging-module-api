@@ -1,6 +1,6 @@
 'use strict'
 
-const DatabaseConfig = require('./config/database.config')
+const DatabaseConfig = require('./config/database.config.js')
 
 const defaultConfig = {
   client: 'postgres',

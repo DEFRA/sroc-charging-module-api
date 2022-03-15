@@ -4,8 +4,9 @@
  * @module ViewInvoiceService
  */
 
-const { ViewInvoicePresenter } = require('../../presenters')
-const FetchAndValidateInvoiceService = require('./fetch_and_validate_invoice.service')
+const ViewInvoicePresenter = require('../../presenters/view_invoice.presenter.js')
+
+const FetchAndValidateInvoiceService = require('./fetch_and_validate_invoice.service.js')
 
 class ViewInvoiceService {
   /**

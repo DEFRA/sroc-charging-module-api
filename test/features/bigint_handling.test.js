@@ -8,14 +8,13 @@ const { describe, it, beforeEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  AuthorisedSystemHelper,
-  BillRunHelper,
-  DatabaseHelper,
-  RegimeHelper,
-  TransactionHelper
-} = require('../support/helpers')
-const { TransactionModel } = require('../../app/models')
+const AuthorisedSystemHelper = require('../support/helpers/authorised_system.helper.js')
+const BillRunHelper = require('../support/helpers/bill_run.helper.js')
+const DatabaseHelper = require('../support/helpers/database.helper.js')
+const RegimeHelper = require('../support/helpers/regime.helper.js')
+const TransactionHelper = require('../support/helpers/transaction.helper.js')
+
+const TransactionModel = require('../../app/models/transaction.model.js')
 
 describe('Handling BigInts', () => {
   let authorisedSystem

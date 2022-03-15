@@ -4,7 +4,7 @@
  * @module JsonPresenter
  */
 
-const BasePresenter = require('./base.presenter')
+const BasePresenter = require('./base.presenter.js')
 
 /**
  * Takes the data object and returns a version ready to be used for a JSON response.

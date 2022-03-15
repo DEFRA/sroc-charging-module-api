@@ -9,25 +9,21 @@ const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = Code
 
 // Test helpers
-const {
-  DatabaseHelper,
-  GeneralHelper,
-  NewTransactionHelper,
-  NewInvoiceHelper,
-  NewLicenceHelper
-} = require('../../support/helpers')
+const DatabaseHelper = require('../../support/helpers/database.helper.js')
+const GeneralHelper = require('../../support/helpers/general.helper.js')
+const NewTransactionHelper = require('../../support/helpers/new_transaction.helper.js')
+const NewInvoiceHelper = require('../../support/helpers/new_invoice.helper.js')
+const NewLicenceHelper = require('../../support/helpers/new_licence.helper.js')
 
-const {
-  BillRunModel,
-  InvoiceModel,
-  LicenceModel,
-  TransactionModel
-} = require('../../../app/models')
+const BillRunModel = require('../../../app/models/bill_run.model.js')
+const InvoiceModel = require('../../../app/models/invoice.model.js')
+const LicenceModel = require('../../../app/models/licence.model.js')
+const TransactionModel = require('../../../app/models/transaction.model.js')
 
-const { GenerateBillRunService } = require('../../../app/services')
+const GenerateBillRunService = require('../../../app/services/bill_runs/generate_bill_run.service.js')
 
 // Thing under test
-const { DeleteInvoiceService } = require('../../../app/services')
+const DeleteInvoiceService = require('../../../app/services/invoices/delete_invoice.service.js')
 
 describe('Delete Invoice service', () => {
   let notifierFake

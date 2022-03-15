@@ -7,10 +7,10 @@ const Code = require('@hapi/code')
 const { describe, it } = exports.lab = Lab.script()
 const { expect } = Code
 
-const { PresenterHelper } = require('../support/helpers')
+const PresenterHelper = require('../support/helpers/presenter.helper.js')
 
 // Thing under test
-const { CustomerFileTailPresenter } = require('../../app/presenters')
+const CustomerFileTailPresenter = require('../../app/presenters/customer_file_tail.presenter.js')
 
 describe('Customer File Tail Presenter', () => {
   const data = {

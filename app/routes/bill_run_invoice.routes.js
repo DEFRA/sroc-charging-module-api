@@ -1,6 +1,6 @@
 'use strict'
 
-const { BillRunsInvoicesController } = require('../controllers')
+const BillRunsInvoicesController = require('../controllers/bill_runs_invoices.controller.js')
 
 const routes = [
   {

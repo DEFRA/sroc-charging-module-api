@@ -4,9 +4,10 @@
  * @module InvoiceRebillingService
  */
 
-const { InvoiceRebillingPresenter } = require('../../presenters')
-const InvoiceRebillingInitialiseService = require('./invoice_rebilling_initialise.service')
-const InvoiceRebillingCopyService = require('./invoice_rebilling_copy.service')
+const InvoiceRebillingPresenter = require('../../presenters/invoice_rebilling.presenter.js')
+
+const InvoiceRebillingInitialiseService = require('./invoice_rebilling_initialise.service.js')
+const InvoiceRebillingCopyService = require('./invoice_rebilling_copy.service.js')
 
 class InvoiceRebillingService {
   /**
