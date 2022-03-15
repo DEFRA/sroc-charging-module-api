@@ -6,20 +6,20 @@
 
 const ViewInvoicePresenter = require('../../presenters/view_invoice.presenter.js')
 
-const FetchAndValidateInvoiceService = require('./fetch_and_validate_invoice.service.js')
+const ValidateInvoiceService = require('./validate_invoice.service.js')
 
 class ViewInvoiceService {
   /**
    * Locates and validates an invoice for the specificed bill run and returns the data needed by the View Invoice
    * endpoint
    *
-   * @param {string} billRunId The id of the bill run the invoice is linked to
-   * @param {string} invoiceId The id of the invoice we are trying to view
+   * @param {string} billRunId The bill run the invoice is linked to
+   * @param {string} invoiceId The invoice we are trying to view
    *
    * @returns {Object} The requested invoice data
    */
-  static async go (billRunId, invoiceId) {
-    let invoice = await FetchAndValidateInvoiceService.go(billRunId, invoiceId)
+  static async go (billRun, invoice) {
+    await ValidateInvoiceService.go(billRun, invoice)
 
     invoice = await this._invoiceResponseData(invoice)
 
