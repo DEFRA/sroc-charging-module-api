@@ -10,11 +10,10 @@ const ValidateInvoiceService = require('./validate_invoice.service.js')
 
 class ViewInvoiceService {
   /**
-   * Locates and validates an invoice for the specificed bill run and returns the data needed by the View Invoice
-   * endpoint
+   * Validates an invoice for the specificed bill run and returns the data needed by the View Invoice endpoint
    *
-   * @param {string} billRunId The bill run the invoice is linked to
-   * @param {string} invoiceId The invoice we are trying to view
+   * @param {string} billRun The bill run the invoice is linked to
+   * @param {string} invoice The invoice we are trying to view
    *
    * @returns {Object} The requested invoice data
    */
