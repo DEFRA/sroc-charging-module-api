@@ -47,7 +47,7 @@ class InvoiceRebillingValidationService {
 
   static _validateNotOnNewBillRun (currentBillRun, newBillRun, invoiceId) {
     if (currentBillRun.id === newBillRun.id) {
-      throw Boom.conflict(`Invoice ${invoiceId} is already on bill run ${newBillRun.id}.`)
+      throw Boom.conflict(`Invoice ${invoiceId} is already linked to bill run ${newBillRun.id}.`)
     }
   }
 
@@ -76,7 +76,7 @@ class InvoiceRebillingValidationService {
   static _validateRegion (currentBillRun, newBillRun, invoiceId) {
     if (currentBillRun.region !== newBillRun.region) {
       throw Boom.conflict(
-          `Invoice ${invoiceId} is for region ${currentBillRun.region} but bill run ${newBillRun.id} is for region ${newBillRun.region}.`
+          `Invoice ${invoiceId} is linked to region ${currentBillRun.region} but bill run ${newBillRun.id} is linked to region ${newBillRun.region}.`
       )
     }
   }
@@ -84,7 +84,7 @@ class InvoiceRebillingValidationService {
   static _validateRuleset (currentBillRun, newBillRun, invoiceId) {
     if (currentBillRun.ruleset !== newBillRun.ruleset) {
       throw Boom.conflict(
-          `Invoice ${invoiceId} is for ruleset ${currentBillRun.ruleset} but bill run ${newBillRun.id} is for ruleset ${newBillRun.ruleset}.`
+          `Invoice ${invoiceId} is linked to ruleset ${currentBillRun.ruleset} but bill run ${newBillRun.id} is linked to ruleset ${newBillRun.ruleset}.`
       )
     }
   }
