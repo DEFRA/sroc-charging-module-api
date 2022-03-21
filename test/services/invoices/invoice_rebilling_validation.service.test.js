@@ -67,7 +67,7 @@ describe('Invoice Rebilling Validation service', () => {
 
           expect(err).to.be.an.error()
           expect(err.output.payload.message).to.equal(
-            `Invoice ${invoice.id} is already on bill run ${currentBillRun.id}.`
+            `Invoice ${invoice.id} is already linked to bill run ${currentBillRun.id}.`
           )
         })
       })
@@ -138,7 +138,7 @@ describe('Invoice Rebilling Validation service', () => {
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(
-          `Invoice ${invoice.id} is for region A but bill run ${invalidNewBillRun.id} is for region B.`
+          `Invoice ${invoice.id} is linked to region A but bill run ${invalidNewBillRun.id} is linked to region B.`
         )
       })
     })
@@ -154,7 +154,7 @@ describe('Invoice Rebilling Validation service', () => {
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(
-          `Invoice ${invoice.id} is for ruleset presroc but bill run ${invalidNewBillRun.id} is for ruleset sroc.`
+          `Invoice ${invoice.id} is linked to ruleset presroc but bill run ${invalidNewBillRun.id} is linked to ruleset sroc.`
         )
       })
     })

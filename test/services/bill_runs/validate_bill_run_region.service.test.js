@@ -37,7 +37,7 @@ describe('Validate Bill Run Region service', () => {
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(
-          `Bill run ${billRun.id} is for region ${billRun.region} but transaction is for region ${region}.`
+          `Bill run ${billRun.id} is linked to region ${billRun.region} but transaction is linked to region ${region}.`
         )
       })
     })
@@ -50,7 +50,7 @@ describe('Validate Bill Run Region service', () => {
 
         expect(err).to.be.an.error()
         expect(err.output.payload.message).to.equal(
-          `Bill run ${billRun.id} is for region ${billRun.region} but transaction is for region undefined.`
+          `Bill run ${billRun.id} is linked to region ${billRun.region} but transaction is linked to region undefined.`
         )
       })
     })
