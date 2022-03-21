@@ -23,9 +23,9 @@ const RegimeHelper = require('../support/helpers/regime.helper.js')
 const Boom = require('@hapi/boom')
 
 const DeleteInvoiceService = require('../../app/services/invoices/delete_invoice.service.js')
-const FetchAndValidateInvoiceService = require('../../app/services/invoices/fetch_and_validate_invoice.service.js')
 const InvoiceRebillingService = require('../../app/services/invoices/invoice_rebilling.service.js')
 const InvoiceRebillingValidationService = require('../../app/services/invoices/invoice_rebilling_validation.service.js')
+const ValidateInvoiceService = require('../../app/services/invoices/validate_invoice.service.js')
 
 const BillRunModel = require('../../app/models/bill_run.model.js')
 const InvoiceModel = require('../../app/models/invoice.model.js')
@@ -72,16 +72,16 @@ describe('Invoices controller', () => {
       })
 
       describe('When the request is valid', () => {
-        let fetchStub
+        let validateStub
         let deleteStub
 
         before(async () => {
-          fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').returns()
+          validateStub = Sinon.stub(ValidateInvoiceService, 'go').returns()
           deleteStub = Sinon.stub(DeleteInvoiceService, 'go').returns()
         })
 
         after(async () => {
-          fetchStub.restore()
+          validateStub.restore()
           deleteStub.restore()
         })
 
@@ -93,29 +93,11 @@ describe('Invoices controller', () => {
       })
 
       describe('When the request is invalid', () => {
-        describe('because the invoice does not exist', () => {
-          let fetchStub
-
-          before(async () => {
-            fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').throws(Boom.notFound())
-          })
-
-          after(async () => {
-            fetchStub.restore()
-          })
-
-          it('returns error status 404', async () => {
-            const response = await server.inject(options(authToken, invoice.billRunId, invoice.id))
-
-            expect(response.statusCode).to.equal(404)
-          })
-        })
-
         describe('because the invoice is not linked to the bill run', () => {
           let fetchStub
 
           before(async () => {
-            fetchStub = Sinon.stub(FetchAndValidateInvoiceService, 'go').throws(Boom.conflict())
+            fetchStub = Sinon.stub(ValidateInvoiceService, 'go').throws(Boom.conflict())
           })
 
           after(async () => {
