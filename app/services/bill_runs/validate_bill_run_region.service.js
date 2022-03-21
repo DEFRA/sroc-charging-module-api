@@ -23,7 +23,7 @@ class ValidateBillRunRegionService {
   static async _validateBillRun (billRun, region) {
     if (billRun.region !== region) {
       throw Boom.badData(
-        `Bill run ${billRun.id} is for region ${billRun.region} but transaction is for region ${region}.`
+        `Bill run ${billRun.id} is linked to region ${billRun.region} but transaction is linked to region ${region}.`
       )
     }
   }
