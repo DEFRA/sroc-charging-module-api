@@ -10,10 +10,10 @@ class BillRunsInvoicesController {
   static async delete (req, h) {
     // We validate that the invoice is linked to the bill run within the controller so a not found/conflict error is
     // returned immediately
-    const invoice = await ValidateInvoiceService.go(req.app.billRun, req.app.invoice)
+    await ValidateInvoiceService.go(req.app.billRun, req.app.invoice)
 
     // We start DeleteInvoiceService without await so that it runs in the background
-    DeleteInvoiceService.go(invoice, req.app.billRun, req.app.notifier)
+    DeleteInvoiceService.go(req.app.invoice, req.app.billRun, req.app.notifier)
 
     return h.response().code(204)
   }
