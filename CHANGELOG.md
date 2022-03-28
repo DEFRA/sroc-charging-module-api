@@ -1,5 +1,61 @@
 # Changelog
 
+## [v0.18.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.18.0) (2022-03-27)
+
+[Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.17.0...v0.18.0)
+
+**Implemented enhancements:**
+
+- Update `got` to v12 [\#693](https://github.com/DEFRA/sroc-charging-module-api/pull/693) ([StuAA78](https://github.com/StuAA78))
+- Make sroc factors mandatory [\#686](https://github.com/DEFRA/sroc-charging-module-api/pull/686) ([StuAA78](https://github.com/StuAA78))
+- Additional validation for `waterUndertaker` [\#684](https://github.com/DEFRA/sroc-charging-module-api/pull/684) ([StuAA78](https://github.com/StuAA78))
+- Use `adjustmentFactor` in sroc transaction file [\#683](https://github.com/DEFRA/sroc-charging-module-api/pull/683) ([StuAA78](https://github.com/StuAA78))
+- Add `adjustmentFactor` to `RulesServiceSrocPresenter` [\#682](https://github.com/DEFRA/sroc-charging-module-api/pull/682) ([StuAA78](https://github.com/StuAA78))
+- Add `adjustmentFactor` to sroc validation [\#681](https://github.com/DEFRA/sroc-charging-module-api/pull/681) ([StuAA78](https://github.com/StuAA78))
+- Add `prorataDays`/`lineAttr3` to sroc charge [\#671](https://github.com/DEFRA/sroc-charging-module-api/pull/671) ([StuAA78](https://github.com/StuAA78))
+- Generate sroc transaction file service [\#670](https://github.com/DEFRA/sroc-charging-module-api/pull/670) ([StuAA78](https://github.com/StuAA78))
+- Amend transaction file head presenter for sroc [\#669](https://github.com/DEFRA/sroc-charging-module-api/pull/669) ([StuAA78](https://github.com/StuAA78))
+- Develop sroc transaction file body presenter [\#668](https://github.com/DEFRA/sroc-charging-module-api/pull/668) ([StuAA78](https://github.com/StuAA78))
+- Refactor `GenerateTransactionFileService` into base and presroc services [\#666](https://github.com/DEFRA/sroc-charging-module-api/pull/666) ([StuAA78](https://github.com/StuAA78))
+- Remove sroc deminimis limit [\#663](https://github.com/DEFRA/sroc-charging-module-api/pull/663) ([StuAA78](https://github.com/StuAA78))
+
+**Fixed bugs:**
+
+- Fix missing nock dependency [\#696](https://github.com/DEFRA/sroc-charging-module-api/pull/696) ([Cruikshanks](https://github.com/Cruikshanks))
+- Fix transaction file sort order [\#694](https://github.com/DEFRA/sroc-charging-module-api/pull/694) ([StuAA78](https://github.com/StuAA78))
+- Fix `Winter Only Discount` defect in transaction file [\#688](https://github.com/DEFRA/sroc-charging-module-api/pull/688) ([StuAA78](https://github.com/StuAA78))
+- Fix date formatting for Node 16.14.0 [\#685](https://github.com/DEFRA/sroc-charging-module-api/pull/685) ([StuAA78](https://github.com/StuAA78))
+
+**Housekeeping updates:**
+
+- Give consistent "not linked" error responses [\#703](https://github.com/DEFRA/sroc-charging-module-api/pull/703) ([StuAA78](https://github.com/StuAA78))
+- Change `FetchAndValidateInvoiceService` to `ValidateInvoiceService` [\#699](https://github.com/DEFRA/sroc-charging-module-api/pull/699) ([StuAA78](https://github.com/StuAA78))
+- Remove `index.js` files [\#698](https://github.com/DEFRA/sroc-charging-module-api/pull/698) ([StuAA78](https://github.com/StuAA78))
+- Move `nock` and `sinon` to `devDependencies` [\#695](https://github.com/DEFRA/sroc-charging-module-api/pull/695) ([StuAA78](https://github.com/StuAA78))
+- Store `abatementFactor` in `regimeValue11` [\#680](https://github.com/DEFRA/sroc-charging-module-api/pull/680) ([StuAA78](https://github.com/StuAA78))
+- Remove duff view bill run transaction endpoint [\#667](https://github.com/DEFRA/sroc-charging-module-api/pull/667) ([Cruikshanks](https://github.com/Cruikshanks))
+
+**Dependency updates:**
+
+- Bump @aws-sdk/client-s3 from 3.55.0 to 3.56.0 [\#705](https://github.com/DEFRA/sroc-charging-module-api/pull/705) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.54.1 to 3.55.0 [\#704](https://github.com/DEFRA/sroc-charging-module-api/pull/704) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/cache from 2 to 3 [\#702](https://github.com/DEFRA/sroc-charging-module-api/pull/702) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.54.0 to 3.54.1 [\#701](https://github.com/DEFRA/sroc-charging-module-api/pull/701) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump got from 12.0.1 to 12.0.2 [\#700](https://github.com/DEFRA/sroc-charging-module-api/pull/700) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.53.1 to 3.54.0 [\#697](https://github.com/DEFRA/sroc-charging-module-api/pull/697) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 2 to 3 [\#692](https://github.com/DEFRA/sroc-charging-module-api/pull/692) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.52.0 to 3.53.1 [\#691](https://github.com/DEFRA/sroc-charging-module-api/pull/691) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-node from 2.5.1 to 3 [\#690](https://github.com/DEFRA/sroc-charging-module-api/pull/690) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.51.0 to 3.52.0 [\#687](https://github.com/DEFRA/sroc-charging-module-api/pull/687) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.50.0 to 3.51.0 [\#679](https://github.com/DEFRA/sroc-charging-module-api/pull/679) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.49.0 to 3.50.0 [\#677](https://github.com/DEFRA/sroc-charging-module-api/pull/677) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @hapi/code from 8.0.6 to 8.0.7 [\#676](https://github.com/DEFRA/sroc-charging-module-api/pull/676) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pg-query-stream from 4.2.1 to 4.2.3 [\#675](https://github.com/DEFRA/sroc-charging-module-api/pull/675) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pg from 8.7.1 to 8.7.3 [\#674](https://github.com/DEFRA/sroc-charging-module-api/pull/674) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nock from 13.2.2 to 13.2.4 [\#673](https://github.com/DEFRA/sroc-charging-module-api/pull/673) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump @aws-sdk/client-s3 from 3.48.0 to 3.49.0 [\#665](https://github.com/DEFRA/sroc-charging-module-api/pull/665) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump joi from 17.5.0 to 17.6.0 [\#664](https://github.com/DEFRA/sroc-charging-module-api/pull/664) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.17.0](https://github.com/DEFRA/sroc-charging-module-api/tree/v0.17.0) (2022-01-26)
 
 [Full Changelog](https://github.com/DEFRA/sroc-charging-module-api/compare/v0.16.0...v0.17.0)
@@ -74,8 +130,6 @@
 
 **Implemented enhancements:**
 
-- View SRoC Bill Run and v3 routet [\#624](https://github.com/DEFRA/sroc-charging-module-api/pull/624) ([StuAA78](https://github.com/StuAA78))
-- Generate Bill Run Summary v3 endpoint [\#622](https://github.com/DEFRA/sroc-charging-module-api/pull/622) ([StuAA78](https://github.com/StuAA78))
 - Align sroc translator and presenter fields [\#611](https://github.com/DEFRA/sroc-charging-module-api/pull/611) ([StuAA78](https://github.com/StuAA78))
 - Create Transaction v3 route [\#610](https://github.com/DEFRA/sroc-charging-module-api/pull/610) ([StuAA78](https://github.com/StuAA78))
 - Update `CreateTransactionService` to accept `ruleset` [\#609](https://github.com/DEFRA/sroc-charging-module-api/pull/609) ([StuAA78](https://github.com/StuAA78))
@@ -101,7 +155,6 @@
 
 **Dependency updates:**
 
-- Bump @aws-sdk/client-s3 from 3.42.0 to 3.43.0 [\#623](https://github.com/DEFRA/sroc-charging-module-api/pull/623) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/setup-node from 2.4.1 to 2.5.0 [\#620](https://github.com/DEFRA/sroc-charging-module-api/pull/620) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump @aws-sdk/client-s3 from 3.41.0 to 3.42.0 [\#615](https://github.com/DEFRA/sroc-charging-module-api/pull/615) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump @hapi/code from 8.0.4 to 8.0.5 [\#614](https://github.com/DEFRA/sroc-charging-module-api/pull/614) ([dependabot[bot]](https://github.com/apps/dependabot))
