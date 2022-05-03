@@ -13,8 +13,8 @@ const CalculateChargePresrocTranslator = require('../../app/translators/calculat
 
 describe('Calculate Charge Presroc translator', () => {
   const payload = {
-    periodStart: '01-APR-2020',
-    periodEnd: '31-MAR-2021',
+    periodStart: '01-APR-2019',
+    periodEnd: '31-MAR-2020',
     credit: false,
     billableDays: 214,
     authorisedDays: 214,
@@ -124,7 +124,7 @@ describe('Calculate Charge Presroc translator', () => {
         expect(result.chargePeriodStart.getDate()).to.equal(1)
         // Months are zero based, for example, January is 0 and December is 11
         expect(result.chargePeriodStart.getMonth()).to.equal(3)
-        expect(result.chargePeriodStart.getFullYear()).to.equal(2020)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2019)
       })
     })
 
@@ -277,11 +277,11 @@ describe('Calculate Charge Presroc translator', () => {
     })
 
     describe('when the data is not valid', () => {
-      describe("because the 'periodStart' is greater than the 'periodEnd'", () => {
+      describe("because the 'periodEnd' is earlier than the 'periodStart'", () => {
         it('throws an error', async () => {
           const invalidPayload = {
             ...payload,
-            periodStart: '01-APR-2021'
+            periodStart: '01-APR-2017'
           }
 
           expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -294,6 +294,18 @@ describe('Calculate Charge Presroc translator', () => {
             ...payload,
             periodStart: '01-FEB-2014',
             periodEnd: '01-MAR-2014'
+          }
+
+          expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
+        })
+      })
+
+      describe("because 'periodStart' is after 31-MAR-2022", () => {
+        it('throws an error', async () => {
+          const invalidPayload = {
+            ...payload,
+            periodStart: '01-APR-2022',
+            periodEnd: '30-APR-2022'
           }
 
           expect(() => new CalculateChargePresrocTranslator(data(invalidPayload))).to.throw(ValidationError)
