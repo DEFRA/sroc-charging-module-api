@@ -25,7 +25,7 @@ class ValidateInvoiceService {
 
   static _validate (billRun, invoice) {
     if (invoice.billRunId !== billRun.id) {
-      throw Boom.conflict(`Invoice ${invoice.id} is not linked to bill run ${billRun.id}.`)
+      throw Boom.badData(`Invoice ${invoice.id} is not linked to bill run ${billRun.id}.`)
     }
   }
 }

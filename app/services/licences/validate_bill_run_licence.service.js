@@ -15,7 +15,7 @@ class ValidateBillRunLicenceService {
   *
   * @param {string} billRunId Id of the bill run the licence should link to
   * @param {@module:LicenceModel} licence An instance of the licence to be validated
-  * @returns {Boolean} Returns `true` if validation suceeds; if validation fails then a `409` error will have been
+  * @returns {Boolean} Returns `true` if validation suceeds; if validation fails then a `422` error will have been
   * thrown.
   */
   static async go (billRunId, licence) {
@@ -32,7 +32,7 @@ class ValidateBillRunLicenceService {
 
   static _validate (billRunId, licence, invoice) {
     if (licence.billRunId !== billRunId) {
-      throw Boom.conflict(`Licence ${licence.id} is not linked to bill run ${billRunId}.`)
+      throw Boom.badData(`Licence ${licence.id} is not linked to bill run ${billRunId}.`)
     }
 
     if (!invoice.$originalInvoice()) {

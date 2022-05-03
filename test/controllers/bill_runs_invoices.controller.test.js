@@ -166,7 +166,7 @@ describe('Invoices controller', () => {
             const response = await server.inject(options(authToken, invoice.billRunId, newTransaction.invoiceId))
             const responsePayload = JSON.parse(response.payload)
 
-            expect(response.statusCode).to.equal(409)
+            expect(response.statusCode).to.equal(422)
             expect(responsePayload.message).to.equal(
             `Invoice ${newTransaction.invoiceId} is not linked to bill run ${invoice.billRunId}.`
             )
