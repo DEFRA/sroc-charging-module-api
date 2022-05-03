@@ -17,11 +17,8 @@ describe('Calculate Charge Sroc translator', () => {
   const payload = {
     ruleset: 'sroc',
     chargeCategoryCode: '2.1.211',
-    // NOTE: these dates should be 01-APR-2022 and 31-MAR-2023, ie. 2022/23 financial year. However as we suspect WRLS
-    // will need to test against the current financial year (ie. 2021/22), we have set the validation accordingly.
-    // This will be reverted prior to going into production.
-    periodStart: '01-APR-2021',
-    periodEnd: '31-MAR-2022',
+    periodStart: '01-APR-2022',
+    periodEnd: '31-MAR-2023',
     authorisedDays: 214,
     billableDays: 214,
     winterOnly: false,
@@ -132,7 +129,7 @@ describe('Calculate Charge Sroc translator', () => {
         expect(result.chargePeriodStart.getDate()).to.equal(1)
         // Months are zero based, for example, January is 0 and December is 11
         expect(result.chargePeriodStart.getMonth()).to.equal(3)
-        expect(result.chargePeriodStart.getFullYear()).to.equal(2021)
+        expect(result.chargePeriodStart.getFullYear()).to.equal(2022)
       })
     })
 
@@ -481,12 +478,12 @@ describe('Calculate Charge Sroc translator', () => {
           })
         })
 
-        describe('is earlier than 1 April 2021', () => {
+        describe('is earlier than 1 April 2022', () => {
           it('throws an error', async () => {
             const invalidPayload = {
               ...payload,
-              periodStart: '30-MAR-2021',
-              periodEnd: '31-MAR-2021'
+              periodStart: '30-MAR-2022',
+              periodEnd: '31-MAR-2022'
             }
 
             expect(() => new CalculateChargeSrocTranslator(data(invalidPayload))).to.throw(ValidationError)
@@ -515,7 +512,7 @@ describe('Calculate Charge Sroc translator', () => {
           })
         })
 
-        describe('is not in the same finanal year as periodStart', () => {
+        describe('is not in the same financial year as periodStart', () => {
           it('throws an error', async () => {
             const invalidPayload = {
               ...payload,
