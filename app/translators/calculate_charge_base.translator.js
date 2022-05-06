@@ -22,7 +22,6 @@ class CalculateChargeBaseTranslator extends BaseTranslator {
       billableDays: Joi.number().integer().min(0).max(366).required(),
       compensationCharge: Joi.boolean().required(),
       credit: Joi.boolean().required(),
-      periodEnd: Joi.date().format(this._validDateFormats()).required(),
       section130Agreement: Joi.boolean().required(),
 
       // Dependent on `compensationCharge`
