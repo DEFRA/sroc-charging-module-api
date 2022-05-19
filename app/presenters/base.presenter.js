@@ -64,6 +64,33 @@ class BasePresenter {
 
     return false
   }
+
+  /**
+   * Extracts the factor value from a string in the format `... x n.n`. For example, when given the string `S130U x
+   * 0.5`, the number `0.5` is returned. Returns `null` if the string isn't in the expected format.
+   *
+   * The extraction is a little more complex than in RulesServiceSrocTranslator, due to the fact that we are presenting
+   * data that hasn't been validated
+   */
+  _extractFactor (string) {
+    // Immediately return `null` if we haven't been passed a string
+    if (typeof string !== 'string') {
+      return null
+    }
+
+    // Use regex to match the number in the format `0.5`
+    // `.* x ` looks for any number of characters followed by ` x `
+    // `(?<factor>\d\.\d)` looks for the first number like `0.5` and assigns it to the matched group `factor`
+    const matches = string.match(/.* x (?<factor>\d\.\d)/)
+
+    // If `matches` is `null` then there was no match so return `null`
+    if (!matches) {
+      return null
+    }
+
+    // Otherwise, return the value we captured as `factor`, converted to a number
+    return parseFloat(matches.groups.factor)
+  }
 }
 
 module.exports = BasePresenter
