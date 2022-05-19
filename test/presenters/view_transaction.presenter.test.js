@@ -26,9 +26,24 @@ describe('View Transaction Presenter', () => {
     chargePeriodEnd: '2020-03-31',
     regimeValue17: 'true',
     rebilledTransactionId: GeneralHelper.uuid4(),
-    chargeCalculation: '{"__DecisionID__":"91a711c1-2dbb-47fe-ae8e-505da38432d70","WRLSChargingResponse":{"chargeValue":7.72,"decisionPoints":{"sourceFactor":10.7595,"seasonFactor":17.2152,"lossFactor":0.5164559999999999,"volumeFactor":3.5865,"abatementAdjustment":7.721017199999999,"s127Agreement":7.721017199999999,"s130Agreement":7.721017199999999,"secondPartCharge":false,"waterUndertaker":false,"eiucFactor":0,"compensationCharge":false,"eiucSourceFactor":0,"sucFactor":7.721017199999999},"messages":[],"sucFactor":14.95,"volumeFactor":3.5865,"sourceFactor":3,"seasonFactor":1.6,"lossFactor":0.03,"abatementAdjustment":"S126 x 1.0","s127Agreement":null,"s130Agreement":null,"eiucSourceFactor":0,"eiucFactor":0}}',
+    chargeCalculation: '{"__DecisionID__":"91a711c1-2dbb-47fe-ae8e-505da38432d70","WRLSChargingResponse":{"chargeValue":7.72,"decisionPoints":{"sourceFactor":10.7595,"seasonFactor":17.2152,"lossFactor":0.5164559999999999,"volumeFactor":3.5865,"abatementAdjustment":7.721017199999999,"s127Agreement":7.721017199999999,"s130Agreement":7.721017199999999,"secondPartCharge":false,"waterUndertaker":false,"eiucFactor":0,"compensationCharge":false,"eiucSourceFactor":0,"sucFactor":7.721017199999999},"messages":[],"sucFactor":14.95,"volumeFactor":3.5865,"sourceFactor":3,"seasonFactor":1.6,"lossFactor":0.03,"abatementAdjustment":"S126 x 1.0","s127Agreement":null,"s130Agreement":null,"eiucSourceFactor":0,"eiucFactor":0}}'
+  }
+
+  const presrocData = {
+    ...data,
     // Ruleset is not normally part of the transaction record but we expect it to be passed in to the presenter
-    ruleset: 'presroc'
+    ruleset: 'presroc',
+    lineAttr9: 'S130S x 0.833',
+    lineAttr10: 'S127 x 0.5'
+  }
+
+  const srocData = {
+    ...data,
+    // Ruleset is not normally part of the transaction record but we expect it to be passed in to the presenter
+    ruleset: 'sroc',
+    lineAttr9: 0.833,
+    lineAttr10: 0.5,
+    lineAttr12: 0.5
   }
 
   it('returns the required columns', () => {
@@ -50,14 +65,13 @@ describe('View Transaction Presenter', () => {
   })
 
   it('returns `subjectToMinimumCharge` if the ruleset is `presroc`', () => {
-    const presenter = new ViewTransactionPresenter(data)
+    const presenter = new ViewTransactionPresenter(presrocData)
     const result = presenter.go()
 
     expect(result).to.include('subjectToMinimumCharge')
   })
 
   it('does not return `subjectToMinimumCharge` if the ruleset is `sroc`', () => {
-    const srocData = Object.assign({ ...data, ruleset: 'sroc' })
     const presenter = new ViewTransactionPresenter(srocData)
     const result = presenter.go()
 
@@ -65,22 +79,35 @@ describe('View Transaction Presenter', () => {
   })
 
   it('returns `minimumChargeAdjustment` if the ruleset is `presroc`', () => {
-    const presenter = new ViewTransactionPresenter(data)
+    const presenter = new ViewTransactionPresenter(presrocData)
     const result = presenter.go()
 
     expect(result).to.include('minimumChargeAdjustment')
   })
 
   it('does not return `minimumChargeAdjustment` if the ruleset is `sroc`', () => {
-    const srocData = Object.assign({ ...data, ruleset: 'sroc' })
     const presenter = new ViewTransactionPresenter(srocData)
     const result = presenter.go()
 
     expect(result).to.not.include('minimumChargeAdjustment')
   })
 
-  it('correctly presents the data', () => {
-    const presenter = new ViewTransactionPresenter(data)
+  it('returns `winterOnlyFactor` if the ruleset is `sroc`', () => {
+    const presenter = new ViewTransactionPresenter(srocData)
+    const result = presenter.go()
+
+    expect(result).to.include('winterOnlyFactor')
+  })
+
+  it('does not return `winterOnlyFactor` if the ruleset is `presroc`', () => {
+    const presenter = new ViewTransactionPresenter(presrocData)
+    const result = presenter.go()
+
+    expect(result).to.not.include('winterOnlyFactor')
+  })
+
+  it('correctly presents the data for presroc', () => {
+    const presenter = new ViewTransactionPresenter(presrocData)
     const result = presenter.go()
 
     expect(result.id).to.equal(data.id)
@@ -95,5 +122,26 @@ describe('View Transaction Presenter', () => {
     expect(result.compensationCharge).to.be.true()
     expect(result.rebilledTransactionId).to.equal(data.rebilledTransactionId)
     expect(result.calculation).to.equal(data.chargeCalculation)
+    expect(result.section130Factor).to.equal(0.833)
+    expect(result.section127Factor).to.equal(0.5)
+  })
+
+  it('correctly presents the data for sroc', () => {
+    const presenter = new ViewTransactionPresenter(srocData)
+    const result = presenter.go()
+
+    expect(result.id).to.equal(data.id)
+    expect(result.clientId).to.equal(data.clientId)
+    expect(result.chargeValue).to.equal(data.chargeValue)
+    expect(result.credit).to.equal(data.chargeCredit)
+    expect(result.lineDescription).to.equal(data.lineDescription)
+    expect(result.periodStart).to.equal(data.chargePeriodStart)
+    expect(result.periodEnd).to.equal(data.chargePeriodEnd)
+    expect(result.compensationCharge).to.be.true()
+    expect(result.rebilledTransactionId).to.equal(data.rebilledTransactionId)
+    expect(result.calculation).to.equal(data.chargeCalculation)
+    expect(result.section130Factor).to.equal(0.833)
+    expect(result.section127Factor).to.equal(0.5)
+    expect(result.winterOnlyFactor).to.equal(0.5)
   })
 })

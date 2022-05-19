@@ -63,7 +63,10 @@ class ViewInvoiceService {
           'chargePeriodEnd',
           'regimeValue17',
           'rebilledTransactionId',
-          'chargeCalculation'
+          'chargeCalculation',
+          'lineAttr9',
+          'lineAttr10',
+          'lineAttr12'
         )
       })
       .withGraphFetched('billRun')
