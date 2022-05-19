@@ -174,11 +174,11 @@ describe('Base presenter', () => {
     })
   })
 
-  describe('_extractFactor method', () => {
+  describe('_extractFactorFromString method', () => {
     it('returns the factor if given a string in the format `... x n.n`', async () => {
       const presenter = new BasePresenter()
 
-      const result = presenter._extractFactor('S127 x 0.5')
+      const result = presenter._extractFactorFromString('S127 x 0.5')
 
       expect(result).to.equal(0.5)
     })
@@ -186,7 +186,7 @@ describe('Base presenter', () => {
     it('returns the factor if it has more than 1 decimal place', async () => {
       const presenter = new BasePresenter()
 
-      const result = presenter._extractFactor('S127 x 0.833')
+      const result = presenter._extractFactorFromString('S127 x 0.833')
 
       expect(result).to.equal(0.833)
     })
@@ -194,7 +194,7 @@ describe('Base presenter', () => {
     it('returns `null` if given a string in the wrong format', async () => {
       const presenter = new BasePresenter()
 
-      const result = presenter._extractFactor('S127 0.5')
+      const result = presenter._extractFactorFromString('S127 0.5')
 
       expect(result).to.equal(null)
     })
@@ -202,17 +202,17 @@ describe('Base presenter', () => {
     it('returns `null` if given `null` as a value', async () => {
       const presenter = new BasePresenter()
 
-      const result = presenter._extractFactor(null)
+      const result = presenter._extractFactorFromString(null)
 
       expect(result).to.equal(null)
     })
   })
 
-  describe('_extractS127Factor method', () => {
+  describe('_extractS127FactorFromString method', () => {
     it('returns the factor if given a string in the format `... x n.n`', async () => {
       const presenter = new BasePresenter()
 
-      const result = presenter._extractS127Factor('S127 x 0.5')
+      const result = presenter._extractS127FactorFromString('S127 x 0.5')
 
       expect(result).to.equal(0.5)
     })
@@ -220,7 +220,7 @@ describe('Base presenter', () => {
     it('returns `null` if given a string for the wrong section', async () => {
       const presenter = new BasePresenter()
 
-      const result = presenter._extractS127Factor('S130 x 0.5')
+      const result = presenter._extractS127FactorFromString('S130 x 0.5')
 
       expect(result).to.equal(null)
     })
@@ -228,7 +228,7 @@ describe('Base presenter', () => {
     it('returns `null` if given `null` as a value', async () => {
       const presenter = new BasePresenter()
 
-      const result = presenter._extractS127Factor(null)
+      const result = presenter._extractS127FactorFromString(null)
 
       expect(result).to.equal(null)
     })

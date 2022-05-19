@@ -69,12 +69,12 @@ class BasePresenter {
    * Extracts the factor value from a string in the format `... x n.n`. For example, when given the string `S130U x
    * 0.5`, the number `0.5` is returned. Returns `null` if the string isn't in the expected format.
    */
-  _extractFactor (string) {
+  _extractFactorFromString (string) {
     if (typeof string !== 'string') {
       return null
     }
 
-    // Match the number using regex.
+    // Match the number using regex
     // `.* x ` looks for any number of characters followed by ` x `
     // `(?<factor>\d\.\d*)` finds the first number like `0.5`, `0.833` etc. and assigns it to the match group `factor`
     const matches = string.match(/.* x (?<factor>\d\.\d*)/)
@@ -90,7 +90,7 @@ class BasePresenter {
    * If the provided string is for section 127 (ie. it begins `S127`) then return the factor as a number. Otherwise,
    * return `null`.
    */
-  _extractS127Factor (string) {
+  _extractS127FactorFromString (string) {
     if (typeof string !== 'string') {
       return null
     }
@@ -99,7 +99,7 @@ class BasePresenter {
       return null
     }
 
-    return this._extractFactor(string)
+    return this._extractFactorFromString(string)
   }
 }
 
