@@ -183,6 +183,14 @@ describe('Base presenter', () => {
       expect(result).to.equal(0.5)
     })
 
+    it('returns the factor if it has more than 1 decimal place', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._extractFactor('S127 x 0.833')
+
+      expect(result).to.equal(0.833)
+    })
+
     it('returns `null` if given a string in the wrong format', async () => {
       const presenter = new BasePresenter()
 

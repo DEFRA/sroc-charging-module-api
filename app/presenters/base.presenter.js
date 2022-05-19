@@ -76,8 +76,8 @@ class BasePresenter {
 
     // Match the number using regex.
     // `.* x ` looks for any number of characters followed by ` x `
-    // `(?<factor>\d\.\d)` finds the first number like `0.5`, `1.0` etc. and assigns it to the match group `factor`
-    const matches = string.match(/.* x (?<factor>\d\.\d)/)
+    // `(?<factor>\d\.\d*)` finds the first number like `0.5`, `0.833` etc. and assigns it to the match group `factor`
+    const matches = string.match(/.* x (?<factor>\d\.\d*)/)
 
     if (!matches) {
       return null
