@@ -199,4 +199,30 @@ describe('Base presenter', () => {
       expect(result).to.equal(null)
     })
   })
+
+  describe('_extractS127Factor method', () => {
+    it('returns the factor if given a string in the format `... x n.n`', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._extractS127Factor('S127 x 0.5')
+
+      expect(result).to.equal(0.5)
+    })
+
+    it('returns `null` if given a string for the wrong section', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._extractS127Factor('S130 x 0.5')
+
+      expect(result).to.equal(null)
+    })
+
+    it('returns `null` if given `null` as a value', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._extractS127Factor(null)
+
+      expect(result).to.equal(null)
+    })
+  })
 })
