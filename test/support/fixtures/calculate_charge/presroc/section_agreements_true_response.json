@@ -4,6 +4,8 @@
       "sourceFactor": 3,
       "seasonFactor": 1.6,
       "lossFactor": 0.03,
+      "section127Factor": 0.5,
+      "section130Factor": 0.833,
       "licenceHolderChargeAgreement": "S130S x 0.833",
       "chargeElementAgreement": "S127 x 0.5",
       "eiucSourceFactor": 0,

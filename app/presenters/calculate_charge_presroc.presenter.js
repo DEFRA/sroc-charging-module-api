@@ -17,6 +17,8 @@ class CalculateChargePresrocPresenter extends BasePresenter {
         sourceFactor: data.lineAttr6,
         seasonFactor: data.lineAttr7,
         lossFactor: data.lineAttr8,
+        section130Factor: this._extractFactorFromString(data.lineAttr9),
+        section127Factor: this._extractS127FactorFromString(data.lineAttr10),
         licenceHolderChargeAgreement: data.lineAttr9,
         chargeElementAgreement: data.lineAttr10,
         eiucSourceFactor: data.lineAttr13,

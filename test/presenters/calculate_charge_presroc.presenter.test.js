@@ -38,4 +38,45 @@ describe('Calculate Charge Presroc presenter', () => {
       expect(result.calculation.chargeValue).to.equal(100)
     })
   })
+
+  describe('when a section 130 factor is present', () => {
+    const data = {
+      lineAttr9: 'S130 x 0.5'
+    }
+
+    it('returns the factor value', async () => {
+      const testPresenter = new CalculateChargePresrocPresenter(data)
+      const result = testPresenter.go()
+
+      expect(result.calculation.section130Factor).to.equal(0.5)
+    })
+  })
+
+  describe('when a section 127 factor is present', () => {
+    const data = {
+      lineAttr10: 'S127 x 0.5'
+    }
+
+    it('returns the factor value', async () => {
+      const testPresenter = new CalculateChargePresrocPresenter(data)
+      const result = testPresenter.go()
+
+      expect(result.calculation.section127Factor).to.equal(0.5)
+    })
+  })
+
+  describe('when a section 126 factor is present', () => {
+    // Note that section 126 and 127 factors share a field, which is why this test for section 126 checks the value of
+    // `section127Factor`
+    const data = {
+      lineAttr10: 'S126 x 0.5'
+    }
+
+    it('returns `null` for the factor value', async () => {
+      const testPresenter = new CalculateChargePresrocPresenter(data)
+      const result = testPresenter.go()
+
+      expect(result.calculation.section127Factor).to.equal(null)
+    })
+  })
 })

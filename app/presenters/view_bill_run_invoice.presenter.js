@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * @module ViewInvoicePresenter
+ * @module ViewBillRunInvoicePresenter
  */
 
 const BasePresenter = require('./base.presenter.js')
