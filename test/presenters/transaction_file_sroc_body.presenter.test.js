@@ -29,7 +29,7 @@ describe('Transaction File Sroc Body Presenter', () => {
     lineAttr4: 'LINE_ATTR_4',
     headerAttr4: 'HEADER_ATTR_4',
     regimeValue18: 'REGIME_VALUE_18',
-    headerAttr9: 'HEADER_ATTR_9',
+    headerAttr9: 90210,
     // Reductions, col33
     headerAttr2: '1',
     headerAttr8: 'false',
@@ -137,6 +137,15 @@ describe('Transaction File Sroc Body Presenter', () => {
     })
   })
 
+  describe('for col 32 (value in pence)', () => {
+    it('correctly formats the value', () => {
+      const presenter = new TransactionFileSrocBodyPresenter(data)
+      const result = presenter.go()
+
+      expect(result.col32).to.equal('90210pence')
+    })
+  })
+
   describe('for cols that are dependent on compensation charge', () => {
     it('returns expected values when compensation charge is false', () => {
       const presenter = new TransactionFileSrocBodyPresenter({
@@ -153,7 +162,6 @@ describe('Transaction File Sroc Body Presenter', () => {
       expect(result.col29).to.equal(data.lineAttr3)
       expect(result.col30).to.equal(data.headerAttr4)
       expect(result.col31).to.equal(data.regimeValue18)
-      expect(result.col32).to.equal(data.headerAttr9)
       expect(result.col33).to.not.equal('') // This column is checked in a separate test
       expect(result.col34).to.not.equal('') // This column is checked in a separate test
       expect(result.col35).to.not.equal('') // This column is checked in a separate test
@@ -170,7 +178,6 @@ describe('Transaction File Sroc Body Presenter', () => {
 
       const result = presenter.go()
 
-      expect(result.col26).to.equal('')
       expect(result.col28).to.equal('')
       expect(result.col29).to.equal('')
       expect(result.col30).to.equal('')
@@ -224,7 +231,7 @@ describe('Transaction File Sroc Body Presenter', () => {
 
       const result = presenter.go()
 
-      expect(result.col34).to.equal('15000, SUPPORTED_SOURCE_NAME')
+      expect(result.col34).to.equal('15000pence (SUPPORTED_SOURCE_NAME)')
     })
 
     it('returns blank if supported source is false', () => {
@@ -249,7 +256,7 @@ describe('Transaction File Sroc Body Presenter', () => {
 
       const result = presenter.go()
 
-      expect(result.col35).to.equal('123.4 / 567.8 Ml')
+      expect(result.col35).to.equal('Calculated using reported abstracted quantity (123.4ML) and the charge reference, which is based on the authorised quantity')
     })
 
     it('returns blank if two part tariff is false', () => {
@@ -274,7 +281,7 @@ describe('Transaction File Sroc Body Presenter', () => {
 
       const result = presenter.go()
 
-      expect(result.col36).to.equal(data.headerAttr10)
+      expect(result.col36).to.equal('12345pence')
     })
 
     it('returns blank if water company charge is false', () => {

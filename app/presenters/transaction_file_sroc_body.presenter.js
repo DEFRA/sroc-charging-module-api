@@ -41,13 +41,13 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
       col23: data.lineDescription,
       col24: 'AT',
       col25: '',
-      col26: this._blankIfCompensationCharge(data.lineAttr1, data),
+      col26: data.lineAttr1,
       col27: '',
       col28: this._blankIfCompensationCharge(data.lineAttr2, data), // chargePeriod
       col29: this._blankIfCompensationCharge(data.lineAttr3, data), // prorata days
       col30: this._blankIfCompensationCharge(data.headerAttr4, data), // chargeCategoryCode
       col31: this._blankIfCompensationCharge(data.regimeValue18, data), // chargeCategoryDescription
-      col32: this._blankIfCompensationCharge(data.headerAttr9, data), // baseCharge [in pence]
+      col32: this._blankIfCompensationCharge(this._pence(data.headerAttr9), data), // baseCharge [in pence]
       col33: this._blankIfCompensationCharge(this._reductionsList(data), data),
       col34: this._blankIfCompensationCharge(this._supportedSource(data), data),
       col35: this._blankIfCompensationCharge(this._volume(data), data),
@@ -127,24 +127,27 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
   }
 
   /**
-   * Returns `supportedSourceValue, supportedSourceName` if supportedSource is true or blank string if false
+   * Returns `supportedSourceValue (supportedSourceName)` (with `pence` appended to the value) if supportedSource is
+   * true or blank string if false
    */
   _supportedSource (data) {
-    return this._isTrue(data.headerAttr5) ? `${data.lineAttr11}, ${data.headerAttr6}` : ''
+    return this._isTrue(data.headerAttr5) ? `${this._pence(data.lineAttr11)} (${data.headerAttr6})` : ''
   }
 
   /**
-   * Returns `actualVolume / authorisedVolume Ml` if twoPartTariff is true or blank string if false
+   * Returns a descriptive string including `actualVolume` if twoPartTariff is true or blank string if false
    */
   _volume (data) {
-    return this._isTrue(data.regimeValue16) ? `${data.regimeValue20} / ${data.headerAttr3} Ml` : ''
+    return this._isTrue(data.regimeValue16)
+      ? `Calculated using reported abstracted quantity (${data.regimeValue20}ML) and the charge reference, which is based on the authorised quantity`
+      : ''
   }
 
   /**
-   * Returns `waterCompanyChargeValue` if waterCompanyCharge is true or blank string if false
+   * Returns `waterCompanyChargeValue` (with `pence` appended) if waterCompanyCharge is true or blank string if false
    */
   _waterCompany (data) {
-    return this._isTrue(data.headerAttr7) ? data.headerAttr10 : ''
+    return this._isTrue(data.headerAttr7) ? this._pence(data.headerAttr10) : ''
   }
 
   /**
@@ -161,6 +164,13 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
     // We don't expect to store anything other than lower case but we change case just to be safe. We use optional
     // chaining to avoid issues if field is `null`
     return field?.toLowerCase() === 'true'
+  }
+
+  /**
+   * Returns the value with `pence` added eg. `90210pence`
+   */
+  _pence (value) {
+    return `${value}pence`
   }
 }
 
