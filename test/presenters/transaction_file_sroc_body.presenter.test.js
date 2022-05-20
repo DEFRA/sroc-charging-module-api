@@ -231,7 +231,7 @@ describe('Transaction File Sroc Body Presenter', () => {
 
       const result = presenter.go()
 
-      expect(result.col34).to.equal('15000, SUPPORTED_SOURCE_NAME')
+      expect(result.col34).to.equal('15000pence (SUPPORTED_SOURCE_NAME)')
     })
 
     it('returns blank if supported source is false', () => {

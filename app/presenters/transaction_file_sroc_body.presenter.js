@@ -127,10 +127,11 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
   }
 
   /**
-   * Returns `supportedSourceValue, supportedSourceName` if supportedSource is true or blank string if false
+   * Returns `supportedSourceValue (supportedSourceName)` (with `pence` appended to the value) if supportedSource is
+   * true or blank string if false
    */
   _supportedSource (data) {
-    return this._isTrue(data.headerAttr5) ? `${data.lineAttr11}, ${data.headerAttr6}` : ''
+    return this._isTrue(data.headerAttr5) ? `${this._pence(data.lineAttr11)} (${data.headerAttr6})` : ''
   }
 
   /**
