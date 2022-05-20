@@ -256,7 +256,7 @@ describe('Transaction File Sroc Body Presenter', () => {
 
       const result = presenter.go()
 
-      expect(result.col35).to.equal('123.4 / 567.8 Ml')
+      expect(result.col35).to.equal('Calculated using reported abstracted quantity (123.4ML) and the charge reference, which is based on the authorised quantity')
     })
 
     it('returns blank if two part tariff is false', () => {

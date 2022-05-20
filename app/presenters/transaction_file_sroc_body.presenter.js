@@ -135,10 +135,10 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
   }
 
   /**
-   * Returns `actualVolume / authorisedVolume Ml` if twoPartTariff is true or blank string if false
+   * Returns a descriptive string including `actualVolume` if twoPartTariff is true or blank string if false
    */
   _volume (data) {
-    return this._isTrue(data.regimeValue16) ? `${data.regimeValue20} / ${data.headerAttr3} Ml` : ''
+    return this._isTrue(data.regimeValue16) ? `Calculated using reported abstracted quantity (${data.regimeValue20}ML) and the charge reference, which is based on the authorised quantity` : ''
   }
 
   /**
