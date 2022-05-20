@@ -170,7 +170,6 @@ describe('Transaction File Sroc Body Presenter', () => {
 
       const result = presenter.go()
 
-      expect(result.col26).to.equal('')
       expect(result.col28).to.equal('')
       expect(result.col29).to.equal('')
       expect(result.col30).to.equal('')
