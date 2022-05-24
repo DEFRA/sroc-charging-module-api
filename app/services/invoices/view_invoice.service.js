@@ -66,7 +66,8 @@ class ViewInvoiceService {
           'chargeCalculation',
           'lineAttr9',
           'lineAttr10',
-          'lineAttr12'
+          'lineAttr12',
+          'lineAttr15'
         )
       })
       .withGraphFetched('billRun')

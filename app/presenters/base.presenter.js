@@ -65,6 +65,13 @@ class BasePresenter {
     return false
   }
 
+  _asNumber (value) {
+    const parsed = parseFloat(value)
+
+    // If the parsed value isn't a number then return `null`, otherwise return the number
+    return Number.isNaN(parsed) ? null : parsed
+  }
+
   /**
    * Extracts the factor value from a string in the format `... x n.n`. For example, when given the string `S130U x
    * 0.5`, the number `0.5` is returned. Returns `null` if the string isn't in the expected format.
