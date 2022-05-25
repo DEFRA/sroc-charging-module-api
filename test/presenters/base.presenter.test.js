@@ -174,6 +174,32 @@ describe('Base presenter', () => {
     })
   })
 
+  describe('_asNumber method', () => {
+    it('returns a number if given a string that is a number', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._asNumber('123')
+
+      expect(result).to.equal(123)
+    })
+
+    it('returns a number if given a number', async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._asNumber(123)
+
+      expect(result).to.equal(123)
+    })
+
+    it("returns `null` if given a string that isn't a number", async () => {
+      const presenter = new BasePresenter()
+
+      const result = presenter._asNumber('one two three')
+
+      expect(result).to.equal(null)
+    })
+  })
+
   describe('_extractFactorFromString method', () => {
     it('returns the factor if given a string in the format `... x n.n`', async () => {
       const presenter = new BasePresenter()

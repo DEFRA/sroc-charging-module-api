@@ -85,9 +85,9 @@ describe('View Transaction Presenter', () => {
       ...baseData,
       // Ruleset is not normally part of the transaction record but we expect it to be passed in to the presenter
       ruleset: 'sroc',
-      lineAttr9: 0.833,
-      lineAttr10: 0.5,
-      lineAttr12: 0.5
+      lineAttr9: '0.833',
+      lineAttr12: '0.5',
+      lineAttr15: '0.5'
     }
 
     it('does not return `subjectToMinimumCharge`', () => {
