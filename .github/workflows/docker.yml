@@ -31,36 +31,56 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Extract metadata (tags, labels) for Docker
+      # Generate a unique tag
+      # Most tutorials will suggest you just use the commit sha as a way of creating a unique tag for your image.
+      # In our experience though this tells us nothing about the image we are working with. You have to search
+      # GitHub or the commit history to figure out what you have in the image. Instead, we use
+      # `git describe --always --tags` to generate a more meaningful tag, for example, `v3.2.1-162-g8ff3690`.
+      # This tag broken down means
+      #
+      # - the last tag created for my main branch was v3.2.1
+      # - there have been 162 commits to that branch since that tag was created
+      # - the `g` just denotes that the source control system is git
+      # - the abbreviated commit reference for the lastest commit is 8ff3690
+      #
+      # From this we get a better sense of just what version of the code the image was built on. For reference the
+      # `git describe --always --tags` command broken down means
+      #
+      # - `--always` If no tags existed nothing would be shown. As a fallback we include this argument to tell it to
+      #   always return the abbreviated commit reference for the last commit.
+      # - `--tags` By default the command only works with annotated tags which is fine for us as that's all we use. But
+      #   just in case we tell it to reference all tags created, both annotated and lightweight
+      # https://git-scm.com/docs/git-describe
+      - name: Generate raw tag
+        id: raw-tag
+        run:
+          echo "raw_tag=$(git describe --always --tags)" >> $GITHUB_OUTPUT
+
+      # Extract metadata from Git reference and GitHub events
+      # We use it to generate the tags and labels for our Docker image. For reference;
+      #
+      # - flavor: defines global behaviour for tags. By default a GitHub tag event would cause metadata-action to
+      #   apply the `latest` tag. But as AWS ECR has immutable tags we can't use `latest` (for when we move to ECR)
+      # - images: the base name to use for the full tag. The build-push-action will also use this to determine where
+      #   to push the image to
+      # - tags: tell the action to generate certain tags dependent on the event. Our config says when a tag is pushed
+      #   use the pushed git tag as the image tag. Else use the custom raw_tag we generated in the previous step
+      # - labels: because we don't use a common licence like MIT, the licences label doesn't get populated. We can
+      #   overwrite any of the labels but in our case you just ensure this one gets set
+      #
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.GHC_REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      # We combine the tags generated for GHC registry with ones for DockerHub. We do this by using sed to replace
-      # appearances of ghcr.io with docker.io in the original tags. The combination of the original tags plus the
-      # sed calculated ones are combined and stored as a multiline string in a new env var.
-      #
-      # Some things to note
-      #  - each line of the HEREDOC must output something. That is why we call 'echo' in each one
-      #  - steps.meta.outputs.tags is itself a multiline string so we must wrap the call in quotes else the second line
-      #    of the string is interpreted as a command
-      #  - GitHub action's `set-output` truncates multiline strings which is why we have resorted to what you see below
-      #    to get a value which contains all the possible tags as a multiline string
-      #  - the 'if' determines if this is a push to `main` or a new tag. If a push to `main` we add a unique tag, for
-      #    example `v0.13.2-2-g9ce6d11`. This is to support testing
-      #
-      # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#multiline-strings
-      # https://github.community/t/set-output-truncates-multiline-strings/16852/8
-      - name: Set all tags
-        run: |
-          echo 'ALL_TAGS<<EOF' >> $GITHUB_ENV
-          echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
-          echo "${{ steps.meta.outputs.tags }}" | sed -e 's|${{ env.GHC_REGISTRY }}/defra|docker.io/environmentagency|g' >> $GITHUB_ENV
-          if [ ${{ startsWith(github.ref, 'refs/tags/v') }} = false ]; then echo "ghcr.io/defra/sroc-charging-module-api:$(git describe --always --tags)"; fi >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
+          flavor: |
+            latest=false
+          images: ghcr.io/defra/sroc-charging-module-api
+          tags: |
+            type=semver,priority=900,pattern={{raw}}
+            type=raw,priority=800,value=${{ steps.raw-tag.outputs.raw_tag }}
+          labels: |
+            org.opencontainers.image.licenses=OGL-UK-3.0
 
       # Build and push Docker image with Buildx
       # Note: This will push to both GitHub Container registry and DockerHub thanks to the `Set all tags` step
@@ -75,5 +95,26 @@ jobs:
             GIT_COMMIT=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
             DOCKER_TAG=${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           push: true
-          labels: ${{ steps.meta_github.outputs.labels }}
-          tags: ${{ env.ALL_TAGS }}
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+
+      # Generate a summary that will be displayed against the Job when selected in the Actions tab.
+      # We this to quickly see details for the image generated instead of digging into the build output.
+      # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary
+      - name: Generate job summary
+        id: summary
+        run: |
+          {
+            echo "### Docker Image details"
+            echo "The tag is **${{ steps.raw-tag.outputs.raw_tag }}**"
+            echo "| Label      | Value |"
+            echo "| ---------- | ----- |"
+            echo "| created    | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }} |"
+            echo "| description| ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.description'] }} |"
+            echo "| licenses   | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.licenses'] }} |"
+            echo "| revision   | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }} |"
+            echo "| source     | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.source'] }} |"
+            echo "| title      | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.title'] }} |"
+            echo "| url        | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.url'] }} |"
+            echo "| version    | ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }} |"
+          } >> $GITHUB_STEP_SUMMARY
