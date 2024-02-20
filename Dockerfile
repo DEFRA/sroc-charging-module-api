@@ -13,8 +13,8 @@ RUN apk update \
   && apk add postgresql-client \
   && rm -rf /var/cache/apk/*
 
-# Get the latest version of npm at time of build, regardless of node version, for speed and fixes.
-RUN npm i npm@latest -g
+# Get the latest version of npm compatible with Node v16.
+RUN npm i npm@8.19.4 -g
 
 # We have chosen /home/node as our working directory to be consistent with https://github.com/DEFRA/defra-docker-node
 WORKDIR /home/node
