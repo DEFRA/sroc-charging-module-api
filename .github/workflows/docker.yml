@@ -8,28 +8,34 @@ on:
     tags: [ 'v*.*.*' ]
 
 env:
-  # Our main, default container registry
-  GHC_REGISTRY: ghcr.io
-  # github.repository will be <account>/<repo>, for example, DEFRA/sroc-charging-module-api
-  IMAGE_NAME: ${{ github.repository }}
+  REPOSITORY: sroc-charging-module/sroc-charging-module-api
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones block `git describe --always --tags` from working later in 'Set all tags'
 
-      # Login against a GitHub Container registry
-      # https://github.com/docker/login-action
-      - name: Log into GH Container Registry
-        uses: docker/login-action@v3
+      # Configure our AWS credentials and region environment variables for use in other GitHub Actions
+      # https://github.com/aws-actions/configure-aws-credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          registry: ${{ env.GHC_REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          aws-region: ${{ secrets.AWS_ENV_REGION }}
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ENV_ACCOUNT }}:role/${{ secrets.AWS_ENV_ROLE }}
+
+      # Login to AWS ECR private. It will use the credentials we configured in the previous step
+      # https://github.com/aws-actions/amazon-ecr-login
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       # Generate a unique tag
       # Most tutorials will suggest you just use the commit sha as a way of creating a unique tag for your image.
@@ -60,7 +66,7 @@ jobs:
       # We use it to generate the tags and labels for our Docker image. For reference;
       #
       # - flavor: defines global behaviour for tags. By default a GitHub tag event would cause metadata-action to
-      #   apply the `latest` tag. But as AWS ECR has immutable tags we can't use `latest` (for when we move to ECR)
+      #   apply the `latest` tag. But as our AWS ECR has immutable tags we can't use `latest`
       # - images: the base name to use for the full tag. The build-push-action will also use this to determine where
       #   to push the image to
       # - tags: tell the action to generate certain tags dependent on the event. Our config says when a tag is pushed
@@ -75,7 +81,7 @@ jobs:
         with:
           flavor: |
             latest=false
-          images: ghcr.io/defra/sroc-charging-module-api
+          images: ${{ steps.login-ecr.outputs.registry }}/${{ env.REPOSITORY }}
           tags: |
             type=semver,priority=900,pattern={{raw}}
             type=raw,priority=800,value=${{ steps.raw-tag.outputs.raw_tag }}
