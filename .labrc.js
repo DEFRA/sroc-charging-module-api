@@ -14,7 +14,8 @@ module.exports = {
     '__exportStar', '__createBinding', '__values', '__read', '__spread', '__spreadArrays', '__spreadArray', '__await',
     '__asyncGenerator', '__asyncDelegator', '__asyncValues', '__makeTemplateObject', '__importStar', '__importDefault',
     '__classPrivateFieldGet', '__classPrivateFieldSet', '__esDecorate', '__runInitializers', '__propKey',
-    '__setFunctionName', '__classPrivateFieldIn',
+    '__setFunctionName', '__classPrivateFieldIn', '__addDisposableResource', '__disposeResources',
+    '__rewriteRelativeImportExtension',
     // We also ignore globals exposed by global-agent:
     'GLOBAL_AGENT','ROARR'
   ].join(',')
