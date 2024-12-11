@@ -85,6 +85,7 @@ describe('Transaction File Sroc Body Presenter', () => {
       expect(result.col21).to.equal('')
       expect(result.col24).to.equal('AT')
       expect(result.col25).to.equal('')
+      expect(result.col35).to.equal('')
       expect(result.col38).to.equal('')
       expect(result.col39).to.equal('')
       expect(result.col40).to.equal('')
@@ -164,7 +165,6 @@ describe('Transaction File Sroc Body Presenter', () => {
       expect(result.col31).to.equal(data.regimeValue18)
       expect(result.col33).to.not.equal('') // This column is checked in a separate test
       expect(result.col34).to.not.equal('') // This column is checked in a separate test
-      expect(result.col35).to.not.equal('') // This column is checked in a separate test
       expect(result.col36).to.not.equal('') // This column is checked in a separate test
 
       expect(result.col37).to.equal('')
@@ -185,7 +185,6 @@ describe('Transaction File Sroc Body Presenter', () => {
       expect(result.col32).to.equal('')
       expect(result.col33).to.equal('')
       expect(result.col34).to.equal('')
-      expect(result.col35).to.equal('')
       expect(result.col36).to.equal('')
 
       expect(result.col37).to.not.equal('') // This column is checked in a separate test
@@ -244,31 +243,6 @@ describe('Transaction File Sroc Body Presenter', () => {
       const result = presenter.go()
 
       expect(result.col34).to.equal('')
-    })
-  })
-
-  describe('for col35 (volume)', () => {
-    it('returns the correct data if two part tariff is true', () => {
-      const presenter = new TransactionFileSrocBodyPresenter({
-        ...data,
-        regimeValue17: 'false'
-      })
-
-      const result = presenter.go()
-
-      expect(result.col35).to.equal('Calculated using reported abstracted quantity (123.4ML) and the charge reference, which is based on the authorised quantity')
-    })
-
-    it('returns blank if two part tariff is false', () => {
-      const presenter = new TransactionFileSrocBodyPresenter({
-        ...data,
-        regimeValue17: 'false',
-        regimeValue16: 'false'
-      })
-
-      const result = presenter.go()
-
-      expect(result.col35).to.equal('')
     })
   })
 
