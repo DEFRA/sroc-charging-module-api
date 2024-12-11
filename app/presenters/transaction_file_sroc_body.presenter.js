@@ -50,7 +50,7 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
       col32: this._blankIfCompensationCharge(this._pence(data.headerAttr9), data), // baseCharge [in pence]
       col33: this._blankIfCompensationCharge(this._reductionsList(data), data),
       col34: this._blankIfCompensationCharge(this._supportedSource(data), data),
-      col35: this._blankIfCompensationCharge(this._volume(data), data),
+      col35: '',
       col36: this._blankIfCompensationCharge(this._waterCompany(data), data),
       col37: this._blankIfNotCompensationCharge(this._compensationChargeAndRegion(data), data),
       col38: '',
@@ -132,15 +132,6 @@ class TransactionFileSrocBodyPresenter extends BasePresenter {
    */
   _supportedSource (data) {
     return this._isTrue(data.headerAttr5) ? `${this._pence(data.lineAttr11)} (${data.headerAttr6})` : ''
-  }
-
-  /**
-   * Returns a descriptive string including `actualVolume` if twoPartTariff is true or blank string if false
-   */
-  _volume (data) {
-    return this._isTrue(data.regimeValue16)
-      ? `Calculated using reported abstracted quantity (${data.regimeValue20}ML) and the charge reference, which is based on the authorised quantity`
-      : ''
   }
 
   /**
