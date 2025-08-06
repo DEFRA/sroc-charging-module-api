@@ -7,7 +7,7 @@
       "label": "⬆️ UP (CMA)",
       "detail": "Build if needed then run a local docker environment",
       "type": "shell",
-      "command": "GIT_COMMIT=$(git rev-parse HEAD) docker-compose up",
+      "command": "GIT_COMMIT=$(git rev-parse HEAD) docker compose up",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -22,7 +22,7 @@
       "label": "⬇️ DOWN (CMA)",
       "detail": "Drop any stopped containers",
       "type": "shell",
-      "command": "docker-compose down",
+      "command": "docker compose down",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -37,7 +37,7 @@
       "label": "🧹 CLEAN (CMA)",
       "detail": "Will drop the containers, then remove the related images and volumes",
       "type": "shell",
-      "command": "docker-compose down --rmi local -v",
+      "command": "docker compose down --rmi local -v",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -52,7 +52,7 @@
       "label": "🏗️ REBUILD (CMA)",
       "detail": "Drop and remove everything, then rebuild with no cache",
       "type": "shell",
-      "command": "docker-compose down --rmi local -v && docker-compose build --no-cache",
+      "command": "docker compose down --rmi local -v && docker compose build --no-cache",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -67,7 +67,7 @@
       "label": "🔎 LINT (CMA)",
       "detail": "Run lint checks against the code",
       "type": "shell",
-      "command": "docker-compose exec app npm run lint",
+      "command": "docker compose exec app npm run lint",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -82,7 +82,7 @@
       "label": "✅ TEST (CMA)",
       "detail": "Run unit tests in docker",
       "type": "shell",
-      "command": "docker-compose exec app npm test",
+      "command": "docker compose exec app npm test",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -97,7 +97,7 @@
       "label": "🗄️ DB (CMA)",
       "detail": "Will setup (or reset) both the main and test db's",
       "type": "shell",
-      "command": "docker-compose exec app /bin/sh -c 'npm run reset-db && npm run create-test-db && npm run reset-test-db'",
+      "command": "docker compose exec app /bin/sh -c 'npm run reset-db && npm run create-test-db && npm run reset-test-db'",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -112,7 +112,7 @@
       "label": "🗄️💥 DB NUKE (CMA)",
       "detail": "Will drop then re-create both db's",
       "type": "shell",
-      "command": "docker-compose exec app /bin/sh -c 'npm run nuke-db && npm run nuke-test-db'",
+      "command": "docker compose exec app /bin/sh -c 'npm run nuke-db && npm run nuke-test-db'",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -127,7 +127,7 @@
       "label": "💻 OPEN (CMA)",
       "detail": "Will open /bin/sh in the running 'app' container",
       "type": "shell",
-      "command": "docker-compose exec app /bin/sh",
+      "command": "docker compose exec app /bin/sh",
       "group": "test",
       "presentation": {
         "echo": true,

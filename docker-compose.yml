@@ -22,7 +22,7 @@ services:
       # Used to support the API returning diagnostic information about which versions of the app and image it is
       # running. In the local development environment the DOCKER_TAG will always be latest. We get the git commit hash
       # by running `git rev-parse HEAD`. However, that type of interpolation is not supported in a `docker.compose.yml`
-      # file. So, we have to rely on it having been set as an env var locally before `docker-compose up` is run.
+      # file. So, we have to rely on it having been set as an env var locally before `docker compose up` is run.
       # If you checkout `.vscode/tasks.json` you'll see we've baked it into our start CMA environment command.
       args:
         - GIT_COMMIT=${GIT_COMMIT}
@@ -35,7 +35,7 @@ services:
       # Bind mount the local folder into the container at `/home/node/app` when the container starts. This is what
       # gives us the ability to edit files on the host but have them run within the docker container.
       #
-      # Note: the delegated option is just a performance optimisation for Macs. The docker-compose default mode is
+      # Note: the delegated option is just a performance optimisation for Macs. The docker compose default mode is
       # 'consistent'. This means any time a write happens it is immediately flushed to all participants of the mount.
       # 'cached' means the host is the authority; changes on the host will eventually reach the container. 'delegated'
       # means the container is the authority; changes made in it will eventually reach the host. 'delegated' is seen as
@@ -43,7 +43,7 @@ services:
       - .:/home/node/app:delegated
       # Bind-mounting these two files will let you add packages during development without rebuilding, for example,
       # to add bower to your app while developing, just install it inside the container and then nodemon will restart.
-      # Your changes will last until you "docker-compose down" and will be saved on host for next build
+      # Your changes will last until you "docker compose down" and will be saved on host for next build
       - ./package.json:/home/node/package.json
       - ./package-lock.json:/home/node/package-lock.json
       # This is a workaround to prevent the host node_modules from accidently getting mounted in the container in case
@@ -57,7 +57,6 @@ services:
       - db
     # If you want to require traffic to go via a proxy, uncomment the line below:
     # dns: 0.0.0.0
-
 
 volumes:
   cma_db_volume:
