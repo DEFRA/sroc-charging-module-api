@@ -2,7 +2,7 @@
 # Generate base stage
 #
 # Use alpine version to help reduce size of image and improve security (less things installed from the get go)
-FROM node:16-alpine AS node_base
+FROM node:22-alpine AS node_base
 
 # Ensure we have updated whatever packages come as part of the alpine image before we start using it. This was a
 # requirement following PEN testing. We also add the dependencies we need to support using PostgreSQL. Finish with
@@ -13,8 +13,7 @@ RUN apk update \
   && apk add postgresql-client \
   && rm -rf /var/cache/apk/*
 
-# Get the latest version of npm compatible with Node v16.
-RUN npm i npm@8.19.4 -g
+RUN npm i npm@10 -g
 
 # We have chosen /home/node as our working directory to be consistent with https://github.com/DEFRA/defra-docker-node
 WORKDIR /home/node
