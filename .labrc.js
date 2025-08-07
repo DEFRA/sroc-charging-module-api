@@ -17,6 +17,8 @@ module.exports = {
     '__setFunctionName', '__classPrivateFieldIn', '__addDisposableResource', '__disposeResources',
     '__rewriteRelativeImportExtension',
     // We also ignore globals exposed by global-agent:
-    'GLOBAL_AGENT','ROARR'
+    'GLOBAL_AGENT', 'ROARR',
+    // We also ignore global exposed by undici (ie. native fetch):
+    'Symbol(undici.globalDispatcher.1)'
   ].join(',')
 }
