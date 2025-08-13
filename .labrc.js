@@ -3,7 +3,7 @@
 module.exports = {
   verbose: true,
   coverage: true,
-  // lcov reporter required for SonarCloud
+  // lcov reporter required for SonarQube
   reporter: ['console', 'html', 'lcov'],
   output: ['stdout', 'coverage/coverage.html', 'coverage/lcov.info'],
   // @aws-sdk/s3 exposes global variables which cause errors during test if we don't ignore them. lab expects the list

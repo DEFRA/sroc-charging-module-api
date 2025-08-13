@@ -19,7 +19,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Shallow clones block `git describe --always --tags` from working later in 'Set all tags'
 
