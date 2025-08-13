@@ -116,11 +116,9 @@ jobs:
           npm test
           sed -i 's/\/home\/runner\/work\/sroc-charging-module-api\/sroc-charging-module-api\//\/github\/workspace\//g' coverage/lcov.info
 
-      # Temporarily disabled until 403 issue is resolved
-      # DO NOT MERGE UNTIL THIS IS RESOLVED
-      # - name: Analyze with SonarCloud
-      #   if: github.actor != 'dependabot[bot]'
-      #   uses: sonarsource/sonarcloud-github-action@master
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This is provided automatically by GitHub
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # This needs to be set in your repo; settings -> secrets
+      - name: Analyze with SonarCloud
+        if: github.actor != 'dependabot[bot]'
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This is provided automatically by GitHub
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # This needs to be set in your repo; settings -> secrets
