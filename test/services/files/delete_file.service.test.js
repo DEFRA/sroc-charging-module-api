@@ -48,7 +48,8 @@ describe('Delete File service', () => {
       const err = await expect(DeleteFileService.go(fakeFile)).to.reject()
 
       expect(err).to.be.an.error()
-      expect(err.message).to.equal(`ENOENT: no such file or directory, unlink '${fakeFile}'`)
+      expect(err.code).to.equal('ENOENT')
+      expect(err.path).to.equal(fakeFile)
     })
   })
 })
