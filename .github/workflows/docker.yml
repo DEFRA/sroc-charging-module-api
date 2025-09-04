@@ -26,7 +26,7 @@ jobs:
       # Configure our AWS credentials and region environment variables for use in other GitHub Actions
       # https://github.com/aws-actions/configure-aws-credentials
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-region: ${{ secrets.AWS_ENV_REGION }}
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ENV_ACCOUNT }}:role/${{ secrets.AWS_ENV_ROLE }}
