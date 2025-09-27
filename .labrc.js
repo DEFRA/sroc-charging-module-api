@@ -15,7 +15,7 @@ module.exports = {
     '__asyncGenerator', '__asyncDelegator', '__asyncValues', '__makeTemplateObject', '__importStar', '__importDefault',
     '__classPrivateFieldGet', '__classPrivateFieldSet', '__esDecorate', '__runInitializers', '__propKey',
     '__setFunctionName', '__classPrivateFieldIn', '__addDisposableResource', '__disposeResources',
-    '__rewriteRelativeImportExtension',
+    '__rewriteRelativeImportExtension', 'awslambda',
     // We also ignore globals exposed by global-agent:
     'GLOBAL_AGENT', 'ROARR',
     // We also ignore global exposed by undici (ie. native fetch):
